@@ -132,11 +132,11 @@ public class ServicioPrecioCopisteria {
         String breakdown = pageReference(input.pageCount(), input.fileCount())
             + " x "
             + copies
-            + " copia(s) â€¢ "
+            + " copia(s) • "
             + colorMode.getLabel()
-            + " â€¢ "
+            + " • "
             + paperSize.getLabel()
-            + " â€¢ "
+            + " • "
             + printSide.getLabel();
 
         return buildEstimate(total, breakdown, input, jobLabel);
@@ -159,9 +159,9 @@ public class ServicioPrecioCopisteria {
             + pageReference(input.pageCount(), input.fileCount())
             + " x "
             + copies
-            + " unidad(es) â€¢ "
+            + " unidad(es) • "
             + colorMode.getLabel()
-            + " â€¢ "
+            + " • "
             + paperSize.getLabel();
 
         return buildEstimate(total, breakdown, input, "publicidad e imprenta");
@@ -175,7 +175,7 @@ public class ServicioPrecioCopisteria {
     ) {
         int pricedFiles = pricedFiles(input.fileCount());
         BigDecimal total = basePrice.add(extraPerFile.multiply(BigDecimal.valueOf(pricedFiles - 1L)));
-        String breakdown = breakdownPrefix + " â€¢ " + fileReference(input.fileCount());
+        String breakdown = breakdownPrefix + " • " + fileReference(input.fileCount());
         return buildEstimate(total, breakdown, input, input.jobType().getLabel().toLowerCase(Locale.ROOT));
     }
 
