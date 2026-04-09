@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head(${pageTitle}, '/css/cuenta.css')}"></head>
+<body class="account-page dashboard-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="dashboard-main">
+        <section class="dashboard-hero">
+            <div class="container dashboard-layout">
+                <div class="dashboard-copy" data-reveal="up">
+                    <span class="eyebrow">Tu area personal</span>
+                    <h1 th:text="|Bienvenido de nuevo, ${currentUsuario.firstName}.|">
+                        Bienvenido de nuevo.
+                    </h1>
+                    <p>
+                        Este panel es tu punto de acceso privado dentro de Maxcopias.
+                        Aqui puedes consultar tu cuenta, ir al formulario de pedido y mantener visible
+                        la navegacion personal de tu sesion.
+                    </p>
+                </div>
+
+                <aside class="dashboard-profile-card" data-reveal="left">
+                    <span class="card-chip">Tu cuenta</span>
+                    <strong th:text="${currentUsuario.fullName}">Nombre Apellidos</strong>
+                    <ul class="profile-list">
+                        <li>
+                            <span>Email</span>
+                            <strong th:text="${currentUsuario.email}">correo@maxcopias.es</strong>
+                        </li>
+                        <li>
+                            <span>Telefono</span>
+                            <strong th:text="${currentUsuario.phone}">+34 600 123 456</strong>
+                        </li>
+                        <li>
+                            <span>Registro</span>
+                            <strong th:text="${#temporals.format(currentUsuario.createdAt, 'dd/MM/yyyy')}">08/04/2026</strong>
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <div class="container dashboard-grid">
+                <article class="dashboard-card" data-reveal="up">
+                    <span class="section-kicker">Accesos rapidos</span>
+                    <h2>Acciones disponibles</h2>
+                    <p>Desde aqui puedes continuar con las partes privadas ya preparadas en esta fase.</p>
+
+                    <div class="dashboard-actions">
+                        <a th:href="@{/pedido}" class="button button-primary">Hacer pedido</a>
+                        <a th:href="@{/mis-pedidos}" class="button button-secondary-dark">Mis pedidos</a>
+                        <form th:action="@{/logout}" method="post" class="inline-form">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <button type="submit" class="button button-outline-dark">Cerrar sesion</button>
+                        </form>
+                    </div>
+                </article>
+
+                <article class="dashboard-card" data-reveal="up">
+                    <span class="section-kicker">Resumen</span>
+                    <h2>Datos principales de tu cuenta</h2>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span>Nombre completo</span>
+                            <strong th:text="${currentUsuario.fullName}">Nombre Apellidos</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Rol asignado</span>
+                            <strong>Usuario</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Email de acceso</span>
+                            <strong th:text="${currentUsuario.email}">correo@maxcopias.es</strong>
+                        </div>
+                        <div class="info-item">
+                            <span>Telefono</span>
+                            <strong th:text="${currentUsuario.phone}">+34 600 123 456</strong>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="dashboard-card dashboard-card-wide" data-reveal="up">
+                    <span class="section-kicker">Editar datos</span>
+                    <h2>Actualiza tu informacion personal</h2>
+                    <p>
+                        Desde aqui puedes modificar los datos basicos de tu cuenta.
+                        El email de acceso se mantiene fijo y no puede cambiarse desde esta zona.
+                    </p>
+
+                    <div class="alert alert-success" th:if="${profileUpdated}">
+                        <p>Tus datos se han actualizado correctamente.</p>
+                    </div>
+
+                    <form th:action="@{/area-personal}" th:object="${profileForm}" method="post" novalidate>
+                        <div class="form-grid">
+                            <div class="field-group">
+                                <label for="firstName">Nombre</label>
+                                <input
+                                    id="firstName"
+                                    type="text"
+                                    th:field="*{firstName}"
+                                    th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"
+                                    autocomplete="given-name"
+                                    maxlength="80"
+                                    placeholder="Tu nombre">
+                                <small class="field-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="lastName">Apellidos</label>
+                                <input
+                                    id="lastName"
+                                    type="text"
+                                    th:field="*{lastName}"
+                                    th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
+                                    autocomplete="family-name"
+                                    maxlength="120"
+                                    placeholder="Tus apellidos">
+                                <small class="field-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="profileEmail">Email de acceso</label>
+                                <input
+                                    id="profileEmail"
+                                    type="email"
+                                    th:value="${currentUsuario.email}"
+                                    autocomplete="off"
+                                    readonly
+                                    class="is-readonly">
+                                <small class="field-feedback">Este email no puede modificarse desde tu area personal.</small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="phone">Telefono</label>
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    th:field="*{phone}"
+                                    th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
+                                    autocomplete="tel"
+                                    inputmode="numeric"
+                                    maxlength="9"
+                                    placeholder="600123456">
+                                <small class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button button-primary auth-button">Guardar cambios</button>
+                        </div>
+                    </form>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>
+

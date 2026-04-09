@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Resumen de pedido', '/css/copisteria.css')}"></head>
+<body class="copisteria-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="summary-main">
+        <section class="summary-hero">
+            <div class="container summary-hero-grid">
+                <div class="summary-hero-copy" data-reveal="up">
+                    <span class="eyebrow">Pedido preparado</span>
+                    <h1>Tu pedido ya esta guardado y tiene un codigo unico de recogida.</h1>
+                    <p>
+                        Hemos guardado los datos del encargo y los archivos subidos en tu cuenta.
+                        Cuando el pedido este listo, podras identificarlo facilmente con tu codigo de recogida.
+                    </p>
+                </div>
+
+                <aside class="summary-highlight" data-reveal="left">
+                    <span class="card-chip">Codigo de recogida</span>
+                    <strong th:text="${order.pickupCode}">MC-7Q4P9R</strong>
+                    <p>Guarda este codigo para recoger el pedido en tienda con rapidez.</p>
+                    <div class="summary-highlight-price">
+                        <span>Precio estimado</span>
+                        <strong th:text="${order.formattedEstimatedPrice}">4,32 â‚¬</strong>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="summary-section">
+            <div class="container summary-layout">
+                <article class="summary-card summary-card-primary" data-reveal="up">
+                    <span class="section-kicker">Confirmacion</span>
+                    <h2>Pedido registrado correctamente</h2>
+                    <p>
+                        El pedido ha quedado asociado a tu cuenta y no se envia a ningun canal externo en esta fase.
+                        Puedes revisarlo despues desde tu apartado de pedidos.
+                    </p>
+
+                    <div class="summary-price-box">
+                        <span>Precio orientativo del pedido</span>
+                        <strong th:text="${order.formattedEstimatedPrice}">4,32 â‚¬</strong>
+                        <p th:text="${order.priceBreakdownOrDefault}">
+                            2 archivo(s) x 3 copia(s) â€¢ Blanco y negro â€¢ A4 â€¢ Una cara
+                        </p>
+                    </div>
+
+                    <div class="summary-meta-grid">
+                        <div class="summary-meta-item">
+                            <span>Fecha del pedido</span>
+                            <strong th:text="${order.formattedCreatedAt}">08/04/2026 16:10</strong>
+                        </div>
+                        <div class="summary-meta-item">
+                            <span>Archivos subidos</span>
+                            <strong th:text="${order.fileCount} + ' archivo(s)'">2 archivo(s)</strong>
+                        </div>
+                        <div class="summary-meta-item">
+                            <span>Paginas detectadas</span>
+                            <strong th:text="${order.totalPageCount} + ' pagina(s)'">6 pagina(s)</strong>
+                        </div>
+                        <div class="summary-meta-item">
+                            <span>Estado</span>
+                            <strong th:text="${order.status.label}">Recibido</strong>
+                        </div>
+                        <div class="summary-meta-item">
+                            <span>Tipo de trabajo</span>
+                            <strong th:text="${order.jobType.label}">Impresion</strong>
+                        </div>
+                        <div class="summary-meta-item">
+                            <span>Precio estimado</span>
+                            <strong th:text="${order.formattedEstimatedPrice}">4,32 â‚¬</strong>
+                        </div>
+                    </div>
+
+                    <div class="summary-actions">
+                        <a class="button button-outline-dark" th:href="@{/copisteria/pedido}">
+                            Hacer otro pedido
+                        </a>
+                        <a class="button button-primary" th:href="@{/mis-pedidos}">
+                            Ver mis pedidos
+                        </a>
+                    </div>
+
+                    <p class="summary-note">
+                        En tienda podras identificar este encargo con el codigo
+                        <strong th:text="${order.pickupCode}">MC-7Q4P9R</strong>.
+                    </p>
+                </article>
+
+                <div class="summary-stack">
+                    <article class="summary-card" data-reveal="up">
+                        <h3>Datos del cliente</h3>
+                        <dl class="summary-list">
+                            <div>
+                                <dt>Nombre</dt>
+                                <dd th:text="${order.customerName}">Nombre Cliente</dd>
+                            </div>
+                            <div>
+                                <dt>Telefono</dt>
+                                <dd th:text="${order.phone}">+34 600 123 456</dd>
+                            </div>
+                            <div>
+                                <dt>Email</dt>
+                                <dd th:text="${order.email}">cliente@maxcopias.es</dd>
+                            </div>
+                        </dl>
+                    </article>
+
+                    <article class="summary-card" data-reveal="up">
+                        <h3>Detalles del encargo</h3>
+                        <dl class="summary-list">
+                            <div>
+                                <dt>Tipo de trabajo</dt>
+                                <dd th:text="${order.jobType.label}">Impresion</dd>
+                            </div>
+                            <div th:if="${order.copies != null}">
+                                <dt>Numero de copias</dt>
+                                <dd th:text="${order.copies}">1</dd>
+                            </div>
+                            <div th:if="${order.colorMode != null}">
+                                <dt>Color</dt>
+                                <dd th:text="${order.colorMode.label}">Blanco y negro</dd>
+                            </div>
+                            <div th:if="${order.printSide != null}">
+                                <dt>Caras</dt>
+                                <dd th:text="${order.printSide.label}">Una cara</dd>
+                            </div>
+                            <div th:if="${order.paperSize != null}">
+                                <dt>Tamano</dt>
+                                <dd th:text="${order.paperSize.label}">A4</dd>
+                            </div>
+                            <div>
+                                <dt>Observaciones</dt>
+                                <dd th:text="${order.observationsOrDefault}">Sin observaciones.</dd>
+                            </div>
+                        </dl>
+                    </article>
+                </div>
+            </div>
+
+            <div class="container">
+                <article class="summary-card files-card" data-reveal="up">
+                    <h3>Archivos subidos</h3>
+                    <ul class="uploaded-files-list">
+                        <li th:each="file : ${order.files}">
+                            <div class="uploaded-file-main">
+                                <strong th:text="${file.originalFilename}">documento.pdf</strong>
+                                <span th:text="${file.readableSize + ' â€¢ ' + file.pageCountLabel}">1.2 MB â€¢ 3 paginas</span>
+                            </div>
+                            <small th:text="${file.relativePath}">copisteria/2026-04-08/MC-7Q4P9R/01-documento.pdf</small>
+                        </li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>
+

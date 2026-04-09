@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Copisteria y tienda de papeleria', null)}"></head>
+<body>
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main>
+        <section class="welcome-hero" id="inicio">
+            <div class="container hero-layout">
+                <div class="hero-copy" data-reveal="up">
+                    <span class="eyebrow">Impresion online y papeleria</span>
+                    <h1>
+                        Imprime online, recoge en tienda y encuentra tu material
+                        <span class="hero-accent">sin complicaciones</span>
+                    </h1>
+                    <p class="hero-lead">
+                        En Maxcopias preparamos tus impresiones, fotocopias y acabados con rapidez,
+                        y ademas te ofrecemos papeleria, material escolar y suministros de oficina
+                        para el dia a dia.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a th:href="@{/copisteria}" class="button button-primary">Encargar impresion</a>
+                        <a href="#servicios" class="button button-secondary">Ver servicios</a>
+                    </div>
+
+                    <ul class="hero-highlights" aria-label="Puntos clave">
+                        <li>Impresion y fotocopias profesionales</li>
+                        <li>Recogida rapida en tienda</li>
+                        <li>Papeleria y oficina en un solo lugar</li>
+                    </ul>
+                </div>
+
+                <div class="hero-visual" data-reveal="left">
+                    <div class="hero-visual-stage">
+                        <img th:src="@{/images/maxcopias-welcome-hero.svg}" alt="Bienvenida visual de Maxcopias con productos de copisteria y papeleria">
+                    </div>
+
+                    <div class="hero-badge hero-badge-top">
+                        <strong>Copisteria</strong>
+                        <span>Impresion, encuadernacion, plastificado y mas.</span>
+                    </div>
+
+                    <div class="hero-badge hero-badge-bottom">
+                        <strong>Tienda</strong>
+                        <span>Papeleria, material escolar y suministros de oficina.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container hero-footer-strip">
+                <a href="#servicios" class="scroll-cue">
+                    <span class="scroll-cue-line"></span>
+                    <span>Descubre nuestros servicios</span>
+                </a>
+            </div>
+
+            <div class="hero-transition" aria-hidden="true">
+                <svg viewBox="0 0 1440 220" preserveAspectRatio="none">
+                    <path
+                        d="M0,132 C145,190 310,220 470,202 C654,181 770,90 954,73 C1141,55 1286,103 1440,176 V220 H0 Z"
+                        fill="#d9e3ef"
+                        fill-opacity="0.42"></path>
+                    <path
+                        d="M0,154 C178,218 342,234 526,208 C699,183 829,106 1001,94 C1177,81 1317,119 1440,176 V220 H0 Z"
+                        fill="#f5f7fb"></path>
+                </svg>
+            </div>
+        </section>
+
+        <section class="services-section" id="servicios">
+            <div class="container">
+                <div class="section-heading" data-reveal="up">
+                    <span class="section-kicker">Servicios</span>
+                    <h2>Servicios pensados para estudiantes, profesionales y negocios locales.</h2>
+                    <p>
+                        Desde impresiones urgentes hasta material escolar y de oficina,
+                        reunimos en un mismo espacio los servicios mas utiles para tu dia a dia.
+                    </p>
+                </div>
+
+                <div class="service-split">
+                    <article class="service-panel service-panel-light" id="copisteria" data-reveal="up">
+                        <div class="service-media">
+                            <img th:src="@{/images/maxcopias-copisteria.svg}" alt="Servicio de copisteria de Maxcopias">
+                        </div>
+                        <div class="service-copy">
+                            <span class="card-tag">Copisteria</span>
+                            <h3>Tus documentos listos con calidad, rapidez y recogida facil.</h3>
+                            <p>
+                                Preparamos encargos para estudiantes, opositores, empresas y particulares
+                                que buscan un servicio agil, bien acabado y comodo de recoger.
+                            </p>
+                            <ul class="service-list">
+                                <li>Impresion de documentos y apuntes</li>
+                                <li>Fotocopias en varios formatos</li>
+                                <li>Encuadernacion y plastificado</li>
+                                <li>Preparacion de pedidos para recoger</li>
+                            </ul>
+                            <a href="#como-funciona" class="text-link">Ver como funciona</a>
+                        </div>
+                    </article>
+
+                    <article class="service-panel service-panel-dark" id="tienda" data-reveal="up">
+                        <div class="service-media">
+                            <img th:src="@{/images/maxcopias-tienda.svg}" alt="Zona de tienda y papeleria de Maxcopias">
+                        </div>
+                        <div class="service-copy">
+                            <span class="card-tag">Tienda</span>
+                            <h3>Todo el material que necesitas para clase, oficina o estudio.</h3>
+                            <p>
+                                Encuentra productos practicos y de uso frecuente con una seleccion pensada
+                                para resolver compras rapidas y reposiciones habituales.
+                            </p>
+                            <ul class="service-list">
+                                <li>Cuadernos, carpetas y archivadores</li>
+                                <li>Boligrafos, rotuladores y consumibles</li>
+                                <li>Material escolar y universitario</li>
+                                <li>Suministros para oficina y despacho</li>
+                            </ul>
+                            <a href="#cta-final" class="text-link">Consultar disponibilidad</a>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="mini-services-grid">
+                    <article class="mini-service-card" data-reveal="up">
+                        <span class="mini-service-index">01</span>
+                        <h3>Impresion</h3>
+                        <p>Documentos, trabajos, apuntes y encargos profesionales.</p>
+                    </article>
+
+                    <article class="mini-service-card" data-reveal="up">
+                        <span class="mini-service-index">02</span>
+                        <h3>Fotocopias</h3>
+                        <p>Copias rapidas con buena legibilidad y acabado cuidado.</p>
+                    </article>
+
+                    <article class="mini-service-card" data-reveal="up">
+                        <span class="mini-service-index">03</span>
+                        <h3>Encuadernacion</h3>
+                        <p>Trabajos y dossiers listos para entregar con mejor presencia.</p>
+                    </article>
+
+                    <article class="mini-service-card" data-reveal="up">
+                        <span class="mini-service-index">04</span>
+                        <h3>Plastificado</h3>
+                        <p>Proteccion y durabilidad para documentos de uso frecuente.</p>
+                    </article>
+
+                    <article class="mini-service-card" data-reveal="up">
+                        <span class="mini-service-index">05</span>
+                        <h3>Papeleria</h3>
+                        <p>Material escolar y de oficina disponible en la misma visita.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="process-section" id="como-funciona">
+            <div class="container">
+                <div class="section-heading" data-reveal="up">
+                    <span class="section-kicker">Como funciona</span>
+                    <h2>Haz tu pedido en pocos pasos y recogelo cuando te venga bien.</h2>
+                    <p>
+                        Te lo ponemos facil para que puedas enviar tus archivos, preparar tu encargo
+                        y pasar por tienda con todo listo.
+                    </p>
+                </div>
+
+                <div class="steps-grid">
+                    <article class="step-card" data-reveal="up">
+                        <span class="step-number">01</span>
+                        <h3>Envia tus archivos</h3>
+                        <p>Comparte documentos, apuntes o trabajos y dinos como quieres prepararlos.</p>
+                    </article>
+
+                    <article class="step-card" data-reveal="up">
+                        <span class="step-number">02</span>
+                        <h3>Preparamos tu pedido</h3>
+                        <p>Nos encargamos de la impresion y de los acabados para que todo quede listo.</p>
+                    </article>
+
+                    <article class="step-card" data-reveal="up">
+                        <span class="step-number">03</span>
+                        <h3>Recogelo en tienda</h3>
+                        <p>Pasa a recoger tu encargo y aprovecha para llevarte material de papeleria si lo necesitas.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section" id="cta-final">
+            <div class="container cta-box" data-reveal="up">
+                <div>
+                    <span class="section-kicker">Haz tu pedido hoy</span>
+                    <h2>Prepara tus impresiones o consultanos lo que necesitas.</h2>
+                    <p>
+                        Si buscas rapidez, atencion cercana y una copisteria con tienda especializada,
+                        en Maxcopias te ayudamos a tenerlo todo listo.
+                    </p>
+                </div>
+                <div class="cta-actions">
+                    <a th:href="@{/copisteria}" class="button button-primary">Solicitar impresion</a>
+                    <a href="#contacto" class="button button-secondary">Contactar</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>
+

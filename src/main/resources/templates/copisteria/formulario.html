@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Pedido de copisteria', '/css/copisteria.css')}"></head>
+<body class="copisteria-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="order-main">
+        <section class="order-hero">
+            <div class="container order-hero-grid">
+                <div class="order-hero-copy" data-reveal="up">
+                    <span class="eyebrow">Pedido de copisteria</span>
+                    <h1>Sube tus archivos, elige el tipo de servicio y deja preparado tu encargo.</h1>
+                    <p>
+                        Completa el formulario con los datos del servicio, adjunta documentos o imagenes
+                        segun el trabajo y genera un pedido asociado a tu cuenta con codigo unico de recogida y
+                        precio orientativo.
+                    </p>
+
+                    <div class="order-hero-actions">
+                        <a href="#pedido-formulario" class="button button-primary">Ir al formulario</a>
+                    </div>
+                </div>
+
+                <aside class="order-hero-card" data-reveal="left">
+                    <span class="card-chip">Flujo rapido</span>
+                    <h2>Que puedes hacer desde aqui</h2>
+                    <ul class="hero-check-list">
+                        <li>Subir varios archivos para un mismo pedido</li>
+                        <li>Elegir el servicio de copisteria que necesitas</li>
+                        <li>Indicar configuracion de impresion cuando aplique</li>
+                        <li>Generar un codigo unico de recogida</li>
+                    </ul>
+
+                    <div class="hero-card-note">
+                        <strong>Formatos aceptados</strong>
+                        <p th:text="${acceptedFormats}">PDF, JPG, PNG</p>
+                    </div>
+
+                    <div class="hero-card-note">
+                        <strong>Limite de subida</strong>
+                        <p th:text="'Hasta ' + ${maxFiles} + ' archivos y ' + ${maxFileSizeLabel} + ' por archivo.'">
+                            Hasta 5 archivos y 15 MB por archivo.
+                        </p>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="order-section" id="pedido-formulario">
+            <div class="container order-layout">
+                <article class="order-form-card" data-reveal="up">
+                    <div class="card-header">
+                        <span class="section-kicker">Encargo online</span>
+                        <h2>Prepara tu pedido de copisteria</h2>
+                        <p>
+                            Rellena los datos del encargo, adjunta los archivos y revisa el resumen final
+                            con tu codigo de recogida y el precio estimado del pedido.
+                        </p>
+                    </div>
+
+                    <form th:action="@{/copisteria/pedido}" th:object="${orderForm}" method="post" enctype="multipart/form-data" novalidate>
+                        <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
+                            <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="field-group span-2">
+                                <label for="customerName">Nombre</label>
+                                <input
+                                    id="customerName"
+                                    type="text"
+                                    th:field="*{customerName}"
+                                    th:classappend="${#fields.hasErrors('customerName')} ? 'is-invalid'"
+                                    placeholder="Nombre y apellidos">
+                                <small class="field-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="phone">Telefono</label>
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    th:field="*{phone}"
+                                    th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
+                                    placeholder="+34 600 123 456">
+                                <small class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="email">Email</label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    th:field="*{email}"
+                                    th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                                    placeholder="tuemail@ejemplo.com">
+                                <small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="jobType">Tipo de trabajo</label>
+                                <select
+                                    id="jobType"
+                                    th:field="*{jobType}"
+                                    th:classappend="${#fields.hasErrors('jobType')} ? 'is-invalid'"
+                                    data-job-type-select>
+                                    <option value="">Selecciona una opcion</option>
+                                    <option
+                                        th:each="jobType : ${jobTypes}"
+                                        th:value="${jobType}"
+                                        th:text="${jobType.label}"
+                                        th:attr="data-upload-label=${jobType.uploadLabel},data-upload-description=${jobType.uploadDescription},data-requires-print=${jobType.requiresPrintConfiguration}">
+                                    </option>
+                                </select>
+                                <small class="field-error" th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}"></small>
+                            </div>
+
+                            <div class="field-group order-type-helper" data-job-type-helper>
+                                <span class="field-legend">Segun el servicio elegido</span>
+                                <div class="order-type-helper-card">
+                                    <strong data-job-type-label>Selecciona un tipo de trabajo</strong>
+                                    <p data-job-type-description>
+                                        Al elegir una opcion te indicaremos que tipo de archivos conviene adjuntar y si necesitas configurar detalles de impresion.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="field-group" data-print-config-item>
+                                <label for="copies">Numero de copias</label>
+                                <input
+                                    id="copies"
+                                    type="number"
+                                    min="1"
+                                    max="5000"
+                                    th:field="*{copies}"
+                                    th:classappend="${#fields.hasErrors('copies')} ? 'is-invalid'">
+                                <small class="field-error" th:if="${#fields.hasErrors('copies')}" th:errors="*{copies}"></small>
+                            </div>
+
+                            <div class="field-group span-2" data-print-config-section>
+                                <span class="field-legend">Color</span>
+                                <div class="choice-grid choice-grid-2">
+                                    <label class="choice-chip" th:each="mode : ${colorModes}">
+                                        <input type="radio" th:field="*{colorMode}" th:value="${mode}">
+                                        <span>
+                                            <strong th:text="${mode.label}">Color</strong>
+                                            <small th:text="${mode.description}">Descripcion</small>
+                                        </span>
+                                    </label>
+                                </div>
+                                <small class="field-error" th:if="${#fields.hasErrors('colorMode')}" th:errors="*{colorMode}"></small>
+                            </div>
+
+                            <div class="field-group span-2" data-print-config-section>
+                                <span class="field-legend">Caras de impresion</span>
+                                <div class="choice-grid choice-grid-2">
+                                    <label class="choice-chip" th:each="side : ${printSides}">
+                                        <input type="radio" th:field="*{printSide}" th:value="${side}">
+                                        <span>
+                                            <strong th:text="${side.label}">Una cara</strong>
+                                            <small th:text="${side.description}">Descripcion</small>
+                                        </span>
+                                    </label>
+                                </div>
+                                <small class="field-error" th:if="${#fields.hasErrors('printSide')}" th:errors="*{printSide}"></small>
+                            </div>
+
+                            <div class="field-group span-2" data-print-config-section>
+                                <span class="field-legend">Tamano de papel</span>
+                                <div class="choice-grid choice-grid-2">
+                                    <label class="choice-chip" th:each="size : ${paperSizes}">
+                                        <input type="radio" th:field="*{paperSize}" th:value="${size}">
+                                        <span>
+                                            <strong th:text="${size.label}">A4</strong>
+                                            <small th:text="${size.description}">Descripcion</small>
+                                        </span>
+                                    </label>
+                                </div>
+                                <small class="field-error" th:if="${#fields.hasErrors('paperSize')}" th:errors="*{paperSize}"></small>
+                            </div>
+
+                            <div class="field-group span-2">
+                                <label for="observations">Observaciones</label>
+                                <textarea
+                                    id="observations"
+                                    rows="5"
+                                    th:field="*{observations}"
+                                    th:classappend="${#fields.hasErrors('observations')} ? 'is-invalid'"
+                                    placeholder="Indicanos cualquier detalle importante: acabado, portada, orden de paginas, fecha de recogida o preferencias del pedido."></textarea>
+                                <small class="field-error" th:if="${#fields.hasErrors('observations')}" th:errors="*{observations}"></small>
+                            </div>
+
+                            <div class="field-group span-2">
+                                <label for="files">Archivos</label>
+                                <div class="file-dropzone">
+                                    <input
+                                        id="files"
+                                        name="files"
+                                        type="file"
+                                        multiple
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        data-file-input>
+                                    <div class="file-dropzone-copy">
+                                        <strong data-upload-dropzone-title>Adjunta uno o varios archivos</strong>
+                                        <p data-upload-dropzone-description>
+                                            Sube tus documentos, imagenes o archivos de trabajo. Puedes adjuntar hasta
+                                            <span th:text="${maxFiles}">5</span> archivos para el pedido.
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="file-hint" data-file-hint th:text="'Formatos permitidos: ' + ${acceptedFormats} + ' | Maximo ' + ${maxFileSizeLabel} + ' por archivo. Para documentos, sube PDF para calcular bien las paginas.'">
+                                    Formatos permitidos: PDF, JPG, PNG | Maximo 15 MB por archivo. Para documentos, sube PDF para calcular bien las paginas.
+                                </p>
+                                <ul class="selected-files" data-file-list></ul>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button button-primary">Guardar pedido y ver resumen</button>
+                        </div>
+                    </form>
+                </article>
+
+                <aside class="order-sidebar" data-reveal="up">
+                    <article class="side-card">
+                        <span class="side-card-kicker">Proceso</span>
+                        <h3>Como sera el flujo</h3>
+                        <ol>
+                            <li>Rellenas el formulario con los datos del encargo.</li>
+                            <li>Subes tus archivos para que queden guardados en el pedido.</li>
+                            <li>Recibes un codigo unico de recogida para tienda.</li>
+                        </ol>
+                    </article>
+
+                    <article class="side-card price-preview-card" data-price-estimator data-preview-url="/copisteria/precio-orientativo">
+                        <span class="side-card-kicker">Estimacion</span>
+                        <h3>Precio orientativo del pedido</h3>
+                        <strong class="price-preview-total" data-price-total th:text="${pricePreview.formattedTotal}">0,06 â‚¬</strong>
+                        <div class="price-preview-pages">
+                            <span>Paginas detectadas</span>
+                            <strong data-price-pages th:text="${pricePreview.pageCountLabel}">0 paginas detectadas</strong>
+                        </div>
+                        <p class="price-preview-breakdown" data-price-breakdown th:text="${pricePreview.breakdown}">
+                            1 archivo de referencia x 1 copia â€¢ Blanco y negro â€¢ A4 â€¢ Una cara
+                        </p>
+                        <p class="price-preview-note" data-price-note th:text="${pricePreview.note}">
+                            El importe se calcula automaticamente segun el servicio, los archivos y la configuracion.
+                        </p>
+                    </article>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+<script th:src="@{/js/copisteria.js}"></script>
+</body>
+</html>
+

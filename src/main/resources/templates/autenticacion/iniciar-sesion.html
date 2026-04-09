@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Iniciar sesion', '/css/cuenta.css')}"></head>
+<body class="account-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="auth-main">
+        <section class="auth-section">
+            <div class="container auth-layout auth-layout-login">
+                <div class="auth-copy" data-reveal="up">
+                    <span class="eyebrow">Acceso seguro</span>
+                    <h1>Entra en tu cuenta para continuar con tu zona privada.</h1>
+                    <p>
+                        Identificate con tu email y contrasena para acceder a tu area personal,
+                        gestionar tu sesion y preparar el acceso a funcionalidades privadas.
+                    </p>
+
+                    <div class="auth-copy-card">
+                        <strong>Acceso disponible</strong>
+                        <ul>
+                            <li>Usuarios: area personal y zona privada</li>
+                            <li>Admins: acceso directo a la zona admin basica</li>
+                            <li>Logout seguro y navegacion por roles</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <article class="auth-card" data-reveal="left">
+                    <div class="card-header">
+                        <span class="section-kicker">Login</span>
+                        <h2>Iniciar sesion</h2>
+                        <p>Introduce tus credenciales para acceder a tu cuenta.</p>
+                    </div>
+
+                    <div class="alert alert-error" th:if="${param.error}">
+                        <p>Email o contrasena incorrectos.</p>
+                    </div>
+
+                    <div class="alert alert-success" th:if="${param.registered}">
+                        <p>Tu cuenta se ha creado correctamente. Ya puedes iniciar sesion.</p>
+                    </div>
+
+                    <div class="alert alert-info" th:if="${param.logout}">
+                        <p>La sesion se ha cerrado correctamente.</p>
+                    </div>
+
+                    <form th:action="@{/login}" method="post" novalidate data-live-validation="login">
+                        <div class="form-grid form-grid-single">
+                            <div class="field-group span-2">
+                                <label for="email">Email</label>
+                                <input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    autocomplete="email"
+                                    data-live-validate="loginEmail"
+                                    placeholder="correo@maxcopias.es"
+                                    required>
+                                <small class="field-feedback" data-live-feedback="loginEmail" aria-live="polite"></small>
+                            </div>
+
+                            <div class="field-group span-2">
+                                <label for="password">Contrasena</label>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    autocomplete="current-password"
+                                    data-live-validate="loginPassword"
+                                    placeholder="Tu contrasena"
+                                    required>
+                                <small class="field-feedback" data-live-feedback="loginPassword" aria-live="polite"></small>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button button-primary auth-button">Entrar</button>
+                        </div>
+
+                        <p class="form-helper">
+                            Todavia no tienes cuenta?
+                            <a th:href="@{/register}">Registrate aqui</a>
+                        </p>
+                    </form>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+<script th:src="@{/js/cuenta.js}"></script>
+</body>
+</html>
+

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer class="site-footer" id="contacto" th:fragment="footer">
+    <div class="container footer-grid">
+        <div class="footer-branding">
+            <a class="brand brand-footer" th:href="@{/#inicio}">
+                <span class="brand-mark">M</span>
+                <span class="brand-text">
+                    <strong>Maxcopias</strong>
+                    <small>Copisteria y tienda especializada</small>
+                </span>
+            </a>
+            <p>
+                Soluciones de impresion, acabados y papeleria para estudiantes,
+                familias y profesionales con atencion cercana en tienda.
+            </p>
+        </div>
+
+        <div>
+            <h3>Contacto</h3>
+            <ul>
+                <li>Calle Mayor 24, 28013 Madrid</li>
+                <li>+34 910 123 456</li>
+                <li>hola@maxcopias.es</li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Horario</h3>
+            <ul>
+                <li>Lunes a viernes: 09:00 - 20:00</li>
+                <li>Sabados: 10:00 - 14:00</li>
+                <li>Domingos: cerrado</li>
+            </ul>
+        </div>
+
+        <div>
+            <h3>Enlaces</h3>
+            <ul>
+                <li><a th:href="@{/#inicio}">Inicio</a></li>
+                <li><a th:href="@{/copisteria}">Copisteria</a></li>
+                <li><a th:href="@{/#tienda}">Tienda</a></li>
+                <li><a th:href="@{/#como-funciona}">Como funciona</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container footer-bottom">
+        <p>&copy; 2026 Maxcopias. Copisteria y papeleria para estudiantes, profesionales y empresas.</p>
+    </div>
+</footer>
+</body>
+</html>

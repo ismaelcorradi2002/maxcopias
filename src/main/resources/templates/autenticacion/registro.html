@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Registro', '/css/cuenta.css')}"></head>
+<body class="account-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="auth-main">
+        <section class="auth-section">
+            <div class="container auth-layout">
+                <div class="auth-copy" data-reveal="up">
+                    <span class="eyebrow">Crea tu cuenta</span>
+                    <h1>Registrate para gestionar tus pedidos y acceder a tu espacio personal.</h1>
+                    <p>
+                        Guarda tus datos, accede a tu panel y deja lista la base para trabajar
+                        con pedidos y seguimientos desde una cuenta real en Maxcopias.
+                    </p>
+
+                    <div class="auth-copy-card">
+                        <strong>Que incluye esta cuenta</strong>
+                        <ul>
+                            <li>Acceso a tu area personal</li>
+                            <li>Autenticacion segura con contrasena cifrada</li>
+                            <li>Navegacion adaptada segun tu sesion</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <article class="auth-card" data-reveal="left">
+                    <div class="card-header">
+                        <span class="section-kicker">Registro</span>
+                        <h2>Alta de usuario</h2>
+                        <p>Completa tus datos y crea tu cuenta con acceso inmediato al login.</p>
+                    </div>
+
+                    <form
+                        th:action="@{/register}"
+                        th:object="${registerForm}"
+                        method="post"
+                        novalidate
+                        data-live-validation="register"
+                        th:attr="data-email-check-url=@{/register/check-email}">
+                        <div class="form-grid">
+                            <div class="field-group">
+                                <label for="firstName">Nombre</label>
+                                <input
+                                    id="firstName"
+                                    type="text"
+                                    th:field="*{firstName}"
+                                    th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"
+                                    autocomplete="given-name"
+                                    maxlength="80"
+                                    data-live-validate="firstName"
+                                    placeholder="Tu nombre">
+                                <small class="field-feedback" data-live-feedback="firstName" aria-live="polite"></small>
+                                <small class="field-error" data-server-error="firstName" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="lastName">Apellidos</label>
+                                <input
+                                    id="lastName"
+                                    type="text"
+                                    th:field="*{lastName}"
+                                    th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
+                                    autocomplete="family-name"
+                                    maxlength="120"
+                                    data-live-validate="lastName"
+                                    placeholder="Tus apellidos">
+                                <small class="field-feedback" data-live-feedback="lastName" aria-live="polite"></small>
+                                <small class="field-error" data-server-error="lastName" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></small>
+                            </div>
+
+                            <div class="field-group span-2">
+                                <label for="email">Email</label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    th:field="*{email}"
+                                    th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                                    autocomplete="email"
+                                    maxlength="120"
+                                    data-live-validate="email"
+                                    placeholder="correo@maxcopias.es">
+                                <small class="field-feedback" data-live-feedback="email" aria-live="polite"></small>
+                                <small class="field-error" data-server-error="email" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                            </div>
+
+                            <div class="field-group span-2">
+                                <label for="phone">Telefono</label>
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    th:field="*{phone}"
+                                    th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
+                                    autocomplete="tel"
+                                    inputmode="numeric"
+                                    maxlength="9"
+                                    data-live-validate="phone"
+                                    placeholder="600123456">
+                                <small class="field-feedback" data-live-feedback="phone" aria-live="polite"></small>
+                                <small class="field-error" data-server-error="phone" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="password">Contrasena</label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    th:field="*{password}"
+                                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
+                                    autocomplete="new-password"
+                                    maxlength="72"
+                                    data-live-validate="password"
+                                    placeholder="Minimo 6 caracteres">
+                                <div class="password-hints">
+                                    <span>Tu contrasena deberia contener</span>
+                                    <ul>
+                                        <li>Al menos 6 caracteres</li>
+                                        <li>Una letra mayuscula</li>
+                                        <li>Algun simbolo o numero</li>
+                                    </ul>
+                                </div>
+                                <div class="password-strength" data-password-strength aria-live="polite">
+                                    <div class="password-strength-track">
+                                        <span class="password-strength-bar" data-password-strength-bar></span>
+                                    </div>
+                                    <div class="password-strength-meta">
+                                        <span>Seguridad de la contrasena</span>
+                                        <strong data-password-strength-text>Debil</strong>
+                                    </div>
+                                </div>
+                                <small class="field-feedback" data-live-feedback="password" aria-live="polite"></small>
+                                <small class="field-error" data-server-error="password" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="confirmPassword">Confirmar contrasena</label>
+                                <input
+                                    id="confirmPassword"
+                                    type="password"
+                                    th:field="*{confirmPassword}"
+                                    th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
+                                    autocomplete="new-password"
+                                    maxlength="72"
+                                    data-live-validate="confirmPassword"
+                                    placeholder="Repite la contrasena">
+                                <small class="field-feedback" data-live-feedback="confirmPassword" aria-live="polite"></small>
+                                <small class="field-error" data-server-error="confirmPassword" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></small>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="button button-primary auth-button">Crear cuenta</button>
+                        </div>
+
+                        <p class="form-helper">
+                            Ya tienes una cuenta?
+                            <a th:href="@{/login}">Inicia sesion aqui</a>
+                        </p>
+                    </form>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+<script th:src="@{/js/cuenta.js}"></script>
+</body>
+</html>
+
