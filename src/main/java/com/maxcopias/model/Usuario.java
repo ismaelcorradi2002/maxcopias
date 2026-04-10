@@ -1,5 +1,8 @@
 package com.maxcopias.model;
 
+/**
+ * Entidad Usuario de la base de datos.
+ */
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

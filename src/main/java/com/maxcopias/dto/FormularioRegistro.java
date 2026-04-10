@@ -1,5 +1,8 @@
 package com.maxcopias.dto;
 
+/**
+ * DTO para registro de nuevo usuario.
+ */
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

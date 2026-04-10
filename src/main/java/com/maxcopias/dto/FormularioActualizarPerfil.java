@@ -1,5 +1,8 @@
 package com.maxcopias.dto;
 
+/**
+ * DTO para actualizar perfil de usuario (nombre, apellidos, teléfono).
+ */
 import com.maxcopias.model.Usuario;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

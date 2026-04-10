@@ -1,5 +1,8 @@
 package com.maxcopias.dto;
 
+/**
+ * Record respuesta JSON para vista previa de precio copistería.
+ */
 import com.maxcopias.model.EstimacionPrecioCopisteria;
 
 public record RespuestaVistaPreviaPrecioCopisteria(
@@ -11,6 +14,9 @@ public record RespuestaVistaPreviaPrecioCopisteria(
     String pageCountLabel
 ) {
 
+    /**
+     * Convierte estimación de precio a record JSON.
+     */
     public static RespuestaVistaPreviaPrecioCopisteria from(EstimacionPrecioCopisteria estimate) {
         return new RespuestaVistaPreviaPrecioCopisteria(
             estimate.getFormattedTotal(),

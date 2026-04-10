@@ -1,5 +1,8 @@
 package com.maxcopias.model;
 
+/**
+ * Tipos de trabajos disponibles en copistería.
+ */
 public enum TipoTrabajo {
 
     IMPRESION(

@@ -1,5 +1,8 @@
 package com.maxcopias.model;
 
+/**
+ * Entidad principal de pedido de copistería.
+ */
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

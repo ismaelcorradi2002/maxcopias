@@ -1,5 +1,8 @@
 package com.maxcopias.dto;
 
+/**
+ * DTO para formulario de pedido de copistería.
+ */
 import com.maxcopias.model.ModoColor;
 import com.maxcopias.model.TipoTrabajo;
 import com.maxcopias.model.TamanoPapel;
