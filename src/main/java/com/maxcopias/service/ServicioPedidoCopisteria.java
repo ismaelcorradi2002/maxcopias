@@ -1,5 +1,8 @@
 package com.maxcopias.service;
 
+/**
+ * Servicio de gestión de pedidos de copistería (creación, consulta).
+ */
 import com.maxcopias.dto.FormularioPedidoCopisteria;
 import com.maxcopias.model.PedidoCopisteria;
 import com.maxcopias.model.ArchivoPedidoCopisteria;

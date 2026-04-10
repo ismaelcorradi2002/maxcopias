@@ -1,5 +1,8 @@
 package com.maxcopias.service;
 
+/**
+ * Servicio de cálculo de precios orientativos para copistería.
+ */
 import com.maxcopias.dto.FormularioPedidoCopisteria;
 import com.maxcopias.model.ModoColor;
 import com.maxcopias.model.PedidoCopisteria;

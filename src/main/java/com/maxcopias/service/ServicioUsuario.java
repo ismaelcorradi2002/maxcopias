@@ -1,5 +1,8 @@
 package com.maxcopias.service;
 
+/**
+ * Servicio principal de gestión de usuarios (registro, actualización).
+ */
 import com.maxcopias.dto.FormularioActualizarPerfil;
 import com.maxcopias.dto.FormularioRegistro;
 import com.maxcopias.model.Rol;
