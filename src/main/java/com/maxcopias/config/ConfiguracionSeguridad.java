@@ -1,17 +1,14 @@
 package com.maxcopias.config;
 
-import com.maxcopias.model.Rol;
+/**
+ * Configuración de seguridad Spring Security para la app.
+ */
 import com.maxcopias.service.ServicioDetallesUsuario;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,6 +16,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Configuration
 public class ConfiguracionSeguridad {
 
+    /**
+     * Configura reglas de acceso, login y logout.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(
         HttpSecurity http,
@@ -33,6 +33,7 @@ public class ConfiguracionSeguridad {
                 .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria", "/copisteria/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
             )
+            // Configura login y logout
             .formLogin(login -> login
                 .loginPage("/login")
                 .usernameParameter("email")
@@ -50,6 +51,9 @@ public class ConfiguracionSeguridad {
         return http.build();
     }
 
+    /**
+     * Proveedor de autenticación con BD.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider(
         ServicioDetallesUsuario userDetailsService,
@@ -61,20 +65,16 @@ public class ConfiguracionSeguridad {
         return provider;
     }
 
+    /**
+     * Redirige admin a /admin, user a /area-personal.
+     */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(
-                HttpServletRequest request,
-                HttpServletResponse response,
-                Authentication authentication
-            ) throws IOException, ServletException {
-                boolean isAdmin = authentication.getAuthorities().stream()
-                    .anyMatch(authority -> authority.getAuthority().equals(Rol.ROLE_ADMIN.name()));
+        return (request, response, authentication) -> {
+            boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-                response.sendRedirect(isAdmin ? "/admin" : "/area-personal");
-            }
+            response.sendRedirect(isAdmin ? "/admin" : "/area-personal");
         };
     }
 }

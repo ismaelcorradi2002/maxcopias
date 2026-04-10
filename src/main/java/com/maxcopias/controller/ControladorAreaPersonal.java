@@ -1,5 +1,8 @@
 package com.maxcopias.controller;
 
+/**
+ * Controlador del área personal del usuario (perfil, pedidos).
+ */
 import com.maxcopias.dto.FormularioActualizarPerfil;
 import com.maxcopias.service.ServicioPedidoCopisteria;
 import com.maxcopias.model.Usuario;
@@ -20,11 +23,17 @@ public class ControladorAreaPersonal {
     private final ServicioUsuario userService;
     private final ServicioPedidoCopisteria copisteriaOrderService;
 
+    /**
+     * Inyecta servicios de usuario y pedidos.
+     */
     public ControladorAreaPersonal(ServicioUsuario userService, ServicioPedidoCopisteria copisteriaOrderService) {
         this.userService = userService;
         this.copisteriaOrderService = copisteriaOrderService;
     }
 
+    /**
+     * Muestra página área personal con formulario perfil.
+     */
     @GetMapping("/area-personal")
     public String personalArea(
         Authentication authentication,
@@ -36,6 +45,9 @@ public class ControladorAreaPersonal {
         return "area-personal/inicio";
     }
 
+    /**
+     * Actualiza perfil del usuario.
+     */
     @PostMapping("/area-personal")
     public String updatePersonalArea(
         Authentication authentication,
@@ -59,6 +71,9 @@ public class ControladorAreaPersonal {
         return "redirect:/area-personal";
     }
 
+    /**
+     * Lista pedidos del usuario.
+     */
     @GetMapping("/mis-pedidos")
     public String myOrders(Authentication authentication, Model model) {
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
@@ -73,6 +88,9 @@ public class ControladorAreaPersonal {
         return "redirect:/copisteria/pedido";
     }
 
+    /**
+     * Página admin (redirigido desde seguridad).
+     */
     @GetMapping("/admin")
     public String admin(Authentication authentication, Model model) {
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());

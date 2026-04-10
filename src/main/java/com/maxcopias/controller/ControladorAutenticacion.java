@@ -1,5 +1,8 @@
 package com.maxcopias.controller;
 
+/**
+ * Controlador de login y registro de usuarios.
+ */
 import com.maxcopias.dto.FormularioRegistro;
 import com.maxcopias.model.Rol;
 import com.maxcopias.service.ExcepcionRegistroUsuario;
@@ -25,11 +28,17 @@ public class ControladorAutenticacion {
     private final ServicioUsuario userService;
     private final ServicioCorreoBienvenida welcomeEmailService;
 
+    /**
+     * Inyecta servicios de usuario y email bienvenida.
+     */
     public ControladorAutenticacion(ServicioUsuario userService, ServicioCorreoBienvenida welcomeEmailService) {
         this.userService = userService;
         this.welcomeEmailService = welcomeEmailService;
     }
 
+    /**
+     * Muestra formulario de registro.
+     */
     @GetMapping("/register")
     public String showRegister(Model model, Authentication authentication) {
         if (isAuthenticated(authentication)) {
@@ -43,6 +52,9 @@ public class ControladorAutenticacion {
         return "autenticacion/registro";
     }
 
+    /**
+     * Procesa registro de nuevo usuario + envía email bienvenida.
+     */
     @PostMapping("/register")
     public String register(
         @Valid @ModelAttribute("registerForm") FormularioRegistro registerForm,

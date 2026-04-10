@@ -1,5 +1,8 @@
 package com.maxcopias.controller;
 
+/**
+ * Controlador principal de servicios de copistería (formularios, precios, pedidos).
+ */
 import com.maxcopias.config.PropiedadesMaxcopias;
 import com.maxcopias.dto.FormularioPedidoCopisteria;
 import com.maxcopias.dto.RespuestaVistaPreviaPrecioCopisteria;
@@ -48,6 +51,9 @@ public class ControladorCopisteria {
     private final PropiedadesMaxcopias properties;
     private final ServicioUsuario userService;
 
+    /**
+     * Inyecta servicios de copistería, precios, archivos, propiedades y usuarios.
+     */
     public ControladorCopisteria(
         ServicioPedidoCopisteria orderService,
         ServicioPrecioCopisteria pricingService,

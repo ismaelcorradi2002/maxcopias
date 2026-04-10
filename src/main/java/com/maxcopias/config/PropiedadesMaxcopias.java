@@ -1,5 +1,8 @@
 package com.maxcopias.config;
 
+/**
+ * Propiedades de configuración de la app desde application.properties (prefijo maxcopias.*).
+ */
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -69,7 +72,11 @@ public class PropiedadesMaxcopias {
         this.mail = mail;
     }
 
+    /**
+     * Configuración de emails (maxcopias.mail.*).
+     */
     public static class Mail {
+        // Configuración emails de bienvenida y soporte
         private boolean welcomeEnabled = false;
         private String fromAddress = "no-reply@maxcopias.local";
         private String fromName = "Maxcopias";
