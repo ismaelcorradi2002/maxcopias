@@ -1,0 +1,196 @@
+/* Tienda Maxcopias - Títulos perfectamente centrados responsive */
+#ofertas .section-heading, 
+#productos-title {
+  text-align: center !important;
+  margin-bottom: 3rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#ofertas .section-kicker,
+#productos-title .section-kicker {
+  display: block;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  width: fit-content;
+}
+
+#ofertas .section-heading h2,
+#productos-title h2 {
+  margin: 0;
+  text-align: center !important;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* Container principal centrado */
+#ofertas .container,
+#productos .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Responsive perfecto */
+@media (max-width: 1200px) {
+  #ofertas .section-heading h2,
+  #productos-title h2 {
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  #ofertas .section-heading,
+  #productos-title {
+    padding: 0 1rem;
+  }
+  
+  #ofertas .section-heading h2,
+  #productos-title h2 {
+    font-size: 1.8rem;
+    max-width: 100%;
+  }
+}
+
+#ofertas {
+  padding: 4rem 0;
+  background: #f8f9fa;
+}
+
+#ofertas .carousel-inner {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.carousel-item {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-overlay {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  background: rgba(255,255,255,0.95);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+}
+
+.carousel-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.carousel-indicator.active {
+  background: rgba(255,255,255,0.8);
+}
+
+#productos {
+  padding: 4rem 0;
+}
+
+.section-tabs {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-tab {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  margin: 0 0.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.section-tab[data-category="escolar"] { background: #3498db; }
+.section-tab[data-category="oficina"] { background: #e74c3c; }
+.section-tab[data-category="arte"] { background: #9b59b6; }
+.section-tab[data-category="organizacion"] { background: #f39c12; }
+.section-tab[data-category="tecnologia"] { background: #2ecc71; }
+
+.section-tab.active,
+.section-tab:hover {
+  background: #2c3e50 !important;
+  transform: scale(1.05);
+}
+
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.mini-service-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.mini-service-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.mini-service-card > div {
+  padding: 1.5rem;
+}
+
+.precio-tag {
+  color: #27ae60;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.hero-actions a[href="#productos"] {
+  margin-left: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section-tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .section-tab {
+    margin: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
