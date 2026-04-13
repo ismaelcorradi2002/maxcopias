@@ -1,171 +1,484 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("[data-copisteria-wizard]");
     const fileInput = document.querySelector("[data-file-input]");
     const fileList = document.querySelector("[data-file-list]");
     const fileHint = document.querySelector("[data-file-hint]");
-    const jobTypeSelect = document.querySelector("[data-job-type-select]");
-    const helperCard = document.querySelector("[data-job-type-helper]");
-    const helperLabel = document.querySelector("[data-job-type-label]");
-    const helperDescription = document.querySelector("[data-job-type-description]");
-    const uploadTitle = document.querySelector("[data-upload-dropzone-title]");
-    const uploadDescription = document.querySelector("[data-upload-dropzone-description]");
-    const printConfigSections = document.querySelectorAll("[data-print-config-section], [data-print-config-item]");
+    const filesError = document.querySelector("[data-files-error]");
     const priceEstimator = document.querySelector("[data-price-estimator]");
 
-    if (jobTypeSelect && helperCard && helperLabel && helperDescription && uploadTitle && uploadDescription) {
-        initTipoTrabajoBehavior(jobTypeSelect, helperCard, helperLabel, helperDescription, uploadTitle, uploadDescription, printConfigSections);
+    if (!form || !priceEstimator || !fileInput || !fileList || !fileHint) {
+        return;
     }
 
-    if (priceEstimator && jobTypeSelect && fileInput && fileList && fileHint) {
-        initPriceEstimator({
-            jobTypeSelect: jobTypeSelect,
-            fileInput: fileInput,
-            fileList: fileList,
-            fileHint: fileHint,
-            priceEstimator: priceEstimator
-        });
-    }
+    const summary = createSummaryController(form, fileInput);
+    const pricePreview = createPricePreviewController(form, priceEstimator, fileInput, fileList, fileHint);
+    const wizard = createWizardController(form, fileInput, fileHint, filesError);
+
+    wizard.onChange(function () {
+        pricePreview.updateEstimate();
+        summary.update(pricePreview.getState());
+    });
+
+    pricePreview.onChange(function () {
+        summary.update(pricePreview.getState());
+    });
+
+    pricePreview.initialize();
+    summary.update(pricePreview.getState());
 });
 
-function initTipoTrabajoBehavior(select, helperCard, helperLabel, helperDescription, uploadTitle, uploadDescription, printConfigSections) {
-    const defaultLabel = helperLabel.textContent;
-    const defaultDescription = helperDescription.textContent;
-    const defaultUploadTitle = uploadTitle.textContent;
-    const defaultUploadDescription = uploadDescription.textContent;
+function createWizardController(form, fileInput, fileHint, filesError) {
+    const stepElements = Array.from(form.querySelectorAll("[data-step-id]"));
+    const progressItems = Array.from(document.querySelectorAll("[data-progress-step]"));
+    const nextButtons = Array.from(form.querySelectorAll("[data-step-next]"));
+    const prevButtons = Array.from(form.querySelectorAll("[data-step-prev]"));
+    const copiesInput = form.querySelector("#copies");
+    const listeners = [];
+    let currentIndex = 0;
 
-    updateTipoTrabajoState();
-    select.addEventListener("change", updateTipoTrabajoState);
+    function getSelectedValue(name) {
+        const checked = form.querySelector("input[name='" + name + "']:checked");
+        return checked ? checked.value : "";
+    }
 
-    function updateTipoTrabajoState() {
-        const selectedOption = select.options[select.selectedIndex];
-        const hasSelectedOption = Boolean(selectedOption && selectedOption.value);
-        const requiresPrintConfiguration = hasSelectedOption && selectedOption.dataset.requiresPrint === "true";
+    function getSequence() {
+        const jobType = getSelectedValue("jobType");
+        if (jobType === "IMPRESION" || jobType === "FOTOCOPIAS") {
+            return ["jobType", "colorMode", "paperSize", "copies", "printSide", "paperType", "bindingType", "extras", "files", "review"];
+        }
 
-        helperCard.classList.toggle("is-accent", hasSelectedOption);
-        helperLabel.textContent = hasSelectedOption ? selectedOption.dataset.uploadLabel : defaultLabel;
-        helperDescription.textContent = hasSelectedOption ? selectedOption.dataset.uploadDescription : defaultDescription;
-        uploadTitle.textContent = hasSelectedOption ? selectedOption.dataset.uploadLabel : defaultUploadTitle;
-        uploadDescription.textContent = hasSelectedOption ? selectedOption.dataset.uploadDescription : defaultUploadDescription;
+        return ["jobType", "extras", "files", "review"];
+    }
 
-        printConfigSections.forEach(function (section) {
-            section.hidden = !requiresPrintConfiguration;
+    function getCurrentSequence() {
+        return getSequence();
+    }
 
-            section.querySelectorAll("input, select, textarea").forEach(function (field) {
-                field.disabled = !requiresPrintConfiguration;
-            });
+    function getCurrentStepId() {
+        const sequence = getCurrentSequence();
+        return sequence[currentIndex] || "jobType";
+    }
+
+    function findStepIndex(stepId) {
+        return getCurrentSequence().indexOf(stepId);
+    }
+
+    function getStepElement(stepId) {
+        return stepElements.find(function (element) {
+            return element.dataset.stepId === stepId;
         });
     }
+
+    function validateFilesStep() {
+        const hasFiles = Boolean(fileInput.files && fileInput.files.length);
+        const isValid = hasFiles && !fileHint.classList.contains("is-error");
+
+        if (filesError) {
+            filesError.hidden = isValid;
+        }
+
+        return isValid;
+    }
+
+    function validateStep(stepId) {
+        switch (stepId) {
+            case "jobType":
+                return Boolean(getSelectedValue("jobType"));
+            case "colorMode":
+                return Boolean(getSelectedValue("colorMode"));
+            case "paperSize":
+                return Boolean(getSelectedValue("paperSize"));
+            case "copies":
+                return Boolean(copiesInput && Number.parseInt(copiesInput.value, 10) > 0);
+            case "printSide":
+                return Boolean(getSelectedValue("printSide"));
+            case "paperType":
+                return Boolean(getSelectedValue("paperType"));
+            case "bindingType":
+                return Boolean(getSelectedValue("bindingType"));
+            case "files":
+                return validateFilesStep();
+            default:
+                return true;
+        }
+    }
+
+    function canNavigateTo(stepId) {
+        const targetIndex = findStepIndex(stepId);
+
+        if (targetIndex === -1) {
+            return false;
+        }
+
+        if (targetIndex <= currentIndex) {
+            return true;
+        }
+
+        const sequence = getCurrentSequence();
+        for (let index = 0; index < targetIndex; index += 1) {
+            if (!validateStep(sequence[index])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function updateProgress() {
+        const sequence = getCurrentSequence();
+
+        progressItems.forEach(function (item) {
+            const stepId = item.dataset.progressStep;
+            const stepIndex = sequence.indexOf(stepId);
+            const isVisible = stepIndex !== -1;
+
+            item.hidden = !isVisible;
+            item.disabled = !isVisible;
+            item.classList.toggle("is-active", isVisible && stepIndex === currentIndex);
+            item.classList.toggle("is-completed", isVisible && stepIndex < currentIndex);
+            item.classList.toggle("is-clickable", isVisible && canNavigateTo(stepId));
+        });
+    }
+
+    function updateSteps() {
+        const currentStepId = getCurrentStepId();
+        const currentSequence = getCurrentSequence();
+
+        stepElements.forEach(function (element) {
+            const stepId = element.dataset.stepId;
+            const isVisibleInFlow = currentSequence.includes(stepId);
+            const isCurrent = currentStepId === stepId;
+
+            element.hidden = !isVisibleInFlow;
+            element.classList.toggle("is-active", isCurrent && isVisibleInFlow);
+            element.classList.toggle("is-complete", isVisibleInFlow && currentSequence.indexOf(stepId) < currentIndex);
+        });
+
+        updateProgress();
+    }
+
+    function focusCurrentStepField(stepId) {
+        const stepElement = getStepElement(stepId);
+        if (!stepElement) {
+            return;
+        }
+
+        const candidate = stepElement.querySelector("input:not([type='hidden']), textarea, select, button");
+        if (candidate) {
+            candidate.focus();
+        }
+    }
+
+    function notify() {
+        listeners.forEach(function (listener) {
+            listener();
+        });
+    }
+
+    function goToStep(stepId) {
+        if (!canNavigateTo(stepId)) {
+            focusCurrentStepField(getCurrentStepId());
+            return;
+        }
+
+        const stepIndex = findStepIndex(stepId);
+        if (stepIndex === -1) {
+            return;
+        }
+
+        currentIndex = stepIndex;
+        updateSteps();
+        focusCurrentStepField(stepId);
+        notify();
+    }
+
+    function goNext() {
+        const currentStepId = getCurrentStepId();
+
+        if (!validateStep(currentStepId)) {
+            focusCurrentStepField(currentStepId);
+            return;
+        }
+
+        const sequence = getCurrentSequence();
+        if (currentIndex < sequence.length - 1) {
+            currentIndex += 1;
+            updateSteps();
+            focusCurrentStepField(getCurrentStepId());
+            notify();
+        }
+    }
+
+    function goPrev() {
+        if (currentIndex > 0) {
+            currentIndex -= 1;
+            updateSteps();
+            focusCurrentStepField(getCurrentStepId());
+            notify();
+        }
+    }
+
+    function normalizeSequencePosition() {
+        const sequence = getCurrentSequence();
+
+        if (currentIndex > sequence.length - 1) {
+            currentIndex = sequence.length - 1;
+        }
+
+        if (currentIndex < 0) {
+            currentIndex = 0;
+        }
+
+        updateSteps();
+        notify();
+    }
+
+    function attachEvents() {
+        nextButtons.forEach(function (button) {
+            button.addEventListener("click", goNext);
+        });
+
+        prevButtons.forEach(function (button) {
+            button.addEventListener("click", goPrev);
+        });
+
+        progressItems.forEach(function (item) {
+            item.addEventListener("click", function () {
+                goToStep(item.dataset.progressStep);
+            });
+        });
+
+        form.querySelectorAll("input[name='jobType'], input[name='colorMode'], input[name='paperSize'], input[name='printSide'], input[name='paperType'], input[name='bindingType']")
+            .forEach(function (input) {
+                input.addEventListener("change", function () {
+                    if (input.name === "jobType") {
+                        normalizeSequencePosition();
+                    } else {
+                        updateSteps();
+                        notify();
+                    }
+                });
+            });
+
+        form.querySelectorAll("input[name='plastificado'], input[name='urgente'], input[name='escaneado']")
+            .forEach(function (input) {
+                input.addEventListener("change", function () {
+                    updateSteps();
+                    notify();
+                });
+            });
+
+        if (copiesInput) {
+            copiesInput.addEventListener("input", function () {
+                updateSteps();
+                notify();
+            });
+            copiesInput.addEventListener("change", function () {
+                updateSteps();
+                notify();
+            });
+        }
+
+        const observations = form.querySelector("#observations");
+        if (observations) {
+            observations.addEventListener("input", notify);
+            observations.addEventListener("change", notify);
+        }
+
+        fileInput.addEventListener("change", function () {
+            if (filesError) {
+                filesError.hidden = true;
+            }
+            updateSteps();
+            notify();
+        });
+    }
+
+    attachEvents();
+    normalizeSequencePosition();
+
+    return {
+        onChange: function (listener) {
+            listeners.push(listener);
+        }
+    };
 }
 
-function initPriceEstimator(options) {
-    const jobTypeSelect = options.jobTypeSelect;
-    const fileInput = options.fileInput;
-    const fileList = options.fileList;
-    const fileHint = options.fileHint;
-    const priceEstimator = options.priceEstimator;
+function createSummaryController(form, fileInput) {
+    const nodes = {
+        jobType: document.querySelector("[data-summary-job-type]"),
+        colorMode: document.querySelector("[data-summary-color-mode]"),
+        paperSize: document.querySelector("[data-summary-paper-size]"),
+        copies: document.querySelector("[data-summary-copies]"),
+        printSide: document.querySelector("[data-summary-print-side]"),
+        paperType: document.querySelector("[data-summary-paper-type]"),
+        bindingType: document.querySelector("[data-summary-binding-type]"),
+        extras: document.querySelector("[data-summary-extras]"),
+        files: document.querySelector("[data-summary-files]"),
+        pages: document.querySelector("[data-summary-pages]"),
+        total: document.querySelector("[data-summary-total]"),
+        note: document.querySelector("[data-summary-note]"),
+        priceLines: document.querySelector("[data-summary-price-lines]")
+    };
+
+    function labelForRadio(name) {
+        const checked = form.querySelector("input[name='" + name + "']:checked");
+        if (!checked) {
+            return "No aplica";
+        }
+
+        const textNode = checked.closest("label")?.querySelector("strong");
+        return textNode ? textNode.textContent.trim() : checked.value;
+    }
+
+    function selectedJobType() {
+        const checked = form.querySelector("input[name='jobType']:checked");
+        return checked ? checked.value : "";
+    }
+
+    function getSelectedExtras() {
+        const extras = [];
+
+        if (form.querySelector("input[name='plastificado']")?.checked) {
+            extras.push("Plastificado");
+        }
+        if (form.querySelector("input[name='urgente']")?.checked) {
+            extras.push("Urgente");
+        }
+        if (form.querySelector("input[name='escaneado']")?.checked) {
+            extras.push("Escaneado");
+        }
+
+        return extras;
+    }
+
+    function selectedFilesLabel() {
+        const files = Array.from(fileInput.files || []);
+
+        if (!files.length) {
+            return "Sin archivo";
+        }
+
+        if (files.length === 1) {
+            return files[0].name;
+        }
+
+        return files[0].name + " y " + (files.length - 1) + " archivo(s) mas";
+    }
+
+    function update(state) {
+        const jobType = selectedJobType();
+        const isPrintFlow = jobType === "IMPRESION" || jobType === "FOTOCOPIAS";
+        const copiesValue = form.querySelector("#copies")?.value || "";
+        const extras = getSelectedExtras();
+
+        nodes.jobType.textContent = labelForRadio("jobType") === "No aplica" ? "Sin seleccionar" : labelForRadio("jobType");
+        nodes.colorMode.textContent = isPrintFlow ? labelForRadio("colorMode") : "No aplica";
+        nodes.paperSize.textContent = isPrintFlow ? labelForRadio("paperSize") : "No aplica";
+        nodes.copies.textContent = isPrintFlow ? (copiesValue || "Pendiente") : "No aplica";
+        nodes.printSide.textContent = isPrintFlow ? labelForRadio("printSide") : "No aplica";
+        nodes.paperType.textContent = isPrintFlow ? labelForRadio("paperType") : "No aplica";
+        nodes.bindingType.textContent = isPrintFlow ? labelForRadio("bindingType") : "No aplica";
+        nodes.extras.textContent = extras.length ? extras.join(", ") : "Sin extras";
+        nodes.files.textContent = selectedFilesLabel();
+        nodes.pages.textContent = state.pageCountLabel;
+        nodes.total.textContent = state.formattedTotal;
+        nodes.note.textContent = state.note;
+        renderPriceLines(nodes.priceLines, state.lines);
+    }
+
+    return {
+        update: update
+    };
+}
+
+function createPricePreviewController(form, priceEstimator, fileInput, fileList, fileHint) {
     const previewUrl = priceEstimator.dataset.previewUrl;
     const totalElement = priceEstimator.querySelector("[data-price-total]");
     const pagesElement = priceEstimator.querySelector("[data-price-pages]");
     const breakdownElement = priceEstimator.querySelector("[data-price-breakdown]");
     const noteElement = priceEstimator.querySelector("[data-price-note]");
-    const copiesInput = document.querySelector("#copies");
-    const observationsInput = document.querySelector("#observations");
-    const colorInputs = document.querySelectorAll("input[name='colorMode']");
-    const printSideInputs = document.querySelectorAll("input[name='printSide']");
-    const paperSizeInputs = document.querySelectorAll("input[name='paperSize']");
+    const linesElement = priceEstimator.querySelector("[data-price-lines]");
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const listeners = [];
     const state = {
         fileCount: 0,
         pageCount: 0,
-        pending: false,
-        requestId: 0
+        requestId: 0,
+        lines: [],
+        breakdown: "Selecciona un servicio para ver el precio orientativo del pedido.",
+        note: "El importe se calcula automaticamente al combinar configuracion, archivos y extras.",
+        formattedTotal: formatEuro(0)
     };
-
-    if (!totalElement || !pagesElement || !breakdownElement || !noteElement) {
-        return;
-    }
 
     fileHint.dataset.defaultText = fileHint.textContent;
 
-    const watchedFields = [
-        jobTypeSelect,
-        copiesInput,
-        observationsInput,
-        ...Array.from(colorInputs),
-        ...Array.from(printSideInputs),
-        ...Array.from(paperSizeInputs)
-    ].filter(Boolean);
-
-    watchedFields.forEach(function (field) {
-        field.addEventListener("change", updateEstimate);
-        field.addEventListener("input", updateEstimate);
-    });
-
-    fileInput.addEventListener("change", function () {
-        const selection = renderSelectedFiles(fileInput, fileList, fileHint);
-
-        if (!selection.valid) {
-            state.fileCount = 0;
-            state.pageCount = 0;
-            state.pending = false;
-            updateEstimate(selection.message);
-            return;
-        }
-
-        state.fileCount = selection.fileCount;
-        state.pageCount = selection.fileCount;
+    function initialize() {
+        bindEvents();
         updateEstimate();
+    }
 
-        if (!selection.fileCount) {
-            return;
-        }
+    function bindEvents() {
+        fileInput.addEventListener("change", function () {
+            const selection = renderSelectedFiles(fileInput, fileList, fileHint);
 
-        state.pending = true;
-        updateEstimate("Calculando paginas PDF y ajustando el precio orientativo...");
-        requestPreview();
-    });
+            if (!selection.valid) {
+                state.fileCount = 0;
+                state.pageCount = 0;
+                updateEstimate(selection.message);
+                return;
+            }
 
-    updateEstimate();
+            state.fileCount = selection.fileCount;
+            state.pageCount = selection.fileCount;
+            updateEstimate();
 
-    function updateEstimate(customNote) {
-        const jobType = jobTypeSelect.value;
-
-        if (!jobType) {
-            totalElement.textContent = "0,00 â‚¬";
-            pagesElement.textContent = pageCountLabel(state.pageCount);
-            breakdownElement.textContent = "Selecciona un servicio para ver el precio orientativo del pedido.";
-            noteElement.textContent = customNote || "El importe se calcula automaticamente al combinar archivos y configuracion.";
-            return;
-        }
-
-        const estimate = calculateEstimate({
-            jobType: jobType,
-            fileCount: state.fileCount,
-            pageCount: state.pageCount,
-            copies: normalizeCopies(copiesInput && copiesInput.value),
-            colorMode: getCheckedValue(colorInputs) || "BLACK_AND_WHITE",
-            printSide: getCheckedValue(printSideInputs) || "ONE_SIDED",
-            paperSize: getCheckedValue(paperSizeInputs) || "A4",
-            urgentRequested: Boolean(observationsInput && /(urgente|express)/i.test(observationsInput.value || ""))
+            if (selection.fileCount) {
+                requestPreview();
+            }
         });
 
-        totalElement.textContent = formatEuro(estimate.total);
-        pagesElement.textContent = pageCountLabel(state.pageCount);
-        breakdownElement.textContent = estimate.breakdown;
-        noteElement.textContent = customNote || estimate.note;
+        form.querySelectorAll("input, textarea, select").forEach(function (field) {
+            if (field === fileInput) {
+                return;
+            }
+
+            field.addEventListener("change", function () {
+                updateEstimate();
+            });
+
+            if (field.tagName === "TEXTAREA" || field.type === "number") {
+                field.addEventListener("input", function () {
+                    updateEstimate();
+                });
+            }
+        });
     }
 
     function requestPreview() {
         state.requestId += 1;
         const currentRequestId = state.requestId;
-
         const formData = new FormData();
-        appendIfValue(formData, "jobType", jobTypeSelect.value);
-        appendIfValue(formData, "copies", copiesInput ? copiesInput.value : "");
-        appendIfValue(formData, "colorMode", getCheckedValue(colorInputs));
-        appendIfValue(formData, "printSide", getCheckedValue(printSideInputs));
-        appendIfValue(formData, "paperSize", getCheckedValue(paperSizeInputs));
-        appendIfValue(formData, "observations", observationsInput ? observationsInput.value : "");
+
+        appendIfValue(formData, "jobType", getCheckedValue(form, "jobType"));
+        appendIfValue(formData, "colorMode", getCheckedValue(form, "colorMode"));
+        appendIfValue(formData, "paperSize", getCheckedValue(form, "paperSize"));
+        appendIfValue(formData, "copies", form.querySelector("#copies")?.value || "");
+        appendIfValue(formData, "printSide", getCheckedValue(form, "printSide"));
+        appendIfValue(formData, "paperType", getCheckedValue(form, "paperType"));
+        appendIfValue(formData, "bindingType", getCheckedValue(form, "bindingType"));
+        appendIfValue(formData, "observations", form.querySelector("#observations")?.value || "");
+
+        if (form.querySelector("input[name='plastificado']")?.checked) {
+            formData.append("plastificado", "true");
+        }
+        if (form.querySelector("input[name='urgente']")?.checked) {
+            formData.append("urgente", "true");
+        }
+        if (form.querySelector("input[name='escaneado']")?.checked) {
+            formData.append("escaneado", "true");
+        }
 
         Array.from(fileInput.files || []).forEach(function (file) {
             formData.append("files", file);
@@ -197,7 +510,6 @@ function initPriceEstimator(options) {
 
                 state.fileCount = data.fileCount || 0;
                 state.pageCount = data.pageCount || 0;
-                state.pending = false;
                 fileHint.textContent = buildDetectedFileHint(fileInput.files || [], state.pageCount);
                 updateEstimate(data.note);
             })
@@ -206,11 +518,246 @@ function initPriceEstimator(options) {
                     return;
                 }
 
-                state.pending = false;
                 state.pageCount = 0;
                 updateEstimate(error.message);
             });
     }
+
+    function updateEstimate(customNote) {
+        const estimate = calculateEstimate({
+            jobType: getCheckedValue(form, "jobType"),
+            colorMode: getCheckedValue(form, "colorMode"),
+            paperSize: getCheckedValue(form, "paperSize"),
+            copies: form.querySelector("#copies")?.value || "",
+            printSide: getCheckedValue(form, "printSide"),
+            paperType: getCheckedValue(form, "paperType"),
+            bindingType: getCheckedValue(form, "bindingType"),
+            plastificado: Boolean(form.querySelector("input[name='plastificado']")?.checked),
+            urgente: Boolean(form.querySelector("input[name='urgente']")?.checked),
+            escaneado: Boolean(form.querySelector("input[name='escaneado']")?.checked),
+            fileCount: state.fileCount,
+            pageCount: state.pageCount
+        });
+
+        state.lines = estimate.lines;
+        state.breakdown = estimate.breakdown;
+        state.note = customNote || estimate.note;
+        state.formattedTotal = formatEuro(estimate.total);
+
+        totalElement.textContent = state.formattedTotal;
+        pagesElement.textContent = pageCountLabel(state.pageCount);
+        breakdownElement.textContent = estimate.breakdown;
+        noteElement.textContent = state.note;
+        renderPriceLines(linesElement, estimate.lines);
+        notify();
+    }
+
+    function notify() {
+        listeners.forEach(function (listener) {
+            listener();
+        });
+    }
+
+    return {
+        initialize: initialize,
+        onChange: function (listener) {
+            listeners.push(listener);
+        },
+        getState: function () {
+            return {
+                fileCount: state.fileCount,
+                pageCount: state.pageCount,
+                pageCountLabel: pageCountLabel(state.pageCount),
+                lines: state.lines,
+                breakdown: state.breakdown,
+                note: state.note,
+                formattedTotal: state.formattedTotal
+            };
+        },
+        updateEstimate: updateEstimate
+    };
+}
+
+function calculateEstimate(input) {
+    if (!input.jobType) {
+        return {
+            total: 0,
+            breakdown: "Selecciona un servicio para ver el precio orientativo del pedido.",
+            note: "El importe se calcula automaticamente al combinar configuracion, archivos y extras.",
+            lines: []
+        };
+    }
+
+    switch (input.jobType) {
+        case "IMPRESION":
+            return calculatePrintLikeEstimate(input, 0.06, 0.45, "impresion");
+        case "FOTOCOPIAS":
+            return calculatePrintLikeEstimate(input, 0.05, 0.18, "fotocopias");
+        case "PUBLICIDAD_IMPRENTA":
+            return calculateCampaignEstimate(input);
+        case "DISENO_GRAFICO":
+            return calculateQuoteStyleEstimate(input, 25, "diseno grafico");
+        case "OTRO":
+            return calculateQuoteStyleEstimate(input, 12, "encargo especial");
+        default:
+            return calculateQuoteStyleEstimate(input, 12, "encargo especial");
+    }
+}
+
+function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
+    const copies = normalizeCopies(input.copies);
+    const pages = Math.max(input.pageCount, 1);
+    const colorMode = input.colorMode || "BLACK_AND_WHITE";
+    const paperSize = input.paperSize || "A4";
+    const printSide = input.printSide || "ONE_SIDED";
+    const paperType = input.paperType || "NORMAL";
+    const bindingType = input.bindingType || "SIN_ENCUADERNACION";
+    const baseUnit = colorMode === "COLOR" ? colorUnitPrice : bwUnitPrice;
+    const basePrint = roundPrice(baseUnit * pages * copies);
+    const sizeExtra = roundPrice(basePrint * (sizeMultiplier(paperSize) - 1));
+    const withSize = basePrint + sizeExtra;
+    const sideExtra = roundPrice(withSize * (sideMultiplier(printSide) - 1));
+    const withSides = withSize + sideExtra;
+    const paperExtra = roundPrice(withSides * (paperTypeMultiplier(paperType) - 1));
+    const plastificadoExtra = input.plastificado ? roundPrice(1.8 * Math.max(input.fileCount, 1)) : 0;
+    const urgenteExtra = input.urgente ? 2 : 0;
+    const escaneadoExtra = input.escaneado ? roundPrice(0.5 * pages) : 0;
+    const bindingExtra = bindingPrice(bindingType);
+
+    const lines = [
+        {
+            concept: (input.jobType === "FOTOCOPIAS" ? "Fotocopias " : "Impresion ") + colorLabel(colorMode),
+            detail: pages + " pagina(s) x " + copies + " copia(s)",
+            amount: basePrint
+        }
+    ];
+
+    addLineIfPositive(lines, "Formato " + paperSize, "Ajuste por tamano del papel", sizeExtra);
+    addLineIfPositive(lines, printSideLabel(printSide), "Configuracion de caras del pedido", sideExtra);
+    addLineIfPositive(lines, "Papel " + paperTypeLabel(paperType), "Acabado seleccionado", paperExtra);
+    addLineIfPositive(lines, "Encuadernacion " + bindingLabel(bindingType), "Acabado adicional", bindingExtra);
+    addLineIfPositive(lines, "Plastificado", "Proteccion del documento", plastificadoExtra);
+    addLineIfPositive(lines, "Servicio urgente", "Prioridad de preparacion", urgenteExtra);
+    addLineIfPositive(lines, "Escaneado", pages + " pagina(s) a digitalizar", escaneadoExtra);
+
+    const total = roundPrice(lines.reduce(function (accumulator, line) {
+        return accumulator + line.amount;
+    }, 0));
+
+    const parts = [
+        pageReference(input.pageCount, input.fileCount) + " x " + copies + " copia(s)",
+        colorLabel(colorMode),
+        paperSize,
+        printSideLabel(printSide),
+        paperTypeLabel(paperType)
+    ];
+
+    if (bindingType !== "SIN_ENCUADERNACION") {
+        parts.push(bindingLabel(bindingType));
+    }
+
+    appendExtras(parts, input);
+
+    return {
+        total: total,
+        breakdown: parts.join(" • "),
+        note: buildNote(input.fileCount, label),
+        lines: lines
+    };
+}
+
+function calculateCampaignEstimate(input) {
+    const copies = normalizeCopies(input.copies);
+    const pages = Math.max(input.pageCount, 1);
+    const colorMode = input.colorMode || "COLOR";
+    const paperSize = input.paperSize || "A4";
+    const paperType = input.paperType || "NORMAL";
+    const production = roundPrice(
+        (colorMode === "COLOR" ? 0.22 : 0.12)
+        * campaignSizeMultiplier(paperSize)
+        * paperTypeMultiplier(paperType)
+        * pages
+        * copies
+    );
+    const plastificadoExtra = input.plastificado ? roundPrice(1.8 * Math.max(input.fileCount, 1)) : 0;
+    const urgenteExtra = input.urgente ? 2 : 0;
+    const escaneadoExtra = input.escaneado ? roundPrice(0.5 * pages) : 0;
+
+    const lines = [
+        {
+            concept: "Base de publicidad e imprenta",
+            detail: "Preparacion del encargo",
+            amount: 19
+        },
+        {
+            concept: "Produccion " + colorLabel(colorMode),
+            detail: pages + " pagina(s) x " + copies + " unidad(es) • " + paperSize + " • " + paperTypeLabel(paperType),
+            amount: production
+        }
+    ];
+
+    addLineIfPositive(lines, "Plastificado", "Proteccion del documento", plastificadoExtra);
+    addLineIfPositive(lines, "Servicio urgente", "Prioridad de preparacion", urgenteExtra);
+    addLineIfPositive(lines, "Escaneado", pages + " pagina(s) a digitalizar", escaneadoExtra);
+
+    const total = roundPrice(lines.reduce(function (accumulator, line) {
+        return accumulator + line.amount;
+    }, 0));
+
+    const parts = [
+        "Base de imprenta",
+        pageReference(input.pageCount, input.fileCount) + " x " + copies + " unidad(es)",
+        colorLabel(colorMode),
+        paperSize,
+        paperTypeLabel(paperType)
+    ];
+
+    appendExtras(parts, input);
+
+    return {
+        total: total,
+        breakdown: parts.join(" • "),
+        note: buildNote(input.fileCount, "publicidad e imprenta"),
+        lines: lines
+    };
+}
+
+function calculateQuoteStyleEstimate(input, basePrice, label) {
+    const additionalFiles = roundPrice((Math.max(input.fileCount, 1) - 1) * 2.5);
+    const plastificadoExtra = input.plastificado ? roundPrice(1.8 * Math.max(input.fileCount, 1)) : 0;
+    const urgenteExtra = input.urgente ? 2 : 0;
+    const escaneadoExtra = input.escaneado ? roundPrice(0.5 * Math.max(input.pageCount, 1)) : 0;
+
+    const lines = [
+        {
+            concept: "Base de " + label,
+            detail: fileReference(input.fileCount),
+            amount: basePrice
+        }
+    ];
+
+    addLineIfPositive(lines, "Archivos adicionales", Math.max(input.fileCount - 1, 0) + " archivo(s)", additionalFiles);
+    addLineIfPositive(lines, "Plastificado", "Proteccion del documento", plastificadoExtra);
+    addLineIfPositive(lines, "Servicio urgente", "Prioridad de preparacion", urgenteExtra);
+    addLineIfPositive(lines, "Escaneado", Math.max(input.pageCount, 1) + " pagina(s) a digitalizar", escaneadoExtra);
+
+    const total = roundPrice(lines.reduce(function (accumulator, line) {
+        return accumulator + line.amount;
+    }, 0));
+
+    const parts = [
+        "Base de " + label,
+        fileReference(input.fileCount)
+    ];
+
+    appendExtras(parts, input);
+
+    return {
+        total: total,
+        breakdown: parts.join(" • "),
+        note: buildNote(input.fileCount, label),
+        lines: lines
+    };
 }
 
 function renderSelectedFiles(fileInput, fileList, fileHint) {
@@ -220,10 +767,7 @@ function renderSelectedFiles(fileInput, fileList, fileHint) {
     if (!files.length) {
         fileHint.classList.remove("is-error");
         fileHint.textContent = fileHint.dataset.defaultText || fileHint.textContent;
-        return {
-            valid: true,
-            fileCount: 0
-        };
+        return { valid: true, fileCount: 0 };
     }
 
     const invalidFiles = files.filter(function (file) {
@@ -245,128 +789,138 @@ function renderSelectedFiles(fileInput, fileList, fileHint) {
     fileHint.textContent = buildDetectedFileHint(files, 0);
 
     files.forEach(function (file) {
-        const listItem = document.createElement("li");
+        const item = document.createElement("li");
+        const copy = document.createElement("div");
         const name = document.createElement("strong");
         const size = document.createElement("span");
 
         name.textContent = file.name;
         size.textContent = formatFileSize(file.size);
-
-        listItem.appendChild(name);
-        listItem.appendChild(size);
-        fileList.appendChild(listItem);
+        copy.appendChild(name);
+        copy.appendChild(size);
+        item.appendChild(copy);
+        fileList.appendChild(item);
     });
 
-    return {
-        valid: true,
-        fileCount: files.length
-    };
+    return { valid: true, fileCount: files.length };
 }
 
-function calculateEstimate(input) {
-    switch (input.jobType) {
-        case "IMPRESION":
-            return calculatePrintLikeEstimate(input, 0.06, 0.45, "impresion");
-        case "FOTOCOPIAS":
-            return calculatePrintLikeEstimate(input, 0.05, 0.18, "fotocopias");
-        case "PUBLICIDAD_IMPRENTA":
-            return calculateCampaignEstimate(input);
-        case "ENCUADERNACION":
-            return calculateSimpleEstimate(input, 3.5, 1.1, "Base de encuadernacion + acabado por archivo", "encuadernacion");
-        case "PLASTIFICADO":
-            return calculateSimpleEstimate(input, 1.8, 0.9, "Plastificado calculado por documento adjunto", "plastificado");
-        case "DISENO_GRAFICO":
-            return calculateSimpleEstimate(input, 25, 4.5, "Base de diseno + material o referencias adjuntas", "diseno grafico");
-        case "PERSONALIZACION":
-            return calculateSimpleEstimate(input, 9.9, 3.5, "Personalizacion orientativa segun unidades o artes adjuntas", "personalizacion");
-        case "SERVICIOS_ADICIONALES":
-            return calculateSimpleEstimate(input, 0.5, 0.75, "Servicio adicional calculado por documento o gestion", "servicios adicionales");
-        default:
-            return calculateSimpleEstimate(input, 12, 2.5, "Referencia base para encargos especiales", "encargo especial");
+function renderPriceLines(container, lines) {
+    if (!container) {
+        return;
     }
-}
 
-function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
-    const unitPrice = (input.colorMode === "COLOR" ? colorUnitPrice : bwUnitPrice)
-        * sizeMultiplier(input.paperSize)
-        * sideMultiplier(input.printSide);
-    const pages = Math.max(input.pageCount, 1);
-    const total = applyUrgentSupplement(unitPrice * pages * input.copies, input.urgentRequested);
-    const breakdown = pageReference(input.pageCount, input.fileCount)
-        + " x "
-        + input.copies
-        + " copia(s) â€¢ "
-        + colorLabel(input.colorMode)
-        + " â€¢ "
-        + input.paperSize
-        + " â€¢ "
-        + printSideLabel(input.printSide)
-        + (input.urgentRequested ? " + suplemento urgente" : "");
+    container.innerHTML = "";
 
-    return {
-        total: total,
-        breakdown: breakdown,
-        note: buildNote(input.fileCount, label)
-    };
-}
+    if (!lines || !lines.length) {
+        const item = document.createElement("li");
+        item.className = "price-line-empty";
+        item.textContent = "Completa la configuracion y sube el archivo para ver el desglose.";
+        container.appendChild(item);
+        return;
+    }
 
-function calculateCampaignEstimate(input) {
-    const unitPrice = (input.colorMode === "COLOR" ? 0.22 : 0.12)
-        * (input.paperSize === "A3" ? 1.4 : 1)
-        * (input.printSide === "DOUBLE_SIDED" ? 1.3 : 1);
-    const pages = Math.max(input.pageCount, 1);
-    const total = applyUrgentSupplement(19 + (unitPrice * pages * input.copies), input.urgentRequested);
-    const breakdown = "Base de imprenta + tirada estimada de "
-        + pageReference(input.pageCount, input.fileCount)
-        + " x "
-        + input.copies
-        + " unidad(es) â€¢ "
-        + colorLabel(input.colorMode)
-        + " â€¢ "
-        + input.paperSize
-        + (input.urgentRequested ? " + suplemento urgente" : "");
+    lines.forEach(function (line) {
+        const item = document.createElement("li");
+        const copy = document.createElement("div");
+        const concept = document.createElement("strong");
+        const detail = document.createElement("small");
+        const amount = document.createElement("span");
 
-    return {
-        total: total,
-        breakdown: breakdown,
-        note: buildNote(input.fileCount, "publicidad e imprenta")
-    };
-}
+        concept.textContent = line.concept;
+        detail.textContent = line.detail;
+        amount.textContent = formatEuro(line.amount);
 
-function calculateSimpleEstimate(input, basePrice, extraPerFile, breakdownPrefix, label) {
-    const pricedFiles = Math.max(input.fileCount, 1);
-    const total = applyUrgentSupplement(basePrice + (extraPerFile * (pricedFiles - 1)), input.urgentRequested);
-
-    return {
-        total: total,
-        breakdown: breakdownPrefix + " â€¢ " + fileReference(input.fileCount) + (input.urgentRequested ? " + suplemento urgente" : ""),
-        note: buildNote(input.fileCount, label)
-    };
-}
-
-function getCheckedValue(elements) {
-    const checked = Array.from(elements || []).find(function (element) {
-        return element.checked;
+        copy.appendChild(concept);
+        copy.appendChild(detail);
+        item.appendChild(copy);
+        item.appendChild(amount);
+        container.appendChild(item);
     });
+}
 
+function getCheckedValue(container, name) {
+    const checked = container.querySelector("input[name='" + name + "']:checked");
     return checked ? checked.value : "";
 }
 
 function normalizeCopies(value) {
-    const parsedValue = parseInt(value, 10);
-    return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : 1;
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
 }
 
 function sizeMultiplier(paperSize) {
-    return paperSize === "A3" ? 1.85 : 1;
+    switch (paperSize) {
+        case "A5":
+            return 0.72;
+        case "A3":
+            return 1.85;
+        default:
+            return 1;
+    }
 }
 
 function sideMultiplier(printSide) {
     return printSide === "DOUBLE_SIDED" ? 1.8 : 1;
 }
 
-function fileReference(fileCount) {
-    return fileCount > 0 ? fileCount + " archivo(s)" : "1 archivo de referencia";
+function paperTypeMultiplier(paperType) {
+    switch (paperType) {
+        case "SATINADO":
+            return 1.35;
+        case "CARTULINA":
+            return 1.65;
+        default:
+            return 1;
+    }
+}
+
+function campaignSizeMultiplier(paperSize) {
+    switch (paperSize) {
+        case "A5":
+            return 0.78;
+        case "A3":
+            return 1.4;
+        default:
+            return 1;
+    }
+}
+
+function bindingPrice(bindingType) {
+    switch (bindingType) {
+        case "ESPIRAL":
+            return 3.5;
+        case "TAPA_DURA":
+            return 7.5;
+        case "GRAPADO":
+            return 0.6;
+        default:
+            return 0;
+    }
+}
+
+function addLineIfPositive(lines, concept, detail, amount) {
+    if (!amount || amount <= 0) {
+        return;
+    }
+
+    lines.push({
+        concept: concept,
+        detail: detail,
+        amount: roundPrice(amount)
+    });
+}
+
+function appendExtras(parts, input) {
+    if (input.plastificado) {
+        parts.push("Plastificado");
+    }
+    if (input.urgente) {
+        parts.push("Urgente");
+    }
+    if (input.escaneado) {
+        parts.push("Escaneado");
+    }
 }
 
 function pageReference(pageCount, fileCount) {
@@ -377,6 +931,10 @@ function pageReference(pageCount, fileCount) {
     }
 
     return "1 pagina estimada base";
+}
+
+function fileReference(fileCount) {
+    return fileCount > 0 ? fileCount + " archivo(s)" : "1 archivo de referencia";
 }
 
 function pageCountLabel(pageCount) {
@@ -392,19 +950,43 @@ function buildNote(fileCount, label) {
         return "Precio orientativo calculado con el servicio, las paginas detectadas y la configuracion elegida. El importe final puede ajustarse al revisar acabados especiales.";
     }
 
-    return "Precio orientativo base para " + label + ". Sube tus archivos en PDF, JPG o PNG para afinar mejor el importe antes de guardar el pedido.";
+    return "Configura el pedido y sube tus archivos para afinar mejor el importe orientativo de " + label + ".";
 }
 
 function colorLabel(colorMode) {
-    return colorMode === "COLOR" ? "Color" : "Blanco y negro";
+    return colorMode === "COLOR" ? "color" : "blanco y negro";
 }
 
 function printSideLabel(printSide) {
     return printSide === "DOUBLE_SIDED" ? "Doble cara" : "Una cara";
 }
 
-function applyUrgentSupplement(total, urgentRequested) {
-    return urgentRequested ? total + 2 : total;
+function paperTypeLabel(paperType) {
+    switch (paperType) {
+        case "SATINADO":
+            return "Satinado";
+        case "CARTULINA":
+            return "Cartulina";
+        default:
+            return "Normal";
+    }
+}
+
+function bindingLabel(bindingType) {
+    switch (bindingType) {
+        case "ESPIRAL":
+            return "Espiral";
+        case "TAPA_DURA":
+            return "Tapa dura";
+        case "GRAPADO":
+            return "Grapado";
+        default:
+            return "Sin encuadernacion";
+    }
+}
+
+function roundPrice(amount) {
+    return Math.round((amount + Number.EPSILON) * 100) / 100;
 }
 
 function formatEuro(amount) {
@@ -456,4 +1038,3 @@ function appendIfValue(formData, name, value) {
         formData.append(name, value);
     }
 }
-

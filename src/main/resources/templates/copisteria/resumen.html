@@ -12,7 +12,7 @@
                     <span class="eyebrow">Pedido preparado</span>
                     <h1>Tu pedido ya esta guardado y tiene un codigo unico de recogida.</h1>
                     <p>
-                        Hemos guardado los datos del encargo y los archivos subidos en tu cuenta.
+                        Hemos guardado el encargo, los archivos subidos y la configuracion elegida dentro de tu cuenta.
                         Cuando el pedido este listo, podras identificarlo facilmente con tu codigo de recogida.
                     </p>
                 </div>
@@ -23,7 +23,7 @@
                     <p>Guarda este codigo para recoger el pedido en tienda con rapidez.</p>
                     <div class="summary-highlight-price">
                         <span>Precio estimado</span>
-                        <strong th:text="${order.formattedEstimatedPrice}">4,32 â‚¬</strong>
+                        <strong th:text="${order.formattedEstimatedPrice}">4,32 EUR</strong>
                     </div>
                 </aside>
             </div>
@@ -35,15 +35,15 @@
                     <span class="section-kicker">Confirmacion</span>
                     <h2>Pedido registrado correctamente</h2>
                     <p>
-                        El pedido ha quedado asociado a tu cuenta y no se envia a ningun canal externo en esta fase.
-                        Puedes revisarlo despues desde tu apartado de pedidos.
+                        El pedido ha quedado asociado a tu cuenta y esta listo para gestionarse en tienda.
+                        Podras consultarlo despues desde tu apartado de pedidos.
                     </p>
 
                     <div class="summary-price-box">
                         <span>Precio orientativo del pedido</span>
-                        <strong th:text="${order.formattedEstimatedPrice}">4,32 â‚¬</strong>
+                        <strong th:text="${order.formattedEstimatedPrice}">4,32 EUR</strong>
                         <p th:text="${order.priceBreakdownOrDefault}">
-                            2 archivo(s) x 3 copia(s) â€¢ Blanco y negro â€¢ A4 â€¢ Una cara
+                            2 archivo(s) x 3 copia(s) • Blanco y negro • A4 • Una cara
                         </p>
                     </div>
 
@@ -70,12 +70,12 @@
                         </div>
                         <div class="summary-meta-item">
                             <span>Precio estimado</span>
-                            <strong th:text="${order.formattedEstimatedPrice}">4,32 â‚¬</strong>
+                            <strong th:text="${order.formattedEstimatedPrice}">4,32 EUR</strong>
                         </div>
                     </div>
 
                     <div class="summary-actions">
-                        <a class="button button-outline-dark" th:href="@{/copisteria/pedido}">
+                        <a class="button button-outline-dark" th:href="@{/copisteria}">
                             Hacer otro pedido
                         </a>
                         <a class="button button-primary" th:href="@{/mis-pedidos}">
@@ -115,21 +115,33 @@
                                 <dt>Tipo de trabajo</dt>
                                 <dd th:text="${order.jobType.label}">Impresion</dd>
                             </div>
-                            <div th:if="${order.copies != null}">
-                                <dt>Numero de copias</dt>
-                                <dd th:text="${order.copies}">1</dd>
-                            </div>
                             <div th:if="${order.colorMode != null}">
                                 <dt>Color</dt>
                                 <dd th:text="${order.colorMode.label}">Blanco y negro</dd>
+                            </div>
+                            <div th:if="${order.paperSize != null}">
+                                <dt>Tamano</dt>
+                                <dd th:text="${order.paperSize.label}">A4</dd>
+                            </div>
+                            <div th:if="${order.copies != null}">
+                                <dt>Numero de copias</dt>
+                                <dd th:text="${order.copies}">1</dd>
                             </div>
                             <div th:if="${order.printSide != null}">
                                 <dt>Caras</dt>
                                 <dd th:text="${order.printSide.label}">Una cara</dd>
                             </div>
-                            <div th:if="${order.paperSize != null}">
-                                <dt>Tamano</dt>
-                                <dd th:text="${order.paperSize.label}">A4</dd>
+                            <div th:if="${order.paperType != null}">
+                                <dt>Tipo de papel</dt>
+                                <dd th:text="${order.paperType.label}">Normal</dd>
+                            </div>
+                            <div th:if="${order.bindingType != null && !order.bindingType.none}">
+                                <dt>Encuadernacion</dt>
+                                <dd th:text="${order.bindingType.label}">Espiral</dd>
+                            </div>
+                            <div>
+                                <dt>Extras</dt>
+                                <dd th:text="${order.extrasSummary}">Sin extras</dd>
                             </div>
                             <div>
                                 <dt>Observaciones</dt>
@@ -147,11 +159,30 @@
                         <li th:each="file : ${order.files}">
                             <div class="uploaded-file-main">
                                 <strong th:text="${file.originalFilename}">documento.pdf</strong>
-                                <span th:text="${file.readableSize + ' â€¢ ' + file.pageCountLabel}">1.2 MB â€¢ 3 paginas</span>
+                                <span th:text="${file.readableSize + ' • ' + file.pageCountLabel}">1.2 MB • 3 paginas</span>
                             </div>
                             <small th:text="${file.relativePath}">copisteria/2026-04-08/MC-7Q4P9R/01-documento.pdf</small>
                         </li>
                     </ul>
+                </article>
+            </div>
+
+            <div class="container">
+                <article class="summary-card files-card" data-reveal="up">
+                    <h3>Desglose orientativo del precio</h3>
+                    <ul class="price-preview-lines summary-price-lines">
+                        <li th:each="line : ${priceEstimate.lines}">
+                            <div>
+                                <strong th:text="${line.concept}">Impresion color</strong>
+                                <small th:text="${line.detail}">15 paginas x 1 copia</small>
+                            </div>
+                            <span th:text="${line.formattedAmount}">3,40 EUR</span>
+                        </li>
+                    </ul>
+                    <div class="wizard-price-total-row summary-price-total-row">
+                        <span>Total orientativo</span>
+                        <strong th:text="${priceEstimate.formattedTotal}">4,32 EUR</strong>
+                    </div>
                 </article>
             </div>
         </section>
@@ -163,4 +194,3 @@
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>
-

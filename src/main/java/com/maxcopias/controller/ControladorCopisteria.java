@@ -12,6 +12,8 @@ import com.maxcopias.model.AnalisisArchivoSubido;
 import com.maxcopias.model.TipoTrabajo;
 import com.maxcopias.model.TamanoPapel;
 import com.maxcopias.model.CaraImpresion;
+import com.maxcopias.model.TipoEncuadernacion;
+import com.maxcopias.model.TipoPapel;
 import com.maxcopias.model.Rol;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.service.ServicioPedidoCopisteria;
@@ -23,6 +25,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -73,6 +76,13 @@ public class ControladorCopisteria {
         return TipoTrabajo.values();
     }
 
+    @ModelAttribute("primaryJobTypes")
+    public List<TipoTrabajo> primaryJobTypes() {
+        return Stream.of(TipoTrabajo.values())
+            .filter(TipoTrabajo::isPrimaryWizardOption)
+            .toList();
+    }
+
     @ModelAttribute("colorModes")
     public ModoColor[] colorModes() {
         return ModoColor.values();
@@ -86,6 +96,16 @@ public class ControladorCopisteria {
     @ModelAttribute("paperSizes")
     public TamanoPapel[] paperSizes() {
         return TamanoPapel.values();
+    }
+
+    @ModelAttribute("paperTypes")
+    public TipoPapel[] paperTypes() {
+        return TipoPapel.values();
+    }
+
+    @ModelAttribute("bindingTypes")
+    public TipoEncuadernacion[] bindingTypes() {
+        return TipoEncuadernacion.values();
     }
 
     @ModelAttribute("acceptedFormats")
@@ -105,12 +125,7 @@ public class ControladorCopisteria {
         return properties.getMaxFileSize().toMegabytes() + " MB";
     }
 
-    @GetMapping
-    public String showCopisteriaLanding() {
-        return "copisteria/servicios";
-    }
-
-    @GetMapping("/pedido")
+    @GetMapping({"", "/pedido"})
     public String showOrderForm(
         Authentication authentication,
         Model model,
@@ -130,7 +145,18 @@ public class ControladorCopisteria {
         return "copisteria/formulario";
     }
 
-    @PostMapping("/pedido")
+    @GetMapping("/servicios")
+    public String legacyCopisteriaLanding(
+        @RequestParam(name = "jobType", required = false) TipoTrabajo selectedTipoTrabajo
+    ) {
+        if (selectedTipoTrabajo != null) {
+            return "redirect:/copisteria?jobType=" + selectedTipoTrabajo.name();
+        }
+
+        return "redirect:/copisteria";
+    }
+
+    @PostMapping({"", "/pedido"})
     public String submitOrder(
         Authentication authentication,
         @Valid @ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm,
@@ -139,6 +165,7 @@ public class ControladorCopisteria {
         @RequestParam(name = "files", required = false) List<MultipartFile> files
     ) {
         validateConditionalFields(orderForm, bindingResult);
+        validateRequiredFiles(files, bindingResult);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("pricePreview", pricingService.calculate(orderForm, countProvidedFiles(files), 0));
@@ -189,6 +216,7 @@ public class ControladorCopisteria {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         model.addAttribute("order", order);
+        model.addAttribute("priceEstimate", pricingService.calculate(order));
         return "copisteria/resumen";
     }
 
@@ -199,12 +227,18 @@ public class ControladorCopisteria {
         form.setEmail(currentUsuario.getEmail());
         form.setTipoTrabajo(selectedTipoTrabajo != null ? selectedTipoTrabajo : TipoTrabajo.IMPRESION);
 
-        if (form.getTipoTrabajo().isRequiresPrintConfiguration()) {
+        if (form.getTipoTrabajo().usesCompleteWizard()) {
             form.setCopies(1);
             form.setModoColor(ModoColor.BLACK_AND_WHITE);
             form.setCaraImpresion(CaraImpresion.ONE_SIDED);
             form.setPaperSize(TamanoPapel.A4);
+            form.setTipoPapel(TipoPapel.NORMAL);
+            form.setTipoEncuadernacion(TipoEncuadernacion.SIN_ENCUADERNACION);
         }
+
+        form.setPlastificado(Boolean.FALSE);
+        form.setUrgente(Boolean.FALSE);
+        form.setEscaneado(Boolean.FALSE);
 
         return form;
     }
@@ -214,7 +248,7 @@ public class ControladorCopisteria {
             return;
         }
 
-        if (form.getTipoTrabajo().isRequiresPrintConfiguration()) {
+        if (form.getTipoTrabajo().usesCompleteWizard()) {
             if (form.getCopies() == null) {
                 bindingResult.rejectValue("copies", "copies.required", "Indica el numero de copias.");
             }
@@ -227,11 +261,29 @@ public class ControladorCopisteria {
             if (form.getPaperSize() == null) {
                 bindingResult.rejectValue("paperSize", "paperSize.required", "Selecciona el tamano del papel.");
             }
+            if (form.getTipoPapel() == null) {
+                bindingResult.rejectValue("paperType", "paperType.required", "Selecciona el tipo de papel.");
+            }
+            if (form.getTipoEncuadernacion() == null) {
+                bindingResult.rejectValue("bindingType", "bindingType.required", "Selecciona si quieres encuadernacion.");
+            }
         } else {
             form.setCopies(null);
             form.setModoColor(null);
             form.setCaraImpresion(null);
             form.setPaperSize(null);
+            form.setTipoPapel(null);
+            form.setTipoEncuadernacion(TipoEncuadernacion.SIN_ENCUADERNACION);
+        }
+
+        if (form.getPlastificado() == null) {
+            form.setPlastificado(Boolean.FALSE);
+        }
+        if (form.getUrgente() == null) {
+            form.setUrgente(Boolean.FALSE);
+        }
+        if (form.getEscaneado() == null) {
+            form.setEscaneado(Boolean.FALSE);
         }
     }
 
@@ -243,6 +295,12 @@ public class ControladorCopisteria {
         return (int) files.stream()
             .filter(file -> file != null && !file.isEmpty())
             .count();
+    }
+
+    private void validateRequiredFiles(List<MultipartFile> files, BindingResult bindingResult) {
+        if (countProvidedFiles(files) == 0) {
+            bindingResult.reject("files.required", "Adjunta al menos un archivo para preparar el pedido.");
+        }
     }
 }
 

@@ -7,6 +7,8 @@ import com.maxcopias.model.ModoColor;
 import com.maxcopias.model.TipoTrabajo;
 import com.maxcopias.model.TamanoPapel;
 import com.maxcopias.model.CaraImpresion;
+import com.maxcopias.model.TipoEncuadernacion;
+import com.maxcopias.model.TipoPapel;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -42,6 +44,16 @@ public class FormularioPedidoCopisteria {
     private CaraImpresion printSide;
 
     private TamanoPapel paperSize;
+
+    private TipoPapel paperType;
+
+    private TipoEncuadernacion bindingType;
+
+    private Boolean plastificado = Boolean.FALSE;
+
+    private Boolean urgente = Boolean.FALSE;
+
+    private Boolean escaneado = Boolean.FALSE;
 
     @Size(max = 600, message = "Las observaciones no pueden superar los 600 caracteres.")
     private String observations;
@@ -132,6 +144,62 @@ public class FormularioPedidoCopisteria {
 
     public void setPaperSize(TamanoPapel paperSize) {
         this.paperSize = paperSize;
+    }
+
+    public TipoPapel getTipoPapel() {
+        return paperType;
+    }
+
+    public void setTipoPapel(TipoPapel paperType) {
+        this.paperType = paperType;
+    }
+
+    public TipoPapel getPaperType() {
+        return paperType;
+    }
+
+    public void setPaperType(TipoPapel paperType) {
+        this.paperType = paperType;
+    }
+
+    public TipoEncuadernacion getTipoEncuadernacion() {
+        return bindingType;
+    }
+
+    public void setTipoEncuadernacion(TipoEncuadernacion bindingType) {
+        this.bindingType = bindingType;
+    }
+
+    public TipoEncuadernacion getBindingType() {
+        return bindingType;
+    }
+
+    public void setBindingType(TipoEncuadernacion bindingType) {
+        this.bindingType = bindingType;
+    }
+
+    public Boolean getPlastificado() {
+        return plastificado;
+    }
+
+    public void setPlastificado(Boolean plastificado) {
+        this.plastificado = plastificado;
+    }
+
+    public Boolean getUrgente() {
+        return urgente;
+    }
+
+    public void setUrgente(Boolean urgente) {
+        this.urgente = urgente;
+    }
+
+    public Boolean getEscaneado() {
+        return escaneado;
+    }
+
+    public void setEscaneado(Boolean escaneado) {
+        this.escaneado = escaneado;
     }
 
     public String getObservations() {

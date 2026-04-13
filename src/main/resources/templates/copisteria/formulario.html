@@ -1,132 +1,175 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Pedido de copisteria', '/css/copisteria.css')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Configurador de copisteria', '/css/copisteria.css')}"></head>
 <body class="copisteria-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main class="order-main">
-        <section class="order-hero">
-            <div class="container order-hero-grid">
-                <div class="order-hero-copy" data-reveal="up">
-                    <span class="eyebrow">Pedido de copisteria</span>
-                    <h1>Sube tus archivos, elige el tipo de servicio y deja preparado tu encargo.</h1>
-                    <p>
-                        Completa el formulario con los datos del servicio, adjunta documentos o imagenes
-                        segun el trabajo y genera un pedido asociado a tu cuenta con codigo unico de recogida y
-                        precio orientativo.
-                    </p>
-
-                    <div class="order-hero-actions">
-                        <a href="#pedido-formulario" class="button button-primary">Ir al formulario</a>
+    <main class="wizard-main">
+        <section class="wizard-section">
+            <div class="container">
+                <div class="wizard-header" data-reveal="up">
+                    <div class="wizard-header-copy">
+                        <span class="eyebrow">Configurador de pedido</span>
+                        <h1>Configura tu pedido de copisteria paso a paso.</h1>
+                        <p>
+                            Ajusta el servicio, sube el archivo antes del resumen y revisa un desglose claro
+                            del precio orientativo antes de guardar el pedido.
+                        </p>
+                    </div>
+                    <div class="wizard-header-tags">
+                        <span>Recogida en tienda</span>
+                        <span>Precio desglosado</span>
+                        <span>PDF contado por paginas</span>
                     </div>
                 </div>
 
-                <aside class="order-hero-card" data-reveal="left">
-                    <span class="card-chip">Flujo rapido</span>
-                    <h2>Que puedes hacer desde aqui</h2>
-                    <ul class="hero-check-list">
-                        <li>Subir varios archivos para un mismo pedido</li>
-                        <li>Elegir el servicio de copisteria que necesitas</li>
-                        <li>Indicar configuracion de impresion cuando aplique</li>
-                        <li>Generar un codigo unico de recogida</li>
-                    </ul>
+                <div class="wizard-progress" data-wizard-progress>
+                    <button class="wizard-progress-item is-active" type="button" data-progress-step="jobType">
+                        <span>1</span>
+                        <strong>Trabajo</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="colorMode">
+                        <span>2</span>
+                        <strong>Color</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="paperSize">
+                        <span>3</span>
+                        <strong>Tamano</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="copies">
+                        <span>4</span>
+                        <strong>Copias</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="printSide">
+                        <span>5</span>
+                        <strong>Caras</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="paperType">
+                        <span>6</span>
+                        <strong>Papel</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="bindingType">
+                        <span>7</span>
+                        <strong>Encuadernacion</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="extras">
+                        <span>8</span>
+                        <strong>Extras</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="files">
+                        <span>9</span>
+                        <strong>Archivo</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="review">
+                        <span>10</span>
+                        <strong>Resumen</strong>
+                    </button>
+                </div>
 
-                    <div class="hero-card-note">
-                        <strong>Formatos aceptados</strong>
-                        <p th:text="${acceptedFormats}">PDF, JPG, PNG</p>
+                <form
+                    th:action="@{/copisteria}"
+                    th:object="${orderForm}"
+                    method="post"
+                    enctype="multipart/form-data"
+                    novalidate
+                    class="wizard-layout"
+                    data-copisteria-wizard>
+
+                    <div class="alert alert-error wizard-alert" th:if="${#fields.hasGlobalErrors()}">
+                        <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
                     </div>
 
-                    <div class="hero-card-note">
-                        <strong>Limite de subida</strong>
-                        <p th:text="'Hasta ' + ${maxFiles} + ' archivos y ' + ${maxFileSizeLabel} + ' por archivo.'">
-                            Hasta 5 archivos y 15 MB por archivo.
-                        </p>
-                    </div>
-                </aside>
-            </div>
-        </section>
+                    <input type="hidden" th:field="*{customerName}">
+                    <input type="hidden" th:field="*{phone}">
+                    <input type="hidden" th:field="*{email}">
 
-        <section class="order-section" id="pedido-formulario">
-            <div class="container order-layout">
-                <article class="order-form-card" data-reveal="up">
-                    <div class="card-header">
-                        <span class="section-kicker">Encargo online</span>
-                        <h2>Prepara tu pedido de copisteria</h2>
-                        <p>
-                            Rellena los datos del encargo, adjunta los archivos y revisa el resumen final
-                            con tu codigo de recogida y el precio estimado del pedido.
-                        </p>
-                    </div>
-
-                    <form th:action="@{/copisteria/pedido}" th:object="${orderForm}" method="post" enctype="multipart/form-data" novalidate>
-                        <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
-                            <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="field-group span-2">
-                                <label for="customerName">Nombre</label>
-                                <input
-                                    id="customerName"
-                                    type="text"
-                                    th:field="*{customerName}"
-                                    th:classappend="${#fields.hasErrors('customerName')} ? 'is-invalid'"
-                                    placeholder="Nombre y apellidos">
-                                <small class="field-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></small>
+                    <section class="wizard-stage" data-reveal="up">
+                        <article class="wizard-step is-active" data-step-id="jobType">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 1</span>
+                                <h2>Que tipo de trabajo quieres pedir</h2>
+                                <p>Selecciona el servicio principal. Si eliges impresion o fotocopias, activaremos toda la configuracion tecnica.</p>
                             </div>
 
-                            <div class="field-group">
-                                <label for="phone">Telefono</label>
-                                <input
-                                    id="phone"
-                                    type="tel"
-                                    th:field="*{phone}"
-                                    th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
-                                    placeholder="+34 600 123 456">
-                                <small class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="email">Email</label>
-                                <input
-                                    id="email"
-                                    type="email"
-                                    th:field="*{email}"
-                                    th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
-                                    placeholder="tuemail@ejemplo.com">
-                                <small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
-                            </div>
-
-                            <div class="field-group">
-                                <label for="jobType">Tipo de trabajo</label>
-                                <select
-                                    id="jobType"
-                                    th:field="*{jobType}"
-                                    th:classappend="${#fields.hasErrors('jobType')} ? 'is-invalid'"
-                                    data-job-type-select>
-                                    <option value="">Selecciona una opcion</option>
-                                    <option
-                                        th:each="jobType : ${jobTypes}"
+                            <div class="wizard-options-grid wizard-options-grid-large">
+                                <label class="wizard-option-card" th:each="jobType : ${primaryJobTypes}">
+                                    <input
+                                        type="radio"
+                                        th:field="*{jobType}"
                                         th:value="${jobType}"
-                                        th:text="${jobType.label}"
-                                        th:attr="data-upload-label=${jobType.uploadLabel},data-upload-description=${jobType.uploadDescription},data-requires-print=${jobType.requiresPrintConfiguration}">
-                                    </option>
-                                </select>
-                                <small class="field-error" th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}"></small>
+                                        data-step-choice>
+                                    <span class="wizard-option-ui">
+                                        <span class="wizard-option-icon" th:text="${jobType.shortCode}">IM</span>
+                                        <strong th:text="${jobType.label}">Impresion</strong>
+                                        <small th:text="${jobType.uploadDescription}">Descripcion del servicio.</small>
+                                        <em th:text="${jobType.priceHint}">Desde 0,06 EUR</em>
+                                    </span>
+                                </label>
+                            </div>
+                            <small class="field-error" th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}"></small>
+
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="colorMode">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 2</span>
+                                <h2>Elige el tipo de impresion</h2>
+                                <p>Selecciona si quieres el trabajo en blanco y negro o a color.</p>
                             </div>
 
-                            <div class="field-group order-type-helper" data-job-type-helper>
-                                <span class="field-legend">Segun el servicio elegido</span>
-                                <div class="order-type-helper-card">
-                                    <strong data-job-type-label>Selecciona un tipo de trabajo</strong>
-                                    <p data-job-type-description>
-                                        Al elegir una opcion te indicaremos que tipo de archivos conviene adjuntar y si necesitas configurar detalles de impresion.
-                                    </p>
-                                </div>
+                            <div class="wizard-options-grid wizard-options-grid-2">
+                                <label class="wizard-option-card wizard-option-card-compact" th:each="mode : ${colorModes}">
+                                    <input type="radio" th:field="*{colorMode}" th:value="${mode}" data-step-choice>
+                                    <span class="wizard-option-ui">
+                                        <strong th:text="${mode.label}">Blanco y negro</strong>
+                                        <small th:text="${mode.description}">Descripcion</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <small class="field-error" th:if="${#fields.hasErrors('colorMode')}" th:errors="*{colorMode}"></small>
+
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="paperSize">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 3</span>
+                                <h2>Selecciona el tamano</h2>
+                                <p>Elige el formato para ajustar precio y acabado del pedido.</p>
                             </div>
 
-                            <div class="field-group" data-print-config-item>
+                            <div class="wizard-options-grid wizard-options-grid-3">
+                                <label class="wizard-option-card wizard-option-card-size" th:each="size : ${paperSizes}">
+                                    <input type="radio" th:field="*{paperSize}" th:value="${size}" data-step-choice>
+                                    <span class="wizard-option-ui">
+                                        <strong th:text="${size.label}">A4</strong>
+                                        <small th:text="${size.description}">Descripcion</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <small class="field-error" th:if="${#fields.hasErrors('paperSize')}" th:errors="*{paperSize}"></small>
+
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="copies">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 4</span>
+                                <h2>Cuantas copias necesitas</h2>
+                                <p>Indica el numero de copias para calcular el importe orientativo.</p>
+                            </div>
+
+                            <div class="wizard-number-card">
                                 <label for="copies">Numero de copias</label>
                                 <input
                                     id="copies"
@@ -135,65 +178,137 @@
                                     max="5000"
                                     th:field="*{copies}"
                                     th:classappend="${#fields.hasErrors('copies')} ? 'is-invalid'">
+                                <small>Puedes poner desde 1 hasta 5000 copias.</small>
                                 <small class="field-error" th:if="${#fields.hasErrors('copies')}" th:errors="*{copies}"></small>
                             </div>
 
-                            <div class="field-group span-2" data-print-config-section>
-                                <span class="field-legend">Color</span>
-                                <div class="choice-grid choice-grid-2">
-                                    <label class="choice-chip" th:each="mode : ${colorModes}">
-                                        <input type="radio" th:field="*{colorMode}" th:value="${mode}">
-                                        <span>
-                                            <strong th:text="${mode.label}">Color</strong>
-                                            <small th:text="${mode.description}">Descripcion</small>
-                                        </span>
-                                    </label>
-                                </div>
-                                <small class="field-error" th:if="${#fields.hasErrors('colorMode')}" th:errors="*{colorMode}"></small>
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="printSide">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 5</span>
+                                <h2>Quieres una cara o doble cara</h2>
+                                <p>Selecciona la configuracion de caras para el documento.</p>
                             </div>
 
-                            <div class="field-group span-2" data-print-config-section>
-                                <span class="field-legend">Caras de impresion</span>
-                                <div class="choice-grid choice-grid-2">
-                                    <label class="choice-chip" th:each="side : ${printSides}">
-                                        <input type="radio" th:field="*{printSide}" th:value="${side}">
-                                        <span>
-                                            <strong th:text="${side.label}">Una cara</strong>
-                                            <small th:text="${side.description}">Descripcion</small>
-                                        </span>
-                                    </label>
-                                </div>
-                                <small class="field-error" th:if="${#fields.hasErrors('printSide')}" th:errors="*{printSide}"></small>
+                            <div class="wizard-options-grid wizard-options-grid-2">
+                                <label class="wizard-option-card wizard-option-card-compact" th:each="side : ${printSides}">
+                                    <input type="radio" th:field="*{printSide}" th:value="${side}" data-step-choice>
+                                    <span class="wizard-option-ui">
+                                        <strong th:text="${side.label}">Una cara</strong>
+                                        <small th:text="${side.description}">Descripcion</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <small class="field-error" th:if="${#fields.hasErrors('printSide')}" th:errors="*{printSide}"></small>
+
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="paperType">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 6</span>
+                                <h2>Elige el tipo de papel</h2>
+                                <p>Selecciona el acabado del papel segun el uso del documento.</p>
                             </div>
 
-                            <div class="field-group span-2" data-print-config-section>
-                                <span class="field-legend">Tamano de papel</span>
-                                <div class="choice-grid choice-grid-2">
-                                    <label class="choice-chip" th:each="size : ${paperSizes}">
-                                        <input type="radio" th:field="*{paperSize}" th:value="${size}">
-                                        <span>
-                                            <strong th:text="${size.label}">A4</strong>
-                                            <small th:text="${size.description}">Descripcion</small>
-                                        </span>
-                                    </label>
-                                </div>
-                                <small class="field-error" th:if="${#fields.hasErrors('paperSize')}" th:errors="*{paperSize}"></small>
+                            <div class="wizard-options-grid wizard-options-grid-3">
+                                <label class="wizard-option-card wizard-option-card-compact" th:each="paperType : ${paperTypes}">
+                                    <input type="radio" th:field="*{paperType}" th:value="${paperType}" data-step-choice>
+                                    <span class="wizard-option-ui">
+                                        <strong th:text="${paperType.label}">Normal</strong>
+                                        <small th:text="${paperType.description}">Descripcion</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <small class="field-error" th:if="${#fields.hasErrors('paperType')}" th:errors="*{paperType}"></small>
+
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="bindingType">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 7</span>
+                                <h2>Quieres encuadernacion</h2>
+                                <p>Selecciona el acabado final si tu pedido lo necesita.</p>
                             </div>
 
-                            <div class="field-group span-2">
-                                <label for="observations">Observaciones</label>
-                                <textarea
-                                    id="observations"
-                                    rows="5"
-                                    th:field="*{observations}"
-                                    th:classappend="${#fields.hasErrors('observations')} ? 'is-invalid'"
-                                    placeholder="Indicanos cualquier detalle importante: acabado, portada, orden de paginas, fecha de recogida o preferencias del pedido."></textarea>
-                                <small class="field-error" th:if="${#fields.hasErrors('observations')}" th:errors="*{observations}"></small>
+                            <div class="wizard-options-grid wizard-options-grid-2">
+                                <label class="wizard-option-card wizard-option-card-compact" th:each="bindingType : ${bindingTypes}">
+                                    <input type="radio" th:field="*{bindingType}" th:value="${bindingType}" data-step-choice>
+                                    <span class="wizard-option-ui">
+                                        <strong th:text="${bindingType.label}">No</strong>
+                                        <small th:text="${bindingType.description}">Descripcion</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <small class="field-error" th:if="${#fields.hasErrors('bindingType')}" th:errors="*{bindingType}"></small>
+
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="extras">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 8</span>
+                                <h2>Anade extras al pedido</h2>
+                                <p>Puedes marcar varios extras a la vez. Se reflejaran por separado en el precio final.</p>
                             </div>
 
-                            <div class="field-group span-2">
-                                <label for="files">Archivos</label>
-                                <div class="file-dropzone">
+                            <div class="wizard-options-grid wizard-options-grid-3">
+                                <label class="wizard-option-card wizard-option-card-toggle">
+                                    <input type="checkbox" th:field="*{plastificado}">
+                                    <span class="wizard-option-ui">
+                                        <strong>Plastificado</strong>
+                                        <small>Acabado protector para documentos de uso frecuente.</small>
+                                    </span>
+                                </label>
+
+                                <label class="wizard-option-card wizard-option-card-toggle">
+                                    <input type="checkbox" th:field="*{urgente}">
+                                    <span class="wizard-option-ui">
+                                        <strong>Urgente</strong>
+                                        <small>Prioridad de preparacion para recoger cuanto antes.</small>
+                                    </span>
+                                </label>
+
+                                <label class="wizard-option-card wizard-option-card-toggle">
+                                    <input type="checkbox" th:field="*{escaneado}">
+                                    <span class="wizard-option-ui">
+                                        <strong>Escaneado</strong>
+                                        <small>Digitalizacion complementaria del material.</small>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="files">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 9</span>
+                                <h2>Sube el archivo antes del resumen</h2>
+                                <p>El resumen final solo se habilita cuando hay al menos un archivo valido. En PDF contamos paginas reales; en imagenes, 1 pagina por archivo.</p>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="files">Archivos del pedido</label>
+                                <div class="file-dropzone wizard-dropzone">
                                     <input
                                         id="files"
                                         name="files"
@@ -201,54 +316,178 @@
                                         multiple
                                         accept=".pdf,.jpg,.jpeg,.png"
                                         data-file-input>
-                                    <div class="file-dropzone-copy">
-                                        <strong data-upload-dropzone-title>Adjunta uno o varios archivos</strong>
+                                    <div class="file-dropzone-copy wizard-dropzone-copy">
+                                        <span class="wizard-dropzone-icon">+</span>
+                                        <strong data-upload-dropzone-title>Sube los archivos del pedido</strong>
                                         <p data-upload-dropzone-description>
-                                            Sube tus documentos, imagenes o archivos de trabajo. Puedes adjuntar hasta
-                                            <span th:text="${maxFiles}">5</span> archivos para el pedido.
+                                            Para documentos, usa PDF. Para imagenes, puedes subir JPG o PNG.
                                         </p>
                                     </div>
                                 </div>
-                                <p class="file-hint" data-file-hint th:text="'Formatos permitidos: ' + ${acceptedFormats} + ' | Maximo ' + ${maxFileSizeLabel} + ' por archivo. Para documentos, sube PDF para calcular bien las paginas.'">
-                                    Formatos permitidos: PDF, JPG, PNG | Maximo 15 MB por archivo. Para documentos, sube PDF para calcular bien las paginas.
+                                <p
+                                    class="file-hint"
+                                    data-file-hint
+                                    th:text="'Formatos permitidos: ' + ${acceptedFormats} + ' | Maximo ' + ${maxFileSizeLabel} + ' por archivo. Para documentos, sube PDF para calcular bien las paginas.'">
+                                    Formatos permitidos: PDF, JPG, PNG | Maximo 15 MB por archivo.
                                 </p>
+                                <small class="field-error" data-files-error hidden>Adjunta al menos un archivo antes de pasar al resumen.</small>
                                 <ul class="selected-files" data-file-list></ul>
                             </div>
-                        </div>
 
-                        <div class="form-actions">
-                            <button type="submit" class="button button-primary">Guardar pedido y ver resumen</button>
-                        </div>
-                    </form>
-                </article>
+                            <div class="field-group">
+                                <label for="observations">Observaciones</label>
+                                <textarea
+                                    id="observations"
+                                    rows="6"
+                                    th:field="*{observations}"
+                                    th:classappend="${#fields.hasErrors('observations')} ? 'is-invalid'"
+                                    placeholder="Indica cualquier detalle importante del pedido: portada, orden de paginas, acabado o aclaraciones para tienda."></textarea>
+                                <small class="field-error" th:if="${#fields.hasErrors('observations')}" th:errors="*{observations}"></small>
+                            </div>
 
-                <aside class="order-sidebar" data-reveal="up">
-                    <article class="side-card">
-                        <span class="side-card-kicker">Proceso</span>
-                        <h3>Como sera el flujo</h3>
-                        <ol>
-                            <li>Rellenas el formulario con los datos del encargo.</li>
-                            <li>Subes tus archivos para que queden guardados en el pedido.</li>
-                            <li>Recibes un codigo unico de recogida para tienda.</li>
-                        </ol>
-                    </article>
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Ir al resumen</button>
+                            </div>
+                        </article>
 
-                    <article class="side-card price-preview-card" data-price-estimator data-preview-url="/copisteria/precio-orientativo">
-                        <span class="side-card-kicker">Estimacion</span>
-                        <h3>Precio orientativo del pedido</h3>
-                        <strong class="price-preview-total" data-price-total th:text="${pricePreview.formattedTotal}">0,06 â‚¬</strong>
-                        <div class="price-preview-pages">
-                            <span>Paginas detectadas</span>
-                            <strong data-price-pages th:text="${pricePreview.pageCountLabel}">0 paginas detectadas</strong>
-                        </div>
-                        <p class="price-preview-breakdown" data-price-breakdown th:text="${pricePreview.breakdown}">
-                            1 archivo de referencia x 1 copia â€¢ Blanco y negro â€¢ A4 â€¢ Una cara
-                        </p>
-                        <p class="price-preview-note" data-price-note th:text="${pricePreview.note}">
-                            El importe se calcula automaticamente segun el servicio, los archivos y la configuracion.
-                        </p>
-                    </article>
-                </aside>
+                        <article class="wizard-step" data-step-id="review">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso final</span>
+                                <h2>Revisa el pedido antes de guardarlo</h2>
+                                <p>Comprueba configuracion, archivos y desglose de precios antes de confirmar el encargo.</p>
+                            </div>
+
+                            <div class="wizard-review-grid">
+                                <div class="wizard-review-card">
+                                    <strong>Datos de tu cuenta</strong>
+                                    <ul class="wizard-review-list">
+                                        <li>
+                                            <span>Nombre</span>
+                                            <strong data-review-customer-name th:text="${orderForm.customerName}">Nombre Apellidos</strong>
+                                        </li>
+                                        <li>
+                                            <span>Telefono</span>
+                                            <strong data-review-phone th:text="${orderForm.phone}">600123456</strong>
+                                        </li>
+                                        <li>
+                                            <span>Email</span>
+                                            <strong data-review-email th:text="${orderForm.email}">correo@maxcopias.es</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="wizard-review-card">
+                                    <strong>Resumen de configuracion</strong>
+                                    <ul class="wizard-review-list">
+                                        <li>
+                                            <span>Trabajo</span>
+                                            <strong data-summary-job-type>Sin seleccionar</strong>
+                                        </li>
+                                        <li>
+                                            <span>Impresion</span>
+                                            <strong data-summary-color-mode>No aplica</strong>
+                                        </li>
+                                        <li>
+                                            <span>Tamano</span>
+                                            <strong data-summary-paper-size>No aplica</strong>
+                                        </li>
+                                        <li>
+                                            <span>Copias</span>
+                                            <strong data-summary-copies>No aplica</strong>
+                                        </li>
+                                        <li>
+                                            <span>Caras</span>
+                                            <strong data-summary-print-side>No aplica</strong>
+                                        </li>
+                                        <li>
+                                            <span>Papel</span>
+                                            <strong data-summary-paper-type>No aplica</strong>
+                                        </li>
+                                        <li>
+                                            <span>Encuadernacion</span>
+                                            <strong data-summary-binding-type>No aplica</strong>
+                                        </li>
+                                        <li>
+                                            <span>Extras</span>
+                                            <strong data-summary-extras>Sin extras</strong>
+                                        </li>
+                                        <li>
+                                            <span>Archivo</span>
+                                            <strong data-summary-files>Sin archivo</strong>
+                                        </li>
+                                        <li>
+                                            <span>Paginas detectadas</span>
+                                            <strong data-summary-pages>0 paginas detectadas</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="wizard-review-card wizard-review-pricing-card">
+                                <strong>Desglose orientativo del precio</strong>
+                                <ul class="wizard-price-lines" data-summary-price-lines>
+                                    <li th:each="line : ${pricePreview.lines}">
+                                        <div>
+                                            <strong th:text="${line.concept}">Impresion color</strong>
+                                            <small th:text="${line.detail}">1 pagina x 1 copia</small>
+                                        </div>
+                                        <span th:text="${line.formattedAmount}">0,45 EUR</span>
+                                    </li>
+                                </ul>
+                                <div class="wizard-price-total-row">
+                                    <span>Total orientativo</span>
+                                    <strong data-summary-total th:text="${pricePreview.formattedTotal}">0,06 EUR</strong>
+                                </div>
+                                <p class="wizard-price-note" data-summary-note th:text="${pricePreview.note}">
+                                    El importe se calcula automaticamente segun la configuracion y los archivos.
+                                </p>
+                            </div>
+
+                            <div class="wizard-step-actions wizard-step-actions-review">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="submit" class="button button-primary">Guardar pedido y ver resumen</button>
+                            </div>
+                        </article>
+                    </section>
+
+                    <aside class="wizard-summary" data-reveal="left">
+                        <article class="side-card price-preview-card" data-price-estimator data-preview-url="/copisteria/precio-orientativo">
+                            <span class="side-card-kicker">Estimacion</span>
+                            <h3>Precio orientativo del pedido</h3>
+                            <strong class="price-preview-total" data-price-total th:text="${pricePreview.formattedTotal}">0,06 EUR</strong>
+                            <div class="price-preview-pages">
+                                <span>Paginas detectadas</span>
+                                <strong data-price-pages th:text="${pricePreview.pageCountLabel}">0 paginas detectadas</strong>
+                            </div>
+                            <ul class="price-preview-lines" data-price-lines>
+                                <li th:each="line : ${pricePreview.lines}">
+                                    <div>
+                                        <strong th:text="${line.concept}">Impresion color</strong>
+                                        <small th:text="${line.detail}">1 pagina x 1 copia</small>
+                                    </div>
+                                    <span th:text="${line.formattedAmount}">0,45 EUR</span>
+                                </li>
+                            </ul>
+                            <p class="price-preview-breakdown" data-price-breakdown th:text="${pricePreview.breakdown}">
+                                Selecciona un servicio para ver el precio orientativo del pedido.
+                            </p>
+                            <p class="price-preview-note" data-price-note th:text="${pricePreview.note}">
+                                El importe se calcula automaticamente segun la configuracion y los archivos.
+                            </p>
+                        </article>
+
+                        <article class="side-card wizard-help-card">
+                            <span class="side-card-kicker">Pedido</span>
+                            <h3>Como se guarda</h3>
+                            <ul class="side-check-list">
+                                <li>Se guarda dentro de tu cuenta.</li>
+                                <li>Genera un codigo unico de recogida.</li>
+                                <li>Lo veras despues en Mis pedidos.</li>
+                            </ul>
+                        </article>
+                    </aside>
+                </form>
             </div>
         </section>
     </main>
@@ -260,4 +499,3 @@
 <script th:src="@{/js/copisteria.js}"></script>
 </body>
 </html>
-

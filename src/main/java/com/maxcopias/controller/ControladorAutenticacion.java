@@ -120,7 +120,7 @@ public class ControladorAutenticacion {
         boolean isAdmin = authentication.getAuthorities().stream()
             .anyMatch(authority -> authority.getAuthority().equals(Rol.ROLE_ADMIN.name()));
 
-        return isAdmin ? "redirect:/admin" : "redirect:/area-personal";
+        return isAdmin ? "redirect:/admin" : "redirect:/";
     }
 }
 

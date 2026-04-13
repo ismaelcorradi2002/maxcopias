@@ -85,7 +85,7 @@ public class ControladorAreaPersonal {
 
     @GetMapping("/pedido")
     public String orderShortcut() {
-        return "redirect:/copisteria/pedido";
+        return "redirect:/copisteria";
     }
 
     /**

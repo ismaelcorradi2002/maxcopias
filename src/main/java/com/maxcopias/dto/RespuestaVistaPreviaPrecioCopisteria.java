@@ -4,6 +4,8 @@ package com.maxcopias.dto;
  * Record respuesta JSON para vista previa de precio copistería.
  */
 import com.maxcopias.model.EstimacionPrecioCopisteria;
+import com.maxcopias.model.LineaPrecioCopisteria;
+import java.util.List;
 
 public record RespuestaVistaPreviaPrecioCopisteria(
     String formattedTotal,
@@ -11,7 +13,8 @@ public record RespuestaVistaPreviaPrecioCopisteria(
     String note,
     int fileCount,
     int pageCount,
-    String pageCountLabel
+    String pageCountLabel,
+    List<LineaPrecioVistaPreviaCopisteria> lines
 ) {
 
     /**
@@ -24,8 +27,25 @@ public record RespuestaVistaPreviaPrecioCopisteria(
             estimate.getNote(),
             estimate.getFileCount(),
             estimate.getPageCount(),
-            estimate.getPageCountLabel()
+            estimate.getPageCountLabel(),
+            estimate.getLines().stream()
+                .map(LineaPrecioVistaPreviaCopisteria::from)
+                .toList()
         );
+    }
+
+    public record LineaPrecioVistaPreviaCopisteria(
+        String concept,
+        String detail,
+        String formattedAmount
+    ) {
+        public static LineaPrecioVistaPreviaCopisteria from(LineaPrecioCopisteria line) {
+            return new LineaPrecioVistaPreviaCopisteria(
+                line.getConcept(),
+                line.getDetail(),
+                line.getFormattedAmount()
+            );
+        }
     }
 }
 

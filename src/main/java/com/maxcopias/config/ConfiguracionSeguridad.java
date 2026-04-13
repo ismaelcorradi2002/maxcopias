@@ -66,7 +66,7 @@ public class ConfiguracionSeguridad {
     }
 
     /**
-     * Redirige admin a /admin, user a /area-personal.
+     * Redirige admin a /admin y usuario a la Home.
      */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
@@ -74,7 +74,7 @@ public class ConfiguracionSeguridad {
             boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-            response.sendRedirect(isAdmin ? "/admin" : "/area-personal");
+            response.sendRedirect(isAdmin ? "/admin" : "/");
         };
     }
 }

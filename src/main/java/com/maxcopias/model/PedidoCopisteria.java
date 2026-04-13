@@ -70,6 +70,23 @@ public class PedidoCopisteria {
     @Column(name = "paper_size", length = 20)
     private TamanoPapel paperSize;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "paper_type", length = 20)
+    private TipoPapel paperType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "binding_type", length = 30)
+    private TipoEncuadernacion bindingType;
+
+    @Column(name = "extra_plastificado", nullable = false)
+    private boolean plastificado;
+
+    @Column(name = "extra_urgente", nullable = false)
+    private boolean urgente;
+
+    @Column(name = "extra_escaneado", nullable = false)
+    private boolean escaneado;
+
     @Column(length = 600)
     private String observations;
 
@@ -135,6 +152,30 @@ public class PedidoCopisteria {
 
     public boolean hasPrintConfiguration() {
         return jobType != null && jobType.isRequiresPrintConfiguration();
+    }
+
+    public boolean hasBinding() {
+        return bindingType != null && !bindingType.isNone();
+    }
+
+    public boolean hasExtras() {
+        return plastificado || urgente || escaneado;
+    }
+
+    public String getExtrasSummary() {
+        List<String> extras = new ArrayList<>();
+
+        if (plastificado) {
+            extras.add("Plastificado");
+        }
+        if (urgente) {
+            extras.add("Urgente");
+        }
+        if (escaneado) {
+            extras.add("Escaneado");
+        }
+
+        return extras.isEmpty() ? "Sin extras" : String.join(", ", extras);
     }
 
     public String getFormattedCreatedAt() {
@@ -252,6 +293,62 @@ public class PedidoCopisteria {
 
     public void setPaperSize(TamanoPapel paperSize) {
         this.paperSize = paperSize;
+    }
+
+    public TipoPapel getTipoPapel() {
+        return paperType;
+    }
+
+    public void setTipoPapel(TipoPapel paperType) {
+        this.paperType = paperType;
+    }
+
+    public TipoPapel getPaperType() {
+        return paperType;
+    }
+
+    public void setPaperType(TipoPapel paperType) {
+        this.paperType = paperType;
+    }
+
+    public TipoEncuadernacion getTipoEncuadernacion() {
+        return bindingType;
+    }
+
+    public void setTipoEncuadernacion(TipoEncuadernacion bindingType) {
+        this.bindingType = bindingType;
+    }
+
+    public TipoEncuadernacion getBindingType() {
+        return bindingType;
+    }
+
+    public void setBindingType(TipoEncuadernacion bindingType) {
+        this.bindingType = bindingType;
+    }
+
+    public boolean isPlastificado() {
+        return plastificado;
+    }
+
+    public void setPlastificado(boolean plastificado) {
+        this.plastificado = plastificado;
+    }
+
+    public boolean isUrgente() {
+        return urgente;
+    }
+
+    public void setUrgente(boolean urgente) {
+        this.urgente = urgente;
+    }
+
+    public boolean isEscaneado() {
+        return escaneado;
+    }
+
+    public void setEscaneado(boolean escaneado) {
+        this.escaneado = escaneado;
     }
 
     public String getObservations() {

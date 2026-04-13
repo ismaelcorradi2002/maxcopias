@@ -42,7 +42,7 @@
             <div class="container">
                 <div class="dashboard-actions dashboard-orders-actions">
                     <a th:href="@{/copisteria}" class="button button-secondary-dark">Ver copisteria</a>
-                    <a th:href="@{/copisteria/pedido}" class="button button-primary">Hacer nuevo pedido</a>
+                    <a th:href="@{/copisteria}" class="button button-primary">Hacer nuevo pedido</a>
                 </div>
 
                 <div class="empty-state dashboard-empty-state" th:if="${#lists.isEmpty(orders)}" data-reveal="up">
@@ -51,7 +51,7 @@
                         Cuando completes tu primer encargo de copisteria, aparecera aqui con su codigo unico
                         de recogida y el listado de archivos enviados.
                     </p>
-                    <a th:href="@{/copisteria/pedido}" class="button button-primary">Crear mi primer pedido</a>
+                    <a th:href="@{/copisteria}" class="button button-primary">Crear mi primer pedido</a>
                 </div>
 
                 <div class="orders-list" th:if="${!#lists.isEmpty(orders)}">
@@ -88,9 +88,21 @@
                                         <span>Tamano</span>
                                         <strong th:text="${order.paperSize.label}">A4</strong>
                                     </li>
+                                    <li th:if="${order.paperType != null}">
+                                        <span>Papel</span>
+                                        <strong th:text="${order.paperType.label}">Normal</strong>
+                                    </li>
+                                    <li th:if="${order.bindingType != null && !order.bindingType.none}">
+                                        <span>Encuadernacion</span>
+                                        <strong th:text="${order.bindingType.label}">Espiral</strong>
+                                    </li>
+                                    <li>
+                                        <span>Extras</span>
+                                        <strong th:text="${order.extrasSummary}">Sin extras</strong>
+                                    </li>
                                     <li>
                                         <span>Precio estimado</span>
-                                        <strong th:text="${order.formattedEstimatedPrice}">4,32 â‚¬</strong>
+                                        <strong th:text="${order.formattedEstimatedPrice}">4,32 EUR</strong>
                                     </li>
                                     <li>
                                         <span>Paginas detectadas</span>
@@ -105,7 +117,7 @@
                                     <li th:each="file : ${order.files}">
                                         <div>
                                             <strong th:text="${file.originalFilename}">documento.pdf</strong>
-                                            <span th:text="${file.readableSize + ' â€¢ ' + file.pageCountLabel}">1.2 MB â€¢ 3 paginas</span>
+                                            <span th:text="${file.readableSize + ' • ' + file.pageCountLabel}">1.2 MB • 3 paginas</span>
                                         </div>
                                     </li>
                                 </ul>
@@ -118,7 +130,7 @@
                                 <span th:text="${order.observationsOrDefault}">Sin observaciones.</span>
                             </p>
                             <p class="order-history-price-note" th:text="${order.priceBreakdownOrDefault}">
-                                2 archivo(s) x 3 copia(s) â€¢ Blanco y negro â€¢ A4 â€¢ Una cara
+                                2 archivo(s) x 3 copia(s) • Blanco y negro • A4 • Una cara
                             </p>
                             <a th:href="@{/copisteria/resumen/{pickupCode}(pickupCode=${order.pickupCode})}" class="button button-outline-dark">
                                 Ver detalle del pedido
@@ -136,4 +148,3 @@
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>
-

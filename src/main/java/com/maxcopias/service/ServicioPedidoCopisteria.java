@@ -59,6 +59,11 @@ public class ServicioPedidoCopisteria {
         order.setModoColor(form.getModoColor());
         order.setCaraImpresion(form.getCaraImpresion());
         order.setPaperSize(form.getPaperSize());
+        order.setTipoPapel(form.getTipoPapel());
+        order.setTipoEncuadernacion(form.getTipoEncuadernacion());
+        order.setPlastificado(Boolean.TRUE.equals(form.getPlastificado()));
+        order.setUrgente(Boolean.TRUE.equals(form.getUrgente()));
+        order.setEscaneado(Boolean.TRUE.equals(form.getEscaneado()));
         order.setObservations(normalizeOptionalValue(form.getObservations()));
         order.setStatus(EstadoPedidoCopisteria.RECIBIDO);
         order.setEstimatedPrice(priceEstimate.getTotal());
