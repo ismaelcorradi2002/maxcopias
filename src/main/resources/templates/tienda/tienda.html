@@ -5,75 +5,88 @@
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main>
-        <section class="welcome-hero" style="background: linear-gradient(135deg, #f5f7fb 0%, #e8eaf0 100%);">
-            <div class="container hero-layout">
-                <div class="hero-copy" style="max-width: 600px;">
-                    <span class="eyebrow">Tienda Maxcopias</span>
-                    <h1>Papeleria, material escolar y suministros de oficina</h1>
-                    <p class="hero-lead">
-                        Encuentra todo lo que necesitas para clase, trabajo o estudio.
-                        Disponible para compra directa en tienda con recogida inmediata.
-                    </p>
-                    <div class="hero-actions">
-                        <a href="#productos" class="button button-primary">Ver productos</a>
-                        <a href="#contacto" class="button button-secondary">Contactar</a>
-                    </div>
+        <!-- En oferta - Carrusel -->
+        <section id="ofertas" style="padding: 4rem 0; background: #f8f9fa;">
+            <div class="container">
+                <div class="section-heading" style="text-align: center; margin-bottom: 3rem;">
+                    <span class="section-kicker">En oferta</span>
+                    <h2>Productos en promoción especial</h2>
                 </div>
-                <div class="hero-visual" style="justify-content: center;">
-                    <img th:src="@{/images/maxcopias-tienda.svg}" alt="Tienda de papelería Maxcopias" style="max-width: 400px;">
+                <div class="oferta-carousel">
+                    <div class="carousel-inner" style="position: relative; height: 400px; overflow: hidden; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+                        <div class="carousel-item active" style="position: absolute; width: 100%; height: 100%; opacity: 1; transition: opacity 0.8s ease-in-out;">
+                            <img src="https://m.media-amazon.com/images/I/81p-CEe3RwL._AC_UF894,1000_QL80_.jpg" alt="[1] Cuadernos en oferta - 30% OFF" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; bottom: 2rem; left: 2rem; background: rgba(255,255,255,0.95); padding: 1rem 1.5rem; border-radius: 12px; backdrop-filter: blur(10px);">
+                                <h3>Cuadernos 3x2</h3>
+                                <span style="color: #e74c3c; font-weight: 700; font-size: 1.5rem;">30% OFF</span>
+                            </div>
+                        </div>
+                        <div class="carousel-item" style="position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out;">
+                            <img src="https://images-na.ssl-images-amazon.com/images/I/71+TJYgLkVL._AC_UL375_SR375,375_.jpg" alt="[2] Bolígrafos en oferta - 25% OFF" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; bottom: 2rem; left: 2rem; background: rgba(255,255,255,0.95); padding: 1rem 1.5rem; border-radius: 12px; backdrop-filter: blur(10px);">
+                                <h3>Pack bolígrafos</h3>
+                                <span style="color: #e74c3c; font-weight: 700; font-size: 1.5rem;">25% OFF</span>
+                            </div>
+                        </div>
+                        <div class="carousel-item" style="position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out;">
+                            <img src="https://media.cartabon.com/product/carpetas-de-gomas-tamanos-grandes-para-dibujo-800x800.jpg?width=1200" alt="[3] Carpetas en oferta - 20% OFF" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; bottom: 2rem; left: 2rem; background: rgba(255,255,255,0.95); padding: 1rem 1.5rem; border-radius: 12px; backdrop-filter: blur(10px);">
+                                <h3>Carpetas rígidas</h3>
+                                <span style="color: #e74c3c; font-weight: 700; font-size: 1.5rem;">20% OFF</span>
+                            </div>
+                        </div>
+                        <div class="carousel-item" style="position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out;">
+                            <img src="https://quecartucho.es/3456-large_default/papel-economico-din-a4-80-gramos-paquete-500-folios.jpg" alt="[4] Papel A4 oferta - 15% OFF" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; bottom: 2rem; left: 2rem; background: rgba(255,255,255,0.95); padding: 1rem 1.5rem; border-radius: 12px; backdrop-filter: blur(10px);">
+                                <h3>Papel A4 reams</h3>
+                                <span style="color: #e74c3c; font-weight: 700; font-size: 1.5rem;">15% OFF</span>
+                            </div>
+                        </div>
+                        <div class="carousel-item" style="position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out;">
+                            <img src="https://m.media-amazon.com/images/I/81yZmHtCTdL.jpg" alt="[5] Rotuladores oferta - 35% OFF" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div style="position: absolute; bottom: 2rem; left: 2rem; background: rgba(255,255,255,0.95); padding: 1rem 1.5rem; border-radius: 12px; backdrop-filter: blur(10px);">
+                                <h3>Rotuladores set</h3>
+                                <span style="color: #e74c3c; font-weight: 700; font-size: 1.5rem;">35% OFF</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Indicadores -->
+                    <div style="position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem;">
+                        <span class="carousel-indicator active" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.8); cursor: pointer; transition: background 0.3s;"></span>
+                        <span class="carousel-indicator" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: background 0.3s;"></span>
+                        <span class="carousel-indicator" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: background 0.3s;"></span>
+                        <span class="carousel-indicator" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: background 0.3s;"></span>
+                        <span class="carousel-indicator" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: background 0.3s;"></span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="services-section" id="productos" style="padding: 4rem 0;">
+        <!-- Secciones de productos dinámicas -->
+        <section id="productos" style="padding: 4rem 0;">
             <div class="container">
-                <div class="section-heading">
-                    <span class="section-kicker">Productos disponibles</span>
-                    <h2>Material variado para cualquier necesidad</h2>
+                <div class="section-tabs" style="text-align: center; margin-bottom: 3rem;">
+                    <button class="section-tab active" data-category="escolar" style="background: #3498db; color: white; border: none; padding: 0.75rem 1.5rem; margin: 0 0.5rem; border-radius: 25px; cursor: pointer; font-weight: 500; transition: all 0.3s;">Escolar</button>
+                    <button class="section-tab" data-category="oficina" style="background: #e74c3c; color: white; border: none; padding: 0.75rem 1.5rem; margin: 0 0.5rem; border-radius: 25px; cursor: pointer; font-weight: 500; transition: all 0.3s;">Oficina</button>
+                    <button class="section-tab" data-category="arte" style="background: #9b59b6; color: white; border: none; padding: 0.75rem 1.5rem; margin: 0 0.5rem; border-radius: 25px; cursor: pointer; font-weight: 500; transition: all 0.3s;">Arte</button>
+                    <button class="section-tab" data-category="organizacion" style="background: #f39c12; color: white; border: none; padding: 0.75rem 1.5rem; margin: 0 0.5rem; border-radius: 25px; cursor: pointer; font-weight: 500; transition: all 0.3s;">Organización</button>
+                    <button class="section-tab" data-category="tecnologia" style="background: #2ecc71; color: white; border: none; padding: 0.75rem 1.5rem; margin: 0 0.5rem; border-radius: 25px; cursor: pointer; font-weight: 500; transition: all 0.3s;">Tecnología</button>
                 </div>
 
-                <div class="service-split" style="gap: 2rem;">
-                    <article class="service-panel service-panel-light">
-                        <div class="service-media">
-                            <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="100" rx="12" fill="#e3f2fd"/>
-                                <path d="M20 25h60v10H20zM20 45h60v10H20zM20 65h30v10H20z" stroke="#1976d2" stroke-width="3" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <div class="service-copy">
-                            <span class="card-tag">Escolar</span>
-                            <h3>Cuadernos y bolígrafos</h3>
-                            <ul class="service-list">
-                                <li>Cuadernos rayados y pautados</li>
-                                <li>Bolígrafos, lápices y gomas</li>
-                                <li>Carpetas y archivadores</li>
-                            </ul>
-                        </div>
-                    </article>
-
-                    <article class="service-panel service-panel-dark">
-                        <div class="service-media">
-                            <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="100" rx="12" fill="#f3e5f5"/>
-                                <path d="M25 20h50v15H25zM25 45h50v15H25zM25 75h40v10H25z" stroke="#7b1fa2" stroke-width="3"/>
-                            </svg>
-                        </div>
-                        <div class="service-copy">
-                            <span class="card-tag">Oficina</span>
-                            <h3>Suministros profesionales</h3>
-                            <ul class="service-list">
-                                <li>Rotuladores permanentes</li>
-                                <li>Papel A4 y sobres</li>
-                                <li>Perforadoras y grapadoras</li>
-                            </ul>
-                        </div>
-                    </article>
+                <div class="section-heading" id="productos-title" style="text-align: center; margin-bottom: 3rem;">
+                    <span class="section-kicker">Lo más nuevo</span>
+                    <h2>Últimas novedades en papelería</h2>
                 </div>
 
-                <div style="text-align: center; margin-top: 3rem;">
-                    <p><strong>Consulta disponibilidad y precios en tienda.</strong> Pase directamente por Calle Mayor 24.</p>
+                <div class="productos-grid" id="productos-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    <!-- Productos dinámicos se cargan aquí por JS -->
                 </div>
+            </div>
+        </section>
+
+        <section style="padding: 2rem 0; background: #f8f9fa;">
+            <div class="container" style="text-align: center;">
+                <p><strong>Consulta disponibilidad y precios en tienda.</strong> Pase directamente por Calle Mayor 24.</p>
             </div>
         </section>
     </main>
@@ -81,7 +94,5 @@
     <div th:replace="~{fragmentos/pie :: footer}"></div>
 </div>
 
-<script th:src="@{/js/inicio.js}"></script>
-</body>
-</html>
+<script th:src="@{/js/tienda.js}"></script>
 
