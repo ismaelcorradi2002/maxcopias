@@ -194,3 +194,30 @@
   }
 }
 
+/* Forzar centrado real de los títulos */
+#ofertas .section-heading,
+#productos-title {
+  text-align: center !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Centrar también el contenido interno */
+#ofertas .section-heading *,
+#productos-title * {
+  text-align: center !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#productos-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 🔥 centra horizontalmente TODO */
+}
+
+#productos-title .section-kicker {
+  text-align: center;
+  margin: 0 auto 1rem auto;
+}
