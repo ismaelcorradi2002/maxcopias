@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.querySelector('[data-live-validation="register"]');
     const loginForm = document.querySelector('[data-live-validation="login"]');
 
+    initPasswordToggles();
+
     if (registerForm) {
         initRegisterValidation(registerForm);
     }
@@ -13,6 +15,27 @@ document.addEventListener("DOMContentLoaded", function () {
         initLoginValidation(loginForm);
     }
 });
+
+function initPasswordToggles() {
+    const toggles = document.querySelectorAll("[data-password-toggle]");
+
+    toggles.forEach(function (toggle) {
+        const targetId = toggle.dataset.passwordTarget;
+        const target = document.getElementById(targetId);
+
+        if (!target) {
+            return;
+        }
+
+        toggle.addEventListener("click", function () {
+            const reveal = target.type === "password";
+            target.type = reveal ? "text" : "password";
+            toggle.textContent = reveal ? "Ocultar" : "Mostrar";
+            toggle.setAttribute("aria-label", reveal ? "Ocultar contrasena" : "Mostrar contrasena");
+            toggle.setAttribute("aria-pressed", reveal ? "true" : "false");
+        });
+    });
+}
 
 function initRegisterValidation(form) {
     const fields = {
@@ -29,7 +52,13 @@ function initRegisterValidation(form) {
     const strengthNodes = {
         wrapper: form.querySelector("[data-password-strength]"),
         bar: form.querySelector("[data-password-strength-bar]"),
-        text: form.querySelector("[data-password-strength-text]")
+        text: form.querySelector("[data-password-strength-text]"),
+        rules: {
+            minLength: form.querySelector('[data-password-rule="minLength"]'),
+            uppercase: form.querySelector('[data-password-rule="uppercase"]'),
+            lowercase: form.querySelector('[data-password-rule="lowercase"]'),
+            numberOrSymbol: form.querySelector('[data-password-rule="numberOrSymbol"]')
+        }
     };
 
     let emailRequestId = 0;
@@ -64,6 +93,7 @@ function initRegisterValidation(form) {
             const value = fields.password.value;
             const strength = evaluatePasswordStrength(value);
 
+            updatePasswordChecklist(strengthNodes.rules, strength.rules);
             updatePasswordStrength(strengthNodes, strength);
 
             if (!value) {
@@ -74,33 +104,25 @@ function initRegisterValidation(form) {
                 return setFieldState(fields.password, "La contrasena no puede superar 72 caracteres.", "error");
             }
 
-            if (!strength.rules.minLength) {
-                return setFieldState(fields.password, "La contrasena debe tener al menos 6 caracteres.", "error");
+            if (!allPasswordRulesSatisfied(strength.rules)) {
+                return setFieldState(fields.password, buildPasswordRequirementMessage(strength.rules), "error");
             }
 
-            if (!strength.rules.uppercase) {
-                return setFieldState(fields.password, "Incluye al menos una letra mayuscula.", "error");
-            }
-
-            if (!strength.rules.numberOrSymbol) {
-                return setFieldState(fields.password, "Incluye al menos un numero o simbolo.", "error");
-            }
-
-            return setFieldState(fields.password, "Contrasena segura.", "success");
+            return setFieldState(fields.password, "OK: Cumple todos los requisitos.", "success");
         },
         confirmPassword: function () {
             const passwordValue = fields.password.value;
             const confirmValue = fields.confirmPassword.value;
 
             if (!confirmValue) {
-                return setFieldState(fields.confirmPassword, "Confirma tu contrasena.", "error");
+                return setFieldState(fields.confirmPassword, "Escribe la contrasena otra vez para confirmarla.", "error");
             }
 
             if (confirmValue !== passwordValue) {
-                return setFieldState(fields.confirmPassword, "Las contrasenas no coinciden.", "error");
+                return setFieldState(fields.confirmPassword, "No coinciden.", "error");
             }
 
-            return setFieldState(fields.confirmPassword, "Las contrasenas coinciden.", "success");
+            return setFieldState(fields.confirmPassword, "OK: Coinciden.", "success");
         }
     };
 
@@ -163,7 +185,9 @@ function initRegisterValidation(form) {
         }
     });
 
-    updatePasswordStrength(strengthNodes, evaluatePasswordStrength(fields.password.value));
+    const initialPasswordStrength = evaluatePasswordStrength(fields.password.value);
+    updatePasswordChecklist(strengthNodes.rules, initialPasswordStrength.rules);
+    updatePasswordStrength(strengthNodes, initialPasswordStrength);
 
     if (Object.values(fields).some(function (field) { return field.value.trim() !== ""; })) {
         Object.keys(validators).forEach(function (key) {
@@ -337,11 +361,13 @@ function evaluatePasswordStrength(value) {
     const trimmedValue = value || "";
     const rules = {
         minLength: trimmedValue.length >= 6,
+        lowercase: /[a-z]/.test(trimmedValue),
         uppercase: /[A-Z]/.test(trimmedValue),
         numberOrSymbol: /(?:\d|[^A-Za-z\d])/.test(trimmedValue)
     };
-
-    const score = Object.values(rules).filter(Boolean).length;
+    const rulesPassed = Object.values(rules).filter(Boolean).length;
+    const lengthBonus = trimmedValue.length >= 10 ? 1 : 0;
+    const score = rulesPassed + lengthBonus;
 
     if (!trimmedValue) {
         return {
@@ -353,17 +379,17 @@ function evaluatePasswordStrength(value) {
         };
     }
 
-    if (score <= 1) {
+    if (score <= 2) {
         return {
             score: score,
-            width: score === 0 ? 0 : 40,
+            width: Math.max(28, rulesPassed * 18),
             tone: "weak",
             label: "Debil",
             rules: rules
         };
     }
 
-    if (score === 2) {
+    if (score <= 4) {
         return {
             score: score,
             width: 72,
@@ -390,6 +416,69 @@ function updatePasswordStrength(nodes, strength) {
     nodes.wrapper.dataset.strength = strength.tone;
     nodes.bar.style.width = strength.width + "%";
     nodes.text.textContent = strength.label;
+}
+
+function updatePasswordChecklist(ruleNodes, rules) {
+    Object.keys(ruleNodes).forEach(function (ruleKey) {
+        const node = ruleNodes[ruleKey];
+
+        if (!node) {
+            return;
+        }
+
+        const isComplete = Boolean(rules[ruleKey]);
+        const icon = node.querySelector("[data-password-rule-icon]");
+        const text = node.querySelector("[data-password-rule-text]");
+
+        node.classList.toggle("is-complete", isComplete);
+        node.classList.toggle("is-missing", !isComplete);
+
+        if (icon) {
+            icon.textContent = isComplete ? "OK" : "!";
+        }
+
+        if (text) {
+            text.textContent = isComplete ? node.dataset.okText : node.dataset.missingText;
+        }
+    });
+}
+
+function allPasswordRulesSatisfied(rules) {
+    return Object.values(rules).every(Boolean);
+}
+
+function buildPasswordRequirementMessage(rules) {
+    const missing = [];
+
+    if (!rules.minLength) {
+        missing.push("al menos 6 caracteres");
+    }
+
+    if (!rules.lowercase) {
+        missing.push("una minuscula");
+    }
+
+    if (!rules.uppercase) {
+        missing.push("una mayuscula");
+    }
+
+    if (!rules.numberOrSymbol) {
+        missing.push("un numero o simbolo");
+    }
+
+    if (missing.length === 0) {
+        return "Cumple todos los requisitos.";
+    }
+
+    if (missing.length === 1) {
+        return "Falta " + missing[0] + ".";
+    }
+
+    if (missing.length === 2) {
+        return "Faltan " + missing[0] + " y " + missing[1] + ".";
+    }
+
+    return "Faltan " + missing.slice(0, -1).join(", ") + " y " + missing[missing.length - 1] + ".";
 }
 
 function sanitizeNameValue(value) {

@@ -102,23 +102,45 @@
                                 <small class="field-error" data-server-error="phone" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
                             </div>
 
-                            <div class="field-group">
+                            <div class="field-group span-2 field-group-password">
                                 <label for="password">Contrasena</label>
-                                <input
-                                    id="password"
-                                    type="password"
-                                    th:field="*{password}"
-                                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
-                                    autocomplete="new-password"
-                                    maxlength="72"
-                                    data-live-validate="password"
-                                    placeholder="Minimo 6 caracteres">
+                                <div class="password-field">
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        th:field="*{password}"
+                                        th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
+                                        autocomplete="new-password"
+                                        maxlength="72"
+                                        data-live-validate="password"
+                                        placeholder="Minimo 6 caracteres">
+                                    <button
+                                        type="button"
+                                        class="password-toggle"
+                                        data-password-toggle
+                                        data-password-target="password"
+                                        aria-label="Mostrar contrasena"
+                                        aria-pressed="false">Mostrar</button>
+                                </div>
                                 <div class="password-hints">
-                                    <span>Tu contrasena deberia contener</span>
-                                    <ul>
-                                        <li>Al menos 6 caracteres</li>
-                                        <li>Una letra mayuscula</li>
-                                        <li>Algun simbolo o numero</li>
+                                    <span>La contrasena debe cumplir estos requisitos</span>
+                                    <ul class="password-rules-list" data-password-rules>
+                                        <li class="password-rule-item" data-password-rule="lowercase" data-ok-text="Tiene minusculas" data-missing-text="Falta minuscula">
+                                            <span class="password-rule-icon" data-password-rule-icon>!</span>
+                                            <span class="password-rule-text" data-password-rule-text>Falta minuscula</span>
+                                        </li>
+                                        <li class="password-rule-item" data-password-rule="uppercase" data-ok-text="Tiene mayuscula" data-missing-text="Falta mayuscula">
+                                            <span class="password-rule-icon" data-password-rule-icon>!</span>
+                                            <span class="password-rule-text" data-password-rule-text>Falta mayuscula</span>
+                                        </li>
+                                        <li class="password-rule-item" data-password-rule="numberOrSymbol" data-ok-text="Tiene numero o simbolo" data-missing-text="Falta numero o simbolo">
+                                            <span class="password-rule-icon" data-password-rule-icon>!</span>
+                                            <span class="password-rule-text" data-password-rule-text>Falta numero o simbolo</span>
+                                        </li>
+                                        <li class="password-rule-item" data-password-rule="minLength" data-ok-text="Tiene al menos 6 caracteres" data-missing-text="Menos de 6 caracteres">
+                                            <span class="password-rule-icon" data-password-rule-icon>!</span>
+                                            <span class="password-rule-text" data-password-rule-text>Menos de 6 caracteres</span>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="password-strength" data-password-strength aria-live="polite">
@@ -134,17 +156,26 @@
                                 <small class="field-error" data-server-error="password" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
                             </div>
 
-                            <div class="field-group">
+                            <div class="field-group span-2 field-group-password">
                                 <label for="confirmPassword">Confirmar contrasena</label>
-                                <input
-                                    id="confirmPassword"
-                                    type="password"
-                                    th:field="*{confirmPassword}"
-                                    th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
-                                    autocomplete="new-password"
-                                    maxlength="72"
-                                    data-live-validate="confirmPassword"
-                                    placeholder="Repite la contrasena">
+                                <div class="password-field">
+                                    <input
+                                        id="confirmPassword"
+                                        type="password"
+                                        th:field="*{confirmPassword}"
+                                        th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
+                                        autocomplete="new-password"
+                                        maxlength="72"
+                                        data-live-validate="confirmPassword"
+                                        placeholder="Repite la contrasena">
+                                    <button
+                                        type="button"
+                                        class="password-toggle"
+                                        data-password-toggle
+                                        data-password-target="confirmPassword"
+                                        aria-label="Mostrar contrasena"
+                                        aria-pressed="false">Mostrar</button>
+                                </div>
                                 <small class="field-feedback" data-live-feedback="confirmPassword" aria-live="polite"></small>
                                 <small class="field-error" data-server-error="confirmPassword" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></small>
                             </div>

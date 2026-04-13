@@ -56,14 +56,34 @@
   }
 }
 
+.tienda-page {
+  background:
+    radial-gradient(circle at top left, rgba(15, 111, 232, 0.08), transparent 24%),
+    radial-gradient(circle at top right, rgba(139, 161, 194, 0.12), transparent 20%),
+    linear-gradient(180deg, #eef3f9 0%, #f8fafc 38%, #edf2f7 100%);
+}
+
+.tienda-page .site-header {
+  position: relative;
+}
+
+.tienda-main {
+  padding-bottom: 48px;
+}
+
 #ofertas {
-  padding: 4rem 0;
-  background: #f8f9fa;
+  padding: 18px 0 4rem;
+  background: transparent;
+}
+
+#ofertas .oferta-carousel {
+  max-width: 980px;
+  margin: 0 auto;
 }
 
 #ofertas .carousel-inner {
   position: relative;
-  height: 400px;
+  height: clamp(260px, 32vw, 340px);
   overflow: hidden;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -85,12 +105,22 @@
 
 .carousel-overlay {
   position: absolute;
-  bottom: 2rem;
-  left: 2rem;
+  bottom: 1.5rem;
+  left: 1.5rem;
   background: rgba(255,255,255,0.95);
-  padding: 1rem 1.5rem;
+  padding: 0.85rem 1.25rem;
   border-radius: 12px;
   backdrop-filter: blur(10px);
+  max-width: 240px;
+}
+
+.carousel-overlay h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.9rem;
+}
+
+.carousel-overlay span {
+  font-size: 1rem;
 }
 
 .carousel-indicators {
@@ -182,6 +212,25 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  #ofertas .oferta-carousel {
+    max-width: 100%;
+  }
+
+  #ofertas .carousel-inner {
+    height: 240px;
+  }
+
+  .carousel-overlay {
+    left: 1rem;
+    bottom: 1rem;
+    max-width: 200px;
+    padding: 0.75rem 1rem;
+  }
+
+  .carousel-overlay h3 {
+    font-size: 1.45rem;
+  }
+
   .section-tabs {
     flex-wrap: wrap;
     gap: 0.5rem;

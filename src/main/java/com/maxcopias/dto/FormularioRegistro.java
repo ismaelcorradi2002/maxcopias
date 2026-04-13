@@ -38,8 +38,8 @@ public class FormularioRegistro {
     @NotBlank(message = "Introduce una contrasena.")
     @Size(min = 6, max = 72, message = "La contrasena debe tener entre 6 y 72 caracteres.")
     @Pattern(
-        regexp = "^(?=.*[A-Z])(?=.*(?:\\d|[^A-Za-z\\d])).{6,72}$",
-        message = "La contrasena debe incluir una mayuscula y un numero o simbolo."
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*(?:\\d|[^A-Za-z\\d])).{6,72}$",
+        message = "La contrasena debe tener al menos 6 caracteres, una mayuscula, una minuscula y un numero o simbolo."
     )
     private String password;
 

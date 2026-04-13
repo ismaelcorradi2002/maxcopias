@@ -194,6 +194,10 @@
     gap: 10px;
 }
 
+.field-group-password {
+    gap: 12px;
+}
+
 .field-group label {
     font-size: 0.95rem;
     font-weight: 700;
@@ -209,6 +213,44 @@
     font: inherit;
     color: #132033;
     transition: border-color 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 112px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    min-width: 86px;
+    border: 1px solid rgba(18, 32, 51, 0.1);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 9px 14px;
+    font: inherit;
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: #122033;
+    cursor: pointer;
+    transition: background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease;
+}
+
+.password-toggle:hover {
+    border-color: rgba(15, 111, 232, 0.24);
+    background: #ffffff;
+    color: #0f6fe8;
+}
+
+.password-toggle:focus-visible {
+    outline: none;
+    border-color: rgba(15, 111, 232, 0.4);
+    box-shadow: 0 0 0 4px rgba(15, 111, 232, 0.12);
 }
 
 .field-group input:focus {
@@ -252,6 +294,12 @@
     color: #0f6fe8;
 }
 
+.field-feedback[data-live-feedback="password"],
+.field-feedback[data-live-feedback="confirmPassword"] {
+    min-height: 1.45rem;
+    font-weight: 600;
+}
+
 .field-group input.is-valid {
     border-color: rgba(20, 170, 96, 0.38);
     box-shadow: 0 0 0 5px rgba(20, 170, 96, 0.1);
@@ -260,8 +308,8 @@
 
 .password-hints {
     display: grid;
-    gap: 8px;
-    padding: 14px 16px;
+    gap: 10px;
+    padding: 16px 18px;
     border: 1px solid rgba(18, 32, 51, 0.08);
     border-radius: 18px;
     background: rgba(247, 249, 252, 0.95);
@@ -275,12 +323,52 @@
 
 .password-hints ul {
     margin: 0;
-    padding-left: 18px;
+    padding: 0;
+    list-style: none;
     display: grid;
-    gap: 6px;
+    gap: 8px;
     color: #5d6c82;
     font-size: 0.84rem;
     line-height: 1.55;
+}
+
+.password-rule-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid rgba(18, 32, 51, 0.08);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    transition: border-color 0.22s ease, background-color 0.22s ease, color 0.22s ease;
+}
+
+.password-rule-icon {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: rgba(123, 138, 162, 0.12);
+    color: #6d7b90;
+    font-size: 0.72rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.password-rule-item.is-complete {
+    border-color: rgba(20, 170, 96, 0.18);
+    background: rgba(20, 170, 96, 0.07);
+    color: #157a4a;
+}
+
+.password-rule-item.is-complete .password-rule-icon {
+    background: rgba(20, 170, 96, 0.14);
+    color: #157a4a;
+}
+
+.password-rule-item.is-missing {
+    color: #5d6c82;
 }
 
 .password-strength {

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Tienda de papelería', '/css/tienda.css')}"></head>
-<body>
+<body class="tienda-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="tienda-main">
 
         <!-- En oferta - Carrusel -->
         <section id="ofertas">
@@ -94,4 +96,6 @@
 </div>
 
 <script th:src="@{/js/tienda.js}"></script>
+</body>
+</html>
 

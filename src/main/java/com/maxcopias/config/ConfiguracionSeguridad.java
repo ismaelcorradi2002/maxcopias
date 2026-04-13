@@ -28,7 +28,7 @@ public class ConfiguracionSeguridad {
         http
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/login", "/register", "/register/check-email", "/error", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/tienda", "/detalles-producto/**", "/login", "/register", "/register/check-email", "/error", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria", "/copisteria/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
