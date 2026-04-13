@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Tienda de papelería', '/css/inicio.css')}"></head>
+<body>
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main>
+        <section class="welcome-hero" style="background: linear-gradient(135deg, #f5f7fb 0%, #e8eaf0 100%);">
+            <div class="container hero-layout">
+                <div class="hero-copy" style="max-width: 600px;">
+                    <span class="eyebrow">Tienda Maxcopias</span>
+                    <h1>Papeleria, material escolar y suministros de oficina</h1>
+                    <p class="hero-lead">
+                        Encuentra todo lo que necesitas para clase, trabajo o estudio.
+                        Disponible para compra directa en tienda con recogida inmediata.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#productos" class="button button-primary">Ver productos</a>
+                        <a href="#contacto" class="button button-secondary">Contactar</a>
+                    </div>
+                </div>
+                <div class="hero-visual" style="justify-content: center;">
+                    <img th:src="@{/images/maxcopias-tienda.svg}" alt="Tienda de papelería Maxcopias" style="max-width: 400px;">
+                </div>
+            </div>
+        </section>
+
+        <section class="services-section" id="productos" style="padding: 4rem 0;">
+            <div class="container">
+                <div class="section-heading">
+                    <span class="section-kicker">Productos disponibles</span>
+                    <h2>Material variado para cualquier necesidad</h2>
+                </div>
+
+                <div class="service-split" style="gap: 2rem;">
+                    <article class="service-panel service-panel-light">
+                        <div class="service-media">
+                            <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="100" height="100" rx="12" fill="#e3f2fd"/>
+                                <path d="M20 25h60v10H20zM20 45h60v10H20zM20 65h30v10H20z" stroke="#1976d2" stroke-width="3" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="service-copy">
+                            <span class="card-tag">Escolar</span>
+                            <h3>Cuadernos y bolígrafos</h3>
+                            <ul class="service-list">
+                                <li>Cuadernos rayados y pautados</li>
+                                <li>Bolígrafos, lápices y gomas</li>
+                                <li>Carpetas y archivadores</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <article class="service-panel service-panel-dark">
+                        <div class="service-media">
+                            <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="100" height="100" rx="12" fill="#f3e5f5"/>
+                                <path d="M25 20h50v15H25zM25 45h50v15H25zM25 75h40v10H25z" stroke="#7b1fa2" stroke-width="3"/>
+                            </svg>
+                        </div>
+                        <div class="service-copy">
+                            <span class="card-tag">Oficina</span>
+                            <h3>Suministros profesionales</h3>
+                            <ul class="service-list">
+                                <li>Rotuladores permanentes</li>
+                                <li>Papel A4 y sobres</li>
+                                <li>Perforadoras y grapadoras</li>
+                            </ul>
+                        </div>
+                    </article>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <p><strong>Consulta disponibilidad y precios en tienda.</strong> Pase directamente por Calle Mayor 24.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>
+

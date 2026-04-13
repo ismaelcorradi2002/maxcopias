@@ -16,6 +16,13 @@ public class ControladorInicio {
     public String home() {
         return "inicio/inicio";
     }
-}
 
+    /**
+     * Página de la tienda de papelería.
+     */
+    @GetMapping("/tienda")
+    public String tienda() {
+        return "tienda/tienda";
+    }
+}
 
