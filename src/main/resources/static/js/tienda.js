@@ -1,6 +1,6 @@
-// Carrusel y categorías dinámicas - FIXED SYNTAX
+// Carrusel y categorías dinámicas - FIXED SYNTAX + Click mochila
 document.addEventListener('DOMContentLoaded', function() {
-  // CARRUSEL
+  // CARRUSEL (igual)
   const items = document.querySelectorAll('.carousel-item');
   const indicators = document.querySelectorAll('.carousel-indicator');
   let currentIndex = 0;
@@ -19,9 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function nextSlide() {
     let nextIndex = currentIndex + 1;
-    if (nextIndex >= 5) {
-      nextIndex = 0;
-    }
+    if (nextIndex >= 5) nextIndex = 0;
     showSlide(nextIndex);
   }
 
@@ -39,14 +37,14 @@ document.addEventListener('DOMContentLoaded', function() {
   carousel.addEventListener('mouseenter', () => clearInterval(carouselInterval));
   carousel.addEventListener('mouseleave', () => carouselInterval = setInterval(nextSlide, 2000));
 
-  // TODOS LOS PRODUCTOS
+  // PRODUCTOS (SIN CAMBIOS)
   const todosProductos = [
     { category: 'escolar', img: 'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: '[Escolar1] Mochila escolar reforzada', nombre: 'Mochila escolar', desc: 'Capacidad 25L, múltiples compartimentos.', precio: '€29.99' },
     { category: 'escolar', img: 'https://images.unsplash.com/photo-1567634088512-20ec1da1e1a5?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: '[Escolar2] Estuche doble', nombre: 'Estuche doble', desc: 'Plástico resistente, 2 cremalleras.', precio: '€8.50' },
     { category: 'oficina', img: 'https://multimedia.dideco.es/img/papeleria/EAN_8422951051238-5.jpg', alt: '[Oficina1] Separadores A4', nombre: 'Separadores A4', desc: '12 pestañas, colores variados.', precio: '€5.99' },
     { category: 'oficina', img: 'https://images.unsplash.com/photo-1559743341-7fef133c7c6a?q=80&w=1570&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: '[Oficina2] Grapadora pesada', nombre: 'Grapadora pesada', desc: 'Capacidad 100 hojas, metálica.', precio: '€19.95' },
     { category: 'arte', img: 'https://m.media-amazon.com/images/I/61xNnFt-2QL.jpg', alt: '[Arte1] Lápices acuarela 24u', nombre: 'Lápices acuarela', desc: 'Set profesional 24 colores.', precio: '€22.50' },
-    { category: 'arte', img: 'https://plus.unsplash.com/premium_photo-1683309559481-f5b07f07774e?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', nombre: 'Bloc dibujo', desc: 'Formato A4, 50h 200gr.', precio: '€12.99' },
+    { category: 'arte', img: 'https://plus.unsplash.com/premium_photo-1683309559481-f5b07f07774e?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: '[Arte2] Bloc dibujo 200g', nombre: 'Bloc dibujo', desc: 'Formato A4, 50h 200gr.', precio: '€12.99' },
     { category: 'organizacion', img: 'https://lasuperpapeleria.com//imagenes_grandes/3130631/313063189560.JPG', alt: '[Organizacion1] Caja archivador', nombre: 'Caja archivador', desc: 'Transfer resistente, 50 documentos.', precio: '€6.75' },
     { category: 'organizacion', img: 'https://moldiber.com/2658-thickbox_default/perfil-auxiliar-de-aluminio-a-medida-modelo-20.webp', alt: '[Organizacion2] Tablero corcho', nombre: 'Tablero corcho', desc: '60x40cm con marcos aluminio.', precio: '€18.90' },
     { category: 'tecnologia', img: 'https://m.media-amazon.com/images/I/717phNvKCVS._AC_UF1000,1000_QL80_.jpg', alt: '[Tecnologia1] Protector teclado', nombre: 'Protector teclado', desc: 'Transparente, funda silicona.', precio: '€9.99' },
@@ -70,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     container.innerHTML = productsToShow.map(product => `
-      <article class="mini-service-card" style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+      <article class="mini-service-card"${product.nombre === 'Mochila escolar' ? ' onclick="window.location.href=\'/detalles-producto/1\'" style="cursor: pointer;"' : ''}>
         <img src="${product.img}" alt="${product.alt}" style="width: 100%; height: 250px; object-fit: cover;">
         <div style="padding: 1.5rem;">
           <h3>${product.nombre}</h3>
@@ -85,10 +83,9 @@ document.addEventListener('DOMContentLoaded', function() {
     tab.addEventListener('click', function() {
       const newCategory = this.dataset.category;
       
-      // Toggle: si misma categoría activa → todos
+      // Toggle lógica igual...
       if (currentCategory === newCategory) {
         currentCategory = 'todos';
-        // Resetear todos los botones a colores originales
         tabs.forEach(t => {
           const cat = t.dataset.category;
           t.classList.remove('active');
@@ -96,24 +93,19 @@ document.addEventListener('DOMContentLoaded', function() {
                               cat === 'oficina' ? '#e74c3c' : 
                               cat === 'arte' ? '#9b59b6' : 
                               cat === 'organizacion' ? '#f39c12' : '#2ecc71';
-          t.style.color = 'white';
-          t.style.transform = 'scale(1)';
         });
       } else {
         currentCategory = newCategory;
-        // Reset todos, activa el clickeado oscuro
         tabs.forEach(t => {
-          const cat = t.dataset.category;
           t.classList.remove('active');
+          const cat = t.dataset.category;
           t.style.background = cat === 'escolar' ? '#3498db' : 
                               cat === 'oficina' ? '#e74c3c' : 
                               cat === 'arte' ? '#9b59b6' : 
                               cat === 'organizacion' ? '#f39c12' : '#2ecc71';
-          t.style.color = 'white';
-          t.style.transform = 'scale(1)';
         });
         this.classList.add('active');
-        this.style.background = '#2c3e50'; // Oscuro
+        this.style.background = '#2c3e50';
         this.style.transform = 'scale(1.05)';
       }
       
@@ -121,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Default: mostrar todos
   showProducts('todos');
 });
 

@@ -5,6 +5,7 @@ package com.maxcopias.controller;
  */
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class ControladorInicio {
@@ -23,6 +24,14 @@ public class ControladorInicio {
     @GetMapping("/tienda")
     public String tienda() {
         return "tienda/tienda";
+    }
+
+    /**
+     * Detalles de producto tienda.
+     */
+    @GetMapping("/detalles-producto/{id}")
+    public String detallesProducto(@PathVariable Long id) {
+        return "tienda/detalles-producto";
     }
 }
 
