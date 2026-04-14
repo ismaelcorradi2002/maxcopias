@@ -2447,3 +2447,169 @@
         justify-content: flex-start;
     }
 }
+
+/* Refresh visual 2026-04 */
+.copisteria-page {
+    background:
+        radial-gradient(circle at top left, rgba(93, 187, 255, 0.22), transparent 24%),
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.1), transparent 18%),
+        linear-gradient(180deg, #edf6ff 0%, #e3f0ff 40%, #dcebff 100%);
+}
+
+.services-hero-panel,
+.order-hero-card,
+.summary-highlight,
+.builder-panel,
+.builder-stage-card,
+.builder-summary-card,
+.summary-card,
+.wizard-header,
+.wizard-step,
+.wizard-help-card {
+    border-color: rgba(93, 187, 255, 0.14);
+    box-shadow: 0 24px 60px rgba(92, 152, 214, 0.1);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.1), transparent 24%),
+        linear-gradient(160deg, rgba(244, 249, 255, 0.97) 0%, rgba(231, 243, 255, 0.99) 100%);
+}
+
+.hero-stat-card,
+.wizard-progress-item,
+.wizard-option-ui,
+.wizard-number-card,
+.wizard-review-card,
+.summary-meta-item,
+.summary-price-box,
+.wizard-price-lines li {
+    border-color: rgba(93, 187, 255, 0.14);
+    background: rgba(240, 247, 255, 0.94);
+}
+
+.services-hero-points li::before,
+.hero-check-list li::before,
+.wizard-option-icon,
+.builder-dropzone-icon,
+.wizard-header-tags span,
+.card-chip,
+.side-card-kicker {
+    background: linear-gradient(135deg, #72c9ff 0%, #ffd965 100%);
+    color: #21415f;
+    box-shadow: none;
+}
+
+.builder-panel-dark,
+.side-card-dark,
+.summary-card-primary {
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.14), transparent 24%),
+        radial-gradient(circle at top left, rgba(93, 187, 255, 0.2), transparent 26%),
+        linear-gradient(155deg, #f5faff 0%, #e2efff 100%);
+    border-color: rgba(93, 187, 255, 0.18);
+    box-shadow: 0 24px 60px rgba(92, 152, 214, 0.14);
+}
+
+.builder-panel-dark h2,
+.builder-panel-dark p,
+.side-card-dark h3,
+.side-card-dark p,
+.summary-card-primary h2,
+.summary-card-primary p,
+.summary-card-primary .summary-meta-item span,
+.summary-card-primary .summary-note {
+    color: #16345d;
+}
+
+.side-card-kicker-dark,
+.side-card-dark .side-card-kicker,
+.summary-card-primary .section-kicker {
+    background: rgba(255, 217, 101, 0.26);
+    color: #8d6702;
+}
+
+.builder-service-option {
+    border-color: rgba(93, 187, 255, 0.14);
+    background: rgba(255, 255, 255, 0.88);
+    color: #16345d;
+}
+
+.builder-service-option-copy strong,
+.builder-service-option-copy small {
+    color: inherit;
+}
+
+.builder-service-option-icon {
+    background: rgba(93, 187, 255, 0.14);
+    color: #1d6fb8;
+}
+
+.builder-service-option:hover,
+.wizard-option-card:hover .wizard-option-ui {
+    border-color: rgba(93, 187, 255, 0.24);
+    box-shadow: 0 18px 40px rgba(92, 152, 214, 0.1);
+}
+
+.builder-service-option.is-active,
+.wizard-option-card input:checked + .wizard-option-ui {
+    border-color: rgba(93, 187, 255, 0.28);
+    background:
+        radial-gradient(circle at top right, rgba(93, 187, 255, 0.16), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(241, 249, 255, 0.98) 100%);
+    box-shadow: 0 18px 42px rgba(92, 152, 214, 0.12);
+}
+
+.wizard-option-card-toggle input:checked + .wizard-option-ui {
+    border-color: rgba(255, 217, 101, 0.28);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.2), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 251, 235, 0.98) 100%);
+    box-shadow: 0 18px 42px rgba(255, 208, 79, 0.12);
+}
+
+.wizard-progress-item.is-active {
+    border-color: rgba(93, 187, 255, 0.24);
+    background: rgba(93, 187, 255, 0.12);
+    color: #2394ea;
+}
+
+.wizard-progress-item.is-completed {
+    border-color: rgba(255, 217, 101, 0.26);
+    background: rgba(255, 217, 101, 0.16);
+    color: #8d6702;
+}
+
+.builder-dropzone {
+    border-color: rgba(93, 187, 255, 0.24);
+    background:
+        radial-gradient(circle at top, rgba(255, 217, 101, 0.14), transparent 26%),
+        linear-gradient(180deg, rgba(248, 252, 255, 0.98) 0%, rgba(255, 255, 255, 0.98) 100%);
+}
+
+.button-outline-dark,
+.summary-card-primary .button-outline-dark {
+    border-color: rgba(93, 187, 255, 0.18);
+    background: rgba(255, 255, 255, 0.88);
+    color: #16345d;
+}
+
+.button-outline-dark:hover,
+.summary-card-primary .button-outline-dark:hover {
+    background: rgba(93, 187, 255, 0.08);
+}
+
+.button-secondary-dark {
+    border-color: rgba(255, 217, 101, 0.3);
+    background: linear-gradient(135deg, #fff2b6 0%, #ffd965 100%);
+    color: #26344c;
+}
+
+.button-secondary-dark:hover {
+    background: linear-gradient(135deg, #ffe98d 0%, #ffd14c 100%);
+}
+
+.summary-meta-item strong,
+.summary-price-box strong,
+.summary-highlight-price strong,
+.wizard-price-lines span,
+.wizard-price-total-row strong {
+    color: #16345d;
+}
