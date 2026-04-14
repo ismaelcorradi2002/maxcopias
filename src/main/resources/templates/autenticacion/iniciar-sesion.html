@@ -41,6 +41,10 @@
                         <p>Tu cuenta se ha creado correctamente. Ya puedes iniciar sesion.</p>
                     </div>
 
+                    <div class="alert alert-info" th:if="${param.copisteriaRequired}">
+                        <p>Para acceder a copisteria y preparar impresiones necesitas iniciar sesion o registrarte primero.</p>
+                    </div>
+
                     <div class="alert alert-info" th:if="${param.logout}">
                         <p>La sesion se ha cerrado correctamente.</p>
                     </div>

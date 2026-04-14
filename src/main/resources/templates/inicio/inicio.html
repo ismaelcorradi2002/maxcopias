@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Copisteria y tienda de papeleria', null)}"></head>
 <body>
 <div class="page-shell">
@@ -81,9 +81,19 @@
                 </div>
 
                 <div class="service-split">
-                    <article class="service-panel service-panel-light" id="copisteria" data-reveal="up">
+                    <a
+                        sec:authorize="isAuthenticated()"
+                        class="service-panel service-panel-light service-panel-link"
+                        id="copisteria"
+                        data-reveal="up"
+                        th:href="@{/copisteria}"
+                        aria-label="Ir a la zona privada de copisteria">
                         <div class="service-media">
-                            <img th:src="@{/images/maxcopias-copisteria.svg}" alt="Servicio de copisteria de Maxcopias">
+                            <img
+                                th:src="@{/images/copisteria-chica-apuntes.png(v='20260414d')}"
+                                class="service-image service-image-copisteria"
+                                alt="Cliente de copisteria con apuntes impresos en Maxcopias"
+                                loading="lazy">
                         </div>
                         <div class="service-copy">
                             <span class="card-tag">Copisteria</span>
@@ -98,13 +108,53 @@
                                 <li>Encuadernacion y plastificado</li>
                                 <li>Preparacion de pedidos para recoger</li>
                             </ul>
-                            <a href="#como-funciona" class="text-link">Ver como funciona</a>
+                            <span class="service-panel-cta">Ir a copisteria</span>
                         </div>
-                    </article>
+                    </a>
 
-                    <article class="service-panel service-panel-dark" id="tienda" data-reveal="up">
+                    <a
+                        sec:authorize="isAnonymous()"
+                        class="service-panel service-panel-light service-panel-link"
+                        id="copisteria"
+                        data-reveal="up"
+                        th:href="@{/login(copisteriaRequired=true)}"
+                        aria-label="Iniciar sesion para acceder a copisteria">
                         <div class="service-media">
-                            <img th:src="@{/images/maxcopias-tienda.svg}" alt="Zona de tienda y papeleria de Maxcopias">
+                            <img
+                                th:src="@{/images/copisteria-chica-apuntes.png(v='20260414d')}"
+                                class="service-image service-image-copisteria"
+                                alt="Cliente de copisteria con apuntes impresos en Maxcopias"
+                                loading="lazy">
+                        </div>
+                        <div class="service-copy">
+                            <span class="card-tag">Copisteria</span>
+                            <h3>Tus documentos listos con calidad, rapidez y recogida facil.</h3>
+                            <p>
+                                Preparamos encargos para estudiantes, opositores, empresas y particulares
+                                que buscan un servicio agil, bien acabado y comodo de recoger.
+                            </p>
+                            <ul class="service-list">
+                                <li>Impresion de documentos y apuntes</li>
+                                <li>Fotocopias en varios formatos</li>
+                                <li>Encuadernacion y plastificado</li>
+                                <li>Preparacion de pedidos para recoger</li>
+                            </ul>
+                            <span class="service-panel-cta">Inicia sesion para imprimir</span>
+                        </div>
+                    </a>
+
+                    <a
+                        class="service-panel service-panel-dark service-panel-link"
+                        id="tienda"
+                        data-reveal="up"
+                        th:href="@{/tienda}"
+                        aria-label="Ir directamente a la tienda de Maxcopias">
+                        <div class="service-media">
+                            <img
+                                th:src="@{/images/tienda-lapices-colores.jpg(v='20260414c')}"
+                                class="service-image service-image-tienda"
+                                alt="Lapices de colores para representar la zona de tienda y papeleria de Maxcopias"
+                                loading="lazy">
                         </div>
                         <div class="service-copy">
                             <span class="card-tag">Tienda</span>
@@ -119,10 +169,9 @@
                                 <li>Material escolar y universitario</li>
                                 <li>Suministros para oficina y despacho</li>
                             </ul>
-                            <a th:href="@{/tienda}" class="text-link">Consultar disponibilidad</a>
-
+                            <span class="service-panel-cta">Ir a tienda</span>
                         </div>
-                    </article>
+                    </a>
                 </div>
 
                 <div class="mini-services-grid">
