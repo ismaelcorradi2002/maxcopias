@@ -1,0 +1,50 @@
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.admin-table th, 
+.admin-table td {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table th {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+.admin-table tr:hover {
+    background: #f8f9fa;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 2rem;
+}
+
+.admin-buttons {
+    margin: 1rem 0;
+}
+
+.admin-buttons button {
+    margin-right: 1rem;
+}
+
+.admin-buttons .active {
+    background: var(--primary-dark);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

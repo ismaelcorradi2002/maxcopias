@@ -136,7 +136,7 @@ public class ControladorAreaPersonal {
         return "redirect:/admin?updated=true";
     }
 
-    @GetMapping("/admin/api/users")
+@GetMapping("/admin/api/users")
     @ResponseBody
     public List<Usuario> getUsersApi() {
         return userRepository.findAll();
