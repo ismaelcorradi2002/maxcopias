@@ -7,6 +7,8 @@ import com.maxcopias.dto.FormularioActualizarPerfil;
 import com.maxcopias.service.ServicioPedidoCopisteria;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.service.ServicioUsuario;
+import com.maxcopias.model.Rol;
+import com.maxcopias.repository.RepositorioUsuario;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -14,8 +16,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.util.List;
+import java.util.Optional;
+
+import com.maxcopias.model.Producto;
+import com.maxcopias.service.ServicioTienda;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class ControladorAreaPersonal {
@@ -26,9 +35,18 @@ public class ControladorAreaPersonal {
     /**
      * Inyecta servicios de usuario y pedidos.
      */
-    public ControladorAreaPersonal(ServicioUsuario userService, ServicioPedidoCopisteria copisteriaOrderService) {
+    private final RepositorioUsuario userRepository;
+
+    /**
+     * Inyecta servicios de usuario/pedidos y repositorio.
+     */
+    private final ServicioTienda servicioTienda;
+
+    public ControladorAreaPersonal(ServicioUsuario userService, ServicioPedidoCopisteria copisteriaOrderService, RepositorioUsuario userRepository, ServicioTienda servicioTienda) {
         this.userService = userService;
         this.copisteriaOrderService = copisteriaOrderService;
+        this.userRepository = userRepository;
+        this.servicioTienda = servicioTienda;
     }
 
     /**
@@ -89,13 +107,45 @@ public class ControladorAreaPersonal {
     }
 
     /**
-     * Página admin (redirigido desde seguridad).
+     * Página admin con lista de todos los usuarios.
      */
     @GetMapping("/admin")
-    public String admin(Authentication authentication, Model model) {
+    public String admin(
+            Authentication authentication, 
+            Model model,
+            @RequestParam(name = "updated", defaultValue = "false") boolean updated
+    ) {
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
+        model.addAttribute("roleUpdated", updated);
+        model.addAttribute("allUsers", userRepository.findAll());
         return "administracion/inicio";
+    }
+
+    /**
+     * Actualiza rol de usuario desde admin panel.
+     */
+@PostMapping("/admin/update-role/{id}")
+    public String updateUserRole(@PathVariable Long id, @RequestParam Rol newRole) {
+        Optional<Usuario> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            Usuario user = optionalUser.get();
+            user.setRol(newRole);
+            userRepository.save(user);
+        }
+        return "redirect:/admin?updated=true";
+    }
+
+    @GetMapping("/admin/api/users")
+    @ResponseBody
+    public List<Usuario> getUsersApi() {
+        return userRepository.findAll();
+    }
+
+    @GetMapping("/admin/api/products")
+    @ResponseBody
+    public List<Producto> getProductsApi() {
+        return servicioTienda.obtenerTodosProductos();
     }
 
     private void populatePersonalAreaModel(Model model, Usuario currentUsuario, FormularioActualizarPerfil profileForm, boolean updated) {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Admin', '/css/cuenta.css')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Panel administrador', '/css/cuenta.css')}"></head>
 <body class="account-page admin-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -10,11 +10,8 @@
             <div class="container admin-layout">
                 <article class="dashboard-card admin-card" data-reveal="up">
                     <span class="section-kicker">Admin</span>
-                    <h1>Acceso administrativo basico</h1>
-                    <p>
-                        Esta pantalla existe para completar el flujo de autenticacion por roles.
-                        El panel admin completo se desarrollara en su fase correspondiente.
-                    </p>
+                    <h1>Panel de administrador</h1>
+                    <p>Lista completa de usuarios registrados.</p>
 
                     <div class="info-grid">
                         <div class="info-item">
@@ -25,6 +22,46 @@
                             <span>Email</span>
                             <strong th:text="${currentUsuario.email}">admin@maxcopias.es</strong>
                         </div>
+                    </div>
+
+                    <div class="table-section">
+                        <h2>Usuarios</h2>
+                        <div th:if="${roleUpdated}" class="alert alert-success" style="margin-bottom: 1rem;">Rol actualizado correctamente.</div>
+                        <div class="table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre completo</th>
+                                        <th>Email</th>
+                                        <th>Teléfono</th>
+                                        <th>Rol</th>
+                                        <th>Creado</th>
+                                        <th>Cambiar rol</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+<tr th:each="user : ${allUsers}">
+                                        <td th:text="${user.id}">1</td>
+                                        <td th:text="${user.getFirstName() + ' ' + user.getLastName()}">Nombre Apellido</td>
+                                        <td th:text="${user.email}">user@example.com</td>
+                                        <td th:text="${user.phone}">600 000 000</td>
+                                        <td th:text="${user.rol == T(com.maxcopias.model.Rol).ROLE_USER ? 'Usuario' : 'Admin'}">Usuario</td>
+                                        <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}">--</td>
+                                        <td>
+                                            <form th:action="@{/admin/update-role/{id}(id=${user.id})}" method="post" style="display: inline;">
+                                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                                <select th:name="newRole" onchange="this.form.submit();">
+                                                    <option value="ROLE_USER" th:selected="${user.rol == T(com.maxcopias.model.Rol).ROLE_USER}">Usuario</option>
+                                                    <option value="ROLE_ADMIN" th:selected="${user.rol == T(com.maxcopias.model.Rol).ROLE_ADMIN}">Admin</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p th:if="${allUsers.isEmpty()}" class="no-data">No hay usuarios registrados.</p>
                     </div>
 
                     <div class="dashboard-actions">
@@ -42,7 +79,41 @@
     <div th:replace="~{fragmentos/pie :: footer}"></div>
 </div>
 
+<style>
+/* CSS básico para tabla admin */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.admin-table th, .admin-table td {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+.admin-table th {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+.admin-table tr:hover {
+    background: #f8f9fa;
+}
+.table-container {
+    overflow-x: auto;
+}
+.no-data {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 2rem;
+}
+</style>
+
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>
-

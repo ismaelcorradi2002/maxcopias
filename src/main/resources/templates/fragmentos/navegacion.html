@@ -43,7 +43,7 @@
                 <a th:href="@{/copisteria}">Copisteria</a>
                 <a th:href="@{/tienda}">Tienda</a>
                 <a th:href="@{/contacto}">Contacto</a>
-                <a th:href="@{/admin}" class="button button-primary button-nav">Admin</a>
+                <a th:href="@{/admin}" class="button button-primary button-nav">Panel de administrador</a>
                 <form th:action="@{/logout}" method="post" class="nav-logout-form">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                     <button type="submit" class="nav-logout-button">Cerrar sesion</button>

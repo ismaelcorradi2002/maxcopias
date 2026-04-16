@@ -66,20 +66,12 @@ public class ConfiguracionSeguridad {
     }
 
     /**
-     * Redirige admin a /admin y usuario a la Home.
+     * Redirige a Home (todos los roles iguales). Soporta ?copisteriaRequired=true.
      */
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
             boolean wantsCopisteria = "true".equalsIgnoreCase(request.getParameter("copisteriaRequired"));
-
-            if (isAdmin) {
-                response.sendRedirect("/admin");
-                return;
-            }
-
             response.sendRedirect(wantsCopisteria ? "/copisteria" : "/");
         };
     }
