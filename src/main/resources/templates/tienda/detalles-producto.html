@@ -1,52 +1,48 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Mochila escolar - Maxcopias | Detalles', '/css/tienda.css')}"></head>
-<body>
+<head th:replace="~{fragmentos/encabezado :: head(${productoTienda.nombre() + ' - Maxcopias | Detalles'}, '/css/tienda.css')}"></head>
+<body class="tienda-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main>
-        <section class="producto-detail-hero" style="padding: 6rem 0; background: linear-gradient(135deg, #f5f7fb 0%, #e8eaf0 100%);">
+    <main class="tienda-main">
+        <section class="producto-detail-hero" style="padding: 6rem 0; background: linear-gradient(135deg, #edf6ff 0%, #dcecff 100%);">
             <div class="container">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
                     <div>
-                        <img src="https://images.unsplash.com/photo-1581605405669-fcdf81165afa?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="[Escolar1] Mochila escolar reforzada - Detalle completo" style="width: 100%; max-width: 500px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                        <img th:src="${productoTienda.imagenUrl()}" th:alt="${productoTienda.alt()}" style="width: 100%; max-width: 500px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
                     </div>
                     <div>
-                        <h1>Mochila escolar reforzada</h1>
-                        <p style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">La mochila perfecta para el día a día escolar.</p>
-                        
+                        <span class="section-kicker" th:text="${productoTienda.categoriasTexto()}">Categoria</span>
+                        <h1 th:text="${productoTienda.detalleTitulo()}">Producto</h1>
+                        <p style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;" th:text="${productoTienda.detalleDescripcion()}">Descripcion</p>
+
                         <div style="background: #f8f9fa; padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
-                            <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem;">
-                                <span style="font-size: 2rem; font-weight: 800; color: #27ae60;">€29.99</span>
-                                <span style="text-decoration: line-through; color: #999;">€39.99</span>
+                            <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                                <span style="font-size: 2rem; font-weight: 800; color: #27ae60;" th:text="${productoTienda.precioFormateado()}">0,00 EUR</span>
+                                <span style="color: #667085;" th:text="${'Stock disponible: ' + productoTienda.stock()}">Stock disponible</span>
                             </div>
                             <ul style="list-style: none; padding: 0;">
-                                <li style="margin-bottom: 0.5rem;">✅ Capacidad 25L con múltiples compartimentos</li>
-                                <li style="margin-bottom: 0.5rem;">✅ Material resistente al agua</li>
-                                <li style="margin-bottom: 0.5rem;">✅ Asas ergonómicas acolchadas</li>
-                                <li style="margin-bottom: 0.5rem;">✅ Bolsillo lateral para botella</li>
-                                <li style="margin-bottom: 0.5rem;">✅ Colores: Azul, Gris, Negro</li>
+                                <li th:each="punto : ${productoTienda.detallePuntos()}" style="margin-bottom: 0.5rem;" th:text="${'OK ' + punto}">Detalle</li>
                             </ul>
                         </div>
 
-                        <button class="button button-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; margin-bottom: 1rem;">Añadir al carrito</button>
-                        <button class="button button-secondary" style="width: 100%; padding: 1rem;">Comprar ahora</button>
+                        <a class="button button-primary" th:href="@{/tienda}" style="width: 100%; padding: 1rem; font-size: 1.1rem; margin-bottom: 1rem; text-align: center;">Volver a tienda</a>
+                        <a class="button button-secondary" href="#contacto-tienda" style="width: 100%; padding: 1rem; text-align: center;">Consultar disponibilidad</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section style="padding: 4rem 0;">
+        <section id="contacto-tienda" style="padding: 4rem 0;">
             <div class="container">
                 <h3 style="text-align: center; margin-bottom: 3rem;">Detalles del producto</h3>
                 <div style="max-width: 800px; margin: 0 auto;">
-                    <p>Esta mochila escolar ha sido diseñada pensando en estudiantes que necesitan capacidad y durabilidad. Con 25L de espacio, incluye compartimento principal, bolsillo frontal organizer, y bolsillo lateral para botella. Las asas acolchadas distribuyen el peso uniformemente para mayor comodidad.</p>
+                    <p th:text="${productoTienda.descripcion()}">Descripcion corta</p>
                     <ul style="margin-top: 2rem;">
-                        <li><strong>Dimensiones:</strong> 45 x 30 x 18 cm</li>
-                        <li><strong>Peso:</strong> 0.8kg</li>
-                        <li><strong>Material:</strong> Poliéster 600D resistente al agua</li>
-                        <li><strong>Garantía:</strong> 2 años</li>
+                        <li><strong>Categorias:</strong> <span th:text="${productoTienda.categoriasTexto()}">Categorias</span></li>
+                        <li><strong>Stock:</strong> <span th:text="${productoTienda.stock()}">0</span></li>
+                        <li><strong>Precio:</strong> <span th:text="${productoTienda.precioFormateado()}">0,00 EUR</span></li>
                         <li><strong>Disponibilidad:</strong> En tienda - Recogida inmediata</li>
                     </ul>
                 </div>
@@ -58,4 +54,5 @@
 </div>
 
 <script th:src="@{/js/tienda.js}"></script>
-
+</body>
+</html>

@@ -1,118 +1,95 @@
-// Carrusel y categorías dinámicas - FIXED SYNTAX + Click mochila
-document.addEventListener('DOMContentLoaded', function() {
-  // CARRUSEL (igual)
-  const items = document.querySelectorAll('.carousel-item');
-  const indicators = document.querySelectorAll('.carousel-indicator');
+document.addEventListener("DOMContentLoaded", function () {
+  initCarrusel();
+  initFiltrosTienda();
+});
+
+function initCarrusel() {
+  const items = document.querySelectorAll(".carousel-item");
+  const indicators = document.querySelectorAll(".carousel-indicator");
+  const carousel = document.querySelector(".carousel-inner");
+
+  if (!items.length || !indicators.length || !carousel) {
+    return;
+  }
+
   let currentIndex = 0;
   let carouselInterval;
 
   function showSlide(index) {
-    items.forEach((item, i) => {
-      item.style.opacity = (i === index) ? '1' : '0';
+    items.forEach((item, itemIndex) => {
+      item.style.opacity = itemIndex === index ? "1" : "0";
     });
-    indicators.forEach((ind, i) => {
-      ind.classList.toggle('active', i === index);
-      ind.style.background = (i === index) ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.4)';
+
+    indicators.forEach((indicator, indicatorIndex) => {
+      indicator.classList.toggle("active", indicatorIndex === index);
     });
+
     currentIndex = index;
   }
 
   function nextSlide() {
-    let nextIndex = currentIndex + 1;
-    if (nextIndex >= 5) nextIndex = 0;
+    const nextIndex = (currentIndex + 1) % items.length;
     showSlide(nextIndex);
   }
 
-  carouselInterval = setInterval(nextSlide, 2000);
-
-  indicators.forEach((indicator, index) => {
-    indicator.addEventListener('click', () => {
-      clearInterval(carouselInterval);
-      showSlide(index);
-      carouselInterval = setInterval(nextSlide, 2000);
-    });
-  });
-
-  const carousel = document.querySelector('.carousel-inner');
-  carousel.addEventListener('mouseenter', () => clearInterval(carouselInterval));
-  carousel.addEventListener('mouseleave', () => carouselInterval = setInterval(nextSlide, 2000));
-
-  // PRODUCTOS (SIN CAMBIOS)
-  const todosProductos = [
-    { category: 'escolar', img: 'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: '[Escolar1] Mochila escolar reforzada', nombre: 'Mochila escolar', desc: 'Capacidad 25L, múltiples compartimentos.', precio: '€29.99' },
-    { category: 'escolar', img: 'https://images.unsplash.com/photo-1567634088512-20ec1da1e1a5?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: '[Escolar2] Estuche doble', nombre: 'Estuche doble', desc: 'Plástico resistente, 2 cremalleras.', precio: '€8.50' },
-    { category: 'oficina', img: 'https://multimedia.dideco.es/img/papeleria/EAN_8422951051238-5.jpg', alt: '[Oficina1] Separadores A4', nombre: 'Separadores A4', desc: '12 pestañas, colores variados.', precio: '€5.99' },
-    { category: 'oficina', img: 'https://images.unsplash.com/photo-1559743341-7fef133c7c6a?q=80&w=1570&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: '[Oficina2] Grapadora pesada', nombre: 'Grapadora pesada', desc: 'Capacidad 100 hojas, metálica.', precio: '€19.95' },
-    { category: 'arte', img: 'https://m.media-amazon.com/images/I/61xNnFt-2QL.jpg', alt: '[Arte1] Lápices acuarela 24u', nombre: 'Lápices acuarela', desc: 'Set profesional 24 colores.', precio: '€22.50' },
-    { category: 'arte', img: 'https://plus.unsplash.com/premium_photo-1683309559481-f5b07f07774e?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alt: '[Arte2] Bloc dibujo 200g', nombre: 'Bloc dibujo', desc: 'Formato A4, 50h 200gr.', precio: '€12.99' },
-    { category: 'organizacion', img: 'https://lasuperpapeleria.com//imagenes_grandes/3130631/313063189560.JPG', alt: '[Organizacion1] Caja archivador', nombre: 'Caja archivador', desc: 'Transfer resistente, 50 documentos.', precio: '€6.75' },
-    { category: 'organizacion', img: 'https://moldiber.com/2658-thickbox_default/perfil-auxiliar-de-aluminio-a-medida-modelo-20.webp', alt: '[Organizacion2] Tablero corcho', nombre: 'Tablero corcho', desc: '60x40cm con marcos aluminio.', precio: '€18.90' },
-    { category: 'tecnologia', img: 'https://m.media-amazon.com/images/I/717phNvKCVS._AC_UF1000,1000_QL80_.jpg', alt: '[Tecnologia1] Protector teclado', nombre: 'Protector teclado', desc: 'Transparente, funda silicona.', precio: '€9.99' },
-    { category: 'tecnologia', img: 'https://m.media-amazon.com/images/I/71YTA1pw9CL.jpg', alt: '[Tecnologia2] Cable organizador', nombre: 'Cable organizador', desc: 'Kit 10 brazaletes velcro.', precio: '€4.25' }
-  ];
-
-  const tabs = document.querySelectorAll('.section-tab');
-  const container = document.getElementById('productos-container');
-  const title = document.getElementById('productos-title');
-  let currentCategory = 'todos';
-
-  function showProducts(category) {
-    let productsToShow;
-    if (category === 'todos') {
-      productsToShow = todosProductos;
-      title.innerHTML = '<span class="section-kicker">Todos</span><h2>Catálogo completo</h2>';
-    } else {
-      productsToShow = todosProductos.filter(p => p.category === category).slice(0, 2);
-      const catName = category.charAt(0).toUpperCase() + category.slice(1);
-      title.innerHTML = `<span class="section-kicker">${catName}</span><h2>Productos ${catName}</h2>`;
-    }
-
-    container.innerHTML = productsToShow.map(product => `
-      <article class="mini-service-card"${product.nombre === 'Mochila escolar' ? ' onclick="window.location.href=\'/detalles-producto/1\'" style="cursor: pointer;"' : ''}>
-        <img src="${product.img}" alt="${product.alt}" style="width: 100%; height: 250px; object-fit: cover;">
-        <div style="padding: 1.5rem;">
-          <h3>${product.nombre}</h3>
-          <p>${product.desc}</p>
-          <span style="color: #27ae60; font-weight: 700; font-size: 1.2rem;">${product.precio}</span>
-        </div>
-      </article>
-    `).join('');
+  function startCarousel() {
+    carouselInterval = setInterval(nextSlide, 3000);
   }
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', function() {
-      const newCategory = this.dataset.category;
-      
-      // Toggle lógica igual...
-      if (currentCategory === newCategory) {
-        currentCategory = 'todos';
-        tabs.forEach(t => {
-          const cat = t.dataset.category;
-          t.classList.remove('active');
-          t.style.background = cat === 'escolar' ? '#3498db' : 
-                              cat === 'oficina' ? '#e74c3c' : 
-                              cat === 'arte' ? '#9b59b6' : 
-                              cat === 'organizacion' ? '#f39c12' : '#2ecc71';
-        });
-      } else {
-        currentCategory = newCategory;
-        tabs.forEach(t => {
-          t.classList.remove('active');
-          const cat = t.dataset.category;
-          t.style.background = cat === 'escolar' ? '#3498db' : 
-                              cat === 'oficina' ? '#e74c3c' : 
-                              cat === 'arte' ? '#9b59b6' : 
-                              cat === 'organizacion' ? '#f39c12' : '#2ecc71';
-        });
-        this.classList.add('active');
-        this.style.background = '#2c3e50';
-        this.style.transform = 'scale(1.05)';
-      }
-      
-      showProducts(currentCategory);
+  function stopCarousel() {
+    clearInterval(carouselInterval);
+  }
+
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener("click", function () {
+      stopCarousel();
+      showSlide(index);
+      startCarousel();
     });
   });
 
-  showProducts('todos');
-});
+  carousel.addEventListener("mouseenter", stopCarousel);
+  carousel.addEventListener("mouseleave", startCarousel);
 
+  showSlide(0);
+  startCarousel();
+}
+
+function initFiltrosTienda() {
+  const tabs = document.querySelectorAll(".section-tab");
+  const cards = document.querySelectorAll(".tienda-producto-card");
+  const title = document.getElementById("productos-title");
+
+  if (!tabs.length || !cards.length || !title) {
+    return;
+  }
+
+  function updateTitle(category, label) {
+    if (category === "todos") {
+      title.innerHTML = '<span class="section-kicker">Todos</span><h2>Catalogo completo</h2>';
+      return;
+    }
+
+    title.innerHTML = `<span class="section-kicker">${label}</span><h2>Productos ${label}</h2>`;
+  }
+
+  function applyFilter(category, label) {
+    cards.forEach((card) => {
+      const categories = (card.dataset.categories || "").split(",").filter(Boolean);
+      const showCard = category === "todos" || categories.includes(category);
+      card.hidden = !showCard;
+    });
+
+    updateTitle(category, label);
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", function () {
+      tabs.forEach((button) => button.classList.remove("active"));
+      this.classList.add("active");
+      applyFilter(this.dataset.category || "todos", this.textContent.trim());
+    });
+  });
+
+  applyFilter("todos", "Todos");
+}

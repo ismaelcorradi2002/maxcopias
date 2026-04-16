@@ -1,37 +1,54 @@
 package com.maxcopias.controller;
 
-/**
- * Controlador de la página principal (home).
- */
+import com.maxcopias.dto.CategoriaTiendaVista;
+import com.maxcopias.dto.ProductoTiendaVista;
+import com.maxcopias.model.Producto;
+import com.maxcopias.service.ServicioCatalogoTiendaVisual;
+import com.maxcopias.service.ServicioTienda;
+import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class ControladorInicio {
 
-    /**
-     * Ruta principal de la app (página de inicio).
-     */
+    private final ServicioTienda servicioTienda;
+    private final ServicioCatalogoTiendaVisual servicioCatalogoTiendaVisual;
+
+    public ControladorInicio(ServicioTienda servicioTienda, ServicioCatalogoTiendaVisual servicioCatalogoTiendaVisual) {
+        this.servicioTienda = servicioTienda;
+        this.servicioCatalogoTiendaVisual = servicioCatalogoTiendaVisual;
+    }
+
     @GetMapping("/")
     public String home() {
         return "inicio/inicio";
     }
 
-    /**
-     * Página de la tienda de papelería.
-     */
     @GetMapping("/tienda")
-    public String tienda() {
+    public String tienda(Model model) {
+        List<Producto> productos = servicioTienda.obtenerTodosProductos();
+        List<CategoriaTiendaVista> categorias = servicioCatalogoTiendaVisual.obtenerCategoriasVisibles(productos);
+        List<ProductoTiendaVista> productosVista = servicioCatalogoTiendaVisual.mapearProductos(productos);
+
+        model.addAttribute("categoriasTienda", categorias);
+        model.addAttribute("productosTienda", productosVista);
         return "tienda/tienda";
     }
 
-    /**
-     * Detalles de producto tienda.
-     */
     @GetMapping("/detalles-producto/{id}")
-    public String detallesProducto(@PathVariable Long id) {
-        return "tienda/detalles-producto";
+    public String detallesProducto(@PathVariable Long id, Model model) {
+        try {
+            Producto producto = servicioTienda.obtenerProductoPorId(id);
+            ProductoTiendaVista productoVista = servicioCatalogoTiendaVisual.mapearProducto(producto);
+            model.addAttribute("productoTienda", productoVista);
+            return "tienda/detalles-producto";
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado.");
+        }
     }
 }
-

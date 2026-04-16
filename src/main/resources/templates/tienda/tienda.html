@@ -1,51 +1,49 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Tienda de papelería', '/css/tienda.css')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Tienda de papeleria', '/css/tienda.css')}"></head>
 <body class="tienda-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
     <main class="tienda-main">
-
-        <!-- En oferta - Carrusel -->
         <section id="ofertas">
             <div class="container">
                 <div class="section-heading">
                     <span class="section-kicker">En oferta</span>
-                    <h2>Productos en promoción especial</h2>
+                    <h2>Productos en promocion especial</h2>
                 </div>
                 <div class="oferta-carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="https://m.media-amazon.com/images/I/81p-CEe3RwL._AC_UF894,1000_QL80_.jpg" alt="[1] Cuadernos en oferta - 30% OFF">
+                            <img src="https://m.media-amazon.com/images/I/81p-CEe3RwL._AC_UF894,1000_QL80_.jpg" alt="Cuadernos en oferta - 30 por ciento OFF">
                             <div class="carousel-overlay">
                                 <h3>Cuadernos 3x2</h3>
                                 <span>30% OFF</span>
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="https://images-na.ssl-images-amazon.com/images/I/71+TJYgLkVL._AC_UL375_SR375,375_.jpg" alt="[2] Bolígrafos en oferta - 25% OFF">
+                            <img src="https://images-na.ssl-images-amazon.com/images/I/71+TJYgLkVL._AC_UL375_SR375,375_.jpg" alt="Boligrafos en oferta - 25 por ciento OFF">
                             <div class="carousel-overlay">
-                                <h3>Pack bolígrafos</h3>
+                                <h3>Pack boligrafos</h3>
                                 <span>25% OFF</span>
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="https://media.cartabon.com/product/carpetas-de-gomas-tamanos-grandes-para-dibujo-800x800.jpg?width=1200" alt="[3] Carpetas en oferta - 20% OFF">
+                            <img src="https://media.cartabon.com/product/carpetas-de-gomas-tamanos-grandes-para-dibujo-800x800.jpg?width=1200" alt="Carpetas en oferta - 20 por ciento OFF">
                             <div class="carousel-overlay">
-                                <h3>Carpetas rígidas</h3>
+                                <h3>Carpetas rigidas</h3>
                                 <span>20% OFF</span>
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="https://quecartucho.es/3456-large_default/papel-economico-din-a4-80-gramos-paquete-500-folios.jpg" alt="[4] Papel A4 oferta - 15% OFF">
+                            <img src="https://quecartucho.es/3456-large_default/papel-economico-din-a4-80-gramos-paquete-500-folios.jpg" alt="Papel A4 en oferta - 15 por ciento OFF">
                             <div class="carousel-overlay">
                                 <h3>Papel A4 reams</h3>
                                 <span>15% OFF</span>
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="https://m.media-amazon.com/images/I/81yZmHtCTdL.jpg" alt="[5] Rotuladores oferta - 35% OFF">
+                            <img src="https://m.media-amazon.com/images/I/81yZmHtCTdL.jpg" alt="Rotuladores en oferta - 35 por ciento OFF">
                             <div class="carousel-overlay">
                                 <h3>Rotuladores set</h3>
                                 <span>35% OFF</span>
@@ -63,24 +61,39 @@
             </div>
         </section>
 
-        <!-- Secciones de productos dinámicas -->
         <section id="productos">
             <div class="container">
                 <div class="section-tabs">
-                    <button class="section-tab active" data-category="escolar">Escolar</button>
-                    <button class="section-tab" data-category="oficina">Oficina</button>
-                    <button class="section-tab" data-category="arte">Arte</button>
-                    <button class="section-tab" data-category="organizacion">Organización</button>
-                    <button class="section-tab" data-category="tecnologia">Tecnología</button>
+                    <button class="section-tab active" data-category="todos">Todos</button>
+                    <button
+                        th:each="categoria : ${categoriasTienda}"
+                        class="section-tab"
+                        th:attr="data-category=${categoria.slug()}"
+                        th:text="${categoria.nombre()}">
+                        Escolar
+                    </button>
                 </div>
 
                 <div class="section-heading" id="productos-title">
                     <span class="section-kicker">Todos</span>
-                    <h2>Catálogo completo</h2>
+                    <h2>Catalogo completo</h2>
                 </div>
 
                 <div class="productos-grid" id="productos-container">
-                    <!-- Productos dinámicos se cargan aquí por JS -->
+                    <article
+                        th:each="producto : ${productosTienda}"
+                        class="mini-service-card tienda-producto-card"
+                        th:attr="data-categories=${producto.categoriasSlug()},data-product-name=${producto.nombre()},data-product-price=${producto.precioFormateado()}">
+                        <a class="tienda-producto-link" th:href="@{/detalles-producto/{id}(id=${producto.id()})}">
+                            <img th:src="${producto.imagenUrl()}" th:alt="${producto.alt()}">
+                            <div>
+                                <span class="tienda-producto-categorias" th:text="${producto.categoriasTexto()}">Escolar</span>
+                                <h3 th:text="${producto.nombre()}">Producto</h3>
+                                <p th:text="${producto.descripcion()}">Descripcion</p>
+                                <span class="precio-tag" th:text="${producto.precioFormateado()}">0,00 EUR</span>
+                            </div>
+                        </a>
+                    </article>
                 </div>
             </div>
         </section>
@@ -98,4 +111,3 @@
 <script th:src="@{/js/tienda.js}"></script>
 </body>
 </html>
-
