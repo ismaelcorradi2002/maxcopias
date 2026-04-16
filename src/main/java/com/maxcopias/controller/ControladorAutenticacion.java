@@ -40,14 +40,20 @@ public class ControladorAutenticacion {
      * Muestra formulario de registro.
      */
     @GetMapping("/register")
-    public String showRegister(Model model, Authentication authentication) {
+    public String showRegister(
+        Model model,
+        Authentication authentication,
+        @RequestParam(name = "copisteriaRequired", defaultValue = "false") boolean copisteriaRequired
+    ) {
         if (isAuthenticated(authentication)) {
-            return redirectByRol(authentication);
+            return redirectByRol(authentication, copisteriaRequired);
         }
 
         if (!model.containsAttribute("registerForm")) {
             model.addAttribute("registerForm", new FormularioRegistro());
         }
+
+        model.addAttribute("copisteriaRequired", copisteriaRequired);
 
         return "autenticacion/registro";
     }
@@ -58,7 +64,9 @@ public class ControladorAutenticacion {
     @PostMapping("/register")
     public String register(
         @Valid @ModelAttribute("registerForm") FormularioRegistro registerForm,
-        BindingResult bindingResult
+        BindingResult bindingResult,
+        @RequestParam(name = "copisteriaRequired", defaultValue = "false") boolean copisteriaRequired,
+        Model model
     ) {
         if (!registerForm.getPassword().equals(registerForm.getConfirmPassword())) {
             bindingResult.rejectValue("confirmPassword", "password.mismatch", "Las contrasenas no coinciden.");
@@ -69,23 +77,30 @@ public class ControladorAutenticacion {
         }
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("copisteriaRequired", copisteriaRequired);
             return "autenticacion/registro";
         }
 
         try {
             var createdUsuario = userService.registerUsuario(registerForm);
             welcomeEmailService.sendWelcomeEmail(createdUsuario);
-            return "redirect:/login?registered";
+            return copisteriaRequired
+                ? "redirect:/login?registered&copisteriaRequired=true"
+                : "redirect:/login?registered";
         } catch (ExcepcionRegistroUsuario exception) {
             bindingResult.rejectValue("email", "email.exists", exception.getMessage());
+            model.addAttribute("copisteriaRequired", copisteriaRequired);
             return "autenticacion/registro";
         }
     }
 
     @GetMapping("/login")
-    public String showLogin(Authentication authentication) {
+    public String showLogin(
+        Authentication authentication,
+        @RequestParam(name = "copisteriaRequired", defaultValue = "false") boolean copisteriaRequired
+    ) {
         if (isAuthenticated(authentication)) {
-            return redirectByRol(authentication);
+            return redirectByRol(authentication, copisteriaRequired);
         }
 
         return "autenticacion/iniciar-sesion";
@@ -116,11 +131,15 @@ public class ControladorAutenticacion {
             && !(authentication instanceof AnonymousAuthenticationToken);
     }
 
-    private String redirectByRol(Authentication authentication) {
+    private String redirectByRol(Authentication authentication, boolean copisteriaRequired) {
         boolean isAdmin = authentication.getAuthorities().stream()
             .anyMatch(authority -> authority.getAuthority().equals(Rol.ROLE_ADMIN.name()));
 
-        return isAdmin ? "redirect:/admin" : "redirect:/";
+        if (isAdmin) {
+            return "redirect:/admin";
+        }
+
+        return copisteriaRequired ? "redirect:/copisteria" : "redirect:/";
     }
 }
 

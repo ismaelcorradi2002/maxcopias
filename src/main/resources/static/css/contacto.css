@@ -1,0 +1,191 @@
+.contacto-page {
+    background:
+        radial-gradient(circle at top left, rgba(93, 187, 255, 0.22), transparent 24%),
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.12), transparent 18%),
+        linear-gradient(180deg, #edf6ff 0%, #e3f0ff 42%, #ddebff 100%);
+    color: var(--text);
+}
+
+.contacto-page .site-header {
+    position: relative;
+}
+
+.contacto-main {
+    padding-bottom: 56px;
+}
+
+.contacto-hero {
+    padding: clamp(36px, 6vw, 88px) 0 48px;
+}
+
+.contacto-hero-grid,
+.contacto-map-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: center;
+}
+
+.contacto-hero-copy h1,
+.contacto-map-copy h2 {
+    margin: 18px 0 20px;
+    color: #13233f;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(2.4rem, 5vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.06em;
+}
+
+.contacto-map-copy h2 {
+    font-size: clamp(2rem, 4vw, 3.6rem);
+}
+
+.contacto-hero-copy p,
+.contacto-map-copy p,
+.contacto-info-card p {
+    color: #61728b;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.contacto-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 30px;
+}
+
+.contacto-highlight-card,
+.contacto-info-card,
+.contacto-map-card {
+    border: 1px solid rgba(93, 187, 255, 0.18);
+    border-radius: 34px;
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.14), transparent 28%),
+        linear-gradient(160deg, rgba(247, 251, 255, 0.96) 0%, rgba(232, 243, 255, 0.98) 100%);
+    box-shadow: 0 24px 60px rgba(92, 152, 214, 0.13);
+}
+
+.contacto-highlight-card {
+    padding: clamp(28px, 4vw, 46px);
+}
+
+.contacto-card-icon,
+.contacto-info-icon {
+    display: inline-grid;
+    width: 58px;
+    height: 58px;
+    place-items: center;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #72c9ff 0%, #ffd965 100%);
+    color: #16345d;
+    font-weight: 900;
+}
+
+.contacto-highlight-card h2,
+.contacto-info-card h2 {
+    margin: 22px 0 12px;
+    color: #13233f;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.55rem;
+}
+
+.contacto-highlight-card p {
+    margin: 0 0 22px;
+    color: #61728b;
+    line-height: 1.8;
+}
+
+.contacto-highlight-card a,
+.contacto-info-card a {
+    color: #1d6fb8;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.contacto-highlight-card a:hover,
+.contacto-info-card a:hover {
+    color: #0f5b99;
+}
+
+.contacto-info-section,
+.contacto-map-section {
+    padding: clamp(42px, 7vw, 84px) 0;
+}
+
+.contacto-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.contacto-info-card {
+    padding: 28px;
+}
+
+.contacto-hours {
+    display: grid;
+    gap: 16px;
+}
+
+.contacto-hours div {
+    padding: 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.64);
+}
+
+.contacto-hours strong,
+.contacto-hours span {
+    display: block;
+}
+
+.contacto-hours strong {
+    color: #13233f;
+    margin-bottom: 6px;
+}
+
+.contacto-hours span {
+    color: #61728b;
+}
+
+.contacto-map-card {
+    overflow: hidden;
+    min-height: 420px;
+}
+
+.contacto-map-card iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    border: 0;
+}
+
+@media (max-width: 1100px) {
+    .contacto-info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 860px) {
+    .contacto-hero-grid,
+    .contacto-map-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .contacto-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .contacto-actions .button {
+        width: 100%;
+    }
+
+    .contacto-highlight-card,
+    .contacto-info-card,
+    .contacto-map-card {
+        border-radius: 26px;
+    }
+}

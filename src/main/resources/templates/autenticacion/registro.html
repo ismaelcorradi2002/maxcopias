@@ -40,6 +40,7 @@
                         novalidate
                         data-live-validation="register"
                         th:attr="data-email-check-url=@{/register/check-email}">
+                        <input type="hidden" name="copisteriaRequired" value="true" th:if="${copisteriaRequired}">
                         <div class="form-grid">
                             <div class="field-group">
                                 <label for="firstName">Nombre</label>
@@ -187,7 +188,8 @@
 
                         <p class="form-helper">
                             Ya tienes una cuenta?
-                            <a th:href="@{/login}">Inicia sesion aqui</a>
+                            <a th:if="${copisteriaRequired}" th:href="@{/login(copisteriaRequired=true)}">Inicia sesion aqui</a>
+                            <a th:unless="${copisteriaRequired}" th:href="@{/login}">Inicia sesion aqui</a>
                         </p>
                     </form>
                 </article>

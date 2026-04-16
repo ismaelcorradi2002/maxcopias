@@ -21,7 +21,8 @@
                     </p>
 
                     <div class="hero-actions">
-                        <a th:href="@{/copisteria}" class="button button-primary">Encargar impresion</a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Encargar impresion</a>
+                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Encargar impresion</a>
                         <a href="#servicios" class="button button-secondary">Ver servicios</a>
                     </div>
 
@@ -252,8 +253,9 @@
                     </p>
                 </div>
                 <div class="cta-actions">
-                    <a th:href="@{/copisteria}" class="button button-primary">Solicitar impresion</a>
-                    <a href="#contacto" class="button button-secondary">Contactar</a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Solicitar impresion</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Solicitar impresion</a>
+                    <a th:href="@{/contacto}" class="button button-secondary">Contactar</a>
                 </div>
             </div>
         </section>

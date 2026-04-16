@@ -20,7 +20,7 @@
             <th:block sec:authorize="isAnonymous()">
                 <a th:href="@{/#inicio}">Inicio</a>
                 <a th:href="@{/tienda}">Tienda</a>
-                <a th:href="@{/#contacto}">Contacto</a>
+                <a th:href="@{/contacto}">Contacto</a>
                 <a th:href="@{/login}" class="nav-secondary-link">Iniciar sesion</a>
                 <a th:href="@{/register}" class="button button-primary button-nav">Registrarse</a>
             </th:block>
@@ -29,6 +29,7 @@
                 <a th:href="@{/#inicio}">Inicio</a>
                 <a th:href="@{/copisteria}">Copisteria</a>
                 <a th:href="@{/tienda}">Tienda</a>
+                <a th:href="@{/contacto}">Contacto</a>
                 <a th:href="@{/mis-pedidos}">Mis pedidos</a>
                 <a th:href="@{/area-personal}" class="button button-primary button-nav">Area personal</a>
                 <form th:action="@{/logout}" method="post" class="nav-logout-form">
@@ -41,6 +42,7 @@
                 <a th:href="@{/#inicio}">Inicio</a>
                 <a th:href="@{/copisteria}">Copisteria</a>
                 <a th:href="@{/tienda}">Tienda</a>
+                <a th:href="@{/contacto}">Contacto</a>
                 <a th:href="@{/admin}" class="button button-primary button-nav">Admin</a>
                 <form th:action="@{/logout}" method="post" class="nav-logout-form">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

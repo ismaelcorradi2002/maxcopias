@@ -29,6 +29,11 @@ public class ControladorInicio {
         return "inicio/inicio";
     }
 
+    @GetMapping("/contacto")
+    public String contacto() {
+        return "contacto/contacto";
+    }
+
     @GetMapping("/tienda")
     public String tienda(Model model) {
         List<Producto> productos = servicioTienda.obtenerTodosProductos();

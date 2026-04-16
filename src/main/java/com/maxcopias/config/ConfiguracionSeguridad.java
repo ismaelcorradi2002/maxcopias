@@ -28,7 +28,7 @@ public class ConfiguracionSeguridad {
         http
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/tienda", "/detalles-producto/**", "/api/tienda/**", "/login", "/register", "/register/check-email", "/error", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/contacto", "/tienda", "/detalles-producto/**", "/api/tienda/**", "/login", "/register", "/register/check-email", "/error", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria", "/copisteria/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
@@ -73,8 +73,14 @@ public class ConfiguracionSeguridad {
         return (request, response, authentication) -> {
             boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            boolean wantsCopisteria = "true".equalsIgnoreCase(request.getParameter("copisteriaRequired"));
 
-            response.sendRedirect(isAdmin ? "/admin" : "/");
+            if (isAdmin) {
+                response.sendRedirect("/admin");
+                return;
+            }
+
+            response.sendRedirect(wantsCopisteria ? "/copisteria" : "/");
         };
     }
 }

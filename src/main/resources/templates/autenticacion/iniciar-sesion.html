@@ -50,6 +50,7 @@
                     </div>
 
                     <form th:action="@{/login}" method="post" novalidate data-live-validation="login">
+                        <input type="hidden" name="copisteriaRequired" value="true" th:if="${param.copisteriaRequired}">
                         <div class="form-grid form-grid-single">
                             <div class="field-group span-2">
                                 <label for="email">Email</label>
@@ -93,7 +94,8 @@
 
                         <p class="form-helper">
                             Todavia no tienes cuenta?
-                            <a th:href="@{/register}">Registrate aqui</a>
+                            <a th:if="${param.copisteriaRequired}" th:href="@{/register(copisteriaRequired=true)}">Registrate aqui</a>
+                            <a th:unless="${param.copisteriaRequired}" th:href="@{/register}">Registrate aqui</a>
                         </p>
                     </form>
                 </article>
