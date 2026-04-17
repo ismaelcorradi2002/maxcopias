@@ -73,6 +73,7 @@ function switchTab(button, tab) {
                                     <td>${product.precio}</td>
                                     <td>${product.stock}</td>
                                     <td>${product.categorias ? product.categorias.map(cat => cat.nombre).join(', ') : ''}</td>
+                                    <td><button class="button button-small button-outline" title="Editar producto" onclick="window.location.href='/editarstock/' + ${product.id}">✏️</button></td>
                                 </tr>
                             `).join('')}
                         </tbody>

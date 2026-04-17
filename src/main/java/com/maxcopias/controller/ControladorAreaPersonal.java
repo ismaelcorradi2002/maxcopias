@@ -125,7 +125,7 @@ public class ControladorAreaPersonal {
     /**
      * Actualiza rol de usuario desde admin panel.
      */
-@PostMapping("/admin/update-role/{id}")
+    @PostMapping("/admin/update-role/{id}")
     public String updateUserRole(@PathVariable Long id, @RequestParam Rol newRole) {
         Optional<Usuario> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
@@ -136,7 +136,7 @@ public class ControladorAreaPersonal {
         return "redirect:/admin?updated=true";
     }
 
-@GetMapping("/admin/api/users")
+    @GetMapping("/admin/api/users")
     @ResponseBody
     public List<Usuario> getUsersApi() {
         return userRepository.findAll();
@@ -146,6 +146,27 @@ public class ControladorAreaPersonal {
     @ResponseBody
     public List<Producto> getProductsApi() {
         return servicioTienda.obtenerTodosProductos();
+    }
+
+    @GetMapping("/editarstock/{id}")
+    public String editarStock(@PathVariable Long id, Model model, Authentication authentication) {
+        Producto producto = servicioTienda.obtenerProductoPorId(id);
+        model.addAttribute("producto", producto);
+        model.addAttribute("pageTitle", "Maxcopias | Editar stock");
+        Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+        model.addAttribute("currentUsuario", currentUsuario);
+        return "admin/editarstock";
+    }
+
+    @PostMapping("/admin/update-producto/{id}")
+    public String updateProducto(@PathVariable Long id, @ModelAttribute Producto producto, Authentication authentication) {
+        Producto existingProducto = servicioTienda.obtenerProductoPorId(id);
+        existingProducto.setNombre(producto.getNombre());
+        existingProducto.setDescripcion(producto.getDescripcion());
+        existingProducto.setStock(producto.getStock());
+        existingProducto.setPrecio(producto.getPrecio());
+        servicioTienda.guardarProducto(existingProducto);
+        return "redirect:/admin";
     }
 
     private void populatePersonalAreaModel(Model model, Usuario currentUsuario, FormularioActualizarPerfil profileForm, boolean updated) {
