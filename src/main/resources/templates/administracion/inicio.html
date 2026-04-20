@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Panel administrador', '/css/cuenta.css')}">
+<head>
+    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Panel administrador', '/css/cuenta.css')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
-<link rel="stylesheet" href="/css/admin.css">
-
 <body class="account-page admin-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -12,33 +12,50 @@
         <section class="admin-section">
             <div class="container admin-layout">
                 <article class="dashboard-card admin-card" data-reveal="up">
-                    <span class="section-kicker">Admin</span>
-                    <h1>Panel de administrador</h1>
-                    <p>Lista completa de usuarios registrados.</p>
+                    <header class="admin-dashboard-header">
+                        <div>
+                            <span class="section-kicker">Administracion</span>
+                            <h1>Panel de administrador</h1>
+                            <p>Gestion rapida de usuarios registrados y productos de tienda desde una interfaz clara.</p>
+                        </div>
+                        <span class="admin-status-pill">Sesion admin activa</span>
+                    </header>
 
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span>Usuario autenticado</span>
+                    <div class="admin-summary-grid">
+                        <div class="admin-summary-card">
+                            <span>Administrador</span>
                             <strong th:text="${currentUsuario.fullName}">Administrador</strong>
                         </div>
-                        <div class="info-item">
+                        <div class="admin-summary-card">
                             <span>Email</span>
                             <strong th:text="${currentUsuario.email}">admin@maxcopias.es</strong>
                         </div>
+                        <div class="admin-summary-card">
+                            <span>Usuarios</span>
+                            <strong th:text="${#lists.size(allUsers)}">0</strong>
+                        </div>
                     </div>
 
-                    <div class="table-section">
-                        <div class="admin-buttons">
-                            <button class="button button-primary active" onclick="switchTab(this, 'users')">Usuarios</button>
-                            <button class="button button-primary" onclick="switchTab(this, 'stock')">Stock</button>
+                    <section class="table-section" aria-labelledby="admin-table-title">
+                        <div class="table-section-header">
+                            <div>
+                                <h2 id="admin-table-title">Gestion del sistema</h2>
+                                <p>Alterna entre usuarios y productos sin salir del panel.</p>
+                            </div>
+                            <div class="admin-buttons" role="tablist" aria-label="Secciones del panel">
+                                <button class="button button-primary active" type="button" onclick="switchTab(this, 'users')">Usuarios</button>
+                                <button class="button button-primary" type="button" onclick="switchTab(this, 'products')">Productos</button>
+                            </div>
                         </div>
-                        <div th:if="${roleUpdated}" class="alert alert-success" style="margin-bottom: 1rem;">Rol actualizado correctamente.</div>
+
+                        <div th:if="${roleUpdated}" class="admin-alert">Rol actualizado correctamente.</div>
+
                         <div class="table-container">
-                            <div style="text-align: center; padding: 2rem;">Cargando...</div>
+                            <div class="admin-loading">Cargando datos...</div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="dashboard-actions">
+                    <div class="dashboard-actions admin-actions">
                         <a th:href="@{/#inicio}" class="button button-secondary-dark">Volver al inicio</a>
                         <form th:action="@{/logout}" method="post" class="inline-form">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -48,14 +65,27 @@
                 </article>
             </div>
         </section>
+
+        <div class="admin-confirm-modal" data-role-confirm-modal hidden>
+            <div class="admin-confirm-backdrop" data-role-confirm-cancel></div>
+            <section class="admin-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="role-confirm-title">
+                <span class="admin-confirm-icon">!</span>
+                <h2 id="role-confirm-title">Confirmar cambio de rol</h2>
+                <p data-role-confirm-message>
+                    Vas a cambiar el rol de este usuario. Revisa la accion antes de continuar.
+                </p>
+                <div class="admin-confirm-actions">
+                    <button type="button" class="button button-secondary-dark" data-role-confirm-cancel>Cancelar</button>
+                    <button type="button" class="button button-primary" data-role-confirm-accept>Confirmar cambio</button>
+                </div>
+            </section>
+        </div>
     </main>
 
     <div th:replace="~{fragmentos/pie :: footer}"></div>
 </div>
 
-
-
-    <script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/admin.js}"></script>
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>
