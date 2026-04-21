@@ -146,7 +146,6 @@ function renderCategoriesTable(tableContainer, data) {
                         <th>ID</th>
                         <th>Nombre</th>
                         <th># Productos</th>
-                        <th>Acción</th>
                         <th>Eliminar</th>
                     </tr>
                 </thead>
@@ -156,11 +155,6 @@ function renderCategoriesTable(tableContainer, data) {
                             <td>${category.id}</td>
                             <td>${category.nombre}</td>
                             <td>${category.productos ? category.productos.length : 0}</td>
-                            <td>
-                                <button class="button button-small button-outline" type="button" onclick="window.location.href='/admin/editar-categoria/${category.id}'">
-                                    Editar
-                                </button>
-                            </td>
                             <td>
                                 <button class="button button-small button-outline admin-delete-btn" type="button" data-category-id="${category.id}" data-category-name="${category.nombre}" title="Eliminar categoría">
                                     Eliminar
