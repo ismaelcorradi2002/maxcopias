@@ -413,26 +413,34 @@ document.addEventListener("click", function (event) {
 });
 
 function deleteProduct(productId) {
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
     fetch(`/admin/delete-producto/${productId}`, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`HTTP ${response.status}: ${text}`);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success === 'true') {
-            // Refresh products
             const activeTabButton = document.querySelector('.admin-buttons .active');
             const tabName = activeTabButton ? activeTabButton.dataset.tab || 'products' : 'products';
             switchTab(activeTabButton, tabName);
             alert(data.message);
         } else {
-            alert('Error: ' + data.message);
+            alert('Error: ' + (data.message || 'Desconocido'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error al eliminar producto. Revisa la consola.');
+        alert('Error al eliminar: ' + error.message);
     });
 }
