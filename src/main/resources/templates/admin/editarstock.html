@@ -56,6 +56,30 @@
                                     <label for="precio">Precio</label>
                                     <input type="number" th:field="*{precio}" id="precio" step="0.01" min="0" required>
                                 </div>
+
+                                <div class="admin-form-group">
+                                    <label for="categoriaId">Categoria principal <span class="required">*</span></label>
+                                    <select name="categoriaId" id="categoriaId" required>
+                                        <option value="">Seleccionar (obligatorio)</option>
+                                        <option th:each="cat : ${categorias}" 
+                                                th:value="${cat.id}" 
+                                                th:text="${cat.nombre}"
+                                                th:selected="${producto.categorias[0]?.id == cat.id}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="admin-form-group">
+                                    <label for="categoriaOpcionalId">Categoria opcional</label>
+                                    <select name="categoriaOpcionalId" id="categoriaOpcionalId">
+                                        <option value="">Ninguna</option>
+                                        <option th:each="cat : ${categorias}" 
+                                                th:value="${cat.id}" 
+                                                th:text="${cat.nombre}"
+                                                th:selected="${producto.categorias.size() > 1 ? (producto.categorias[1].id == cat.id) : false}">
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </fieldset>
 

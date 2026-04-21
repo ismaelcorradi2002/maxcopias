@@ -201,10 +201,11 @@ public class ControladorAreaPersonal {
         }
     }
 
-    @GetMapping("/editarstock/{id}")
+@GetMapping("/editarstock/{id}")
     public String editarStock(@PathVariable Long id, Model model, Authentication authentication) {
         Producto producto = servicioTienda.obtenerProductoPorId(id);
         model.addAttribute("producto", producto);
+        model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
         model.addAttribute("pageTitle", "Maxcopias | Editar stock");
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
@@ -212,14 +213,33 @@ public class ControladorAreaPersonal {
     }
 
 @PostMapping("/admin/update-producto/{id}")
-    public String updateProducto(@PathVariable Long id, @ModelAttribute Producto producto, Authentication authentication) {
+    public String updateProducto(@PathVariable Long id, 
+                                @RequestParam("nombre") String nombre,
+                                @RequestParam("descripcion") String descripcion,
+                                @RequestParam("stock") Integer stock,
+                                @RequestParam("precio") BigDecimal precio,
+                                @RequestParam("categoriaId") Long categoriaId,
+                                @RequestParam(value="categoriaOpcionalId", required=false) Long categoriaOpcionalId,
+                                Authentication authentication) {
         Producto existingProducto = servicioTienda.obtenerProductoPorId(id);
-        existingProducto.setNombre(producto.getNombre());
-        existingProducto.setDescripcion(producto.getDescripcion());
-        existingProducto.setStock(producto.getStock());
-        existingProducto.setPrecio(producto.getPrecio());
+        existingProducto.setNombre(nombre);
+        existingProducto.setDescripcion(descripcion);
+        existingProducto.setStock(stock);
+        existingProducto.setPrecio(precio);
+        
+        existingProducto.clearCategorias();
+        Categoria catPrincipal = servicioTienda.obtenerCategoriaObligatoria(categoriaId);
+        existingProducto.addCategoria(catPrincipal);
+        
+        if (categoriaOpcionalId != null) {
+            Categoria catOpcional = servicioTienda.obtenerCategoriaPorId(categoriaOpcionalId);
+            if (catOpcional != null && !catOpcional.getId().equals(categoriaId)) {
+                existingProducto.addCategoria(catOpcional);
+            }
+        }
+        
         servicioTienda.guardarProducto(existingProducto);
-        return "redirect:/admin";
+        return "redirect:/admin?updated=true";
     }
 
     /**
