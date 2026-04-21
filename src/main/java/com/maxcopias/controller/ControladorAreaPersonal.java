@@ -159,6 +159,37 @@ public class ControladorAreaPersonal {
         return servicioTienda.obtenerTodasCategorias();
     }
 
+    @GetMapping("/admin/crear-categoria")
+    public String crearCategoria(Model model, Authentication authentication) {
+        model.addAttribute("categoria", new Categoria());
+        model.addAttribute("pageTitle", "Maxcopias | Crear categoría");
+        Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+        model.addAttribute("currentUsuario", currentUsuario);
+        return "admin/crearcategoria";
+    }
+
+    @PostMapping("/admin/crear-categoria")
+    public String guardarCategoria(@RequestParam("nombre") String nombre, 
+                                   @RequestParam(value = "descripcion", required = false) String descripcion,
+                                   Model model, Authentication authentication) {
+        try {
+            Categoria categoria = new Categoria();
+            categoria.setNombre(nombre.trim());
+            if (descripcion != null && !descripcion.trim().isEmpty()) {
+                categoria.setDescripcion(descripcion.trim());
+            }
+            servicioTienda.guardarCategoria(categoria);
+            return "redirect:/admin";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al crear categoría: " + e.getMessage());
+            model.addAttribute("categoria", new Categoria());
+            Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+            model.addAttribute("currentUsuario", currentUsuario);
+            model.addAttribute("pageTitle", "Maxcopias | Crear categoría");
+            return "admin/crearcategoria";
+        }
+    }
+
 @GetMapping("/admin/crear-producto")
     public String crearProducto(Model model, Authentication authentication) {
         Producto nuevoProducto = new Producto();
