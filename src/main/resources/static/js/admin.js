@@ -145,6 +145,7 @@ function renderCategoriesTable(tableContainer, data) {
                     <tr>
                         <th>ID</th>
                         <th>Nombre</th>
+                        <th>Descripción</th>
                         <th># Productos</th>
                         <th>Eliminar</th>
                     </tr>
@@ -154,6 +155,7 @@ function renderCategoriesTable(tableContainer, data) {
                         <tr>
                             <td>${category.id}</td>
                             <td>${category.nombre}</td>
+                            <td class="admin-category-description" title="${category.descripcion || ''}">${category.descripcion || '-'}</td>
                             <td>${category.productos ? category.productos.length : 0}</td>
                             <td>
                                 <button class="button button-small button-outline admin-delete-btn" type="button" data-category-id="${category.id}" data-category-name="${category.nombre}" title="Eliminar categoría">
@@ -184,14 +186,15 @@ function renderCategoriesTable(tableContainer, data) {
     searchInput.addEventListener("input", applyCategoryFilters);
 
     // Delete category handler scoped to this table
-    tableContainer.addEventListener("click", function(e) {
-        if (e.target.matches(".admin-delete-btn[data-category-id]")) {
-            const catId = e.target.dataset.categoryId;
-            const catName = e.target.dataset.categoryName;
-            if (confirm(`¿Estás seguro que quieres eliminar la categoría "${catName}"? Esta acción eliminará la categoría pero NO los productos asociados.`)) {
+    const deleteButtons = tableContainer.querySelectorAll(".admin-delete-btn[data-category-id]");
+    deleteButtons.forEach(btn => {
+        btn.addEventListener("click", function() {
+            const catId = this.dataset.categoryId;
+            const catName = this.dataset.categoryName;
+            if (confirm(`¿Estás seguro que quieres eliminar la categoría "${catName}"?`)) {
                 deleteCategoria(catId);
             }
-        }
+        });
     });
 }
 
@@ -475,12 +478,11 @@ document.addEventListener("click", function (event) {
         return;
     }
 
-    // Delete product handler
-    if (event.target.matches(".admin-delete-btn")) {
+    // Delete product handler - solo para productos
+    if (event.target.matches(".admin-delete-btn[data-product-id]")) {
         event.preventDefault();
-        const button = event.target;
-        const productId = button.dataset.productId;
-        const productName = button.closest("tr").querySelector("td:nth-child(2)").textContent.trim();
+        const productId = event.target.dataset.productId;
+        const productName = event.target.closest("tr").querySelector("td:nth-child(2)").textContent.trim();
         
         if (confirm(`¿Estás seguro que quieres eliminar el producto "${productName}"? Esta acción no se puede deshacer.`)) {
             deleteProduct(productId);
