@@ -5,7 +5,7 @@ function switchTab(button, tab) {
     const tableContainer = document.querySelector(".table-container");
     tableContainer.innerHTML = '<div class="admin-loading">Cargando datos...</div>';
 
-    const apiEndpoint = tab === "users" ? "/admin/api/users" : "/admin/api/products";
+    const apiEndpoint = tab === "users" ? "/admin/api/users" : tab === "products" ? "/admin/api/products" : "/admin/api/categorias";
 
     fetch(apiEndpoint)
         .then(response => response.json())
@@ -19,7 +19,10 @@ function switchTab(button, tab) {
                 renderUsersTable(tableContainer, data);
                 return;
             }
-
+            if (tab === "categories") {
+                renderCategoriesTable(tableContainer, data);
+                return;
+            }
             renderProductsTable(tableContainer, data);
         })
         .catch(error => {
@@ -109,6 +112,93 @@ function formatAdminDate(value) {
         hour: "2-digit",
         minute: "2-digit"
     }).format(date).replace(",", "");
+}
+
+function renderCategoriesTable(tableContainer, data) {
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
+
+    tableContainer.innerHTML = `
+        <div class="admin-product-toolbar">
+            <button class="button button-primary admin-new-category-btn" type="button" onclick="window.location.href='/admin/crear-categoria'">
+                Crear nueva categoría
+            </button>
+            <label class="admin-product-search" for="admin-category-search">
+                <span>Buscar categoría</span>
+                <input id="admin-category-search" type="search" placeholder="Buscar por ID o nombre" autocomplete="off">
+            </label>
+        </div>
+        <div class="admin-categories-table-region" data-categories-table-region></div>
+    `;
+
+    const tableRegion = tableContainer.querySelector("[data-categories-table-region]");
+    const searchInput = tableContainer.querySelector("#admin-category-search");
+
+    function paintCategories(categories) {
+        if (categories.length === 0) {
+            tableRegion.innerHTML = '<p class="no-data">No se han encontrado categorías con esa búsqueda.</p>';
+            return;
+        }
+
+        tableRegion.innerHTML = `
+            <table class="admin-table admin-categories-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th># Productos</th>
+                        <th>Acción</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${categories.map(category => `
+                        <tr>
+                            <td>${category.id}</td>
+                            <td>${category.nombre}</td>
+                            <td>${category.productos ? category.productos.length : 0}</td>
+                            <td>
+                                <button class="button button-small button-outline" type="button" onclick="window.location.href='/admin/editar-categoria/${category.id}'">
+                                    Editar
+                                </button>
+                            </td>
+                            <td>
+                                <button class="button button-small button-outline admin-delete-btn" type="button" data-category-id="${category.id}" data-category-name="${category.nombre}" title="Eliminar categoría">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        `;
+    }
+
+    paintCategories(data);
+
+    function applyCategoryFilters() {
+        const query = normalizeAdminSearch(searchInput.value);
+        if (!query) {
+            paintCategories(data);
+            return;
+        }
+        const filtered = data.filter(cat => 
+            normalizeAdminSearch(`${cat.id} ${cat.nombre}`).includes(query)
+        );
+        paintCategories(filtered);
+    }
+
+    searchInput.addEventListener("input", applyCategoryFilters);
+
+    // Delete category handler scoped to this table
+    tableContainer.addEventListener("click", function(e) {
+        if (e.target.matches(".admin-delete-btn[data-category-id]")) {
+            const catId = e.target.dataset.categoryId;
+            const catName = e.target.dataset.categoryName;
+            if (confirm(`¿Estás seguro que quieres eliminar la categoría "${catName}"? Esta acción eliminará la categoría pero NO los productos asociados.`)) {
+                deleteCategoria(catId);
+            }
+        }
+    });
 }
 
 function renderProductsTable(tableContainer, data) {
@@ -412,8 +502,40 @@ document.addEventListener("click", function (event) {
     closeOtherRoleDropdowns(null);
 });
 
-function deleteProduct(productId) {
+function deleteCategoria(categoryId) {
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
+    fetch(`/admin/delete-categoria/${categoryId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`HTTP ${response.status}: ${text}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success === 'true') {
+            const activeTabButton = document.querySelector('.admin-buttons .active');
+            switchTab(activeTabButton, 'categories');
+            alert(data.message);
+        } else {
+            alert('Error: ' + (data.message || 'Desconocido'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al eliminar: ' + error.message);
+    });
+}
+
+function deleteProduct(productId) {
+    const csrfToken = document.querySelector('meta[name="_csrf"]') ? document.querySelector('meta[name="_csrf"]').getAttribute("content") : "";
     fetch(`/admin/delete-producto/${productId}`, {
         method: 'DELETE',
         headers: {
@@ -433,7 +555,7 @@ function deleteProduct(productId) {
         if (data.success === 'true') {
             const activeTabButton = document.querySelector('.admin-buttons .active');
             const tabName = activeTabButton ? activeTabButton.dataset.tab || 'products' : 'products';
-            switchTab(activeTabButton, tabName);
+            if (activeTabButton) switchTab(activeTabButton, tabName);
             alert(data.message);
         } else {
             alert('Error: ' + (data.message || 'Desconocido'));

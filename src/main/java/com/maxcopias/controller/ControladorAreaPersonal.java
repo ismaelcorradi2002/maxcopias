@@ -147,10 +147,16 @@ public class ControladorAreaPersonal {
         return userRepository.findAll();
     }
 
-    @GetMapping("/admin/api/products")
+@GetMapping("/admin/api/products")
     @ResponseBody
     public List<Producto> getProductsApi() {
         return servicioTienda.obtenerTodosProductos();
+    }
+
+    @GetMapping("/admin/api/categorias")
+    @ResponseBody
+    public List<Categoria> getCategoriasApi() {
+        return servicioTienda.obtenerTodasCategorias();
     }
 
 @GetMapping("/admin/crear-producto")
