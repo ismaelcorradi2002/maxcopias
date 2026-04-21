@@ -95,4 +95,15 @@ public class ServicioTienda {
     private String normalizarTexto(String valor) {
         return StringUtils.hasText(valor) ? valor.trim() : "";
     }
+
+    /**
+     * Elimina producto por ID.
+     */
+    @Transactional
+    public void eliminarProductoPorId(Long productoId) {
+        if (!repositorioProducto.existsById(productoId)) {
+            throw new IllegalArgumentException("El producto no existe.");
+        }
+        repositorioProducto.deleteById(productoId);
+    }
 }

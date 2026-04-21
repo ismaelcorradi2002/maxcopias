@@ -149,6 +149,7 @@ function renderProductsTable(tableContainer, data) {
                     <th>Stock</th>
                     <th>Categorias</th>
                     <th>Accion</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody>
@@ -162,6 +163,11 @@ function renderProductsTable(tableContainer, data) {
                         <td>
                             <button class="button button-small button-outline" type="button" onclick="window.location.href='/editarstock/${product.id}'">
                                 Editar
+                            </button>
+                        </td>
+                        <td>
+                            <button class="button button-small button-outline admin-delete-btn" type="button" data-product-id="${product.id}" title="Eliminar producto">
+                                Eliminar
                             </button>
                         </td>
                     </tr>
@@ -382,5 +388,43 @@ document.addEventListener("click", function (event) {
         return;
     }
 
+    // Delete product handler
+    if (event.target.matches(".admin-delete-btn")) {
+        event.preventDefault();
+        const button = event.target;
+        const productId = button.dataset.productId;
+        const productName = button.closest("tr").querySelector("td:nth-child(2)").textContent.trim();
+        
+        if (confirm(`¿Estás seguro que quieres eliminar el producto "${productName}"? Esta acción no se puede deshacer.`)) {
+            deleteProduct(productId);
+        }
+        return;
+    }
+
     closeOtherRoleDropdowns(null);
 });
+
+function deleteProduct(productId) {
+    fetch(`/admin/delete-producto/${productId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success === 'true') {
+            // Refresh products
+            const activeTabButton = document.querySelector('.admin-buttons .active');
+            const tabName = activeTabButton ? activeTabButton.dataset.tab || 'products' : 'products';
+            switchTab(activeTabButton, tabName);
+            alert(data.message);
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al eliminar producto. Revisa la consola.');
+    });
+}

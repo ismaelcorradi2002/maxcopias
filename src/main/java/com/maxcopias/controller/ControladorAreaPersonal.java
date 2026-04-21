@@ -25,6 +25,9 @@ import java.util.Optional;
 import com.maxcopias.model.Producto;
 import com.maxcopias.service.ServicioTienda;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import java.util.Map;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @Controller
 public class ControladorAreaPersonal {
@@ -158,7 +161,7 @@ public class ControladorAreaPersonal {
         return "admin/editarstock";
     }
 
-    @PostMapping("/admin/update-producto/{id}")
+@PostMapping("/admin/update-producto/{id}")
     public String updateProducto(@PathVariable Long id, @ModelAttribute Producto producto, Authentication authentication) {
         Producto existingProducto = servicioTienda.obtenerProductoPorId(id);
         existingProducto.setNombre(producto.getNombre());
@@ -167,6 +170,19 @@ public class ControladorAreaPersonal {
         existingProducto.setPrecio(producto.getPrecio());
         servicioTienda.guardarProducto(existingProducto);
         return "redirect:/admin";
+    }
+
+    /**
+     * Elimina producto desde admin panel.
+     */
+    @DeleteMapping("/admin/delete-producto/{id}")
+    public @ResponseBody Map<String, String> deleteProducto(@PathVariable Long id, Authentication authentication) {
+        try {
+            servicioTienda.eliminarProductoPorId(id);
+            return Map.of("success", "true", "message", "Producto eliminado correctamente.");
+        } catch (Exception e) {
+            return Map.of("success", "false", "message", "Error al eliminar producto: " + e.getMessage());
+        }
     }
 
     private void populatePersonalAreaModel(Model model, Usuario currentUsuario, FormularioActualizarPerfil profileForm, boolean updated) {
