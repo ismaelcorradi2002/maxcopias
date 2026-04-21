@@ -8,6 +8,7 @@ import com.maxcopias.service.ServicioPedidoCopisteria;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.service.ServicioUsuario;
 import com.maxcopias.model.Rol;
+import com.maxcopias.repository.RepositorioCategoria;
 import com.maxcopias.repository.RepositorioUsuario;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
@@ -41,13 +42,15 @@ public class ControladorAreaPersonal {
      * Inyecta servicios de usuario y pedidos.
      */
     private final RepositorioUsuario userRepository;
+    private final RepositorioCategoria repositorioCategoria;
 
     /**
      * Inyecta servicios de usuario/pedidos y repositorio.
      */
     private final ServicioTienda servicioTienda;
 
-    public ControladorAreaPersonal(ServicioUsuario userService, ServicioPedidoCopisteria copisteriaOrderService, RepositorioUsuario userRepository, ServicioTienda servicioTienda) {
+    public ControladorAreaPersonal(ServicioUsuario userService, ServicioPedidoCopisteria copisteriaOrderService, RepositorioUsuario userRepository, ServicioTienda servicioTienda, RepositorioCategoria repositorioCategoria) {
+        this.repositorioCategoria = repositorioCategoria;
         this.userService = userService;
         this.copisteriaOrderService = copisteriaOrderService;
         this.userRepository = userRepository;
@@ -277,6 +280,19 @@ public class ControladorAreaPersonal {
         
         servicioTienda.guardarProducto(existingProducto);
         return "redirect:/admin?updated=true";
+    }
+
+    /**
+     * Elimina categoría desde admin panel.
+     */
+    @DeleteMapping("/admin/delete-categoria/{id}")
+    public @ResponseBody Map<String, String> deleteCategoria(@PathVariable Long id, Authentication authentication) {
+        try {
+            repositorioCategoria.deleteById(id);
+            return Map.of("success", "true", "message", "Categoría eliminada correctamente.");
+        } catch (Exception e) {
+            return Map.of("success", "false", "message", "Error al eliminar categoría: " + e.getMessage());
+        }
     }
 
     /**
