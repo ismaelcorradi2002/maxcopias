@@ -168,7 +168,9 @@ public class ControladorAreaPersonal {
 @PostMapping("/admin/crear-producto")
     public String guardarNuevoProducto(@RequestParam("nombre") String nombre, @RequestParam("descripcion") String descripcion,
                                       @RequestParam("stock") Integer stock, @RequestParam("precio") BigDecimal precio,
-                                      @RequestParam("categoriaId") Long categoriaId, Model model, Authentication authentication) {
+                                      @RequestParam("categoriaId") Long categoriaId,
+                                      @RequestParam(value = "categoriaOpcionalId", required = false) Long categoriaOpcionalId, 
+                                      Model model, Authentication authentication) {
         try {
             Producto producto = new Producto();
             producto.setNombre(nombre);
@@ -176,9 +178,16 @@ public class ControladorAreaPersonal {
             producto.setStock(stock);
             producto.setPrecio(precio);
             
-            Categoria categoria = servicioTienda.obtenerCategoriaObligatoria(categoriaId);
+            Categoria categoriaPrincipal = servicioTienda.obtenerCategoriaObligatoria(categoriaId);
             producto.clearCategorias();
-            producto.addCategoria(categoria);
+            producto.addCategoria(categoriaPrincipal);
+            
+            if (categoriaOpcionalId != null) {
+                Categoria categoriaOpcional = servicioTienda.obtenerCategoriaPorId(categoriaOpcionalId);
+                if (categoriaOpcional != null && !categoriaOpcionalId.equals(categoriaId)) {
+                    producto.addCategoria(categoriaOpcional);
+                }
+            }
             
             servicioTienda.guardarProducto(producto);
             return "redirect:/admin?created=true";

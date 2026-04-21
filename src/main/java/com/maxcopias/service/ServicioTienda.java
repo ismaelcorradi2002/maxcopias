@@ -50,15 +50,6 @@ public class ServicioTienda {
         producto.setStock(producto.getStock() == null ? 0 : producto.getStock());
         producto.setPrecio(producto.getPrecio() == null ? BigDecimal.ZERO : producto.getPrecio());
         
-        // Asignar primera categoria si existe
-        if (!producto.getCategorias().isEmpty()) {
-            Categoria categoria = producto.getCategorias().iterator().next();
-            Categoria categoriaDb = repositorioCategoria.findById(categoria.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Categoria no encontrada"));
-            producto.clearCategorias();
-            producto.addCategoria(categoriaDb);
-        }
-        
         return repositorioProducto.save(producto);
     }
 
@@ -96,10 +87,15 @@ public class ServicioTienda {
             .orElseThrow(() -> new IllegalArgumentException("No existe el producto indicado."));
     }
 
-@Transactional
+    @Transactional
     public Categoria obtenerCategoriaObligatoria(Long categoriaId) {
         return repositorioCategoria.findById(categoriaId)
             .orElseThrow(() -> new IllegalArgumentException("No existe la categoria indicada."));
+    }
+
+    @Transactional(readOnly = true)
+    public Categoria obtenerCategoriaPorId(Long categoriaId) {
+        return repositorioCategoria.findById(categoriaId).orElse(null);
     }
 
     private String normalizarTexto(String valor) {

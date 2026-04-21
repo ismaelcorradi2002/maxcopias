@@ -55,10 +55,21 @@
                                     <input type="number" name="precio" id="precio" step="0.01" min="0" required>
                                 </div>
                                 
-                                <div class="admin-form-group admin-form-group-full">
-                                    <label for="categoriaId">Categoria</label>
+                                <div class="admin-form-group">
+                                    <label for="categoriaId">Categoria principal <span class="required">*</span></label>
                                     <select name="categoriaId" id="categoriaId" required>
-                                        <option value="">Seleccionar categoria</option>
+                                        <option value="">Seleccionar (obligatorio)</option>
+                                        <option th:each="cat : ${categorias}" 
+                                                th:value="${cat.id}" 
+                                                th:text="${cat.nombre}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="admin-form-group">
+                                    <label for="categoriaOpcionalId">Categoria opcional</label>
+                                    <select name="categoriaOpcionalId" id="categoriaOpcionalId">
+                                        <option value="">Ninguna</option>
                                         <option th:each="cat : ${categorias}" 
                                                 th:value="${cat.id}" 
                                                 th:text="${cat.nombre}">
