@@ -519,7 +519,7 @@ function deleteCategoria(categoryId) {
             switchTab(activeTabButton, 'categories');
             alert(data.message);
         } else {
-            alert('Error: ' + (data.message || 'Desconocido'));
+            alert(data.message || 'Error desconocido');
         }
     })
     .catch(error => {

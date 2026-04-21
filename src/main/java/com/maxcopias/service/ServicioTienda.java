@@ -105,11 +105,20 @@ public class ServicioTienda {
     /**
      * Elimina producto por ID.
      */
-    @Transactional
+@Transactional
     public void eliminarProductoPorId(Long productoId) {
         if (!repositorioProducto.existsById(productoId)) {
             throw new IllegalArgumentException("El producto no existe.");
         }
         repositorioProducto.deleteById(productoId);
     }
-}
+
+    /**
+     * Verifica si categoría tiene productos y retorna sus IDs.
+     */
+    @Transactional(readOnly = true)
+    public List<Long> verificarProductosEnCategoria(Long categoriaId) {
+        Categoria categoria = repositorioCategoria.findById(categoriaId)
+            .orElseThrow(() -> new IllegalArgumentException("Categoría no existe"));
+        return categoria.getProductos().stream().map(Producto::getId).toList();
+    }}

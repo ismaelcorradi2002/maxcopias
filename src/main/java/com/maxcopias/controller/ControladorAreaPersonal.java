@@ -288,8 +288,14 @@ public class ControladorAreaPersonal {
     @DeleteMapping("/admin/delete-categoria/{id}")
     public @ResponseBody Map<String, String> deleteCategoria(@PathVariable Long id, Authentication authentication) {
         try {
+            List<Long> productosIds = servicioTienda.verificarProductosEnCategoria(id);
+            if (!productosIds.isEmpty()) {
+                return Map.of("success", "false", "message", "No se puede eliminar. Categoría tiene productos asociados: " + productosIds);
+            }
             repositorioCategoria.deleteById(id);
             return Map.of("success", "true", "message", "Categoría eliminada correctamente.");
+        } catch (IllegalArgumentException e) {
+            return Map.of("success", "false", "message", e.getMessage());
         } catch (Exception e) {
             return Map.of("success", "false", "message", "Error al eliminar categoría: " + e.getMessage());
         }
