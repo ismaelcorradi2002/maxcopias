@@ -52,13 +52,11 @@ public class Producto {
             return;
         }
         categorias.add(categoria);
-        categoria.getProductos().add(this);
+        // Avoid bidirectional modification to prevent lazy loading
+        // categoria.getProductos().add(this);
     }
 
     public void clearCategorias() {
-        for (Categoria categoria : categorias) {
-            categoria.getProductos().remove(this);
-        }
         categorias.clear();
     }
 

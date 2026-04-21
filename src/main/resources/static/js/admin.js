@@ -114,6 +114,9 @@ function formatAdminDate(value) {
 function renderProductsTable(tableContainer, data) {
     tableContainer.innerHTML = `
         <div class="admin-product-toolbar">
+            <button class="button button-primary admin-new-product-btn" type="button">
+                Crear un nuevo producto
+            </button>
             <label class="admin-product-search" for="admin-product-search">
                 <span>Buscar producto</span>
                 <input id="admin-product-search" type="search" placeholder="Buscar por ID, nombre o categoria" autocomplete="off">
@@ -399,6 +402,11 @@ document.addEventListener("click", function (event) {
             deleteProduct(productId);
         }
         return;
+    }
+
+    // New product button
+    if (event.target.matches(".admin-new-product-btn")) {
+        window.location.href = '/admin/crear-producto';
     }
 
     closeOtherRoleDropdowns(null);

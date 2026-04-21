@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.maxcopias.model.Producto;
+import com.maxcopias.model.Categoria;
+import java.math.BigDecimal;
 import com.maxcopias.service.ServicioTienda;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.HttpStatus;
@@ -149,6 +151,45 @@ public class ControladorAreaPersonal {
     @ResponseBody
     public List<Producto> getProductsApi() {
         return servicioTienda.obtenerTodosProductos();
+    }
+
+@GetMapping("/admin/crear-producto")
+    public String crearProducto(Model model, Authentication authentication) {
+        Producto nuevoProducto = new Producto();
+        model.addAttribute("producto", nuevoProducto);
+        model.addAttribute("pageTitle", "Maxcopias | Crear producto");
+        model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
+
+        Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+        model.addAttribute("currentUsuario", currentUsuario);
+        return "admin/crearproducto";
+    }
+
+@PostMapping("/admin/crear-producto")
+    public String guardarNuevoProducto(@RequestParam("nombre") String nombre, @RequestParam("descripcion") String descripcion,
+                                      @RequestParam("stock") Integer stock, @RequestParam("precio") BigDecimal precio,
+                                      @RequestParam("categoriaId") Long categoriaId, Model model, Authentication authentication) {
+        try {
+            Producto producto = new Producto();
+            producto.setNombre(nombre);
+            producto.setDescripcion(descripcion);
+            producto.setStock(stock);
+            producto.setPrecio(precio);
+            
+            Categoria categoria = servicioTienda.obtenerCategoriaObligatoria(categoriaId);
+            producto.clearCategorias();
+            producto.addCategoria(categoria);
+            
+            servicioTienda.guardarProducto(producto);
+            return "redirect:/admin?created=true";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al crear producto: " + e.getMessage());
+            Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+            model.addAttribute("currentUsuario", currentUsuario);
+            model.addAttribute("pageTitle", "Maxcopias | Crear producto");
+            model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
+            return "admin/crearproducto";
+        }
     }
 
     @GetMapping("/editarstock/{id}")
