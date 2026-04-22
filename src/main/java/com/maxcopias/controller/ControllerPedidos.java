@@ -29,6 +29,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpServletRequest;
+import com.maxcopias.dto.RespuestaVistaPreviaPrecioCopisteria;
+import com.maxcopias.model.EstimacionPrecioCopisteria;
+import com.maxcopias.model.LineaPrecioCopisteria;
+import java.util.ArrayList;
+import java.math.RoundingMode;
 
 @Controller
 @RequestMapping("/copisteria")
@@ -50,6 +57,14 @@ public class ControllerPedidos {
 
 @GetMapping({"", "/pedido", "/formulario"})
     public String formulario(@ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+            String username = auth.getName();
+            Usuario user = userService.findRequiredByEmail(username);
+            orderForm.setCustomerName(user.getFirstName() + " " + user.getLastName());
+            orderForm.setPhone(user.getPhone());
+            orderForm.setEmail(user.getEmail());
+        }
         // Pre-select defaults for smooth JS wizard progression
         orderForm.setJobType(TipoTrabajo.IMPRESION);
         orderForm.setColorMode(ModoColor.BLACK_AND_WHITE);
@@ -86,31 +101,15 @@ public class ControllerPedidos {
     public String procesarPedido(
             @Valid @ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm,
             BindingResult result,
-            @RequestParam("files") MultipartFile[] files,
+            @RequestParam(value = "files", required = false) MultipartFile[] files,
             Model model) {
         
-        if (result.hasErrors() || files == null || files.length == 0) {
+        if (result.hasErrors()) {
             // Re-populate model attributes on validation error
             formulario(orderForm, model);
             return "copisteria/formulario";
         }
         
-        String reference = "PED-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
-
-        List<MultipartFile> fileList = Arrays.asList(files);
-
-        List<DatosArchivoGuardado> storedFiles = storageService.storeFiles(fileList, reference);
-
-        if (storedFiles.isEmpty()) {
-            model.addAttribute("error", "No se han subido archivos válidos.");
-            formulario(orderForm, model);
-            return "copisteria/formulario";
-        }
-
-        String rutaArchivo = storedFiles.stream()
-            .map(DatosArchivoGuardado::getRelativePath)
-            .collect(Collectors.joining("; "));
-
         PedidoCopisteria pedido = new PedidoCopisteria();
         pedido.setCustomerName(orderForm.getCustomerName());
         pedido.setPhone(orderForm.getPhone());
@@ -125,8 +124,8 @@ public class ControllerPedidos {
         String extrasStr = String.format("plastificado=%b,urgente=%b,escaneado=%b,observaciones='%s'",
             orderForm.getPlastificado(), orderForm.getUrgente(), orderForm.getEscaneado(), orderForm.getObservations());
         pedido.setExtras(extrasStr);
-        pedido.setRutaArchivo(rutaArchivo);
         pedido.setPrecio(BigDecimal.ZERO); // TODO: Implementar cálculo de precio real basado en archivos y configuración
+        pedido.setRutaArchivo(null);
 
         // Obtener usuario autenticado
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -141,11 +140,64 @@ public class ControllerPedidos {
 
         PedidoCopisteria savedPedido = pedidoRepository.save(pedido);
 
-        return "redirect:/copisteria/resumen?id=" + savedPedido.getId();
+        return "redirect:/";
+    }
+
+    @GetMapping("/resumen")
+    public String resumen(@RequestParam Long id, Model model) {
+        PedidoCopisteria pedido = pedidoRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
+        model.addAttribute("order", pedido);
+        model.addAttribute("priceEstimate", new EstimacionPrecioCopisteria(BigDecimal.ZERO, "Orientativo", "Resumen pedido guardado", 0, 0));
+        return "copisteria/resumen";
     }
 
     @GetMapping("/mis-pedidos")
     public String misPedidos() {
         return "area-personal/pedidos";
+    }
+
+
+@PostMapping("/precio-orientativo")
+    @ResponseBody
+    public RespuestaVistaPreviaPrecioCopisteria precioOrientativo(
+            HttpServletRequest request,
+            @RequestParam(value = "files", required = false) MultipartFile[] files) {
+        
+        try {
+            // Parse form fields
+            TipoTrabajo jobType = TipoTrabajo.valueOf(request.getParameter("jobType"));
+            ModoColor colorMode = request.getParameter("colorMode") != null ? ModoColor.valueOf(request.getParameter("colorMode")) : ModoColor.BLACK_AND_WHITE;
+            int copies = Integer.parseInt(request.getParameter("copies") != null ? request.getParameter("copies") : "1");
+            int fileCount = files != null ? files.length : 0;
+            int pageCount = fileCount; // Simple preview
+
+            // Calc total (mirror JS basic print)
+            double basePrice = colorMode == ModoColor.COLOR ? 0.45 : 0.06;
+            BigDecimal total = BigDecimal.valueOf(basePrice * pageCount * copies).setScale(2, RoundingMode.HALF_UP);
+            
+            List<LineaPrecioCopisteria> lines = List.of(
+                new LineaPrecioCopisteria(
+                    jobType.name() + " " + colorMode.name(), 
+                    pageCount + " paginas x " + copies + " copias", 
+                    total
+                )
+            );
+
+            String note = "Precio orientativo calculado. Sube archivos para paginas exactas.";
+            String breakdown = jobType.name() + " • " + colorMode + " • " + copies + " copias";
+
+            EstimacionPrecioCopisteria estimate = new EstimacionPrecioCopisteria(
+                total, breakdown, note, fileCount, pageCount, lines
+            );
+
+            // Use record from() if available, else manual
+            return RespuestaVistaPreviaPrecioCopisteria.from(estimate);
+        } catch (Exception e) {
+            // Fallback empty
+            return new RespuestaVistaPreviaPrecioCopisteria(
+                "0,00 EUR", "Error en config", "Completa el formulario", 0, 0, "0 paginas", List.of()
+            );
+        }
     }
 }
