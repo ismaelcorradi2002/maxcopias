@@ -14,10 +14,34 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.maxcopias.model.PedidoCopisteria;
+import com.maxcopias.model.Usuario;
+import com.maxcopias.model.DatosArchivoGuardado;
+import com.maxcopias.repository.RepositorioPedidoCopisteria;
+import com.maxcopias.service.ServicioAlmacenamientoArchivos;
+import com.maxcopias.service.ServicioUsuario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/copisteria")
 public class ControllerPedidos {
+
+    @Autowired
+    private RepositorioPedidoCopisteria pedidoRepository;
+
+    @Autowired
+    private ServicioAlmacenamientoArchivos storageService;
+
+    @Autowired
+    private ServicioUsuario userService;
 
     @InitBinder("orderForm")
     public void initBinder(WebDataBinder binder) {
@@ -71,9 +95,53 @@ public class ControllerPedidos {
             return "copisteria/formulario";
         }
         
-        // TODO: Process files, save order, generate price
-        // For now, redirect to summary
-        return "redirect:/copisteria/resumen";
+        String reference = "PED-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+
+        List<MultipartFile> fileList = Arrays.asList(files);
+
+        List<DatosArchivoGuardado> storedFiles = storageService.storeFiles(fileList, reference);
+
+        if (storedFiles.isEmpty()) {
+            model.addAttribute("error", "No se han subido archivos válidos.");
+            formulario(orderForm, model);
+            return "copisteria/formulario";
+        }
+
+        String rutaArchivo = storedFiles.stream()
+            .map(DatosArchivoGuardado::getRelativePath)
+            .collect(Collectors.joining("; "));
+
+        PedidoCopisteria pedido = new PedidoCopisteria();
+        pedido.setCustomerName(orderForm.getCustomerName());
+        pedido.setPhone(orderForm.getPhone());
+        pedido.setEmail(orderForm.getEmail());
+        pedido.setTrabajo(orderForm.getJobType());
+        pedido.setCopias(orderForm.getCopies());
+        pedido.setColor(orderForm.getColorMode());
+        pedido.setTamano(orderForm.getPaperSize());
+        pedido.setCaras(orderForm.getPrintSide());
+        pedido.setPapel(orderForm.getPaperType());
+        pedido.setEncuadernacion(orderForm.getBindingType());
+        String extrasStr = String.format("plastificado=%b,urgente=%b,escaneado=%b,observaciones='%s'",
+            orderForm.getPlastificado(), orderForm.getUrgente(), orderForm.getEscaneado(), orderForm.getObservations());
+        pedido.setExtras(extrasStr);
+        pedido.setRutaArchivo(rutaArchivo);
+        pedido.setPrecio(BigDecimal.ZERO); // TODO: Implementar cálculo de precio real basado en archivos y configuración
+
+        // Obtener usuario autenticado
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+            model.addAttribute("error", "Debes iniciar sesión para realizar un pedido.");
+            formulario(orderForm, model);
+            return "copisteria/formulario";
+        }
+        String username = auth.getName();
+        Usuario usuario = userService.findRequiredByEmail(username);
+        pedido.setUsuario(usuario);
+
+        PedidoCopisteria savedPedido = pedidoRepository.save(pedido);
+
+        return "redirect:/copisteria/resumen?id=" + savedPedido.getId();
     }
 
     @GetMapping("/mis-pedidos")

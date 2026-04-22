@@ -1,0 +1,143 @@
+package com.maxcopias.model;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * Entidad para pedidos de copisteria.
+ */
+@Entity
+@Table(name = "pedidos_copisteria")
+public class PedidoCopisteria {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String customerName;
+
+    @Column(name = "phone", length = 20, nullable = false)
+    private String phone;
+
+    @Column(nullable = false, length = 120)
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trabajo", nullable = false)
+    private TipoTrabajo trabajo;
+
+    @Column(nullable = false)
+    private Integer copias;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "color")
+    private ModoColor color;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tamaño")
+    private TamanoPapel tamano;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "caras")
+    private CaraImpresion caras;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "papel")
+    private TipoPapel papel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "encuadernacion")
+    private TipoEncuadernacion encuadernacion;
+
+    @Column(columnDefinition = "TEXT")
+    private String extras;  // JSON or comma-separated: plastificado, urgente, etc.
+
+    @Column(name = "ruta_archivo", length = 500)
+    private String rutaArchivo;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precio;
+
+    @Column(name = "fecha_creacion", nullable = false, updatable = false)
+    private LocalDateTime fechaCreacion;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoPedidoCopisteria estado = EstadoPedidoCopisteria.RECIBIDO;
+
+    @Column(name = "codigo_recoger", length = 12, unique = true)
+    private String codigoRecoger;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    @PrePersist
+    protected void onCreate() {
+        if (fechaCreacion == null) {
+            fechaCreacion = LocalDateTime.now();
+        }
+        if (codigoRecoger == null) {
+            codigoRecoger = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        }
+    }
+
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public TipoTrabajo getTrabajo() { return trabajo; }
+    public void setTrabajo(TipoTrabajo trabajo) { this.trabajo = trabajo; }
+
+    public Integer getCopias() { return copias; }
+    public void setCopias(Integer copias) { this.copias = copias; }
+
+    public ModoColor getColor() { return color; }
+    public void setColor(ModoColor color) { this.color = color; }
+
+    public TamanoPapel getTamano() { return tamano; }
+    public void setTamano(TamanoPapel tamano) { this.tamano = tamano; }
+
+    public CaraImpresion getCaras() { return caras; }
+    public void setCaras(CaraImpresion caras) { this.caras = caras; }
+
+    public TipoPapel getPapel() { return papel; }
+    public void setPapel(TipoPapel papel) { this.papel = papel; }
+
+    public TipoEncuadernacion getEncuadernacion() { return encuadernacion; }
+    public void setEncuadernacion(TipoEncuadernacion encuadernacion) { this.encuadernacion = encuadernacion; }
+
+    public String getExtras() { return extras; }
+    public void setExtras(String extras) { this.extras = extras; }
+
+    public String getRutaArchivo() { return rutaArchivo; }
+    public void setRutaArchivo(String rutaArchivo) { this.rutaArchivo = rutaArchivo; }
+
+    public BigDecimal getPrecio() { return precio; }
+    public void setPrecio(BigDecimal precio) { this.precio = precio; }
+
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+
+    public EstadoPedidoCopisteria getEstado() { return estado; }
+    public void setEstado(EstadoPedidoCopisteria estado) { this.estado = estado; }
+
+    public String getCodigoRecoger() { return codigoRecoger; }
+    public void setCodigoRecoger(String codigoRecoger) { this.codigoRecoger = codigoRecoger; }
+
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+}
+
