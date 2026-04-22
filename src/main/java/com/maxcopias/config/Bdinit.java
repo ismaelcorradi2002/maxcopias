@@ -29,16 +29,22 @@ public class Bdinit implements CommandLineRunner {
         // Lista de usuarios seed - Añade más aquí en el futuro
         List<UsuarioSeed> usuariosSeed = List.of(
             new UsuarioSeed(
-                "Admin", 
+"Admin", 
                 "Maxcopias", 
                 "admin@gmail.com", 
                 "600 000 000", 
                 "admin",
                 Rol.ROLE_ADMIN
+            ),
+            new UsuarioSeed(
+                "Carlos", 
+                "Usuario", 
+                "carlos@gmail.com", 
+                "600 000 001", 
+                "carlos",
+                Rol.ROLE_USER
             )
-            // Ejemplo para futuro usuario:
-            // new UsuarioSeed("Usuario", "Prueba", "user@test.com", "600 000 001", "user", Rol.ROLE_USER)
-        );
+            );
 
         for (UsuarioSeed seed : usuariosSeed) {
             if (!userRepository.existsByEmailIgnoreCase(seed.email)) {
