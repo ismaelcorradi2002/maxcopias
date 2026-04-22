@@ -98,6 +98,9 @@ function createWizardController(form, fileInput, fileHint, filesError) {
                 return Boolean(getSelectedValue("bindingType"));
             case "files":
                 return validateFilesStep();
+            case "extras":
+            case "review":
+                return true;
             default:
                 return true;
         }

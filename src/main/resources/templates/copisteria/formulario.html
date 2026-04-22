@@ -67,19 +67,22 @@
                     </button>
                 </div>
 
-                <form
+<form
+                    method="post"
                     th:action="@{/copisteria}"
                     th:object="${orderForm}"
-                    method="post"
                     enctype="multipart/form-data"
                     novalidate
                     class="wizard-layout"
                     data-copisteria-wizard>
 
-                    <div class="alert alert-error wizard-alert" th:if="${#fields.hasGlobalErrors()}">
-                        <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
+                    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error wizard-alert">
+                        <ul class="error-list mb-0">
+                            <li th:each="err : ${#fields.globalErrors()}" th:text="${err}">*</li>
+                        </ul>
                     </div>
 
+                    <!-- Hidden customer data fields (populated by JS from user session/profile) -->
                     <input type="hidden" th:field="*{customerName}">
                     <input type="hidden" th:field="*{phone}">
                     <input type="hidden" th:field="*{email}">
@@ -96,7 +99,7 @@
                                 <label class="wizard-option-card" th:each="jobType : ${primaryJobTypes}">
                                     <input
                                         type="radio"
-                                        th:field="*{jobType}"
+                                        name="jobType"
                                         th:value="${jobType}"
                                         data-step-choice>
                                     <span class="wizard-option-ui">
@@ -107,7 +110,7 @@
                                     </span>
                                 </label>
                             </div>
-                            <small class="field-error" th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}"></small>
+                            <!-- <small class="field-error" th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}"></small> -->
 
                             <div class="wizard-step-actions">
                                 <button type="button" class="button button-primary" data-step-next>Continuar</button>
@@ -451,8 +454,9 @@
                         </article>
                     </section>
 
-                    <aside class="wizard-summary" data-reveal="left">
-                        <article class="side-card price-preview-card" data-price-estimator data-preview-url="/copisteria/precio-orientativo">
+    <aside class="wizard-summary" data-reveal="left">
+                        <article class="side-card price-preview-card" data-price-estimator data-preview-url="/copisteria/precio-orientativo" style="opacity: 0.5;">
+                        <!-- Preview disabled for re-do - JS calculates static -->
                             <span class="side-card-kicker">Estimacion</span>
                             <h3>Precio orientativo del pedido</h3>
                             <strong class="price-preview-total" data-price-total th:text="${pricePreview.formattedTotal}">0,06 EUR</strong>

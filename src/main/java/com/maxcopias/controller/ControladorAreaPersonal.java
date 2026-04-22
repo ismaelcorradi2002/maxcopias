@@ -4,7 +4,6 @@ package com.maxcopias.controller;
  * Controlador del área personal del usuario (perfil, pedidos).
  */
 import com.maxcopias.dto.FormularioActualizarPerfil;
-import com.maxcopias.service.ServicioPedidoCopisteria;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.service.ServicioUsuario;
 import com.maxcopias.model.Rol;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 public class ControladorAreaPersonal {
 
     private final ServicioUsuario userService;
-    private final ServicioPedidoCopisteria copisteriaOrderService;
 
     /**
      * Inyecta servicios de usuario y pedidos.
@@ -49,10 +47,9 @@ public class ControladorAreaPersonal {
      */
     private final ServicioTienda servicioTienda;
 
-    public ControladorAreaPersonal(ServicioUsuario userService, ServicioPedidoCopisteria copisteriaOrderService, RepositorioUsuario userRepository, ServicioTienda servicioTienda, RepositorioCategoria repositorioCategoria) {
+    public ControladorAreaPersonal(ServicioUsuario userService, RepositorioUsuario userRepository, ServicioTienda servicioTienda, RepositorioCategoria repositorioCategoria) {
         this.repositorioCategoria = repositorioCategoria;
         this.userService = userService;
-        this.copisteriaOrderService = copisteriaOrderService;
         this.userRepository = userRepository;
         this.servicioTienda = servicioTienda;
     }
@@ -104,7 +101,6 @@ public class ControladorAreaPersonal {
     public String myOrders(Authentication authentication, Model model) {
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
-        model.addAttribute("orders", copisteriaOrderService.findOrdersForUsuario(currentUsuario));
         model.addAttribute("pageTitle", "Maxcopias | Mis pedidos");
         return "area-personal/pedidos";
     }
