@@ -57,7 +57,7 @@
                                 
                                 <div class="admin-form-group">
                                     <label for="categoriaId">Categoria principal <span class="required">*</span></label>
-                                    <select name="categoriaId" id="categoriaId" required>
+                                    <select name="categoriaId" id="categoriaId" class="admin-form-select" required>
                                         <option value="">Seleccionar (obligatorio)</option>
                                         <option th:each="cat : ${categorias}" 
                                                 th:value="${cat.id}" 
@@ -68,7 +68,7 @@
 
                                 <div class="admin-form-group">
                                     <label for="categoriaOpcionalId">Categoria opcional</label>
-                                    <select name="categoriaOpcionalId" id="categoriaOpcionalId">
+                                    <select name="categoriaOpcionalId" id="categoriaOpcionalId" class="admin-form-select">
                                         <option value="">Ninguna</option>
                                         <option th:each="cat : ${categorias}" 
                                                 th:value="${cat.id}" 

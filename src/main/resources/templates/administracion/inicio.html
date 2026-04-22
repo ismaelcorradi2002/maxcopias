@@ -44,9 +44,9 @@
                                 <p>Alterna entre usuarios y productos sin salir del panel.</p>
                             </div>
                             <div class="admin-buttons" role="tablist" aria-label="Secciones del panel">
-                                <button class="button button-primary active" type="button" onclick="switchTab(this, 'users')">Usuarios</button>
-<button class="button button-primary" type="button" onclick="switchTab(this, 'products')">Productos</button>
-                                <button class="button button-primary" type="button" onclick="switchTab(this, 'categories')">Categorías</button>
+                                <button class="button button-primary active" type="button" data-tab="users" onclick="switchTab(this, 'users')">Usuarios</button>
+                                <button class="button button-primary" type="button" data-tab="products" onclick="switchTab(this, 'products')">Productos</button>
+                                <button class="button button-primary" type="button" data-tab="categories" onclick="switchTab(this, 'categories')">Categorías</button>
 
                             </div>
                         </div>
@@ -80,6 +80,50 @@
                 <div class="admin-confirm-actions">
                     <button type="button" class="button button-secondary-dark" data-role-confirm-cancel>Cancelar</button>
                     <button type="button" class="button button-primary" data-role-confirm-accept>Confirmar cambio</button>
+                </div>
+            </section>
+        </div>
+
+        <div class="admin-confirm-modal" data-user-delete-modal hidden>
+            <div class="admin-confirm-backdrop" data-user-delete-cancel></div>
+            <section class="admin-confirm-dialog admin-confirm-dialog-danger" role="dialog" aria-modal="true" aria-labelledby="user-delete-title">
+                <span class="admin-confirm-icon admin-confirm-icon-danger">!</span>
+                <h2 id="user-delete-title">Eliminar usuario</h2>
+                <p data-user-delete-message>
+                    Vas a eliminar este usuario. Revisa la accion antes de continuar.
+                </p>
+                <div class="admin-confirm-actions">
+                    <button type="button" class="button button-secondary-dark" data-user-delete-cancel>Cancelar</button>
+                    <button type="button" class="button button-primary admin-danger-action" data-user-delete-accept>Eliminar usuario</button>
+                </div>
+            </section>
+        </div>
+
+        <div class="admin-confirm-modal" data-catalog-delete-modal hidden>
+            <div class="admin-confirm-backdrop" data-catalog-delete-cancel></div>
+            <section class="admin-confirm-dialog admin-confirm-dialog-danger" role="dialog" aria-modal="true" aria-labelledby="catalog-delete-title">
+                <span class="admin-confirm-icon admin-confirm-icon-danger">!</span>
+                <h2 id="catalog-delete-title" data-catalog-delete-title>Eliminar elemento</h2>
+                <p data-catalog-delete-message>
+                    Vas a eliminar este elemento. Revisa la accion antes de continuar.
+                </p>
+                <div class="admin-confirm-actions">
+                    <button type="button" class="button button-secondary-dark" data-catalog-delete-cancel>Cancelar</button>
+                    <button type="button" class="button button-primary admin-danger-action" data-catalog-delete-accept>Eliminar</button>
+                </div>
+            </section>
+        </div>
+
+        <div class="admin-confirm-modal" data-admin-message-modal hidden>
+            <div class="admin-confirm-backdrop" data-admin-message-close></div>
+            <section class="admin-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-message-title">
+                <span class="admin-confirm-icon" data-admin-message-icon>i</span>
+                <h2 id="admin-message-title" data-admin-message-title>Aviso</h2>
+                <p data-admin-message-text>
+                    Operacion procesada.
+                </p>
+                <div class="admin-confirm-actions">
+                    <button type="button" class="button button-primary" data-admin-message-close>Aceptar</button>
                 </div>
             </section>
         </div>

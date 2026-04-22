@@ -1,8 +1,11 @@
+const ADMIN_PAGE_SIZE = 5;
+
 function switchTab(button, tab) {
     document.querySelectorAll(".admin-buttons button").forEach(btn => btn.classList.remove("active"));
     button.classList.add("active");
 
     const tableContainer = document.querySelector(".table-container");
+    tableContainer.classList.toggle("is-users-tab", tab === "users");
     tableContainer.innerHTML = '<div class="admin-loading">Cargando datos...</div>';
 
     const apiEndpoint = tab === "users" ? "/admin/api/users" : tab === "products" ? "/admin/api/products" : "/admin/api/categorias";
@@ -11,7 +14,7 @@ function switchTab(button, tab) {
         .then(response => response.json())
         .then(data => {
             if (data.length === 0) {
-                tableContainer.innerHTML = `<p class="no-data">No hay ${tab === "users" ? "usuarios" : "productos"}.</p>`;
+                tableContainer.innerHTML = `<p class="no-data">No hay ${tab === "users" ? "usuarios" : tab === "products" ? "productos" : "categorías"}.</p>`;
                 return;
             }
 
@@ -33,9 +36,32 @@ function switchTab(button, tab) {
 
 function renderUsersTable(tableContainer, data) {
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
+    let visibleCount = ADMIN_PAGE_SIZE;
+    let currentUsers = data;
 
     tableContainer.innerHTML = `
-        <table class="admin-table admin-users-table">
+        <div class="admin-product-toolbar admin-user-toolbar">
+            <label class="admin-product-search admin-user-search" for="admin-user-search">
+                <span>Buscar usuario</span>
+                <input id="admin-user-search" type="search" placeholder="Buscar por nombre, correo o telefono" autocomplete="off">
+            </label>
+        </div>
+        <div class="admin-users-table-region" data-users-table-region></div>
+    `;
+
+    const tableRegion = tableContainer.querySelector("[data-users-table-region]");
+    const searchInput = tableContainer.querySelector("#admin-user-search");
+
+    function paintUsers(users) {
+        const visibleUsers = users.slice(0, visibleCount);
+
+        if (users.length === 0) {
+            tableRegion.innerHTML = '<p class="no-data">No se han encontrado usuarios con esa busqueda.</p>';
+            return;
+        }
+
+        tableRegion.innerHTML = `
+            <table class="admin-table admin-users-table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -45,10 +71,11 @@ function renderUsersTable(tableContainer, data) {
                     <th>Rol</th>
                     <th>Creado</th>
                     <th>Cambiar rol</th>
+                    <th>Eliminar</th>
                 </tr>
             </thead>
             <tbody>
-                ${data.map(user => `
+                ${visibleUsers.map(user => `
                     <tr>
                         <td class="admin-cell-id">${user.id}</td>
                         <td class="admin-cell-name" title="${user.firstName || ""} ${user.lastName || ""}">
@@ -85,14 +112,49 @@ function renderUsersTable(tableContainer, data) {
                                 </div>
                             </form>
                         </td>
+                        <td class="admin-action-cell">
+                            <button class="button button-small button-outline admin-delete-btn" type="button" data-user-id="${user.id}" data-user-name="${user.firstName || ""} ${user.lastName || ""}" title="Eliminar usuario">
+                                Eliminar
+                            </button>
+                        </td>
                     </tr>
                 `).join("")}
             </tbody>
         </table>
-    `;
+        ${renderListPaginationControls(visibleUsers.length, users.length, "usuarios")}
+        `;
 
-    initRoleChangeConfirmation();
-    initRoleDropdowns();
+        initRoleChangeConfirmation();
+        initRoleDropdowns();
+        tableRegion.querySelector("[data-load-more]")?.addEventListener("click", function () {
+            visibleCount += ADMIN_PAGE_SIZE;
+            paintUsers(users);
+        });
+        tableRegion.querySelector("[data-load-less]")?.addEventListener("click", function () {
+            visibleCount = Math.max(ADMIN_PAGE_SIZE, visibleCount - ADMIN_PAGE_SIZE);
+            paintUsers(users);
+        });
+    }
+
+    paintUsers(currentUsers);
+
+    searchInput.addEventListener("input", function () {
+        const query = normalizeAdminSearch(this.value);
+        visibleCount = ADMIN_PAGE_SIZE;
+
+        if (!query) {
+            currentUsers = data;
+            paintUsers(currentUsers);
+            return;
+        }
+
+        currentUsers = data.filter(user => {
+            const searchableText = normalizeAdminSearch(`${user.firstName || ""} ${user.lastName || ""} ${user.email || ""} ${user.phone || ""}`);
+            return searchableText.includes(query);
+        });
+
+        paintUsers(currentUsers);
+    });
 }
 
 function formatAdminDate(value) {
@@ -116,6 +178,8 @@ function formatAdminDate(value) {
 
 function renderCategoriesTable(tableContainer, data) {
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
+    let visibleCount = ADMIN_PAGE_SIZE;
+    let currentCategories = data;
 
     tableContainer.innerHTML = `
         <div class="admin-product-toolbar">
@@ -134,6 +198,8 @@ function renderCategoriesTable(tableContainer, data) {
     const searchInput = tableContainer.querySelector("#admin-category-search");
 
     function paintCategories(categories) {
+        const visibleCategories = categories.slice(0, visibleCount);
+
         if (categories.length === 0) {
             tableRegion.innerHTML = '<p class="no-data">No se han encontrado categorías con esa búsqueda.</p>';
             return;
@@ -151,7 +217,7 @@ function renderCategoriesTable(tableContainer, data) {
                     </tr>
                 </thead>
                 <tbody>
-                    ${categories.map(category => `
+                    ${visibleCategories.map(category => `
                         <tr>
                             <td>${category.id}</td>
                             <td>${category.nombre}</td>
@@ -166,39 +232,44 @@ function renderCategoriesTable(tableContainer, data) {
                     `).join("")}
                 </tbody>
             </table>
+            ${renderListPaginationControls(visibleCategories.length, categories.length, "categorias")}
         `;
+
+        tableRegion.querySelector("[data-load-more]")?.addEventListener("click", function () {
+            visibleCount += ADMIN_PAGE_SIZE;
+            paintCategories(categories);
+        });
+        tableRegion.querySelector("[data-load-less]")?.addEventListener("click", function () {
+            visibleCount = Math.max(ADMIN_PAGE_SIZE, visibleCount - ADMIN_PAGE_SIZE);
+            paintCategories(categories);
+        });
     }
 
-    paintCategories(data);
+    paintCategories(currentCategories);
 
     function applyCategoryFilters() {
         const query = normalizeAdminSearch(searchInput.value);
+        visibleCount = ADMIN_PAGE_SIZE;
+
         if (!query) {
-            paintCategories(data);
+            currentCategories = data;
+            paintCategories(currentCategories);
             return;
         }
-        const filtered = data.filter(cat => 
+        currentCategories = data.filter(cat =>
             normalizeAdminSearch(`${cat.id} ${cat.nombre}`).includes(query)
         );
-        paintCategories(filtered);
+        paintCategories(currentCategories);
     }
 
     searchInput.addEventListener("input", applyCategoryFilters);
 
-    // Delete category handler scoped to this table
-    const deleteButtons = tableContainer.querySelectorAll(".admin-delete-btn[data-category-id]");
-    deleteButtons.forEach(btn => {
-        btn.addEventListener("click", function() {
-            const catId = this.dataset.categoryId;
-            const catName = this.dataset.categoryName;
-            if (confirm(`¿Estás seguro que quieres eliminar la categoría "${catName}"?`)) {
-                deleteCategoria(catId);
-            }
-        });
-    });
 }
 
 function renderProductsTable(tableContainer, data) {
+    let visibleCount = ADMIN_PAGE_SIZE;
+    let currentProducts = data;
+
     tableContainer.innerHTML = `
         <div class="admin-product-toolbar">
             <button class="button button-primary admin-new-product-btn" type="button">
@@ -210,7 +281,7 @@ function renderProductsTable(tableContainer, data) {
             </label>
             <label class="admin-product-filter" for="admin-category-filter">
                 <span>Filtrar categoria</span>
-                <select id="admin-category-filter">
+                <select id="admin-category-filter" class="admin-form-select">
                     <option value="">Todas las categorias</option>
                     ${getProductCategories(data).map(category => `<option value="${category}">${category}</option>`).join("")}
                 </select>
@@ -222,8 +293,11 @@ function renderProductsTable(tableContainer, data) {
     const tableRegion = tableContainer.querySelector("[data-products-table-region]");
     const searchInput = tableContainer.querySelector("#admin-product-search");
     const categoryFilter = tableContainer.querySelector("#admin-category-filter");
+    initAdminFormSelectDropdowns();
 
     function paintProducts(products) {
+        const visibleProducts = products.slice(0, visibleCount);
+
         if (products.length === 0) {
             tableRegion.innerHTML = '<p class="no-data">No se han encontrado productos con esa busqueda.</p>';
             return;
@@ -243,7 +317,7 @@ function renderProductsTable(tableContainer, data) {
                 </tr>
             </thead>
             <tbody>
-                ${products.map(product => `
+                ${visibleProducts.map(product => `
                     <tr>
                         <td>${product.id}</td>
                         <td>${product.nombre}</td>
@@ -264,21 +338,33 @@ function renderProductsTable(tableContainer, data) {
                 `).join("")}
             </tbody>
         </table>
+        ${renderListPaginationControls(visibleProducts.length, products.length, "productos")}
         `;
+
+        tableRegion.querySelector("[data-load-more]")?.addEventListener("click", function () {
+            visibleCount += ADMIN_PAGE_SIZE;
+            paintProducts(products);
+        });
+        tableRegion.querySelector("[data-load-less]")?.addEventListener("click", function () {
+            visibleCount = Math.max(ADMIN_PAGE_SIZE, visibleCount - ADMIN_PAGE_SIZE);
+            paintProducts(products);
+        });
     }
 
-    paintProducts(data);
+    paintProducts(currentProducts);
 
     function applyProductFilters() {
         const query = normalizeAdminSearch(searchInput.value);
         const selectedCategory = normalizeAdminSearch(categoryFilter.value);
+        visibleCount = ADMIN_PAGE_SIZE;
 
         if (!query && !selectedCategory) {
-            paintProducts(data);
+            currentProducts = data;
+            paintProducts(currentProducts);
             return;
         }
 
-        const filteredProducts = data.filter(product => {
+        currentProducts = data.filter(product => {
             const categories = product.categorias ? product.categorias.map(cat => cat.nombre).join(" ") : "";
             const searchableText = normalizeAdminSearch(`${product.id} ${product.nombre} ${categories}`);
             const matchesSearch = !query || searchableText.includes(query);
@@ -287,7 +373,7 @@ function renderProductsTable(tableContainer, data) {
             return matchesSearch && matchesCategory;
         });
 
-        paintProducts(filteredProducts);
+        paintProducts(currentProducts);
     }
 
     searchInput.addEventListener("input", applyProductFilters);
@@ -300,6 +386,28 @@ function normalizeAdminSearch(value) {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .trim();
+}
+
+function renderListPaginationControls(visibleCount, totalCount, itemLabel) {
+    if (visibleCount >= totalCount && visibleCount <= ADMIN_PAGE_SIZE) {
+        return "";
+    }
+
+    return `
+        <div class="admin-load-more">
+            ${visibleCount > ADMIN_PAGE_SIZE ? `
+                <button class="button button-outline admin-load-more-button admin-load-less-button" type="button" data-load-less>
+                    Ver menos
+                </button>
+            ` : ""}
+            ${visibleCount < totalCount ? `
+                <button class="button button-outline admin-load-more-button" type="button" data-load-more>
+                    Ver más ${itemLabel}
+                </button>
+            ` : ""}
+            <span>${visibleCount} de ${totalCount}</span>
+        </div>
+    `;
 }
 
 function getProductCategories(products) {
@@ -321,7 +429,109 @@ document.addEventListener("DOMContentLoaded", function() {
     if (activeAdminTab) {
         switchTab(activeAdminTab, "users");
     }
+
+    initAdminFormSelectDropdowns();
 });
+
+function initAdminFormSelectDropdowns() {
+    document.querySelectorAll(".admin-form-select").forEach(select => {
+        if (select.dataset.customSelectReady === "true") {
+            return;
+        }
+
+        select.dataset.customSelectReady = "true";
+        select.classList.add("admin-form-select-native");
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "admin-form-select-dropdown";
+        wrapper.dataset.formSelectDropdown = "";
+
+        const trigger = document.createElement("button");
+        trigger.type = "button";
+        trigger.className = "admin-form-select-trigger";
+        trigger.setAttribute("aria-haspopup", "listbox");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.innerHTML = `
+            <span data-form-select-label></span>
+            <span class="admin-role-trigger-icon" aria-hidden="true"></span>
+        `;
+
+        const menu = document.createElement("div");
+        menu.className = "admin-form-select-menu";
+        menu.setAttribute("role", "listbox");
+
+        Array.from(select.options).forEach(option => {
+            const item = document.createElement("button");
+            item.type = "button";
+            item.className = "admin-form-select-option";
+            item.dataset.optionValue = option.value;
+            item.setAttribute("role", "option");
+            item.textContent = option.textContent;
+
+            item.addEventListener("click", function () {
+                select.value = option.value;
+                select.dispatchEvent(new Event("change", { bubbles: true }));
+                syncAdminFormSelect(select);
+                closeAdminFormSelectDropdown(wrapper);
+            });
+
+            menu.appendChild(item);
+        });
+
+        select.parentNode.insertBefore(wrapper, select);
+        wrapper.appendChild(select);
+        wrapper.appendChild(trigger);
+        wrapper.appendChild(menu);
+
+        trigger.addEventListener("click", function () {
+            const isOpen = wrapper.classList.toggle("is-open");
+            trigger.setAttribute("aria-expanded", String(isOpen));
+            closeOtherAdminFormSelectDropdowns(wrapper);
+        });
+
+        select.addEventListener("change", function () {
+            syncAdminFormSelect(select);
+        });
+
+        syncAdminFormSelect(select);
+    });
+}
+
+function syncAdminFormSelect(select) {
+    const wrapper = select.closest("[data-form-select-dropdown]");
+
+    if (!wrapper) {
+        return;
+    }
+
+    const selectedOption = select.options[select.selectedIndex];
+    const label = wrapper.querySelector("[data-form-select-label]");
+    const options = wrapper.querySelectorAll(".admin-form-select-option");
+
+    if (label && selectedOption) {
+        label.textContent = selectedOption.textContent;
+        label.classList.toggle("is-placeholder", !selectedOption.value);
+    }
+
+    options.forEach(option => {
+        const isSelected = option.dataset.optionValue === select.value;
+        option.classList.toggle("is-selected", isSelected);
+        option.setAttribute("aria-selected", String(isSelected));
+    });
+}
+
+function closeAdminFormSelectDropdown(wrapper) {
+    wrapper.classList.remove("is-open");
+    wrapper.querySelector(".admin-form-select-trigger")?.setAttribute("aria-expanded", "false");
+}
+
+function closeOtherAdminFormSelectDropdowns(activeWrapper) {
+    document.querySelectorAll("[data-form-select-dropdown].is-open").forEach(wrapper => {
+        if (wrapper !== activeWrapper) {
+            closeAdminFormSelectDropdown(wrapper);
+        }
+    });
+}
 
 function initRoleChangeConfirmation() {
     const modal = document.querySelector("[data-role-confirm-modal]");
@@ -474,7 +684,19 @@ function closeOtherRoleDropdowns(activeDropdown) {
 }
 
 document.addEventListener("click", function (event) {
+    if (!event.target.closest("[data-form-select-dropdown]")) {
+        closeOtherAdminFormSelectDropdowns(null);
+    }
+
     if (event.target.closest("[data-role-dropdown]")) {
+        return;
+    }
+
+    if (event.target.matches(".admin-delete-btn[data-user-id]")) {
+        event.preventDefault();
+        const userId = event.target.dataset.userId;
+        const userName = (event.target.dataset.userName || "este usuario").trim();
+        openUserDeleteModal(userId, userName || "este usuario");
         return;
     }
 
@@ -483,10 +705,15 @@ document.addEventListener("click", function (event) {
         event.preventDefault();
         const productId = event.target.dataset.productId;
         const productName = event.target.closest("tr").querySelector("td:nth-child(2)").textContent.trim();
-        
-        if (confirm(`¿Estás seguro que quieres eliminar el producto "${productName}"? Esta acción no se puede deshacer.`)) {
-            deleteProduct(productId);
-        }
+        openCatalogDeleteModal("product", productId, productName);
+        return;
+    }
+
+    if (event.target.matches(".admin-delete-btn[data-category-id]")) {
+        event.preventDefault();
+        const catId = event.target.dataset.categoryId;
+        const catName = event.target.dataset.categoryName || "esta categoria";
+        openCatalogDeleteModal("category", catId, catName);
         return;
     }
 
@@ -497,6 +724,168 @@ document.addEventListener("click", function (event) {
 
     closeOtherRoleDropdowns(null);
 });
+
+function openUserDeleteModal(userId, userName) {
+    const modal = document.querySelector("[data-user-delete-modal]");
+    const message = document.querySelector("[data-user-delete-message]");
+    const acceptButton = document.querySelector("[data-user-delete-accept]");
+    const cancelButtons = document.querySelectorAll("[data-user-delete-cancel]");
+
+    if (!modal || !message || !acceptButton) {
+        return;
+    }
+
+    message.textContent = `Vas a eliminar a ${userName}. Esta accion no se puede deshacer.`;
+    acceptButton.dataset.userId = userId;
+    modal.hidden = false;
+    document.body.classList.add("admin-modal-open");
+    acceptButton.focus();
+
+    cancelButtons.forEach(button => {
+        button.onclick = function () {
+            closeUserDeleteModal();
+        };
+    });
+
+    acceptButton.onclick = function () {
+        deleteUser(this.dataset.userId);
+    };
+}
+
+function closeUserDeleteModal() {
+    const modal = document.querySelector("[data-user-delete-modal]");
+    const acceptButton = document.querySelector("[data-user-delete-accept]");
+
+    if (modal) {
+        modal.hidden = true;
+    }
+
+    if (acceptButton) {
+        delete acceptButton.dataset.userId;
+    }
+
+    document.body.classList.remove("admin-modal-open");
+}
+
+function openCatalogDeleteModal(type, id, name) {
+    const modal = document.querySelector("[data-catalog-delete-modal]");
+    const title = document.querySelector("[data-catalog-delete-title]");
+    const message = document.querySelector("[data-catalog-delete-message]");
+    const acceptButton = document.querySelector("[data-catalog-delete-accept]");
+    const cancelButtons = document.querySelectorAll("[data-catalog-delete-cancel]");
+
+    if (!modal || !title || !message || !acceptButton) {
+        return;
+    }
+
+    const isProduct = type === "product";
+    const itemLabel = isProduct ? "producto" : "categoría";
+    title.textContent = isProduct ? "Eliminar producto" : "Eliminar categoría";
+    message.textContent = `Vas a eliminar ${itemLabel} "${name}". Esta accion no se puede deshacer.`;
+    acceptButton.textContent = isProduct ? "Eliminar producto" : "Eliminar categoría";
+    acceptButton.dataset.deleteType = type;
+    acceptButton.dataset.deleteId = id;
+
+    modal.hidden = false;
+    document.body.classList.add("admin-modal-open");
+    acceptButton.focus();
+
+    cancelButtons.forEach(button => {
+        button.onclick = function () {
+            closeCatalogDeleteModal();
+        };
+    });
+
+    acceptButton.onclick = function () {
+        if (this.dataset.deleteType === "product") {
+            deleteProduct(this.dataset.deleteId);
+            return;
+        }
+
+        deleteCategoria(this.dataset.deleteId);
+    };
+}
+
+function closeCatalogDeleteModal() {
+    const modal = document.querySelector("[data-catalog-delete-modal]");
+    const acceptButton = document.querySelector("[data-catalog-delete-accept]");
+
+    if (modal) {
+        modal.hidden = true;
+    }
+
+    if (acceptButton) {
+        delete acceptButton.dataset.deleteType;
+        delete acceptButton.dataset.deleteId;
+    }
+
+    document.body.classList.remove("admin-modal-open");
+}
+
+function openAdminMessageModal(title, message, type = "info") {
+    const modal = document.querySelector("[data-admin-message-modal]");
+    const titleElement = document.querySelector("[data-admin-message-title]");
+    const messageElement = document.querySelector("[data-admin-message-text]");
+    const iconElement = document.querySelector("[data-admin-message-icon]");
+    const closeButtons = document.querySelectorAll("[data-admin-message-close]");
+
+    if (!modal || !titleElement || !messageElement || !iconElement) {
+        return;
+    }
+
+    titleElement.textContent = title;
+    messageElement.textContent = message;
+    iconElement.textContent = type === "error" ? "!" : "i";
+    modal.classList.toggle("admin-message-error", type === "error");
+    modal.hidden = false;
+    document.body.classList.add("admin-modal-open");
+
+    closeButtons.forEach(button => {
+        button.onclick = function () {
+            closeAdminMessageModal();
+        };
+    });
+}
+
+function closeAdminMessageModal() {
+    const modal = document.querySelector("[data-admin-message-modal]");
+
+    if (modal) {
+        modal.hidden = true;
+        modal.classList.remove("admin-message-error");
+    }
+
+    document.body.classList.remove("admin-modal-open");
+}
+
+function deleteUser(userId) {
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
+
+    fetch(`/admin/delete-user/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        closeUserDeleteModal();
+
+        if (data.success === 'true') {
+            const activeTabButton = document.querySelector('.admin-buttons .active');
+            switchTab(activeTabButton, 'users');
+            return;
+        }
+
+        openAdminMessageModal("No se pudo eliminar", data.message || "No se ha podido eliminar el usuario.", "error");
+    })
+    .catch(error => {
+        closeUserDeleteModal();
+        console.error('Error:', error);
+        openAdminMessageModal("Error al eliminar", "Error al eliminar usuario.", "error");
+    });
+}
 
 function deleteCategoria(categoryId) {
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
@@ -516,17 +905,20 @@ function deleteCategoria(categoryId) {
         return response.json();
     })
     .then(data => {
+        closeCatalogDeleteModal();
+
         if (data.success === 'true') {
             const activeTabButton = document.querySelector('.admin-buttons .active');
             switchTab(activeTabButton, 'categories');
-            alert(data.message);
+            openAdminMessageModal("Categoría eliminada", data.message || "Categoría eliminada correctamente.");
         } else {
-            alert(data.message || 'Error desconocido');
+            openAdminMessageModal("No se pudo eliminar", data.message || "Error desconocido", "error");
         }
     })
     .catch(error => {
+        closeCatalogDeleteModal();
         console.error('Error:', error);
-        alert('Error al eliminar: ' + error.message);
+        openAdminMessageModal("Error al eliminar", "Error al eliminar: " + error.message, "error");
     });
 }
 
@@ -548,17 +940,20 @@ function deleteProduct(productId) {
         return response.json();
     })
     .then(data => {
+        closeCatalogDeleteModal();
+
         if (data.success === 'true') {
             const activeTabButton = document.querySelector('.admin-buttons .active');
             const tabName = activeTabButton ? activeTabButton.dataset.tab || 'products' : 'products';
             if (activeTabButton) switchTab(activeTabButton, tabName);
-            alert(data.message);
+            openAdminMessageModal("Producto eliminado", data.message || "Producto eliminado correctamente.");
         } else {
-            alert('Error: ' + (data.message || 'Desconocido'));
+            openAdminMessageModal("No se pudo eliminar", data.message || "Error desconocido", "error");
         }
     })
     .catch(error => {
+        closeCatalogDeleteModal();
         console.error('Error:', error);
-        alert('Error al eliminar: ' + error.message);
+        openAdminMessageModal("Error al eliminar", "Error al eliminar: " + error.message, "error");
     });
 }

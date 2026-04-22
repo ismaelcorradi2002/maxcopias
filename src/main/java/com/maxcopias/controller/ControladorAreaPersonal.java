@@ -314,6 +314,26 @@ public class ControladorAreaPersonal {
         }
     }
 
+    @DeleteMapping("/admin/delete-user/{id}")
+    public @ResponseBody Map<String, String> deleteUser(@PathVariable Long id, Authentication authentication) {
+        try {
+            Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+
+            if (currentUsuario.getId().equals(id)) {
+                return Map.of("success", "false", "message", "No puedes eliminar tu propio usuario administrador.");
+            }
+
+            if (!userRepository.existsById(id)) {
+                return Map.of("success", "false", "message", "El usuario ya no existe.");
+            }
+
+            userRepository.deleteById(id);
+            return Map.of("success", "true", "message", "Usuario eliminado correctamente.");
+        } catch (Exception e) {
+            return Map.of("success", "false", "message", "No se ha podido eliminar el usuario. Revisa si tiene pedidos asociados.");
+        }
+    }
+
     private void populatePersonalAreaModel(Model model, Usuario currentUsuario, FormularioActualizarPerfil profileForm, boolean updated) {
         model.addAttribute("currentUsuario", currentUsuario);
         model.addAttribute("profileForm", profileForm);
