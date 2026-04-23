@@ -120,7 +120,17 @@ public class ControllerPedidos {
         pedido.setTamano(orderForm.getPaperSize());
         pedido.setCaras(orderForm.getPrintSide());
         pedido.setPapel(orderForm.getPaperType());
-        pedido.setEncuadernacion(orderForm.getBindingType());
+        // Only set print-specific fields for IMPRESION or FOTOCOPIAS
+        TipoTrabajo trabajo = orderForm.getJobType();
+        if (trabajo == TipoTrabajo.IMPRESION || trabajo == TipoTrabajo.FOTOCOPIAS) {
+            pedido.setEncuadernacion(orderForm.getBindingType());
+        } else {
+            pedido.setEncuadernacion(null);
+            pedido.setCaras(null);
+            pedido.setColor(null);
+            pedido.setPapel(null);
+            pedido.setTamano(null);
+        }
         String extrasStr = String.format("plastificado=%b,urgente=%b,escaneado=%b,observaciones='%s'",
             orderForm.getPlastificado(), orderForm.getUrgente(), orderForm.getEscaneado(), orderForm.getObservations());
         pedido.setExtras(extrasStr);
