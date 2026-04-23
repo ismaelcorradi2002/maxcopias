@@ -29,6 +29,11 @@ public class ServicioTienda {
     }
 
     @Transactional(readOnly = true)
+    public List<Producto> obtenerProductosActivos() {
+        return repositorioProducto.findAllByActivoTrueOrderByNombreAsc();
+    }
+
+    @Transactional(readOnly = true)
     public List<Categoria> obtenerTodasCategorias() {
         return repositorioCategoria.findAllByOrderByNombreAsc();
     }
@@ -36,6 +41,11 @@ public class ServicioTienda {
     @Transactional(readOnly = true)
     public List<Producto> obtenerProductosPorCategoria(Long categoriaId) {
         return repositorioProducto.findDistinctByCategoriasIdOrderByNombreAsc(categoriaId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Producto> obtenerProductosActivosPorCategoria(Long categoriaId) {
+        return repositorioProducto.findDistinctByCategoriasIdAndActivoTrueOrderByNombreAsc(categoriaId);
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +59,15 @@ public class ServicioTienda {
         producto.setDescripcion(normalizarTexto(producto.getDescripcion()));
         producto.setStock(producto.getStock() == null ? 0 : producto.getStock());
         producto.setPrecio(producto.getPrecio() == null ? BigDecimal.ZERO : producto.getPrecio());
+        producto.setActivo(producto.getActivo() == null ? true : producto.getActivo());
         
+        return repositorioProducto.save(producto);
+    }
+
+    @Transactional
+    public Producto cambiarActivoProducto(Long productoId, boolean activo) {
+        Producto producto = obtenerProductoObligatorio(productoId);
+        producto.setActivo(activo);
         return repositorioProducto.save(producto);
     }
 

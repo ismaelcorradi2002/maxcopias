@@ -2,10 +2,12 @@ package com.maxcopias.model;
 
 public enum EstadoPedidoCopisteria {
 
-    RECIBIDO("Recibido"),
-    EN_PREPARACION("En preparacion"),
+    RECIBIDO("Pendiente"),
+    REVISANDO_ARCHIVO("Revisando archivo"),
+    EN_PREPARACION("Preparando"),
     LISTO_PARA_RECOGER("Listo para recoger"),
-    ENTREGADO("Entregado");
+    ENTREGADO("Entregado"),
+    CANCELADO("Cancelado");
 
     private final String label;
 

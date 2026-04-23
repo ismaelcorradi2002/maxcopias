@@ -38,6 +38,9 @@ public class Producto {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private Boolean activo = true;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "producto_categoria",
@@ -98,6 +101,18 @@ public class Producto {
 
     public void setPrecio(BigDecimal precio) {
         this.precio = precio;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
+    public boolean isActivo() {
+        return Boolean.TRUE.equals(activo);
     }
 
     public Set<Categoria> getCategorias() {

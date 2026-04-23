@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Panel trabajador', '/css/cuenta.css')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/worker.css}">
+</head>
+<body class="account-page worker-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="worker-main">
+        <section class="worker-hero">
+            <div class="container worker-layout">
+                <article class="worker-card">
+                    <header class="worker-header worker-dashboard-header">
+                        <div>
+                            <span class="section-kicker">Panel operativo</span>
+                            <h1>Panel trabajador</h1>
+                            <p>Resumen general de pedidos, productos y promociones activas del negocio.</p>
+                        </div>
+                        <span class="admin-status-pill">Sesion trabajador activa</span>
+                    </header>
+
+                    <div th:replace="~{trabajador/fragmentos :: workerNav(${activeWorkerSection})}"></div>
+
+                    <div class="worker-counter-groups" aria-label="Resumen de pedidos por area">
+                        <section class="worker-counter-group">
+                            <header>
+                                <span>Copisteria</span>
+                                <strong>Pedidos de impresion</strong>
+                            </header>
+                            <div class="worker-summary-grid">
+                                <article class="worker-summary-card">
+                                    <span>Pendientes</span>
+                                    <strong th:text="${contadoresCopisteria.pendientes}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Preparando</span>
+                                    <strong th:text="${contadoresCopisteria.preparando}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Listos</span>
+                                    <strong th:text="${contadoresCopisteria.listos}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Entregados</span>
+                                    <strong th:text="${contadoresCopisteria.entregados}">0</strong>
+                                </article>
+                            </div>
+                        </section>
+
+                        <section class="worker-counter-group worker-counter-group-store">
+                            <header>
+                                <span>Tienda</span>
+                                <strong>Pedidos de productos</strong>
+                            </header>
+                            <div class="worker-summary-grid">
+                                <article class="worker-summary-card">
+                                    <span>Pendientes</span>
+                                    <strong th:text="${contadoresTienda.pendientes}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Preparando</span>
+                                    <strong th:text="${contadoresTienda.preparando}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Listos</span>
+                                    <strong th:text="${contadoresTienda.listos}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Entregados</span>
+                                    <strong th:text="${contadoresTienda.entregados}">0</strong>
+                                </article>
+                            </div>
+                        </section>
+                    </div>
+
+                    <section class="worker-dashboard-grid" aria-label="Accesos rapidos">
+                        <a class="worker-module-card" th:href="@{/worker/productos}">
+                            <span>Productos</span>
+                            <strong>Gestion de stock</strong>
+                            <p>Crear productos, editar precios, revisar stock y activar o desactivar articulos.</p>
+                        </a>
+                        <a class="worker-module-card" th:href="@{/worker/pedidos-copisteria}">
+                            <span>Copisteria</span>
+                            <strong>Pedidos de impresion</strong>
+                            <p>Revisar encargos, archivos enviados y cambiar el estado de preparacion.</p>
+                        </a>
+                        <a class="worker-module-card" th:href="@{/worker/pedidos-tienda}">
+                            <span>Tienda</span>
+                            <strong>Pedidos de productos</strong>
+                            <p>Consultar pedidos de tienda y marcar su avance hasta la entrega.</p>
+                        </a>
+                        <a class="worker-module-card" th:href="@{/worker/ofertas}">
+                            <span>Ofertas</span>
+                            <strong>Promociones</strong>
+                            <p>Crear ofertas, activar promociones y destacar una oferta principal en la Home.</p>
+                        </a>
+                    </section>
+
+                    <section class="worker-section worker-dashboard-latest">
+                        <div class="worker-section-header">
+                            <div>
+                                <h2>Actividad reciente</h2>
+                                <p>Ultimos pedidos disponibles para detectar trabajo pendiente sin entrar en cada modulo.</p>
+                            </div>
+                        </div>
+                        <div class="worker-latest-grid">
+                            <article>
+                                <h3>Copisteria</h3>
+                                <ul>
+                                    <li th:each="pedido : ${pedidosCopisteria}">
+                                        <strong th:text="${pedido.codigoRecoger}">ABC123</strong>
+                                        <span th:text="${pedido.customerName + ' · ' + pedido.estado.label}">Cliente · Pendiente</span>
+                                    </li>
+                                    <li th:if="${#lists.isEmpty(pedidosCopisteria)}">Sin pedidos recientes.</li>
+                                </ul>
+                            </article>
+                            <article>
+                                <h3>Tienda</h3>
+                                <ul>
+                                    <li th:each="pedido : ${pedidosTienda}">
+                                        <strong th:text="${'#' + pedido.id}">#1</strong>
+                                        <span th:text="${pedido.clienteNombre + ' · ' + pedido.estado.label}">Cliente · Pendiente</span>
+                                    </li>
+                                    <li th:if="${#lists.isEmpty(pedidosTienda)}">Sin pedidos recientes.</li>
+                                </ul>
+                            </article>
+                        </div>
+                    </section>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

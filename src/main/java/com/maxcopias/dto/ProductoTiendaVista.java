@@ -15,6 +15,10 @@ public record ProductoTiendaVista(
     Integer stock,
     String detalleTitulo,
     String detalleDescripcion,
-    List<String> detallePuntos
+    List<String> detallePuntos,
+    boolean tieneOferta,
+    String precioOriginalFormateado,
+    String precioOfertaFormateado,
+    String etiquetaOferta
 ) {
 }

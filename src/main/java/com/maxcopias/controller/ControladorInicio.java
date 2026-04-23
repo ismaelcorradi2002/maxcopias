@@ -4,6 +4,7 @@ import com.maxcopias.dto.CategoriaTiendaVista;
 import com.maxcopias.dto.ProductoTiendaVista;
 import com.maxcopias.model.Producto;
 import com.maxcopias.service.ServicioCatalogoTiendaVisual;
+import com.maxcopias.service.ServicioOferta;
 import com.maxcopias.service.ServicioTienda;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -18,14 +19,21 @@ public class ControladorInicio {
 
     private final ServicioTienda servicioTienda;
     private final ServicioCatalogoTiendaVisual servicioCatalogoTiendaVisual;
+    private final ServicioOferta servicioOferta;
 
-    public ControladorInicio(ServicioTienda servicioTienda, ServicioCatalogoTiendaVisual servicioCatalogoTiendaVisual) {
+    public ControladorInicio(
+        ServicioTienda servicioTienda,
+        ServicioCatalogoTiendaVisual servicioCatalogoTiendaVisual,
+        ServicioOferta servicioOferta
+    ) {
         this.servicioTienda = servicioTienda;
         this.servicioCatalogoTiendaVisual = servicioCatalogoTiendaVisual;
+        this.servicioOferta = servicioOferta;
     }
 
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("ofertaPrincipal", servicioOferta.obtenerOfertaPrincipalActiva().orElse(null));
         return "inicio/inicio";
     }
 
@@ -36,7 +44,7 @@ public class ControladorInicio {
 
     @GetMapping("/tienda")
     public String tienda(Model model) {
-        List<Producto> productos = servicioTienda.obtenerTodosProductos();
+        List<Producto> productos = servicioTienda.obtenerProductosActivos();
         List<CategoriaTiendaVista> categorias = servicioCatalogoTiendaVisual.obtenerCategoriasVisibles(productos);
         List<ProductoTiendaVista> productosVista = servicioCatalogoTiendaVisual.mapearProductos(productos);
 

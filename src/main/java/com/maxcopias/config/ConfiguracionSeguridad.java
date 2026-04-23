@@ -29,8 +29,17 @@ public class ConfiguracionSeguridad {
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/", "/contacto", "/tienda", "/detalles-producto/**", "/api/tienda/**", "/login", "/register", "/register/check-email", "/error", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers(
+                    "/admin/api/products",
+                    "/admin/api/categorias",
+                    "/admin/crear-producto",
+                    "/admin/crear-categoria",
+                    "/admin/update-producto/**",
+                    "/editarstock/**"
+                ).hasAnyRole("ADMIN", "WORKER")
+                .requestMatchers("/worker/**").hasAnyRole("WORKER", "ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria", "/copisteria/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria", "/copisteria/**").hasAnyRole("USER", "ADMIN", "WORKER")
                 .anyRequest().authenticated()
             )
             // Configura login y logout
@@ -72,7 +81,27 @@ public class ConfiguracionSeguridad {
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
             boolean wantsCopisteria = "true".equalsIgnoreCase(request.getParameter("copisteriaRequired"));
-            response.sendRedirect(wantsCopisteria ? "/copisteria" : "/");
+            boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+            boolean isWorker = authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_WORKER".equals(authority.getAuthority()));
+
+            if (wantsCopisteria) {
+                response.sendRedirect("/copisteria");
+                return;
+            }
+
+            if (isAdmin) {
+                response.sendRedirect("/admin");
+                return;
+            }
+
+            if (isWorker) {
+                response.sendRedirect("/worker");
+                return;
+            }
+
+            response.sendRedirect("/");
         };
     }
 }

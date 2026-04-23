@@ -90,7 +90,12 @@
                                 <span class="tienda-producto-categorias" th:text="${producto.categoriasTexto()}">Escolar</span>
                                 <h3 th:text="${producto.nombre()}">Producto</h3>
                                 <p th:text="${producto.descripcion()}">Descripcion</p>
-                                <span class="precio-tag" th:text="${producto.precioFormateado()}">0,00 EUR</span>
+                                <span class="tienda-offer-badge" th:if="${producto.tieneOferta()}" th:text="${producto.etiquetaOferta()}">20% OFF</span>
+                                <span class="precio-tag precio-tag-offer" th:if="${producto.tieneOferta()}">
+                                    <del th:text="${producto.precioOriginalFormateado()}">10,00 €</del>
+                                    <strong th:text="${producto.precioOfertaFormateado()}">8,00 €</strong>
+                                </span>
+                                <span class="precio-tag" th:if="${!producto.tieneOferta()}" th:text="${producto.precioFormateado()}">0,00 EUR</span>
                             </div>
                         </a>
                     </article>

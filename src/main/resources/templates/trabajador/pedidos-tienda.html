@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Pedidos tienda', '/css/cuenta.css')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/worker.css}">
+</head>
+<body class="account-page worker-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="worker-main">
+        <section class="worker-hero">
+            <div class="container worker-layout">
+                <article class="worker-card">
+                    <header class="worker-header worker-module-header">
+                        <div>
+                            <span class="section-kicker">Tienda</span>
+                            <h1>Pedidos de tienda</h1>
+                            <p>Consulta pedidos de productos y marca su avance operativo hasta la entrega.</p>
+                        </div>
+                    </header>
+
+                    <div th:replace="~{trabajador/fragmentos :: workerNav(${activeWorkerSection})}"></div>
+
+                    <section class="worker-section">
+                        <div class="worker-filters">
+                            <label>
+                                <span>Buscar pedido</span>
+                                <input type="search" data-worker-search="tienda" placeholder="Cliente, email, producto o ID">
+                            </label>
+                            <label>
+                                <span>Estado</span>
+                                <select data-worker-status="tienda" class="worker-select">
+                                    <option value="">Todos los estados</option>
+                                    <option th:each="estado : ${estadosTienda}" th:value="${estado.name()}" th:text="${estado.label}">Pendiente</option>
+                                </select>
+                            </label>
+                            <label>
+                                <span>Fecha</span>
+                                <input type="date" data-worker-date="tienda">
+                            </label>
+                        </div>
+
+                        <div class="worker-table-wrap">
+                            <table class="worker-table" data-worker-table="tienda" data-worker-paginated="true">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Contacto</th>
+                                    <th>Productos</th>
+                                    <th>Total</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="pedido : ${pedidosTienda}" th:data-status="${pedido.estado.name()}"
+                                    th:data-date="${#temporals.format(pedido.fechaCreacion, 'yyyy-MM-dd')}">
+                                    <td th:text="${pedido.id}">1</td>
+                                    <td th:text="${pedido.clienteNombre}">Cliente</td>
+                                    <td>
+                                        <span th:text="${pedido.email}">email</span>
+                                        <small th:text="${pedido.telefono}">telefono</small>
+                                    </td>
+                                    <td th:text="${pedido.resumenProductos}">Productos</td>
+                                    <td th:text="${pedido.total} + ' €'">0 €</td>
+                                    <td th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                                    <td>
+                                        <form th:action="@{/worker/tienda/{id}/estado(id=${pedido.id})}" method="post" class="worker-status-form">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                            <select name="estado" class="worker-select" onchange="this.form.submit()">
+                                                <option th:each="estado : ${estadosTienda}"
+                                                        th:value="${estado.name()}"
+                                                        th:text="${estado.label}"
+                                                        th:selected="${estado == pedido.estado}">Pendiente</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <p class="worker-empty" th:if="${#lists.isEmpty(pedidosTienda)}">Todavia no hay pedidos de tienda.</p>
+                        </div>
+                    </section>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/worker.js}"></script>
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

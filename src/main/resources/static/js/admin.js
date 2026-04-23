@@ -85,7 +85,7 @@ function renderUsersTable(tableContainer, data) {
                             ${user.email}
                         </td>
                         <td class="admin-cell-phone">${user.phone || ""}</td>
-                        <td class="admin-role-cell"><span class="admin-role-badge">${user.rol === "ROLE_USER" ? "Usuario" : "Admin"}</span></td>
+                        <td class="admin-role-cell"><span class="admin-role-badge">${formatRoleName(user.rol)}</span></td>
                         <td class="admin-date-cell">${formatAdminDate(user.createdAt)}</td>
                         <td class="admin-action-cell">
                             <form action="/admin/update-role/${user.id}" method="post" class="admin-role-form" data-current-role="${user.rol}">
@@ -93,16 +93,21 @@ function renderUsersTable(tableContainer, data) {
                                 <div class="admin-role-dropdown" data-role-dropdown>
                                     <select name="newRole" class="admin-role-select admin-role-native" data-user-name="${user.firstName || ""} ${user.lastName || ""}" aria-label="Cambiar rol">
                                         <option value="ROLE_USER" ${user.rol === "ROLE_USER" ? "selected" : ""}>Usuario</option>
+                                        <option value="ROLE_WORKER" ${user.rol === "ROLE_WORKER" ? "selected" : ""}>Trabajador</option>
                                         <option value="ROLE_ADMIN" ${user.rol === "ROLE_ADMIN" ? "selected" : ""}>Admin</option>
                                     </select>
                                     <button class="admin-role-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
-                                        <span data-role-trigger-label>${user.rol === "ROLE_USER" ? "Usuario" : "Admin"}</span>
+                                        <span data-role-trigger-label>${formatRoleName(user.rol)}</span>
                                         <span class="admin-role-trigger-icon" aria-hidden="true"></span>
                                     </button>
                                     <div class="admin-role-menu" role="listbox">
                                         <button class="admin-role-option" type="button" role="option" data-role-value="ROLE_USER">
                                             <span class="admin-role-option-dot"></span>
                                             Usuario
+                                        </button>
+                                        <button class="admin-role-option" type="button" role="option" data-role-value="ROLE_WORKER">
+                                            <span class="admin-role-option-dot admin-role-option-dot-worker"></span>
+                                            Trabajador
                                         </button>
                                         <button class="admin-role-option" type="button" role="option" data-role-value="ROLE_ADMIN">
                                             <span class="admin-role-option-dot admin-role-option-dot-admin"></span>
@@ -386,6 +391,18 @@ function normalizeAdminSearch(value) {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .trim();
+}
+
+function formatRoleName(role) {
+    if (role === "ROLE_ADMIN") {
+        return "Admin";
+    }
+
+    if (role === "ROLE_WORKER") {
+        return "Trabajador";
+    }
+
+    return "Usuario";
 }
 
 function renderListPaginationControls(visibleCount, totalCount, itemLabel) {

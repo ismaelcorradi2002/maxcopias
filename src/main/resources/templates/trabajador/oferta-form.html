@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragmentos/encabezado :: head(${pageTitle}, '/css/cuenta.css')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/worker.css}">
+</head>
+<body class="account-page worker-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="worker-main">
+        <section class="worker-hero">
+            <div class="container worker-layout worker-form-layout">
+                <article class="worker-card">
+                    <header class="worker-header">
+                        <div>
+                            <span class="section-kicker">Ofertas</span>
+                            <h1 th:text="${oferta.id == null ? 'Crear oferta' : 'Editar oferta'}">Crear oferta</h1>
+                            <p>Define si la promocion afecta a un producto, una categoria o toda la tienda.</p>
+                        </div>
+                    </header>
+
+                    <div th:replace="~{trabajador/fragmentos :: workerNav(${activeWorkerSection})}"></div>
+
+                    <form class="worker-form worker-offer-form" th:action="${formAction}" th:object="${oferta}" method="post" data-offer-form>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                        <div class="worker-form-alert" th:if="${error}" th:text="${error}">
+                            Ya existe una oferta exactamente igual.
+                        </div>
+
+                        <section class="offer-form-block">
+                            <h2>Informacion principal</h2>
+                            <label>
+                                <span>Titulo</span>
+                                <input type="text" th:field="*{titulo}" required maxlength="140" placeholder="Ej. 20% en cuadernos A4">
+                            </label>
+
+                            <label>
+                                <span>Descripcion</span>
+                                <textarea th:field="*{descripcion}" required maxlength="700" rows="4" placeholder="Explica la promocion de forma clara"></textarea>
+                            </label>
+                        </section>
+
+                        <section class="offer-form-block">
+                            <h2>Tipo de oferta</h2>
+                            <div class="offer-type-grid">
+                                <label class="offer-type-card" th:each="tipo : ${tiposOferta}">
+                                    <input type="radio" th:field="*{tipoOferta}" th:value="${tipo.name()}" data-offer-type>
+                                    <span th:text="${tipo.label}">Global</span>
+                                    <small th:if="${tipo.name() == 'PRODUCTO'}">Solo un producto concreto</small>
+                                    <small th:if="${tipo.name() == 'CATEGORIA'}">Todos los productos de una categoria</small>
+                                    <small th:if="${tipo.name() == 'GLOBAL'}">Toda la tienda y campañas generales</small>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="offer-form-block" data-product-target>
+                            <h2>Producto asociado</h2>
+                            <div class="offer-target-toolbar">
+                                <label>
+                                    <span>Buscar producto</span>
+                                    <input type="search" data-product-offer-search placeholder="Buscar por nombre, categoria o ID">
+                                </label>
+                                <label>
+                                    <span>Filtrar categoria</span>
+                                    <select class="worker-select" data-product-offer-category>
+                                        <option value="">Todas las categorias</option>
+                                        <option th:each="categoria : ${categorias}" th:value="${categoria.nombre}" th:text="${categoria.nombre}">Escolar</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="offer-smart-list" data-product-offer-list>
+                                <label class="offer-smart-item"
+                                       th:each="producto : ${productos}"
+                                       th:attr="data-search=${producto.id + ' ' + producto.nombre + ' ' + producto.precio + ' ' + #strings.listJoin(producto.categorias.![nombre], ' ')},data-categories=${#strings.listJoin(producto.categorias.![nombre], ' ')},data-product-price=${producto.precio},data-product-name=${producto.nombre}">
+                                    <input type="checkbox" name="productoIds" th:value="${producto.id}" th:checked="${productoIdsSeleccionados.contains(producto.id)}">
+                                    <span>
+                                        <strong th:text="${producto.nombre}">Producto</strong>
+                                        <small>
+                                            <span th:text="${producto.precio} + ' €'">10 €</span>
+                                            <span> · </span>
+                                            <span th:each="categoria, iter : ${producto.categorias}"
+                                                  th:text="${categoria.nombre + (!iter.last ? ', ' : '')}">Categoria</span>
+                                        </small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="offer-smart-pagination" data-product-offer-pagination></div>
+                        </section>
+
+                        <section class="offer-form-block" data-category-target>
+                            <h2>Categoria asociada</h2>
+                            <label>
+                                <span>Categoria</span>
+                                <select name="categoriaId" class="worker-select" data-category-offer-select>
+                                    <option value="">Seleccionar categoria</option>
+                                    <option th:each="categoria : ${categorias}"
+                                            th:value="${categoria.id}"
+                                            th:text="${categoria.nombre}"
+                                            th:selected="${oferta.categoria != null and oferta.categoria.id == categoria.id}">
+                                        Categoria
+                                    </option>
+                                </select>
+                            </label>
+                        </section>
+
+                        <section class="offer-form-block">
+                            <h2>Descuento y fechas</h2>
+                            <div class="offer-discount-control">
+                                <label>
+                                    <span>Porcentaje de descuento</span>
+                                    <input type="number" th:field="*{porcentajeDescuento}" min="1" max="99" required data-discount-input>
+                                </label>
+                                <input type="range" min="1" max="99" th:value="${oferta.porcentajeDescuento}" data-discount-range>
+                                <strong><span data-discount-label th:text="${oferta.porcentajeDescuento ?: 10}">10</span>% OFF</strong>
+                            </div>
+
+                            <div class="worker-form-grid">
+                                <label>
+                                    <span>Fecha inicio</span>
+                                    <input type="date" th:field="*{fechaInicio}" data-offer-start>
+                                </label>
+                                <label>
+                                    <span>Fecha fin</span>
+                                    <input type="date" th:field="*{fechaFin}" data-offer-end>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="offer-form-block">
+                            <h2>Visibilidad</h2>
+                            <label>
+                                <span>Imagen opcional para la oferta</span>
+                                <input type="url" th:field="*{imagenUrl}" placeholder="https://...">
+                            </label>
+
+                            <div class="worker-checks">
+                                <label class="worker-check">
+                                    <input type="checkbox" th:field="*{activa}">
+                                    <span>Oferta activa</span>
+                                </label>
+                                <label class="worker-check">
+                                    <input type="checkbox" th:field="*{principal}">
+                                    <span>Destacar como principal en la Home</span>
+                                </label>
+                            </div>
+                        </section>
+
+                        <aside class="offer-preview-card" data-offer-preview>
+                            <span>Preview de la oferta</span>
+                            <h2 data-preview-title>Configura la oferta</h2>
+                            <p data-preview-description>Selecciona tipo, destino y descuento para ver el resultado antes de guardar.</p>
+                            <div class="offer-preview-price" data-preview-price hidden>
+                                <small>Precio original</small>
+                                <strong data-preview-original>0 €</strong>
+                                <small>Precio con oferta</small>
+                                <strong data-preview-final>0 €</strong>
+                            </div>
+                            <small data-preview-date></small>
+                        </aside>
+
+                        <div class="worker-form-actions">
+                            <a class="button button-secondary-dark" th:href="@{/worker/ofertas}">Cancelar</a>
+                            <button class="button button-primary" type="submit">Guardar oferta</button>
+                        </div>
+                    </form>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/ofertas.js}"></script>
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

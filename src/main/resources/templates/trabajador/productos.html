@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Productos trabajador', '/css/cuenta.css')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/worker.css}">
+</head>
+<body class="account-page worker-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="worker-main">
+        <section class="worker-hero">
+            <div class="container worker-layout">
+                <article class="worker-card">
+                    <header class="worker-header worker-module-header">
+                        <div>
+                            <span class="section-kicker">Productos</span>
+                            <h1>Productos y stock</h1>
+                            <p>Gestiona el catalogo operativo: precios, stock, categorias y productos activos.</p>
+                        </div>
+                        <a class="button button-primary" th:href="@{/admin/crear-producto}">Crear producto</a>
+                    </header>
+
+                    <div th:replace="~{trabajador/fragmentos :: workerNav(${activeWorkerSection})}"></div>
+
+                    <section class="worker-section">
+                        <div class="worker-filters">
+                            <label>
+                                <span>Buscar producto</span>
+                                <input type="search" data-worker-search="productos" placeholder="Nombre, categoria o ID">
+                            </label>
+                            <label>
+                                <span>Filtrar categoria</span>
+                                <select data-worker-category="productos" class="worker-select">
+                                    <option value="">Todas las categorias</option>
+                                    <option th:each="categoria : ${categorias}" th:value="${categoria.nombre}" th:text="${categoria.nombre}">Escolar</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="worker-table-wrap">
+                            <table class="worker-table" data-worker-table="productos" data-worker-paginated="true">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Categorias</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="producto : ${productos}" th:data-categories="${#strings.listJoin(producto.categorias.![nombre], ' ')}">
+                                    <td th:text="${producto.id}">1</td>
+                                    <td th:text="${producto.nombre}">Cuaderno A4</td>
+                                    <td th:text="${producto.precio} + ' €'">2.50 €</td>
+                                    <td th:text="${producto.stock}">10</td>
+                                    <td>
+                                        <span th:each="categoria, iter : ${producto.categorias}"
+                                              th:text="${categoria.nombre + (!iter.last ? ', ' : '')}">Escolar</span>
+                                    </td>
+                                    <td>
+                                        <span class="worker-status-pill" th:classappend="${producto.activo} ? ' is-active' : ' is-inactive'"
+                                              th:text="${producto.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+                                    </td>
+                                    <td class="worker-actions-cell">
+                                        <a class="button button-small button-outline" th:href="@{/editarstock/{id}(id=${producto.id})}">Editar</a>
+                                        <form th:action="@{/worker/productos/{id}/activo(id=${producto.id})}" method="post" class="inline-form">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                            <input type="hidden" name="activo" th:value="${!producto.activo}">
+                                            <button class="button button-small button-outline" type="submit"
+                                                    th:text="${producto.activo} ? 'Desactivar' : 'Activar'">Desactivar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/worker.js}"></script>
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

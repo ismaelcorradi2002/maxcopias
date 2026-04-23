@@ -80,13 +80,13 @@
                         </fieldset>
 
                         <div class="admin-edit-actions">
-                            <a th:href="@{/admin}" class="button button-secondary-dark">Cancelar</a>
+                            <a th:href="@{${catalogReturnUrl}}" class="button button-secondary-dark">Cancelar</a>
                             <button type="submit" class="button button-primary">Crear producto</button>
                         </div>
                     </form>
 
                     <div class="dashboard-actions admin-actions">
-                        <a th:href="@{/admin}" class="button button-outline-dark">Volver al panel</a>
+                        <a th:href="@{${catalogReturnUrl}}" class="button button-outline-dark" th:text="${catalogReturnLabel}">Volver al panel</a>
                     </div>
                 </article>
             </div>

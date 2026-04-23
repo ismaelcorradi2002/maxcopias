@@ -26,6 +26,22 @@
                         <a href="#servicios" class="button button-secondary">Ver servicios</a>
                     </div>
 
+                    <article class="home-main-offer home-offer-spotlight" th:if="${ofertaPrincipal != null}">
+                        <div class="home-offer-glow" aria-hidden="true"></div>
+                        <div class="home-offer-content">
+                            <span class="home-offer-kicker">Oferta destacada</span>
+                            <strong th:text="${ofertaPrincipal.titulo}">Promocion Maxcopias</strong>
+                            <p th:text="${ofertaPrincipal.descripcion}">Oferta activa para clientes.</p>
+                            <div class="home-offer-meta">
+                                <small th:text="${ofertaPrincipal.porcentajeDescuento + '% OFF'}">20% OFF</small>
+                                <em th:if="${ofertaPrincipal.tipoOferta.name() == 'GLOBAL'}">En toda la tienda</em>
+                                <em th:if="${ofertaPrincipal.tipoOferta.name() == 'PRODUCTO' and ofertaPrincipal.producto != null}" th:text="${'Producto: ' + ofertaPrincipal.producto.nombre}">Producto</em>
+                                <em th:if="${ofertaPrincipal.tipoOferta.name() == 'CATEGORIA' and ofertaPrincipal.categoria != null}" th:text="${'Categoria: ' + ofertaPrincipal.categoria.nombre}">Categoria</em>
+                                <em th:if="${ofertaPrincipal.fechaFin != null}" th:attr="data-home-offer-end=${ofertaPrincipal.fechaFin}">Oferta por tiempo limitado</em>
+                            </div>
+                        </div>
+                    </article>
+
                     <ul class="hero-highlights" aria-label="Puntos clave">
                         <li>Impresion y fotocopias profesionales</li>
                         <li>Recogida rapida en tienda</li>
@@ -264,6 +280,7 @@
     <div th:replace="~{fragmentos/pie :: footer}"></div>
 </div>
 
+<script th:src="@{/js/ofertas.js}"></script>
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>

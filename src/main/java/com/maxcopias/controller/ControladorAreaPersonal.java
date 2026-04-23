@@ -178,7 +178,7 @@ public class ControladorAreaPersonal {
                 categoria.setDescripcion(descripcion.trim());
             }
             servicioTienda.guardarCategoria(categoria);
-            return "redirect:/admin";
+            return redirectAfterCatalogChange(authentication);
         } catch (Exception e) {
             model.addAttribute("error", "Error al crear categoría: " + e.getMessage());
             model.addAttribute("categoria", new Categoria());
@@ -195,6 +195,8 @@ public class ControladorAreaPersonal {
         model.addAttribute("producto", nuevoProducto);
         model.addAttribute("pageTitle", "Maxcopias | Crear producto");
         model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
+        model.addAttribute("catalogReturnUrl", catalogReturnUrl(authentication));
+        model.addAttribute("catalogReturnLabel", catalogReturnLabel(authentication));
 
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
@@ -226,13 +228,15 @@ public class ControladorAreaPersonal {
             }
             
             servicioTienda.guardarProducto(producto);
-            return "redirect:/admin?created=true";
+            return redirectAfterCatalogChange(authentication);
         } catch (Exception e) {
             model.addAttribute("error", "Error al crear producto: " + e.getMessage());
             Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
             model.addAttribute("currentUsuario", currentUsuario);
             model.addAttribute("pageTitle", "Maxcopias | Crear producto");
             model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
+            model.addAttribute("catalogReturnUrl", catalogReturnUrl(authentication));
+            model.addAttribute("catalogReturnLabel", catalogReturnLabel(authentication));
             return "admin/crearproducto";
         }
     }
@@ -242,7 +246,9 @@ public class ControladorAreaPersonal {
         Producto producto = servicioTienda.obtenerProductoPorId(id);
         model.addAttribute("producto", producto);
         model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
-        model.addAttribute("pageTitle", "Maxcopias | Editar stock");
+        model.addAttribute("pageTitle", "Maxcopias | Editar producto");
+        model.addAttribute("catalogReturnUrl", catalogReturnUrl(authentication));
+        model.addAttribute("catalogReturnLabel", catalogReturnLabel(authentication));
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
         return "admin/editarstock";
@@ -275,7 +281,7 @@ public class ControladorAreaPersonal {
         }
         
         servicioTienda.guardarProducto(existingProducto);
-        return "redirect:/admin?updated=true";
+        return redirectAfterCatalogChange(authentication);
     }
 
     /**
@@ -335,6 +341,33 @@ public class ControladorAreaPersonal {
         model.addAttribute("profileForm", profileForm);
         model.addAttribute("profileUpdated", updated);
         model.addAttribute("pageTitle", "Maxcopias | Area personal");
+    }
+
+    private String redirectAfterCatalogChange(Authentication authentication) {
+        boolean isWorker = authentication.getAuthorities().stream()
+            .anyMatch(authority -> "ROLE_WORKER".equals(authority.getAuthority()));
+        boolean isAdmin = authentication.getAuthorities().stream()
+            .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+
+        return isWorker && !isAdmin ? "redirect:/worker/productos" : "redirect:/admin?updated=true";
+    }
+
+    private String catalogReturnUrl(Authentication authentication) {
+        boolean isWorker = authentication.getAuthorities().stream()
+            .anyMatch(authority -> "ROLE_WORKER".equals(authority.getAuthority()));
+        boolean isAdmin = authentication.getAuthorities().stream()
+            .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+
+        return isWorker && !isAdmin ? "/worker/productos" : "/admin";
+    }
+
+    private String catalogReturnLabel(Authentication authentication) {
+        boolean isWorker = authentication.getAuthorities().stream()
+            .anyMatch(authority -> "ROLE_WORKER".equals(authority.getAuthority()));
+        boolean isAdmin = authentication.getAuthorities().stream()
+            .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
+
+        return isWorker && !isAdmin ? "Volver a productos" : "Volver al panel";
     }
 }
 

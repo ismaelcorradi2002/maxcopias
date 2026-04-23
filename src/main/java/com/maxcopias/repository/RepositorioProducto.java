@@ -11,12 +11,18 @@ public interface RepositorioProducto extends JpaRepository<Producto, Long> {
     @EntityGraph(attributePaths = "categorias")
     List<Producto> findAllByOrderByNombreAsc();
 
+    @EntityGraph(attributePaths = "categorias")
+    List<Producto> findAllByActivoTrueOrderByNombreAsc();
+
     @Override
     @EntityGraph(attributePaths = "categorias")
     Optional<Producto> findById(Long id);
 
     @EntityGraph(attributePaths = "categorias")
     List<Producto> findDistinctByCategoriasIdOrderByNombreAsc(Long categoriaId);
+
+    @EntityGraph(attributePaths = "categorias")
+    List<Producto> findDistinctByCategoriasIdAndActivoTrueOrderByNombreAsc(Long categoriaId);
 
     boolean existsByNombreIgnoreCase(String nombre);
 }

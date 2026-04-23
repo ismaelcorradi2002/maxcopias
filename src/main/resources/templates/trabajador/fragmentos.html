@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="worker-tabs worker-module-nav" th:fragment="workerNav(activeSection)" aria-label="Secciones trabajador">
+    <a th:href="@{/worker}" th:classappend="${activeSection == 'resumen'} ? ' is-active' : ''">Resumen</a>
+    <a th:href="@{/worker/productos}" th:classappend="${activeSection == 'productos'} ? ' is-active' : ''">Productos</a>
+    <a th:href="@{/worker/pedidos-copisteria}" th:classappend="${activeSection == 'copisteria'} ? ' is-active' : ''">Pedidos copisteria</a>
+    <a th:href="@{/worker/pedidos-tienda}" th:classappend="${activeSection == 'tienda'} ? ' is-active' : ''">Pedidos tienda</a>
+    <a th:href="@{/worker/ofertas}" th:classappend="${activeSection == 'ofertas'} ? ' is-active' : ''">Ofertas</a>
+</nav>
+</body>
+</html>

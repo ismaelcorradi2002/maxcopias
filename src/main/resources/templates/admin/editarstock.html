@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Editar stock', '/css/cuenta.css')}"></th:block>
+    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Editar producto', '/css/cuenta.css')}"></th:block>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <link rel="stylesheet" th:href="@{/css/editarstock.css}">
 </head>
@@ -16,9 +16,9 @@
                     <header class="admin-dashboard-header">
                         <div>
                             <span class="section-kicker">Administracion</span>
-                            <h1>Editar stock</h1>
+                            <h1>Editar producto</h1>
                             <p>
-                                Actualiza los datos principales del producto
+                                Actualiza el stock, precio, categorias y datos principales del producto
                                 <strong th:text="${producto.nombre ?: 'seleccionado'}">seleccionado</strong>.
                             </p>
                         </div>
@@ -84,13 +84,13 @@
                         </fieldset>
 
                         <div class="admin-edit-actions">
-                            <a th:href="@{/admin}" class="button button-secondary-dark">Cancelar</a>
+                            <a th:href="@{${catalogReturnUrl}}" class="button button-secondary-dark">Cancelar</a>
                             <button type="submit" class="button button-primary">Guardar cambios</button>
                         </div>
                     </form>
 
                     <div class="dashboard-actions admin-actions">
-                        <a th:href="@{/admin}" class="button button-outline-dark">Volver al panel</a>
+                        <a th:href="@{${catalogReturnUrl}}" class="button button-outline-dark" th:text="${catalogReturnLabel}">Volver al panel</a>
                     </div>
                 </article>
             </div>

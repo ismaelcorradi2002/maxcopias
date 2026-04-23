@@ -2,8 +2,10 @@ package com.maxcopias.service;
 
 import com.maxcopias.dto.CategoriaTiendaVista;
 import com.maxcopias.dto.ProductoTiendaVista;
+import com.maxcopias.dto.ResultadoOfertaProducto;
 import com.maxcopias.model.Categoria;
 import com.maxcopias.model.Producto;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -20,6 +22,11 @@ public class ServicioCatalogoTiendaVisual {
     private static final Locale LOCALE_ES = new Locale("es", "ES");
 
     private final Map<String, MetadatosProductoTienda> catalogoVisual = crearCatalogoVisual();
+    private final ServicioOferta servicioOferta;
+
+    public ServicioCatalogoTiendaVisual(ServicioOferta servicioOferta) {
+        this.servicioOferta = servicioOferta;
+    }
 
     public List<CategoriaTiendaVista> mapearCategorias(List<Categoria> categorias) {
         return categorias.stream()
@@ -67,12 +74,13 @@ public class ServicioCatalogoTiendaVisual {
             .map(this::generarSlug)
             .sorted()
             .collect(Collectors.joining(","));
+        ResultadoOfertaProducto resultadoOferta = servicioOferta.calcularOfertaParaProducto(producto);
 
         return new ProductoTiendaVista(
             producto.getId(),
             producto.getNombre(),
             producto.getDescripcion(),
-            formatearPrecio(producto),
+            resultadoOferta.aplicable() ? formatearPrecio(resultadoOferta.precioFinal()) : formatearPrecio(producto),
             metadatos.imagenUrl(),
             metadatos.alt(),
             categorias.isEmpty() ? "Sin categoria" : String.join(" · ", categorias),
@@ -81,7 +89,11 @@ public class ServicioCatalogoTiendaVisual {
             producto.getStock(),
             metadatos.detalleTitulo(),
             metadatos.detalleDescripcion(),
-            metadatos.detallePuntos()
+            metadatos.detallePuntos(),
+            resultadoOferta.aplicable(),
+            formatearPrecio(resultadoOferta.precioOriginal()),
+            formatearPrecio(resultadoOferta.precioFinal()),
+            resultadoOferta.aplicable() ? resultadoOferta.porcentajeDescuento() + "% OFF" : ""
         );
     }
 
@@ -104,6 +116,10 @@ public class ServicioCatalogoTiendaVisual {
 
     private String formatearPrecio(Producto producto) {
         return NumberFormat.getCurrencyInstance(LOCALE_ES).format(producto.getPrecio());
+    }
+
+    private String formatearPrecio(BigDecimal precio) {
+        return NumberFormat.getCurrencyInstance(LOCALE_ES).format(precio);
     }
 
     private Map<String, MetadatosProductoTienda> crearCatalogoVisual() {

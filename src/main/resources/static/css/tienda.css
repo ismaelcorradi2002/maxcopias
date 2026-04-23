@@ -359,3 +359,32 @@
 .precio-tag {
   color: #ffbd32;
 }
+
+.tienda-offer-badge {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0.35rem 0;
+  padding: 0.32rem 0.62rem;
+  border-radius: 999px;
+  background: #ffd965;
+  color: #4b3900;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.precio-tag-offer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #116eb8;
+}
+
+.precio-tag-offer del {
+  color: #8794a7;
+  font-weight: 800;
+}
+
+.precio-tag-offer strong {
+  color: #116eb8;
+}
