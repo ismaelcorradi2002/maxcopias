@@ -124,7 +124,17 @@ public class ControllerPedidos {
         String extrasStr = String.format("plastificado=%b,urgente=%b,escaneado=%b,observaciones='%s'",
             orderForm.getPlastificado(), orderForm.getUrgente(), orderForm.getEscaneado(), orderForm.getObservations());
         pedido.setExtras(extrasStr);
-        pedido.setPrecio(BigDecimal.ZERO); // TODO: Implementar cálculo de precio real basado en archivos y configuración
+        // Use the price calculated by the frontend wizard
+        String estimatedPrice = orderForm.getEstimatedPrice();
+        BigDecimal precioCalculado = BigDecimal.ZERO;
+        if (estimatedPrice != null && !estimatedPrice.isBlank()) {
+            try {
+                precioCalculado = new BigDecimal(estimatedPrice.replace(",", ".")).setScale(2, RoundingMode.HALF_UP);
+            } catch (NumberFormatException ignored) {
+                // fallback to zero if parsing fails
+            }
+        }
+        pedido.setPrecio(precioCalculado);
         pedido.setRutaArchivo(null);
 
         // Obtener usuario autenticado

@@ -139,5 +139,80 @@ public class PedidoCopisteria {
 
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+
+    // Helper aliases for Thymeleaf templates
+    public EstadoPedidoCopisteria getStatus() { return estado; }
+    public TipoTrabajo getJobType() { return trabajo; }
+    public ModoColor getColorMode() { return color; }
+    public TamanoPapel getPaperSize() { return tamano; }
+    public CaraImpresion getPrintSide() { return caras; }
+    public TipoPapel getPaperType() { return papel; }
+    public TipoEncuadernacion getBindingType() { return encuadernacion; }
+    public String getPickupCode() { return codigoRecoger; }
+
+    public String getFormattedEstimatedPrice() {
+        if (precio == null) {
+            return "0,00 EUR";
+        }
+        return String.format(java.util.Locale.forLanguageTag("es-ES"), "%.2f EUR", precio);
+    }
+
+    public String getPriceBreakdownOrDefault() {
+        StringBuilder sb = new StringBuilder();
+        if (trabajo != null) {
+            sb.append(trabajo.getLabel());
+        }
+        if (color != null) {
+            sb.append(" • ").append(color.getLabel());
+        }
+        if (tamano != null) {
+            sb.append(" • ").append(tamano.getLabel());
+        }
+        if (copias != null) {
+            sb.append(" • ").append(copias).append(" copia(s)");
+        }
+        if (caras != null) {
+            sb.append(" • ").append(caras.getLabel());
+        }
+        if (papel != null) {
+            sb.append(" • ").append(papel.getLabel());
+        }
+        if (sb.length() == 0) {
+            return "Pedido guardado";
+        }
+        return sb.toString();
+    }
+
+    public String getFormattedCreatedAt() {
+        if (fechaCreacion == null) {
+            return "";
+        }
+        return fechaCreacion.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+    }
+
+    public int getFileCount() {
+        if (rutaArchivo == null || rutaArchivo.isBlank()) {
+            return 0;
+        }
+        return 1; // simplistic; could parse stored files if needed
+    }
+
+    public int getTotalPageCount() {
+        return 0; // not tracked separately without file inspection service
+    }
+
+    public String getExtrasSummary() {
+        if (extras == null || extras.isBlank()) {
+            return "Sin extras";
+        }
+        return extras;
+    }
+
+    public String getObservationsOrDefault() {
+        if (extras == null || extras.isBlank()) {
+            return "Sin observaciones.";
+        }
+        return extras;
+    }
 }
 

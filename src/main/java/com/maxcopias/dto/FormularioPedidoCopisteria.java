@@ -58,6 +58,8 @@ public class FormularioPedidoCopisteria {
     @Size(max = 600, message = "Las observaciones no pueden superar los 600 caracteres.")
     private String observations;
 
+    private String estimatedPrice;
+
     public String getCustomerName() {
         return customerName;
     }
@@ -208,6 +210,14 @@ public class FormularioPedidoCopisteria {
 
     public void setObservations(String observations) {
         this.observations = observations;
+    }
+
+    public String getEstimatedPrice() {
+        return estimatedPrice;
+    }
+
+    public void setEstimatedPrice(String estimatedPrice) {
+        this.estimatedPrice = estimatedPrice;
     }
 }
 

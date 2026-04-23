@@ -402,6 +402,7 @@ function createPricePreviewController(form, priceEstimator, fileInput, fileList,
     const breakdownElement = priceEstimator.querySelector("[data-price-breakdown]");
     const noteElement = priceEstimator.querySelector("[data-price-note]");
     const linesElement = priceEstimator.querySelector("[data-price-lines]");
+    const estimatedPriceInput = form.querySelector("[data-estimated-price-input]");
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
     const listeners = [];
@@ -552,6 +553,11 @@ function createPricePreviewController(form, priceEstimator, fileInput, fileList,
         breakdownElement.textContent = estimate.breakdown;
         noteElement.textContent = state.note;
         renderPriceLines(linesElement, estimate.lines);
+
+        if (estimatedPriceInput) {
+            estimatedPriceInput.value = String(estimate.total).replace(".", ",");
+        }
+
         notify();
     }
 
