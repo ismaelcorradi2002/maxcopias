@@ -8,13 +8,19 @@ function switchTab(button, tab) {
     tableContainer.classList.toggle("is-users-tab", tab === "users");
     tableContainer.innerHTML = '<div class="admin-loading">Cargando datos...</div>';
 
-    const apiEndpoint = tab === "users" ? "/admin/api/users" : tab === "products" ? "/admin/api/products" : "/admin/api/categorias";
+    const apiEndpoint = tab === "users" ? "/admin/api/users" : tab === "products" ? "/admin/api/products" : tab === "orders" ? "/admin/api/pedidos" : "/admin/api/categorias";
 
     fetch(apiEndpoint)
         .then(response => response.json())
         .then(data => {
+            if (!Array.isArray(data)) {
+                console.error("Respuesta inesperada de la API:", data);
+                tableContainer.innerHTML = '<p class="no-data">Error al cargar datos. Revisa la consola para más detalles.</p>';
+                return;
+            }
+
             if (data.length === 0) {
-                tableContainer.innerHTML = `<p class="no-data">No hay ${tab === "users" ? "usuarios" : tab === "products" ? "productos" : "categorías"}.</p>`;
+                tableContainer.innerHTML = `<p class="no-data">No hay ${tab === "users" ? "usuarios" : tab === "products" ? "productos" : tab === "orders" ? "pedidos" : "categorías"}.</p>`;
                 return;
             }
 
@@ -24,6 +30,10 @@ function switchTab(button, tab) {
             }
             if (tab === "categories") {
                 renderCategoriesTable(tableContainer, data);
+                return;
+            }
+            if (tab === "orders") {
+                renderOrdersTable(tableContainer, data);
                 return;
             }
             renderProductsTable(tableContainer, data);
@@ -164,7 +174,7 @@ function renderUsersTable(tableContainer, data) {
 
 function formatAdminDate(value) {
     if (!value) {
-        return "";
+        return "-";
     }
 
     const date = new Date(value);
@@ -383,6 +393,139 @@ function renderProductsTable(tableContainer, data) {
 
     searchInput.addEventListener("input", applyProductFilters);
     categoryFilter.addEventListener("change", applyProductFilters);
+}
+
+function renderOrdersTable(tableContainer, data) {
+    let visibleCount = ADMIN_PAGE_SIZE;
+    let currentOrders = data;
+
+    function def(value) {
+        return value != null && value !== "" ? value : "-";
+    }
+
+    tableContainer.innerHTML = `
+        <div class="admin-product-toolbar">
+            <label class="admin-product-search" for="admin-order-search">
+                <span>Buscar pedido</span>
+                <input id="admin-order-search" type="search" placeholder="Buscar por cliente, email o tipo" autocomplete="off">
+            </label>
+            <label class="admin-product-filter" for="admin-order-type-filter">
+                <span>Filtrar tipo</span>
+                <select id="admin-order-type-filter" class="admin-form-select">
+                    <option value="">Todos los tipos</option>
+                    <option value="copistería">Copistería</option>
+                    <option value="tienda">Tienda</option>
+                </select>
+            </label>
+        </div>
+        <div class="admin-orders-table-region" data-orders-table-region></div>
+    `;
+
+    const tableRegion = tableContainer.querySelector("[data-orders-table-region]");
+    const searchInput = tableContainer.querySelector("#admin-order-search");
+    const typeFilter = tableContainer.querySelector("#admin-order-type-filter");
+    initAdminFormSelectDropdowns();
+
+    function paintOrders(orders) {
+        const visibleOrders = orders.slice(0, visibleCount);
+
+        if (orders.length === 0) {
+            tableRegion.innerHTML = '<p class="no-data">No se han encontrado pedidos con esa búsqueda.</p>';
+            return;
+        }
+
+        tableRegion.innerHTML = `
+            <table class="admin-table admin-orders-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Cliente</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Trabajo</th>
+                    <th>Copias</th>
+                    <th>Color</th>
+                    <th>Tamaño</th>
+                    <th>Caras</th>
+                    <th>Papel</th>
+                    <th>Encuadernación</th>
+                    <th>Extras</th>
+                    <th>Archivo</th>
+                    <th>Código recoger</th>
+                    <th>Resumen productos</th>
+                    <th>Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${visibleOrders.map(order => `
+                    <tr>
+                        <td>${def(order.id)}</td>
+                        <td>${def(order.tipo)}</td>
+                        <td class="admin-cell-name">${def(order.cliente)}</td>
+                        <td class="admin-cell-email">${def(order.email)}</td>
+                        <td class="admin-cell-phone">${def(order.telefono)}</td>
+                        <td><span class="admin-role-badge">${def(order.estado)}</span></td>
+                        <td class="admin-date-cell">${formatAdminDate(order.fechaCreacion)}</td>
+                        <td>${order.total != null ? order.total + " EUR" : "-"}</td>
+                        <td>${def(order.trabajo)}</td>
+                        <td>${def(order.copias)}</td>
+                        <td>${def(order.color)}</td>
+                        <td>${def(order.tamano)}</td>
+                        <td>${def(order.caras)}</td>
+                        <td>${def(order.papel)}</td>
+                        <td>${def(order.encuadernacion)}</td>
+                        <td>${def(order.extras)}</td>
+                        <td>${def(order.rutaArchivo)}</td>
+                        <td>${def(order.codigoRecoger)}</td>
+                        <td>${def(order.resumenProductos)}</td>
+                        <td>${def(order.usuarioNombre)}</td>
+                    </tr>
+                `).join("")}
+            </tbody>
+        </table>
+        ${renderListPaginationControls(visibleOrders.length, orders.length, "pedidos")}
+        `;
+
+        tableRegion.querySelector("[data-load-more]")?.addEventListener("click", function () {
+            visibleCount += ADMIN_PAGE_SIZE;
+            paintOrders(orders);
+        });
+        tableRegion.querySelector("[data-load-less]")?.addEventListener("click", function () {
+            visibleCount = Math.max(ADMIN_PAGE_SIZE, visibleCount - ADMIN_PAGE_SIZE);
+            paintOrders(orders);
+        });
+    }
+
+    paintOrders(currentOrders);
+
+    function applyOrderFilters() {
+        const query = normalizeAdminSearch(searchInput.value);
+        const selectedType = normalizeAdminSearch(typeFilter.value);
+        visibleCount = ADMIN_PAGE_SIZE;
+
+        if (!query && !selectedType) {
+            currentOrders = data;
+            paintOrders(currentOrders);
+            return;
+        }
+
+        currentOrders = data.filter(order => {
+            const searchableText = normalizeAdminSearch(`${order.id} ${order.cliente} ${order.email} ${order.telefono} ${order.tipo}`);
+            const matchesSearch = !query || searchableText.includes(query);
+            const matchesType = !selectedType || normalizeAdminSearch(order.tipo) === selectedType;
+
+            return matchesSearch && matchesType;
+        });
+
+        paintOrders(currentOrders);
+    }
+
+    searchInput.addEventListener("input", applyOrderFilters);
+    typeFilter.addEventListener("change", applyOrderFilters);
 }
 
 function normalizeAdminSearch(value) {

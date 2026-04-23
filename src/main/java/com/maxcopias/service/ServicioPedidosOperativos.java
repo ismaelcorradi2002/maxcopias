@@ -32,6 +32,11 @@ public class ServicioPedidosOperativos {
     }
 
     @Transactional(readOnly = true)
+    public List<PedidoCopisteria> obtenerPedidosCopisteriaConUsuario() {
+        return repositorioPedidoCopisteria.findAllWithUsuarioOrderByFechaCreacionDesc();
+    }
+
+    @Transactional(readOnly = true)
     public List<PedidoTienda> obtenerPedidosTienda() {
         return repositorioPedidoTienda.findAllByOrderByFechaCreacionDesc();
     }

@@ -4,11 +4,15 @@ package com.maxcopias.controller;
  * Controlador del área personal del usuario (perfil, pedidos).
  */
 import com.maxcopias.dto.FormularioActualizarPerfil;
+import com.maxcopias.dto.PedidoAdminVista;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.service.ServicioUsuario;
 import com.maxcopias.model.Rol;
 import com.maxcopias.repository.RepositorioCategoria;
 import com.maxcopias.repository.RepositorioUsuario;
+import com.maxcopias.service.ServicioPedidosOperativos;
+import com.maxcopias.model.PedidoCopisteria;
+import com.maxcopias.model.PedidoTienda;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -21,6 +25,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 import com.maxcopias.model.Producto;
 import com.maxcopias.model.Categoria;
@@ -46,12 +52,14 @@ public class ControladorAreaPersonal {
      * Inyecta servicios de usuario/pedidos y repositorio.
      */
     private final ServicioTienda servicioTienda;
+    private final ServicioPedidosOperativos servicioPedidosOperativos;
 
-    public ControladorAreaPersonal(ServicioUsuario userService, RepositorioUsuario userRepository, ServicioTienda servicioTienda, RepositorioCategoria repositorioCategoria) {
+    public ControladorAreaPersonal(ServicioUsuario userService, RepositorioUsuario userRepository, ServicioTienda servicioTienda, RepositorioCategoria repositorioCategoria, ServicioPedidosOperativos servicioPedidosOperativos) {
         this.repositorioCategoria = repositorioCategoria;
         this.userService = userService;
         this.userRepository = userRepository;
         this.servicioTienda = servicioTienda;
+        this.servicioPedidosOperativos = servicioPedidosOperativos;
     }
 
     /**
@@ -156,6 +164,65 @@ public class ControladorAreaPersonal {
     @ResponseBody
     public List<Categoria> getCategoriasApi() {
         return servicioTienda.obtenerTodasCategorias();
+    }
+
+    @GetMapping("/admin/api/pedidos")
+    @ResponseBody
+    public List<PedidoAdminVista> getPedidosApi() {
+        List<PedidoAdminVista> pedidos = new ArrayList<>();
+
+        for (PedidoCopisteria p : servicioPedidosOperativos.obtenerPedidosCopisteriaConUsuario()) {
+            pedidos.add(new PedidoAdminVista(
+                p.getId(),
+                "Copistería",
+                p.getCustomerName(),
+                p.getEmail(),
+                p.getPhone(),
+                p.getEstado() != null ? p.getEstado().name() : null,
+                p.getFechaCreacion(),
+                p.getPrecio(),
+                p.getTrabajo() != null ? p.getTrabajo().name() : null,
+                p.getCopias(),
+                p.getColor() != null ? p.getColor().name() : null,
+                p.getTamano() != null ? p.getTamano().name() : null,
+                p.getCaras() != null ? p.getCaras().name() : null,
+                p.getPapel() != null ? p.getPapel().name() : null,
+                p.getEncuadernacion() != null ? p.getEncuadernacion().name() : null,
+                p.getExtras(),
+                p.getRutaArchivo(),
+                p.getCodigoRecoger(),
+                null,
+                p.getUsuario() != null ? p.getUsuario().getFullName() : null
+            ));
+        }
+
+        for (PedidoTienda p : servicioPedidosOperativos.obtenerPedidosTienda()) {
+            pedidos.add(new PedidoAdminVista(
+                p.getId(),
+                "Tienda",
+                p.getClienteNombre(),
+                p.getEmail(),
+                p.getTelefono(),
+                p.getEstado() != null ? p.getEstado().name() : null,
+                p.getFechaCreacion(),
+                p.getTotal(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                p.getResumenProductos(),
+                null
+            ));
+        }
+
+        pedidos.sort(Comparator.comparing(PedidoAdminVista::fechaCreacion, Comparator.nullsLast(Comparator.reverseOrder())));
+        return pedidos;
     }
 
     @GetMapping("/admin/crear-categoria")
