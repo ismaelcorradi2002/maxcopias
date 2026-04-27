@@ -31,7 +31,7 @@
                             </label>
                             <label>
                                 <span>Estado</span>
-                                <select data-worker-status="copisteria" class="worker-select">
+                                <select data-worker-status="copisteria" class="worker-select select-modern">
                                     <option value="">Todos los estados</option>
                                     <option th:each="estado : ${estadosCopisteria}" th:value="${estado.name()}" th:text="${estado.label}">Pendiente</option>
                                 </select>
@@ -46,38 +46,50 @@
                             <table class="worker-table" data-worker-table="copisteria" data-worker-paginated="true">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th class="worker-col-id">ID</th>
                                     <th>Cliente</th>
                                     <th>Contacto</th>
-                                    <th>Trabajo</th>
-                                    <th>Archivo</th>
-                                    <th>Codigo</th>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
+                                    <th class="worker-col-job">Trabajo</th>
+                                    <th class="worker-col-file">Archivo</th>
+                                    <th class="worker-col-code">Codigo</th>
+                                    <th class="worker-col-date">Fecha</th>
+                                    <th class="worker-col-status">Estado</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="pedido : ${pedidosCopisteria}" th:data-status="${pedido.estado.name()}"
                                     th:data-date="${#temporals.format(pedido.fechaCreacion, 'yyyy-MM-dd')}">
-                                    <td th:text="${pedido.id}">1</td>
+                                    <td class="worker-col-id" th:text="${pedido.id}">1</td>
                                     <td th:text="${pedido.customerName}">Cliente</td>
-                                    <td>
-                                        <span th:text="${pedido.email}">email</span>
+                                    <td class="worker-col-contact">
+                                        <span class="worker-cell-ellipsis" th:text="${pedido.email}">email</span>
                                         <small th:text="${pedido.phone}">telefono</small>
                                     </td>
-                                    <td>
-                                        <span th:text="${pedido.trabajo}">IMPRESION</span>
-                                        <small th:text="${pedido.copias + ' copias · ' + pedido.tamano}">1 copia A4</small>
+                                    <td class="worker-col-job">
+                                        <span class="worker-cell-title" th:text="${pedido.trabajo}">IMPRESION</span>
+                                        <small th:text="${pedido.paperSize != null ? pedido.copias + ' copias · ' + pedido.paperSize.label : pedido.copias + ' copias'}">1 copia A4</small>
                                     </td>
-                                    <td>
-                                        <span th:text="${pedido.rutaArchivo != null ? pedido.rutaArchivo : 'Sin archivo'}">archivo.pdf</span>
+                                    <td class="worker-col-file">
+                                        <span th:if="${pedido.rutaArchivo == null}" class="worker-col-short">Sin archivo</span>
+                                        <div th:if="${pedido.rutaArchivo != null}" class="worker-file-actions">
+                                            <a class="button button-secondary-dark worker-file-button"
+                                               th:href="@{/pedidos/copisteria/{id}/archivo(id=${pedido.id})}"
+                                               target="_blank"
+                                               rel="noopener noreferrer">
+                                                Imprimir
+                                            </a>
+                                            <a class="button button-primary worker-file-button"
+                                               th:href="@{/pedidos/copisteria/{id}/archivo(id=${pedido.id},download=true)}">
+                                                Descargar
+                                            </a>
+                                        </div>
                                     </td>
-                                    <td><strong th:text="${pedido.codigoRecoger}">ABC123</strong></td>
-                                    <td th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
-                                    <td>
+                                    <td class="worker-col-code"><strong th:text="${pedido.codigoRecoger}">ABC123</strong></td>
+                                    <td class="worker-col-date" th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                                    <td class="worker-col-status">
                                         <form th:action="@{/worker/copisteria/{id}/estado(id=${pedido.id})}" method="post" class="worker-status-form">
                                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                            <select name="estado" class="worker-select" onchange="this.form.submit()">
+                                            <select name="estado" class="worker-select select-modern" onchange="this.form.submit()">
                                                 <option th:each="estado : ${estadosCopisteria}"
                                                         th:value="${estado.name()}"
                                                         th:text="${estado.label}"

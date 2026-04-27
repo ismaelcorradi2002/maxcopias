@@ -190,8 +190,7 @@
 
 .table-container {
     width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: visible;
     border: 1px solid rgba(93, 187, 255, 0.16);
     border-radius: 22px;
     background: rgba(255, 255, 255, 0.82);
@@ -261,9 +260,11 @@
     color: #21344f;
     text-align: left;
     vertical-align: middle;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
 }
 
 .admin-users-table th,
@@ -297,7 +298,7 @@
 .admin-categories-table,
 .admin-orders-table {
     width: 100%;
-    min-width: 1080px;
+    min-width: 0;
     table-layout: auto;
 }
 
@@ -325,37 +326,34 @@
 .admin-products-table-region,
 .admin-categories-table-region,
 .admin-orders-table-region {
-    min-width: 1080px;
+    min-width: 0;
 }
 
 .admin-orders-table-region {
-    min-width: 2400px;
+    min-width: 0;
 }
 
 .admin-orders-table {
-    min-width: 2400px;
+    min-width: 0;
 }
 
 .admin-orders-table th,
 .admin-orders-table td {
     width: auto;
-    min-width: 90px;
-    max-width: 280px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    min-width: 0;
+    max-width: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 .admin-orders-table th:nth-child(1),
 .admin-orders-table td:nth-child(1) {
     width: 60px;
-    min-width: 60px;
 }
 
 .admin-orders-table th:nth-child(2),
 .admin-orders-table td:nth-child(2) {
     width: 110px;
-    min-width: 110px;
 }
 
 .admin-orders-table th:nth-child(3),
@@ -363,26 +361,22 @@
 .admin-orders-table th:nth-child(4),
 .admin-orders-table td:nth-child(4) {
     width: 180px;
-    min-width: 180px;
     max-width: 220px;
 }
 
 .admin-orders-table th:nth-child(5),
 .admin-orders-table td:nth-child(5) {
     width: 130px;
-    min-width: 130px;
 }
 
 .admin-orders-table th:nth-child(6),
 .admin-orders-table td:nth-child(6) {
     width: 140px;
-    min-width: 140px;
 }
 
 .admin-orders-table th:nth-child(7),
 .admin-orders-table td:nth-child(7) {
     width: 150px;
-    min-width: 150px;
 }
 
 .admin-product-search,
@@ -691,7 +685,7 @@
 
 .admin-products-table th:nth-child(5),
 .admin-products-table td:nth-child(5) {
-    min-width: 240px;
+    min-width: 0;
 }
 
 .admin-products-table th:nth-child(6),
@@ -710,7 +704,7 @@
     color: #4f6178;
     line-height: 1.55;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
 }
 
 .admin-categories-table th:nth-child(1),
@@ -725,7 +719,7 @@
 
 .admin-categories-table th:nth-child(3),
 .admin-categories-table td:nth-child(3) {
-    min-width: 430px;
+    min-width: 0;
 }
 
 .admin-categories-table th:nth-child(4),
@@ -744,7 +738,7 @@
     color: #4f6178;
     line-height: 1.55;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
 }
 
 .admin-delete-btn {
@@ -780,9 +774,47 @@
 .admin-cell-name,
 .admin-cell-email {
     text-align: left;
+}
+
+.admin-col-id,
+.admin-col-phone,
+.admin-col-role,
+.admin-col-date,
+.admin-col-status,
+.admin-col-code,
+.admin-col-price,
+.admin-col-count,
+.admin-col-short,
+.admin-col-job,
+.admin-col-actions {
     white-space: nowrap;
-    word-break: normal;
     overflow-wrap: normal;
+    word-break: normal;
+}
+
+.admin-col-name,
+.admin-col-email {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-col-description,
+.admin-col-summary {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+.admin-col-file {
+    min-width: 172px;
+}
+
+.admin-products-table td,
+.admin-categories-table td,
+.admin-orders-table td {
+    line-height: 1.45;
 }
 
 .admin-cell-ellipsis {
@@ -790,6 +822,32 @@
     min-width: 0;
     overflow: visible;
     text-overflow: clip;
+    white-space: nowrap;
+}
+
+.admin-order-file-cell {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+}
+
+.admin-order-file-cell strong {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-order-file-cell div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.admin-order-file-cell a,
+.admin-action-cell .button,
+.admin-action-cell .button-small,
+.admin-role-trigger {
     white-space: nowrap;
 }
 
@@ -1199,7 +1257,18 @@
 }
 
 @media (max-width: 900px) {
+    .table-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
     .admin-table {
+        min-width: 860px;
+    }
+
+    .admin-products-table-region,
+    .admin-categories-table-region,
+    .admin-orders-table-region {
         min-width: 860px;
     }
 }

@@ -18,24 +18,20 @@ import com.maxcopias.model.PedidoCopisteria;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.model.DatosArchivoGuardado;
 import com.maxcopias.repository.RepositorioPedidoCopisteria;
+import com.maxcopias.service.ExcepcionAlmacenamientoArchivos;
 import com.maxcopias.service.ServicioAlmacenamientoArchivos;
 import com.maxcopias.service.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.http.ResponseEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import com.maxcopias.dto.RespuestaVistaPreviaPrecioCopisteria;
 import com.maxcopias.model.EstimacionPrecioCopisteria;
 import com.maxcopias.model.LineaPrecioCopisteria;
-import java.util.ArrayList;
 import java.math.RoundingMode;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/copisteria")
@@ -83,8 +79,8 @@ public class ControllerPedidos {
         model.addAttribute("bindingTypes", TipoEncuadernacion.values());
         
         // Static preview and config
-        model.addAttribute("acceptedFormats", "PDF, JPG, JPEG, PNG");
-        model.addAttribute("maxFileSizeLabel", "15 MB");
+        model.addAttribute("acceptedFormats", "PDF, DOC, DOCX, JPG, JPEG, PNG");
+        model.addAttribute("maxFileSizeLabel", "20 MB");
         
         // Empty price preview (will be populated by JS/service)
         model.addAttribute("pricePreview", new com.maxcopias.model.EstimacionPrecioCopisteria(
@@ -101,7 +97,7 @@ public class ControllerPedidos {
     public String procesarPedido(
             @Valid @ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm,
             BindingResult result,
-            @RequestParam(value = "files", required = false) MultipartFile[] files,
+            @RequestParam(value = "archivo", required = false) MultipartFile archivo,
             Model model) {
         
         if (result.hasErrors()) {
@@ -158,18 +154,69 @@ public class ControllerPedidos {
         Usuario usuario = userService.findRequiredByEmail(username);
         pedido.setUsuario(usuario);
 
-        PedidoCopisteria savedPedido = pedidoRepository.save(pedido);
+        if (archivo == null || archivo.isEmpty()) {
+            result.reject("archivo.required", "Debes adjuntar un archivo valido para guardar el pedido.");
+            formulario(orderForm, model);
+            return "copisteria/formulario";
+        }
 
-        return "redirect:/";
+        PedidoCopisteria savedPedido = null;
+        try {
+            pedido.setCodigoRecoger(generarCodigoRecogerUnico());
+            savedPedido = pedidoRepository.saveAndFlush(pedido);
+            DatosArchivoGuardado archivoGuardado = storageService.storeOrderFile(archivo, savedPedido.getCodigoRecoger());
+            savedPedido.setRutaArchivo(archivoGuardado.getRelativePath());
+            pedidoRepository.saveAndFlush(savedPedido);
+        } catch (ExcepcionAlmacenamientoArchivos exception) {
+            if (savedPedido != null && savedPedido.getId() != null) {
+                pedidoRepository.deleteById(savedPedido.getId());
+            }
+            result.reject("archivo.invalid", exception.getMessage());
+            formulario(orderForm, model);
+            return "copisteria/formulario";
+        }
+
+        return "redirect:/copisteria/resumen?id=" + savedPedido.getId();
     }
 
     @GetMapping("/resumen")
     public String resumen(@RequestParam Long id, Model model) {
         PedidoCopisteria pedido = pedidoRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
-        model.addAttribute("order", pedido);
-        model.addAttribute("priceEstimate", new EstimacionPrecioCopisteria(BigDecimal.ZERO, "Orientativo", "Resumen pedido guardado", 0, 0));
-        return "copisteria/resumen";
+        model.addAttribute("pedidoId", pedido.getId());
+        model.addAttribute("pickupCode", pedido.getPickupCode());
+        model.addAttribute("formattedEstimatedPrice", pedido.getFormattedEstimatedPrice());
+        model.addAttribute("formattedCreatedAt", pedido.getFormattedCreatedAt());
+        model.addAttribute("fileCount", pedido.getFileCount());
+        model.addAttribute("totalPageCount", pedido.getTotalPageCount());
+        model.addAttribute("estadoLabel", pedido.getStatus() != null ? pedido.getStatus().getLabel() : "Sin estado");
+        model.addAttribute("trabajoLabel", pedido.getJobType() != null ? pedido.getJobType().getLabel() : "Sin tipo");
+        model.addAttribute("customerName", pedido.getCustomerName());
+        model.addAttribute("phone", pedido.getPhone());
+        model.addAttribute("email", pedido.getEmail());
+        model.addAttribute("colorLabel", pedido.getColorMode() != null ? pedido.getColorMode().getLabel() : null);
+        model.addAttribute("paperSizeLabel", pedido.getPaperSize() != null ? pedido.getPaperSize().getLabel() : null);
+        model.addAttribute("copies", pedido.getCopias());
+        model.addAttribute("printSideLabel", pedido.getPrintSide() != null ? pedido.getPrintSide().getLabel() : null);
+        model.addAttribute("paperTypeLabel", pedido.getPaperType() != null ? pedido.getPaperType().getLabel() : null);
+        model.addAttribute("bindingLabel", pedido.getBindingType() != null && !pedido.getBindingType().isNone() ? pedido.getBindingType().getLabel() : null);
+        model.addAttribute("extrasSummary", pedido.getExtrasSummary());
+        model.addAttribute("observations", pedido.getObservationsOrDefault());
+        model.addAttribute("priceBreakdown", pedido.getPriceBreakdownOrDefault());
+        model.addAttribute("rutaArchivo", pedido.getRutaArchivo());
+        model.addAttribute("nombreArchivo", pedido.getNombreArchivo());
+        model.addAttribute("tamanoArchivoFormateado", pedido.getTamanoArchivoFormateado());
+        model.addAttribute("archivoVerUrl", "/pedidos/copisteria/" + pedido.getId() + "/archivo");
+        model.addAttribute("archivoDescargaUrl", "/pedidos/copisteria/" + pedido.getId() + "/archivo?download=true");
+        return "copisteria/resumen-simple";
+    }
+
+    private String generarCodigoRecogerUnico() {
+        String codigo;
+        do {
+            codigo = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+        } while (pedidoRepository.existsByCodigoRecoger(codigo));
+        return codigo;
     }
 
     @GetMapping("/mis-pedidos")
@@ -182,7 +229,7 @@ public class ControllerPedidos {
     @ResponseBody
     public RespuestaVistaPreviaPrecioCopisteria precioOrientativo(
             HttpServletRequest request,
-            @RequestParam(value = "files", required = false) MultipartFile[] files) {
+            @RequestParam(value = "archivo", required = false) MultipartFile[] files) {
         
         try {
             // Parse form fields

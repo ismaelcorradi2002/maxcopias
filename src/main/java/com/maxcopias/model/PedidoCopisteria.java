@@ -2,7 +2,9 @@ package com.maxcopias.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -37,7 +39,7 @@ public class PedidoCopisteria {
     private ModoColor color;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tamaño")
+    @Column(name = "tama\u00f1o")
     private TamanoPapel tamano;
 
     @Enumerated(EnumType.STRING)
@@ -53,7 +55,7 @@ public class PedidoCopisteria {
     private TipoEncuadernacion encuadernacion;
 
     @Column(columnDefinition = "TEXT")
-    private String extras;  // JSON or comma-separated: plastificado, urgente, etc.
+    private String extras;
 
     @Column(name = "ruta_archivo", length = 500)
     private String rutaArchivo;
@@ -85,7 +87,6 @@ public class PedidoCopisteria {
         }
     }
 
-    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -140,7 +141,6 @@ public class PedidoCopisteria {
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    // Helper aliases for Thymeleaf templates
     public EstadoPedidoCopisteria getStatus() { return estado; }
     public TipoTrabajo getJobType() { return trabajo; }
     public ModoColor getColorMode() { return color; }
@@ -154,7 +154,7 @@ public class PedidoCopisteria {
         if (precio == null) {
             return "0,00 EUR";
         }
-        return String.format(java.util.Locale.forLanguageTag("es-ES"), "%.2f EUR", precio);
+        return String.format(Locale.forLanguageTag("es-ES"), "%.2f EUR", precio);
     }
 
     public String getPriceBreakdownOrDefault() {
@@ -194,11 +194,22 @@ public class PedidoCopisteria {
         if (rutaArchivo == null || rutaArchivo.isBlank()) {
             return 0;
         }
-        return 1; // simplistic; could parse stored files if needed
+        return 1;
+    }
+
+    public String getNombreArchivo() {
+        if (rutaArchivo == null || rutaArchivo.isBlank()) {
+            return null;
+        }
+        return Path.of(rutaArchivo).getFileName().toString();
+    }
+
+    public String getTamanoArchivoFormateado() {
+        return null;
     }
 
     public int getTotalPageCount() {
-        return 0; // not tracked separately without file inspection service
+        return 0;
     }
 
     public String getExtrasSummary() {
@@ -215,4 +226,3 @@ public class PedidoCopisteria {
         return extras;
     }
 }
-

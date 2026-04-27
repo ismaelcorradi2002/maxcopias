@@ -33,7 +33,6 @@ import com.maxcopias.model.Categoria;
 import java.math.BigDecimal;
 import com.maxcopias.service.ServicioTienda;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.http.HttpStatus;
 import java.util.Map;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -189,7 +188,9 @@ public class ControladorAreaPersonal {
                 p.getPapel() != null ? p.getPapel().name() : null,
                 p.getEncuadernacion() != null ? p.getEncuadernacion().name() : null,
                 p.getExtras(),
+                p.getNombreArchivo(),
                 p.getRutaArchivo(),
+                p.getRutaArchivo() != null ? "/pedidos/copisteria/" + p.getId() + "/archivo" : null,
                 p.getCodigoRecoger(),
                 null,
                 p.getUsuario() != null ? p.getUsuario().getFullName() : null
@@ -206,6 +207,8 @@ public class ControladorAreaPersonal {
                 p.getEstado() != null ? p.getEstado().name() : null,
                 p.getFechaCreacion(),
                 p.getTotal(),
+                null,
+                null,
                 null,
                 null,
                 null,

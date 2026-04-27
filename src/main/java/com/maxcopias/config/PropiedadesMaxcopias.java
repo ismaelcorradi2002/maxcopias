@@ -24,10 +24,10 @@ public class PropiedadesMaxcopias {
     private int maxFiles = 5;
 
     @NotNull
-    private DataSize maxFileSize = DataSize.ofMegabytes(15);
+    private DataSize maxFileSize = DataSize.ofMegabytes(20);
 
     @NotEmpty
-    private List<String> allowedExtensions = new ArrayList<>(List.of("pdf", "jpg", "jpeg", "png"));
+    private List<String> allowedExtensions = new ArrayList<>(List.of("pdf", "doc", "docx", "jpg", "jpeg", "png"));
 
     @NotNull
     private Mail mail = new Mail();

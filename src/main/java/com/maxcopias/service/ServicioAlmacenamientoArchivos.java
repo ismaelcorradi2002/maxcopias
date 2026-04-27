@@ -78,6 +78,26 @@ public class ServicioAlmacenamientoArchivos {
         }
     }
 
+    public DatosArchivoGuardado storeOrderFile(MultipartFile file, String reference) {
+        List<DatosArchivoGuardado> storedFiles = storeFiles(file == null ? List.of() : List.of(file), reference);
+        return storedFiles.get(0);
+    }
+
+    public Path resolveStoredPath(String relativePath) {
+        if (!StringUtils.hasText(relativePath)) {
+            throw new ExcepcionAlmacenamientoArchivos("El pedido no tiene archivo asociado.");
+        }
+
+        Path uploadRoot = Path.of(properties.getUploadDir()).toAbsolutePath().normalize();
+        Path resolvedPath = uploadRoot.resolve(relativePath).normalize();
+
+        if (!resolvedPath.startsWith(uploadRoot)) {
+            throw new ExcepcionAlmacenamientoArchivos("La ruta del archivo no es valida.");
+        }
+
+        return resolvedPath;
+    }
+
     private String buildStoredFilename(int index, String originalFilename) {
         String extension = extractExtension(originalFilename);
         String baseName = StringUtils.stripFilenameExtension(originalFilename);

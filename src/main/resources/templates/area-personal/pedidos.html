@@ -106,21 +106,22 @@
                                     </li>
                                     <li>
                                         <span>Paginas detectadas</span>
-                                        <strong th:text="${order.totalPageCount} + ' pagina(s)'">6 pagina(s)</strong>
+                                        <strong th:text="${order.totalPageCount} + ' pagina(s)'">0 pagina(s)</strong>
                                     </li>
                                 </ul>
                             </div>
 
                             <div class="order-history-panel">
                                 <strong>Archivos enviados</strong>
-                                <ul class="order-history-files">
-                                    <li th:each="file : ${order.files}">
+                                <ul class="order-history-files" th:if="${order.rutaArchivo != null}">
+                                    <li>
                                         <div>
-                                            <strong th:text="${file.originalFilename}">documento.pdf</strong>
-                                            <span th:text="${file.readableSize + ' • ' + file.pageCountLabel}">1.2 MB • 3 paginas</span>
+                                            <strong th:text="${order.nombreArchivo}">documento.pdf</strong>
+                                            <span th:text="${order.tamanoArchivoFormateado != null ? order.tamanoArchivoFormateado : 'Tamano no disponible'}">1.2 MB</span>
                                         </div>
                                     </li>
                                 </ul>
+                                <p th:if="${order.rutaArchivo == null}">Sin archivo</p>
                             </div>
                         </div>
 
@@ -130,9 +131,9 @@
                                 <span th:text="${order.observationsOrDefault}">Sin observaciones.</span>
                             </p>
                             <p class="order-history-price-note" th:text="${order.priceBreakdownOrDefault}">
-                                2 archivo(s) x 3 copia(s) • Blanco y negro • A4 • Una cara
+                                Blanco y negro • A4 • Una cara
                             </p>
-                            <a th:href="@{/copisteria/resumen/{pickupCode}(pickupCode=${order.pickupCode})}" class="button button-outline-dark">
+                            <a th:href="@{/copisteria/resumen(id=${order.id})}" class="button button-outline-dark">
                                 Ver detalle del pedido
                             </a>
                         </div>

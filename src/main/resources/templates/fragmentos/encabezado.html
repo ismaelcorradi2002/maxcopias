@@ -6,8 +6,7 @@
     <meta name="description" content="Maxcopias: copisteria online y tienda de papeleria con recogida en tienda.">
     <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}">
     <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}">
-    <meta name="_csrf_parameter" th:content="${_csrf.parameterName}">
-    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta th:if="${_csrf != null}" name="_csrf_parameter" th:content="${_csrf.parameterName}">
     <title th:text="${pageTitle}">Maxcopias</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

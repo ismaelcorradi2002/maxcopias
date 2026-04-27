@@ -63,10 +63,6 @@ public class ServicioInspeccionArchivos {
 
             String extension = extractExtension(originalFilename);
             if (!allowedExtensions.contains(extension)) {
-                if ("doc".equals(extension) || "docx".equals(extension)) {
-                    throw new ExcepcionAlmacenamientoArchivos("No admitimos archivos Word en este formulario. Exporta el documento a PDF para calcular correctamente las paginas y el precio.");
-                }
-
                 throw new ExcepcionAlmacenamientoArchivos("El archivo " + originalFilename + " no tiene un formato permitido.");
             }
 

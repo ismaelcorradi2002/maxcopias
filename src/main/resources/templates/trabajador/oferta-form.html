@@ -65,7 +65,7 @@
                                 </label>
                                 <label>
                                     <span>Filtrar categoria</span>
-                                    <select class="worker-select" data-product-offer-category>
+                                    <select class="worker-select select-modern" data-product-offer-category>
                                         <option value="">Todas las categorias</option>
                                         <option th:each="categoria : ${categorias}" th:value="${categoria.nombre}" th:text="${categoria.nombre}">Escolar</option>
                                     </select>
@@ -94,7 +94,7 @@
                             <h2>Categoria asociada</h2>
                             <label>
                                 <span>Categoria</span>
-                                <select name="categoriaId" class="worker-select" data-category-offer-select>
+                                <select name="categoriaId" class="worker-select select-modern" data-category-offer-select>
                                     <option value="">Seleccionar categoria</option>
                                     <option th:each="categoria : ${categorias}"
                                             th:value="${categoria.id}"

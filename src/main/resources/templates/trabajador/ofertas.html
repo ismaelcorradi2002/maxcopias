@@ -36,43 +36,43 @@
                             <table class="worker-table" data-worker-table="ofertas" data-worker-paginated="true">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th class="worker-col-id">ID</th>
                                     <th>Titulo</th>
-                                    <th>Tipo</th>
+                                    <th class="worker-col-short">Tipo</th>
                                     <th>Destino</th>
-                                    <th>Descuento</th>
-                                    <th>Estado</th>
-                                    <th>Principal</th>
-                                    <th>Acciones</th>
+                                    <th class="worker-col-price">Descuento</th>
+                                    <th class="worker-col-status">Estado</th>
+                                    <th class="worker-col-status">Principal</th>
+                                    <th class="worker-col-actions">Acciones</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="oferta : ${ofertas}">
-                                    <td th:text="${oferta.id}">1</td>
+                                    <td class="worker-col-id" th:text="${oferta.id}">1</td>
                                     <td>
                                         <span th:text="${oferta.titulo}">Oferta</span>
                                         <small th:text="${oferta.descripcion}">Descripcion</small>
                                     </td>
-                                    <td th:text="${oferta.tipoOferta.label}">Global</td>
+                                    <td class="worker-col-short" th:text="${oferta.tipoOferta.label}">Global</td>
                                     <td>
                                         <span th:if="${oferta.tipoOferta.name() == 'PRODUCTO' and oferta.productos != null and oferta.productos.size() > 0}" th:text="${oferta.productos.size() + ' productos'}">Productos</span>
                                         <span th:if="${oferta.tipoOferta.name() == 'PRODUCTO' and (oferta.productos == null or oferta.productos.size() == 0) and oferta.producto != null}" th:text="${oferta.producto.nombre}">Producto</span>
                                         <span th:if="${oferta.tipoOferta.name() == 'CATEGORIA' and oferta.categoria != null}" th:text="${oferta.categoria.nombre}">Categoria</span>
                                         <span th:if="${oferta.tipoOferta.name() == 'GLOBAL'}">Toda la tienda</span>
                                     </td>
-                                    <td th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</td>
-                                    <td>
+                                    <td class="worker-col-price" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</td>
+                                    <td class="worker-col-status">
                                         <span class="worker-status-pill" th:classappend="${oferta.activa} ? ' is-active' : ' is-inactive'"
                                               th:text="${oferta.activa} ? 'Activa' : 'Inactiva'">Activa</span>
                                     </td>
-                                    <td>
+                                    <td class="worker-col-status">
                                         <span class="worker-status-pill is-main" th:if="${oferta.principal}">Principal</span>
                                         <form th:if="${!oferta.principal}" th:action="@{/worker/ofertas/{id}/principal(id=${oferta.id})}" method="post" class="inline-form">
                                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                             <button class="button button-small button-outline" type="submit">Marcar principal</button>
                                         </form>
                                     </td>
-                                    <td class="worker-actions-cell">
+                                    <td class="worker-actions-cell worker-col-actions">
                                         <a class="button button-small button-outline" th:href="@{/worker/ofertas/{id}/editar(id=${oferta.id})}">Editar</a>
                                         <form th:action="@{/worker/ofertas/{id}/activa(id=${oferta.id})}" method="post" class="inline-form">
                                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

@@ -318,7 +318,7 @@
 }
 
 .worker-table-wrap {
-    overflow-x: auto;
+    overflow: visible;
     border: 1px solid rgba(108, 198, 255, 0.18);
     border-radius: 22px;
     background: #ffffff;
@@ -327,7 +327,8 @@
 .worker-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 980px;
+    min-width: 0;
+    table-layout: auto;
 }
 
 .worker-table th,
@@ -337,6 +338,9 @@
     color: #334155;
     text-align: left;
     vertical-align: middle;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
 }
 
 .worker-table th {
@@ -362,6 +366,61 @@
     color: #708299;
     font-weight: 700;
     line-height: 1.45;
+}
+
+.worker-col-id,
+.worker-col-code,
+.worker-col-date,
+.worker-col-status,
+.worker-col-price,
+.worker-col-count,
+.worker-col-short,
+.worker-col-file,
+.worker-col-job {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.worker-col-contact {
+    width: 240px;
+    max-width: 240px;
+}
+
+.worker-cell-ellipsis {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.worker-cell-title {
+    white-space: nowrap;
+}
+
+.worker-col-contact small,
+.worker-file-button,
+.worker-actions-cell .button,
+.worker-actions-cell .inline-form,
+.worker-actions-cell form,
+.worker-status-form,
+.worker-status-pill {
+    white-space: nowrap;
+}
+
+.worker-file-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.worker-file-button {
+    justify-content: center;
+    width: 100%;
+    padding: 0.7rem 0.95rem;
+    font-size: 0.88rem;
 }
 
 .worker-status-pill {
@@ -391,10 +450,11 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    align-items: center;
 }
 
 .worker-status-form {
-    min-width: 190px;
+    min-width: 0;
 }
 
 .worker-empty {
@@ -443,6 +503,17 @@
 
 .worker-form textarea {
     resize: vertical;
+}
+
+@media (max-width: 900px) {
+    .worker-table-wrap {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .worker-table {
+        min-width: 900px;
+    }
 }
 
 .worker-form-grid {

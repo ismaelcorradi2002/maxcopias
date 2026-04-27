@@ -39,7 +39,7 @@ public class ConfiguracionSeguridad {
                 ).hasAnyRole("ADMIN", "WORKER")
                 .requestMatchers("/worker/**").hasAnyRole("WORKER", "ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria", "/copisteria/**").hasAnyRole("USER", "ADMIN", "WORKER")
+                .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria", "/copisteria/**", "/pedidos/copisteria/**").hasAnyRole("USER", "ADMIN", "WORKER")
                 .anyRequest().authenticated()
             )
             // Configura login y logout

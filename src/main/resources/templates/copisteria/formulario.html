@@ -175,13 +175,18 @@
 
                             <div class="wizard-number-card">
                                 <label for="copies">Numero de copias</label>
-                                <input
-                                    id="copies"
-                                    type="number"
-                                    min="1"
-                                    max="5000"
-                                    th:field="*{copies}"
-                                    th:classappend="${#fields.hasErrors('copies')} ? 'is-invalid'">
+                                <div class="wizard-quantity-picker" data-quantity-picker>
+                                    <button type="button" class="wizard-quantity-button" data-quantity-action="decrease" aria-label="Restar una copia">-</button>
+                                    <input
+                                        id="copies"
+                                        type="number"
+                                        min="1"
+                                        max="5000"
+                                        th:field="*{copies}"
+                                        inputmode="numeric"
+                                        th:classappend="${#fields.hasErrors('copies')} ? 'is-invalid'">
+                                    <button type="button" class="wizard-quantity-button" data-quantity-action="increase" aria-label="Sumar una copia">+</button>
+                                </div>
                                 <small>Puedes poner desde 1 hasta 5000 copias.</small>
                                 <small class="field-error" th:if="${#fields.hasErrors('copies')}" th:errors="*{copies}"></small>
                             </div>
@@ -315,16 +320,15 @@
                                 <div class="file-dropzone wizard-dropzone">
                                     <input
                                         id="files"
-                                        name="files"
+                                        name="archivo"
                                         type="file"
-                                        multiple
-                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                                         data-file-input>
                                     <div class="file-dropzone-copy wizard-dropzone-copy">
                                         <span class="wizard-dropzone-icon">+</span>
                                         <strong data-upload-dropzone-title>Sube los archivos del pedido</strong>
                                         <p data-upload-dropzone-description>
-                                            Para documentos, usa PDF. Para imagenes, puedes subir JPG o PNG.
+                                            Puedes subir PDF, DOC, DOCX, JPG o PNG.
                                         </p>
                                     </div>
                                 </div>
@@ -335,6 +339,7 @@
                                     Formatos permitidos: PDF, JPG, PNG | Maximo 15 MB por archivo.
                                 </p>
                                 <small class="field-error" data-files-error hidden>Adjunta al menos un archivo antes de pasar al resumen.</small>
+                                <small class="field-error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></small>
                                 <ul class="selected-files" data-file-list></ul>
                             </div>
 

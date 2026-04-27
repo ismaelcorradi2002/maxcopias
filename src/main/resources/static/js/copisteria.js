@@ -33,6 +33,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
     const nextButtons = Array.from(form.querySelectorAll("[data-step-next]"));
     const prevButtons = Array.from(form.querySelectorAll("[data-step-prev]"));
     const copiesInput = form.querySelector("#copies");
+    const quantityButtons = Array.from(form.querySelectorAll("[data-quantity-action]"));
     const listeners = [];
     let currentIndex = 0;
 
@@ -243,6 +244,25 @@ function createWizardController(form, fileInput, fileHint, filesError) {
 
         prevButtons.forEach(function (button) {
             button.addEventListener("click", goPrev);
+        });
+
+        quantityButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                if (!copiesInput) {
+                    return;
+                }
+
+                const min = Number.parseInt(copiesInput.min || "1", 10);
+                const max = Number.parseInt(copiesInput.max || "5000", 10);
+                const currentValue = Number.parseInt(copiesInput.value || String(min), 10);
+                const safeValue = Number.isFinite(currentValue) ? currentValue : min;
+                const delta = this.dataset.quantityAction === "increase" ? 1 : -1;
+                const nextValue = Math.min(max, Math.max(min, safeValue + delta));
+
+                copiesInput.value = String(nextValue);
+                copiesInput.dispatchEvent(new Event("input", { bubbles: true }));
+                copiesInput.dispatchEvent(new Event("change", { bubbles: true }));
+            });
         });
 
         progressItems.forEach(function (item) {
@@ -485,7 +505,7 @@ function createPricePreviewController(form, priceEstimator, fileInput, fileList,
         }
 
         Array.from(fileInput.files || []).forEach(function (file) {
-            formData.append("files", file);
+            formData.append("archivo", file);
         });
 
         const headers = {};
@@ -786,11 +806,11 @@ function renderSelectedFiles(fileInput, fileList, fileHint) {
     if (invalidFiles.length) {
         fileInput.value = "";
         fileHint.classList.add("is-error");
-        fileHint.textContent = "No se admiten archivos Word en este formulario. Sube PDF, JPG o PNG. Para documentos, exporta antes a PDF.";
+        fileHint.textContent = "Formato no valido. Sube PDF, DOC, DOCX, JPG o PNG.";
         return {
             valid: false,
             fileCount: 0,
-            message: "No se admiten archivos Word en este formulario. Sube PDF, JPG o PNG. Para documentos, exporta antes a PDF."
+            message: "Formato no valido. Sube PDF, DOC, DOCX, JPG o PNG."
         };
     }
 
@@ -1019,7 +1039,7 @@ function buildDetectedFileHint(files, pageCount) {
     }, 0) / (1024 * 1024);
 
     if (!safeFiles.length) {
-        return "Formatos permitidos: PDF, JPG, PNG | Maximo 15 MB por archivo. Para documentos, sube PDF para calcular bien las paginas.";
+        return "Formatos permitidos: PDF, DOC, DOCX, JPG, PNG | Maximo 20 MB por archivo.";
     }
 
     if (pageCount > 0) {
@@ -1039,7 +1059,7 @@ function buildDetectedFileHint(files, pageCount) {
 
 function isAllowedFile(filename) {
     const extension = filename.split(".").pop().toLowerCase();
-    return ["pdf", "jpg", "jpeg", "png"].includes(extension);
+    return ["pdf", "doc", "docx", "jpg", "jpeg", "png"].includes(extension);
 }
 
 function appendIfValue(formData, name, value) {

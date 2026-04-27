@@ -74,14 +74,14 @@ function renderUsersTable(tableContainer, data) {
             <table class="admin-table admin-users-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Telefono</th>
-                    <th>Rol</th>
-                    <th>Creado</th>
-                    <th>Cambiar rol</th>
-                    <th>Eliminar</th>
+                    <th class="admin-col-id">ID</th>
+                    <th class="admin-col-name">Nombre</th>
+                    <th class="admin-col-email">Email</th>
+                    <th class="admin-col-phone">Telefono</th>
+                    <th class="admin-col-role">Rol</th>
+                    <th class="admin-col-date">Creado</th>
+                    <th class="admin-col-actions">Cambiar rol</th>
+                    <th class="admin-col-actions">Eliminar</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,7 +95,7 @@ function renderUsersTable(tableContainer, data) {
                             ${user.email}
                         </td>
                         <td class="admin-cell-phone">${user.phone || ""}</td>
-                        <td class="admin-role-cell"><span class="admin-role-badge">${formatRoleName(user.rol)}</span></td>
+                        <td class="admin-role-cell admin-col-role"><span class="admin-role-badge">${formatRoleName(user.rol)}</span></td>
                         <td class="admin-date-cell">${formatAdminDate(user.createdAt)}</td>
                         <td class="admin-action-cell">
                             <form action="/admin/update-role/${user.id}" method="post" class="admin-role-form" data-current-role="${user.rol}">
@@ -224,21 +224,21 @@ function renderCategoriesTable(tableContainer, data) {
             <table class="admin-table admin-categories-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th># Productos</th>
-                        <th>Eliminar</th>
+                        <th class="admin-col-id">ID</th>
+                        <th class="admin-col-name">Nombre</th>
+                        <th class="admin-col-description">Descripción</th>
+                        <th class="admin-col-count"># Productos</th>
+                        <th class="admin-col-actions">Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${visibleCategories.map(category => `
                         <tr>
-                            <td>${category.id}</td>
-                            <td>${category.nombre}</td>
-                            <td class="admin-category-description" title="${category.descripcion || ''}">${category.descripcion || '-'}</td>
-                            <td>${category.productos ? category.productos.length : 0}</td>
-                            <td>
+                            <td class="admin-col-id">${category.id}</td>
+                            <td class="admin-col-name">${category.nombre}</td>
+                            <td class="admin-category-description admin-col-description" title="${category.descripcion || ''}">${category.descripcion || '-'}</td>
+                            <td class="admin-col-count">${category.productos ? category.productos.length : 0}</td>
+                            <td class="admin-action-cell admin-col-actions">
                                 <button class="button button-small button-outline admin-delete-btn" type="button" data-category-id="${category.id}" data-category-name="${category.nombre}" title="Eliminar categoría">
                                     Eliminar
                                 </button>
@@ -322,29 +322,29 @@ function renderProductsTable(tableContainer, data) {
             <table class="admin-table admin-products-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Categorias</th>
-                    <th>Accion</th>
-                    <th>Eliminar</th>
+                    <th class="admin-col-id">ID</th>
+                    <th class="admin-col-name">Nombre</th>
+                    <th class="admin-col-price">Precio</th>
+                    <th class="admin-col-count">Stock</th>
+                    <th class="admin-col-description">Categorias</th>
+                    <th class="admin-col-actions">Accion</th>
+                    <th class="admin-col-actions">Eliminar</th>
                 </tr>
             </thead>
             <tbody>
                 ${visibleProducts.map(product => `
                     <tr>
-                        <td>${product.id}</td>
-                        <td>${product.nombre}</td>
-                        <td>${product.precio}</td>
-                        <td>${product.stock}</td>
-                        <td class="admin-product-categories">${product.categorias ? product.categorias.map(cat => cat.nombre).join(", ") : ""}</td>
-                        <td>
+                        <td class="admin-col-id">${product.id}</td>
+                        <td class="admin-col-name">${product.nombre}</td>
+                        <td class="admin-col-price">${product.precio}</td>
+                        <td class="admin-col-count">${product.stock}</td>
+                        <td class="admin-product-categories admin-col-description">${product.categorias ? product.categorias.map(cat => cat.nombre).join(", ") : ""}</td>
+                        <td class="admin-action-cell admin-col-actions">
                             <button class="button button-small button-outline" type="button" onclick="window.location.href='/editarstock/${product.id}'">
                                 Editar
                             </button>
                         </td>
-                        <td>
+                        <td class="admin-action-cell admin-col-actions">
                             <button class="button button-small button-outline admin-delete-btn" type="button" data-product-id="${product.id}" title="Eliminar producto">
                                 Eliminar
                             </button>
@@ -403,6 +403,26 @@ function renderOrdersTable(tableContainer, data) {
         return value != null && value !== "" ? value : "-";
     }
 
+    function renderOrderFileCell(order) {
+        if (!order.archivoDescargaUrl) {
+            return "Sin archivo";
+        }
+
+        const archivoNombre = def(order.archivoNombre);
+        const verUrl = order.archivoDescargaUrl;
+        const descargarUrl = order.archivoDescargaUrl + "?download=true";
+
+        return `
+            <div class="admin-order-file-cell">
+                <strong>${archivoNombre}</strong>
+                <div>
+                    <a href="${verUrl}" target="_blank" rel="noopener noreferrer">Ver archivo</a>
+                    <a href="${descargarUrl}">Descargar</a>
+                </div>
+            </div>
+        `;
+    }
+
     tableContainer.innerHTML = `
         <div class="admin-product-toolbar">
             <label class="admin-product-search" for="admin-order-search">
@@ -438,51 +458,51 @@ function renderOrdersTable(tableContainer, data) {
             <table class="admin-table admin-orders-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Tipo</th>
-                    <th>Cliente</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
-                    <th>Total</th>
-                    <th>Trabajo</th>
-                    <th>Copias</th>
-                    <th>Color</th>
-                    <th>Tamaño</th>
-                    <th>Caras</th>
-                    <th>Papel</th>
-                    <th>Encuadernación</th>
-                    <th>Extras</th>
-                    <th>Archivo</th>
-                    <th>Código recoger</th>
-                    <th>Resumen productos</th>
-                    <th>Usuario</th>
+                    <th class="admin-col-id">ID</th>
+                    <th class="admin-col-short">Tipo</th>
+                    <th class="admin-col-name">Cliente</th>
+                    <th class="admin-col-email">Email</th>
+                    <th class="admin-col-phone">Teléfono</th>
+                    <th class="admin-col-status">Estado</th>
+                    <th class="admin-col-date">Fecha</th>
+                    <th class="admin-col-price">Total</th>
+                    <th class="admin-col-job">Trabajo</th>
+                    <th class="admin-col-count">Copias</th>
+                    <th class="admin-col-short">Color</th>
+                    <th class="admin-col-short">Tamaño</th>
+                    <th class="admin-col-short">Caras</th>
+                    <th class="admin-col-short">Papel</th>
+                    <th class="admin-col-short">Encuadernación</th>
+                    <th class="admin-col-description">Extras</th>
+                    <th class="admin-col-file">Archivo</th>
+                    <th class="admin-col-code">Código recoger</th>
+                    <th class="admin-col-summary">Resumen productos</th>
+                    <th class="admin-col-name">Usuario</th>
                 </tr>
             </thead>
             <tbody>
                 ${visibleOrders.map(order => `
                     <tr>
-                        <td>${def(order.id)}</td>
-                        <td>${def(order.tipo)}</td>
+                        <td class="admin-col-id">${def(order.id)}</td>
+                        <td class="admin-col-short">${def(order.tipo)}</td>
                         <td class="admin-cell-name">${def(order.cliente)}</td>
                         <td class="admin-cell-email">${def(order.email)}</td>
                         <td class="admin-cell-phone">${def(order.telefono)}</td>
-                        <td><span class="admin-role-badge">${def(order.estado)}</span></td>
+                        <td class="admin-col-status"><span class="admin-role-badge">${def(order.estado)}</span></td>
                         <td class="admin-date-cell">${formatAdminDate(order.fechaCreacion)}</td>
-                        <td>${order.total != null ? order.total + " EUR" : "-"}</td>
-                        <td>${def(order.trabajo)}</td>
-                        <td>${def(order.copias)}</td>
-                        <td>${def(order.color)}</td>
-                        <td>${def(order.tamano)}</td>
-                        <td>${def(order.caras)}</td>
-                        <td>${def(order.papel)}</td>
-                        <td>${def(order.encuadernacion)}</td>
-                        <td>${def(order.extras)}</td>
-                        <td>${def(order.rutaArchivo)}</td>
-                        <td>${def(order.codigoRecoger)}</td>
-                        <td>${def(order.resumenProductos)}</td>
-                        <td>${def(order.usuarioNombre)}</td>
+                        <td class="admin-col-price">${order.total != null ? order.total + " EUR" : "-"}</td>
+                        <td class="admin-col-job">${def(order.trabajo)}</td>
+                        <td class="admin-col-count">${def(order.copias)}</td>
+                        <td class="admin-col-short">${def(order.color)}</td>
+                        <td class="admin-col-short">${def(order.tamano)}</td>
+                        <td class="admin-col-short">${def(order.caras)}</td>
+                        <td class="admin-col-short">${def(order.papel)}</td>
+                        <td class="admin-col-short">${def(order.encuadernacion)}</td>
+                        <td class="admin-col-description">${def(order.extras)}</td>
+                        <td class="admin-col-file">${renderOrderFileCell(order)}</td>
+                        <td class="admin-col-code">${def(order.codigoRecoger)}</td>
+                        <td class="admin-col-summary">${def(order.resumenProductos)}</td>
+                        <td class="admin-col-name">${def(order.usuarioNombre)}</td>
                     </tr>
                 `).join("")}
             </tbody>

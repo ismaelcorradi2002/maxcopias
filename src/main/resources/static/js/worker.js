@@ -7,8 +7,9 @@ document.addEventListener("DOMContentLoaded", function () {
 function initWorkerTables() {
     document.querySelectorAll("[data-worker-table]").forEach(table => {
         const key = table.dataset.workerTable;
+        const isPaginated = table.dataset.workerPaginated === "true";
         const state = {
-            visibleCount: WORKER_PAGE_SIZE
+            visibleCount: isPaginated ? WORKER_PAGE_SIZE : Number.MAX_SAFE_INTEGER
         };
 
         const controls = getWorkerControls(key);
@@ -34,7 +35,7 @@ function initWorkerTables() {
             });
         });
 
-        renderWorkerTable(table, controls, state);
+        renderWorkerTable(table, controls, state, isPaginated);
     });
 }
 
@@ -47,10 +48,10 @@ function getWorkerControls(key) {
     };
 }
 
-function renderWorkerTable(table, controls, state) {
+function renderWorkerTable(table, controls, state, isPaginated = true) {
     const rows = Array.from(table.querySelectorAll("tbody tr"));
     const filteredRows = rows.filter(row => rowMatchesWorkerFilters(row, controls));
-    const visibleRows = filteredRows.slice(0, state.visibleCount);
+    const visibleRows = isPaginated ? filteredRows.slice(0, state.visibleCount) : filteredRows;
 
     rows.forEach(row => {
         row.hidden = true;
@@ -60,7 +61,7 @@ function renderWorkerTable(table, controls, state) {
         row.hidden = false;
     });
 
-    renderWorkerPagination(table, filteredRows.length, visibleRows.length, state, controls);
+    renderWorkerPagination(table, filteredRows.length, visibleRows.length, state, controls, isPaginated);
 }
 
 function rowMatchesWorkerFilters(row, controls) {
@@ -82,7 +83,7 @@ function rowMatchesWorkerFilters(row, controls) {
     return matchesSearch && matchesStatus && matchesDate && matchesCategory;
 }
 
-function renderWorkerPagination(table, totalCount, visibleCount, state, controls) {
+function renderWorkerPagination(table, totalCount, visibleCount, state, controls, isPaginated) {
     const wrapper = table.closest(".worker-table-wrap");
 
     if (!wrapper) {
@@ -100,6 +101,10 @@ function renderWorkerPagination(table, totalCount, visibleCount, state, controls
         return;
     }
 
+    if (!isPaginated) {
+        return;
+    }
+
     if (totalCount <= WORKER_PAGE_SIZE) {
         return;
     }
@@ -114,7 +119,7 @@ function renderWorkerPagination(table, totalCount, visibleCount, state, controls
         lessButton.textContent = "Ver menos";
         lessButton.addEventListener("click", () => {
             state.visibleCount = Math.max(WORKER_PAGE_SIZE, state.visibleCount - WORKER_PAGE_SIZE);
-            renderWorkerTable(table, controls, state);
+            renderWorkerTable(table, controls, state, isPaginated);
         });
         controlsBox.appendChild(lessButton);
     }
@@ -126,7 +131,7 @@ function renderWorkerPagination(table, totalCount, visibleCount, state, controls
         moreButton.textContent = "Ver mas";
         moreButton.addEventListener("click", () => {
             state.visibleCount += WORKER_PAGE_SIZE;
-            renderWorkerTable(table, controls, state);
+            renderWorkerTable(table, controls, state, isPaginated);
         });
         controlsBox.appendChild(moreButton);
     }
