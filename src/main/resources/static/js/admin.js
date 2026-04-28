@@ -899,9 +899,12 @@ function getProductCategories(products) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    const activeAdminTab = document.querySelector(".admin-buttons .active");
-    if (activeAdminTab) {
-        switchTab(activeAdminTab, "users");
+    const navContainer = document.querySelector(".admin-buttons.admin-panel-nav");
+    const activeTab = navContainer?.dataset.activeTab || "users";
+    const activeButton = navContainer?.querySelector(`[data-tab="${activeTab}"]`);
+    if (activeButton) {
+        activeButton.classList.add("active");
+        switchTab(activeButton, activeTab);
     }
 
     initAdminFormSelectDropdowns();

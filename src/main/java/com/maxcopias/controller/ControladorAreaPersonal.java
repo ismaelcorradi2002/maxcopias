@@ -127,10 +127,11 @@ public class ControladorAreaPersonal {
      */
     @GetMapping("/admin")
     public String admin(
-            Authentication authentication, 
+            Authentication authentication,
             Model model,
             @RequestParam(name = "updated", defaultValue = "false") boolean updated,
-            @RequestParam(name = "roleProtected", defaultValue = "false") boolean roleProtected
+            @RequestParam(name = "roleProtected", defaultValue = "false") boolean roleProtected,
+            @RequestParam(name = "tab", required = false) String tab
     ) {
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
@@ -139,6 +140,7 @@ public class ControladorAreaPersonal {
         model.addAttribute("allUsers", userRepository.findAll());
         model.addAttribute("contadoresCopisteria", servicioPedidosOperativos.obtenerContadoresCopisteriaResumen());
         model.addAttribute("contadoresTienda", servicioPedidosOperativos.obtenerContadoresTiendaResumen());
+        model.addAttribute("activeTab", tab != null ? tab : "users");
         return "administracion/inicio";
     }
 
@@ -459,13 +461,13 @@ public class ControladorAreaPersonal {
     @PostMapping("/admin/pedidos/copisteria/{id}/estado")
     public String cambiarEstadoCopisteriaAdmin(@PathVariable Long id, @RequestParam com.maxcopias.model.EstadoPedidoCopisteria estado) {
         servicioPedidosOperativos.cambiarEstadoCopisteria(id, estado);
-        return "redirect:/admin";
+        return "redirect:/admin?tab=orders";
     }
 
     @PostMapping("/admin/pedidos/tienda/{id}/estado")
     public String cambiarEstadoTiendaAdmin(@PathVariable Long id, @RequestParam com.maxcopias.model.EstadoPedidoTienda estado) {
         servicioPedidosOperativos.cambiarEstadoTienda(id, estado);
-        return "redirect:/admin";
+        return "redirect:/admin?tab=orders";
     }
 
     private void populatePersonalAreaModel(Model model, Usuario currentUsuario, FormularioActualizarPerfil profileForm, boolean updated) {

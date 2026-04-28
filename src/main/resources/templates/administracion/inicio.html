@@ -96,8 +96,8 @@
                                 <h2 id="admin-table-title">Gestion del sistema</h2>
                                 <p>Alterna entre usuarios y productos sin salir del panel.</p>
                             </div>
-                            <div class="admin-buttons admin-panel-nav" role="navigation" aria-label="Secciones del panel">
-                                <button class="button button-primary active" type="button" data-tab="users" onclick="switchTab(this, 'users')">Usuarios</button>
+                            <div class="admin-buttons admin-panel-nav" role="navigation" aria-label="Secciones del panel" th:data-active-tab="${activeTab}">
+                                <button class="button button-primary" type="button" data-tab="users" onclick="switchTab(this, 'users')">Usuarios</button>
                                 <button class="button button-primary" type="button" data-tab="products" onclick="switchTab(this, 'products')">Productos</button>
                                 <button class="button button-primary" type="button" data-tab="categories" onclick="switchTab(this, 'categories')">Categorías</button>
                                 <button class="button button-primary" type="button" data-tab="orders" onclick="switchTab(this, 'orders')">Pedidos</button>
