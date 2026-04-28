@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Finanzas admin', '/css/cuenta.css')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/worker.css}">
+</head>
+<body class="account-page admin-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="admin-main">
+        <section class="admin-section">
+            <div class="container admin-layout">
+                <article class="dashboard-card admin-card" data-reveal="up">
+                    <header class="admin-dashboard-header">
+                        <div>
+                            <span class="section-kicker">Finanzas</span>
+                            <h1>Resumen mensual</h1>
+                            <p>Controla ingresos, pedidos y rendimiento operativo del mes seleccionado.</p>
+                        </div>
+                        <span class="admin-status-pill">Solo administracion</span>
+                    </header>
+
+                    <div class="admin-buttons admin-panel-nav" role="navigation" aria-label="Secciones del panel">
+                        <a th:href="@{/admin}" class="button button-primary admin-panel-link">Usuarios</a>
+                        <a th:href="@{/admin}" class="button button-primary admin-panel-link">Productos</a>
+                        <a th:href="@{/admin}" class="button button-primary admin-panel-link">Categorias</a>
+                        <a th:href="@{/admin}" class="button button-primary admin-panel-link">Pedidos</a>
+                        <a th:href="@{/admin/finanzas}" class="button button-primary admin-panel-link active">Finanzas</a>
+                    </div>
+
+                    <section class="table-section admin-finance-section">
+                        <div class="table-section-header">
+                            <div>
+                                <h2>Filtro mensual</h2>
+                                <p>Los ingresos solo cuentan pedidos entregados y no eliminados.</p>
+                            </div>
+                        </div>
+
+                        <form class="worker-filters admin-finance-filters" method="get" th:action="@{/admin/finanzas}">
+                            <label>
+                                <span>Mes</span>
+                                <select name="mes" class="worker-select select-modern">
+                                    <option th:each="numeroMes : ${#numbers.sequence(1,12)}"
+                                            th:value="${numeroMes}"
+                                            th:selected="${numeroMes == mesSeleccionado}"
+                                            th:text="${numeroMes}">
+                                        1
+                                    </option>
+                                </select>
+                            </label>
+                            <label>
+                                <span>Anio</span>
+                                <input type="number" name="anio" min="2024" max="2100" th:value="${anioSeleccionado}">
+                            </label>
+                            <div class="admin-finance-submit">
+                                <button type="submit" class="button button-primary">Actualizar resumen</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <div class="worker-counter-groups admin-counter-groups">
+                        <section class="worker-counter-group">
+                            <header>
+                                <span>Ingresos</span>
+                                <strong>Resultado del mes</strong>
+                            </header>
+                            <div class="worker-summary-grid">
+                                <article class="worker-summary-card">
+                                    <span>Total</span>
+                                    <strong th:text="${#numbers.formatDecimal(resumenFinanciero.ingresosTotales, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Copisteria</span>
+                                    <strong th:text="${#numbers.formatDecimal(resumenFinanciero.ingresosCopisteria, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Tienda</span>
+                                    <strong th:text="${#numbers.formatDecimal(resumenFinanciero.ingresosTienda, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Ticket medio</span>
+                                    <strong th:text="${#numbers.formatDecimal(resumenFinanciero.ticketMedio, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
+                                </article>
+                            </div>
+                        </section>
+
+                        <section class="worker-counter-group worker-counter-group-store">
+                            <header>
+                                <span>Pedidos</span>
+                                <strong>Actividad operativa</strong>
+                            </header>
+                            <div class="worker-summary-grid">
+                                <article class="worker-summary-card">
+                                    <span>Entregados</span>
+                                    <strong th:text="${resumenFinanciero.pedidosEntregados}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Cancelados</span>
+                                    <strong th:text="${resumenFinanciero.pedidosCancelados}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Pendientes/prep.</span>
+                                    <strong th:text="${resumenFinanciero.pedidosPendientesOPreparacion}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Mes anterior</span>
+                                    <strong th:text="${#numbers.formatDecimal(resumenFinanciero.ingresosMesAnterior, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
+                                </article>
+                            </div>
+                        </section>
+                    </div>
+
+                    <section class="worker-section">
+                        <div class="worker-section-header">
+                            <div>
+                                <h2>Indicadores de negocio</h2>
+                                <p>Resumen de comparativa y referencias comerciales del mes.</p>
+                            </div>
+                        </div>
+                        <div class="admin-finance-grid">
+                            <article class="admin-finance-card">
+                                <span>Diferencia vs mes anterior</span>
+                                <strong th:text="${#numbers.formatDecimal(resumenFinanciero.diferenciaIngresos, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
+                            </article>
+                            <article class="admin-finance-card">
+                                <span>Servicio copisteria mas solicitado</span>
+                                <strong th:text="${resumenFinanciero.servicioCopisteriaMasSolicitado}">No disponible</strong>
+                            </article>
+                            <article class="admin-finance-card">
+                                <span>Producto mas vendido</span>
+                                <strong th:text="${resumenFinanciero.productoMasVendido}">No disponible</strong>
+                            </article>
+                        </div>
+                    </section>
+
+                    <div class="dashboard-actions admin-actions">
+                        <a th:href="@{/admin}" class="button button-secondary-dark">Volver al panel</a>
+                        <a th:href="@{/#inicio}" class="button button-outline-dark">Ir al inicio</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

@@ -97,9 +97,21 @@ public class ControladorTrabajador {
         return "redirect:/worker/pedidos-copisteria";
     }
 
+    @PostMapping("/worker/copisteria/{id}/eliminar")
+    public String eliminarPedidoCopisteria(@PathVariable Long id, Authentication authentication) {
+        servicioPedidosOperativos.eliminarPedidoCopisteria(id, authentication.getName());
+        return "redirect:/worker/pedidos-copisteria";
+    }
+
     @PostMapping("/worker/tienda/{id}/estado")
     public String cambiarEstadoTienda(@PathVariable Long id, @RequestParam EstadoPedidoTienda estado) {
         servicioPedidosOperativos.cambiarEstadoTienda(id, estado);
+        return "redirect:/worker/pedidos-tienda";
+    }
+
+    @PostMapping("/worker/tienda/{id}/eliminar")
+    public String eliminarPedidoTienda(@PathVariable Long id, Authentication authentication) {
+        servicioPedidosOperativos.eliminarPedidoTienda(id, authentication.getName());
         return "redirect:/worker/pedidos-tienda";
     }
 

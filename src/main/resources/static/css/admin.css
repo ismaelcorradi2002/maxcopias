@@ -94,6 +94,10 @@
     margin: 22px 0;
 }
 
+.admin-counter-groups {
+    margin: 10px 0 22px;
+}
+
 .admin-summary-card {
     min-width: 0;
     padding: 18px 20px;
@@ -177,7 +181,27 @@
     box-shadow: none;
 }
 
+.admin-buttons .admin-panel-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 118px;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: transparent;
+    color: #1b3558;
+    font-weight: 900;
+    text-decoration: none;
+    box-shadow: none;
+}
+
 .admin-buttons button:hover {
+    transform: translateY(-1px);
+    background: rgba(93, 187, 255, 0.1);
+}
+
+.admin-buttons .admin-panel-link:hover {
     transform: translateY(-1px);
     background: rgba(93, 187, 255, 0.1);
 }
@@ -186,6 +210,10 @@
     background: linear-gradient(135deg, #6cc6ff 0%, #3aa6ff 100%);
     color: #ffffff;
     box-shadow: 0 10px 24px rgba(73, 165, 236, 0.24);
+}
+
+.admin-panel-nav {
+    margin-bottom: 18px;
 }
 
 .table-container {
@@ -331,6 +359,87 @@
 
 .admin-orders-table-region {
     min-width: 0;
+}
+
+.admin-orders-board {
+    display: grid;
+    gap: 18px;
+    padding: 12px;
+}
+
+.admin-order-panel {
+    margin-top: 0;
+}
+
+.admin-order-panel .worker-table-wrap {
+    overflow: visible;
+}
+
+.admin-order-panel .worker-select {
+    min-width: 170px;
+}
+
+.admin-orders-split-table .worker-col-contact {
+    width: 260px;
+    max-width: 260px;
+}
+
+.admin-orders-split-table .worker-col-file {
+    width: 180px;
+}
+
+.admin-order-load-more {
+    justify-content: flex-end;
+}
+
+.admin-order-row-deleted {
+    opacity: 0.72;
+    background: rgba(255, 244, 244, 0.68);
+}
+
+.admin-finance-section {
+    margin-top: 0;
+}
+
+.admin-finance-filters {
+    grid-template-columns: minmax(180px, 220px) minmax(180px, 220px) auto;
+    align-items: end;
+}
+
+.admin-finance-submit {
+    display: flex;
+    align-items: end;
+}
+
+.admin-finance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.admin-finance-card {
+    display: grid;
+    gap: 8px;
+    padding: 18px 20px;
+    border: 1px solid rgba(93, 187, 255, 0.16);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 18px 42px rgba(92, 152, 214, 0.08);
+}
+
+.admin-finance-card span {
+    color: #61728b;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.admin-finance-card strong {
+    color: #13233f;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+    letter-spacing: -0.04em;
 }
 
 .admin-orders-table {
@@ -1227,6 +1336,24 @@
     font-weight: 800;
 }
 
+.admin-alert.admin-alert-error {
+    border-color: rgba(239, 68, 68, 0.24);
+    background: rgba(254, 242, 242, 0.9);
+    color: #b91c1c;
+}
+
+.admin-role-lock {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+}
+
+.admin-role-lock small {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
 .admin-actions {
     display: flex;
     flex-wrap: wrap;
@@ -1244,6 +1371,10 @@
     }
 
     .admin-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-finance-grid {
         grid-template-columns: 1fr;
     }
 
@@ -1286,5 +1417,9 @@
     .admin-actions .button,
     .admin-actions .inline-form {
         width: 100%;
+    }
+
+    .admin-finance-filters {
+        grid-template-columns: 1fr;
     }
 }

@@ -2,6 +2,7 @@ const WORKER_PAGE_SIZE = 5;
 
 document.addEventListener("DOMContentLoaded", function () {
     initWorkerTables();
+    initWorkerDeleteModal();
 });
 
 function initWorkerTables() {
@@ -148,4 +149,48 @@ function normalizeWorkerSearch(value) {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .trim();
+}
+
+function initWorkerDeleteModal() {
+    const modal = document.querySelector("[data-worker-delete-modal]");
+    const message = document.querySelector("[data-worker-delete-message]");
+    const acceptButton = document.querySelector("[data-worker-delete-accept]");
+    const cancelButtons = document.querySelectorAll("[data-worker-delete-cancel]");
+    let pendingForm = null;
+
+    if (!modal || !message || !acceptButton) {
+        return;
+    }
+
+    function closeModal() {
+        modal.hidden = true;
+        document.body.classList.remove("admin-modal-open");
+        pendingForm = null;
+    }
+
+    cancelButtons.forEach(button => {
+        button.addEventListener("click", closeModal);
+    });
+
+    acceptButton.addEventListener("click", function () {
+        if (pendingForm) {
+            pendingForm.submit();
+        }
+    });
+
+    document.querySelectorAll("[data-worker-delete-trigger]").forEach(button => {
+        button.addEventListener("click", function () {
+            pendingForm = this.closest("form");
+            message.textContent = `Seguro que quieres eliminar ${this.dataset.workerDeleteLabel || "este pedido"}? Podras conservarlo en el historial interno.`;
+            modal.hidden = false;
+            document.body.classList.add("admin-modal-open");
+            acceptButton.focus();
+        });
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && !modal.hidden) {
+            closeModal();
+        }
+    });
 }

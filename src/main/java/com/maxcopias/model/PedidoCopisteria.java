@@ -66,12 +66,21 @@ public class PedidoCopisteria {
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EstadoPedidoCopisteria estado = EstadoPedidoCopisteria.RECIBIDO;
+    @Convert(converter = EstadoPedidoCopisteriaConverter.class)
+    @Column(nullable = false, length = 40)
+    private EstadoPedidoCopisteria estado = EstadoPedidoCopisteria.PENDIENTE;
 
     @Column(name = "codigo_recoger", length = 12, unique = true)
     private String codigoRecoger;
+
+    @Column(nullable = false)
+    private boolean eliminado = false;
+
+    @Column(name = "fecha_eliminacion")
+    private LocalDateTime fechaEliminacion;
+
+    @Column(name = "eliminado_por", length = 160)
+    private String eliminadoPor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
@@ -104,6 +113,7 @@ public class PedidoCopisteria {
 
     public Integer getCopias() { return copias; }
     public void setCopias(Integer copias) { this.copias = copias; }
+    public Integer getCopies() { return copias; }
 
     public ModoColor getColor() { return color; }
     public void setColor(ModoColor color) { this.color = color; }
@@ -137,6 +147,15 @@ public class PedidoCopisteria {
 
     public String getCodigoRecoger() { return codigoRecoger; }
     public void setCodigoRecoger(String codigoRecoger) { this.codigoRecoger = codigoRecoger; }
+
+    public boolean isEliminado() { return eliminado; }
+    public void setEliminado(boolean eliminado) { this.eliminado = eliminado; }
+
+    public LocalDateTime getFechaEliminacion() { return fechaEliminacion; }
+    public void setFechaEliminacion(LocalDateTime fechaEliminacion) { this.fechaEliminacion = fechaEliminacion; }
+
+    public String getEliminadoPor() { return eliminadoPor; }
+    public void setEliminadoPor(String eliminadoPor) { this.eliminadoPor = eliminadoPor; }
 
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }

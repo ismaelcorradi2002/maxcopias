@@ -9,6 +9,7 @@ import com.maxcopias.model.Usuario;
 import com.maxcopias.service.ServicioUsuario;
 import com.maxcopias.model.Rol;
 import com.maxcopias.repository.RepositorioCategoria;
+import com.maxcopias.repository.RepositorioPedidoCopisteria;
 import com.maxcopias.repository.RepositorioUsuario;
 import com.maxcopias.service.ServicioPedidosOperativos;
 import com.maxcopias.model.PedidoCopisteria;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.time.YearMonth;
 
 import com.maxcopias.model.Producto;
 import com.maxcopias.model.Categoria;
@@ -46,6 +48,7 @@ public class ControladorAreaPersonal {
      */
     private final RepositorioUsuario userRepository;
     private final RepositorioCategoria repositorioCategoria;
+    private final RepositorioPedidoCopisteria repositorioPedidoCopisteria;
 
     /**
      * Inyecta servicios de usuario/pedidos y repositorio.
@@ -53,12 +56,13 @@ public class ControladorAreaPersonal {
     private final ServicioTienda servicioTienda;
     private final ServicioPedidosOperativos servicioPedidosOperativos;
 
-    public ControladorAreaPersonal(ServicioUsuario userService, RepositorioUsuario userRepository, ServicioTienda servicioTienda, RepositorioCategoria repositorioCategoria, ServicioPedidosOperativos servicioPedidosOperativos) {
+    public ControladorAreaPersonal(ServicioUsuario userService, RepositorioUsuario userRepository, ServicioTienda servicioTienda, RepositorioCategoria repositorioCategoria, ServicioPedidosOperativos servicioPedidosOperativos, RepositorioPedidoCopisteria repositorioPedidoCopisteria) {
         this.repositorioCategoria = repositorioCategoria;
         this.userService = userService;
         this.userRepository = userRepository;
         this.servicioTienda = servicioTienda;
         this.servicioPedidosOperativos = servicioPedidosOperativos;
+        this.repositorioPedidoCopisteria = repositorioPedidoCopisteria;
     }
 
     /**
@@ -108,6 +112,7 @@ public class ControladorAreaPersonal {
     public String myOrders(Authentication authentication, Model model) {
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
+        model.addAttribute("orders", repositorioPedidoCopisteria.findAllByUsuarioAndEliminadoFalseOrderByFechaCreacionDesc(currentUsuario));
         model.addAttribute("pageTitle", "Maxcopias | Mis pedidos");
         return "area-personal/pedidos";
     }
@@ -124,13 +129,37 @@ public class ControladorAreaPersonal {
     public String admin(
             Authentication authentication, 
             Model model,
-            @RequestParam(name = "updated", defaultValue = "false") boolean updated
+            @RequestParam(name = "updated", defaultValue = "false") boolean updated,
+            @RequestParam(name = "roleProtected", defaultValue = "false") boolean roleProtected
     ) {
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
         model.addAttribute("roleUpdated", updated);
+        model.addAttribute("roleProtected", roleProtected);
         model.addAttribute("allUsers", userRepository.findAll());
+        model.addAttribute("contadoresCopisteria", servicioPedidosOperativos.obtenerContadoresCopisteriaResumen());
+        model.addAttribute("contadoresTienda", servicioPedidosOperativos.obtenerContadoresTiendaResumen());
         return "administracion/inicio";
+    }
+
+    @GetMapping("/admin/finanzas")
+    public String finanzasAdmin(
+        Authentication authentication,
+        Model model,
+        @RequestParam(name = "mes", required = false) Integer mes,
+        @RequestParam(name = "anio", required = false) Integer anio
+    ) {
+        Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+        YearMonth actual = YearMonth.now();
+        int mesSeleccionado = mes != null ? mes : actual.getMonthValue();
+        int anioSeleccionado = anio != null ? anio : actual.getYear();
+
+        model.addAttribute("currentUsuario", currentUsuario);
+        model.addAttribute("mesSeleccionado", mesSeleccionado);
+        model.addAttribute("anioSeleccionado", anioSeleccionado);
+        model.addAttribute("resumenFinanciero", servicioPedidosOperativos.obtenerResumenFinancieroMensual(anioSeleccionado, mesSeleccionado));
+        model.addAttribute("pageTitle", "Maxcopias | Finanzas admin");
+        return "administracion/finanzas";
     }
 
     /**
@@ -141,6 +170,9 @@ public class ControladorAreaPersonal {
         Optional<Usuario> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             Usuario user = optionalUser.get();
+            if (user.getRol() == Rol.ROLE_ADMIN && newRole != Rol.ROLE_ADMIN && userRepository.countByRole(Rol.ROLE_ADMIN) <= 1) {
+                return "redirect:/admin?roleProtected=true";
+            }
             user.setRol(newRole);
             userRepository.save(user);
         }
@@ -170,7 +202,7 @@ public class ControladorAreaPersonal {
     public List<PedidoAdminVista> getPedidosApi() {
         List<PedidoAdminVista> pedidos = new ArrayList<>();
 
-        for (PedidoCopisteria p : servicioPedidosOperativos.obtenerPedidosCopisteriaConUsuario()) {
+        for (PedidoCopisteria p : servicioPedidosOperativos.obtenerPedidosCopisteriaIncluyendoEliminados()) {
             pedidos.add(new PedidoAdminVista(
                 p.getId(),
                 "Copistería",
@@ -193,11 +225,14 @@ public class ControladorAreaPersonal {
                 p.getRutaArchivo() != null ? "/pedidos/copisteria/" + p.getId() + "/archivo" : null,
                 p.getCodigoRecoger(),
                 null,
-                p.getUsuario() != null ? p.getUsuario().getFullName() : null
+                p.getUsuario() != null ? p.getUsuario().getFullName() : null,
+                p.isEliminado(),
+                p.getFechaEliminacion(),
+                p.getEliminadoPor()
             ));
         }
 
-        for (PedidoTienda p : servicioPedidosOperativos.obtenerPedidosTienda()) {
+        for (PedidoTienda p : servicioPedidosOperativos.obtenerPedidosTiendaIncluyendoEliminados()) {
             pedidos.add(new PedidoAdminVista(
                 p.getId(),
                 "Tienda",
@@ -220,7 +255,10 @@ public class ControladorAreaPersonal {
                 null,
                 null,
                 p.getResumenProductos(),
-                null
+                null,
+                p.isEliminado(),
+                p.getFechaEliminacion(),
+                p.getEliminadoPor()
             ));
         }
 
@@ -404,6 +442,18 @@ public class ControladorAreaPersonal {
         } catch (Exception e) {
             return Map.of("success", "false", "message", "No se ha podido eliminar el usuario. Revisa si tiene pedidos asociados.");
         }
+    }
+
+    @PostMapping("/admin/pedidos/copisteria/{id}/eliminar")
+    public String eliminarPedidoCopisteriaAdmin(@PathVariable Long id, Authentication authentication) {
+        servicioPedidosOperativos.eliminarPedidoCopisteria(id, authentication.getName());
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/admin/pedidos/tienda/{id}/eliminar")
+    public String eliminarPedidoTiendaAdmin(@PathVariable Long id, Authentication authentication) {
+        servicioPedidosOperativos.eliminarPedidoTienda(id, authentication.getName());
+        return "redirect:/admin";
     }
 
     private void populatePersonalAreaModel(Model model, Usuario currentUsuario, FormularioActualizarPerfil profileForm, boolean updated) {

@@ -33,7 +33,7 @@ function switchTab(button, tab) {
                 return;
             }
             if (tab === "orders") {
-                renderOrdersTable(tableContainer, data);
+                renderOrdersTableWorkerStyle(tableContainer, data);
                 return;
             }
             renderProductsTable(tableContainer, data);
@@ -48,6 +48,7 @@ function renderUsersTable(tableContainer, data) {
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
     let visibleCount = ADMIN_PAGE_SIZE;
     let currentUsers = data;
+    const totalAdmins = data.filter(user => user.rol === "ROLE_ADMIN").length;
 
     tableContainer.innerHTML = `
         <div class="admin-product-toolbar admin-user-toolbar">
@@ -85,7 +86,9 @@ function renderUsersTable(tableContainer, data) {
                 </tr>
             </thead>
             <tbody>
-                ${visibleUsers.map(user => `
+                ${visibleUsers.map(user => {
+                    const isLastAdmin = totalAdmins === 1 && user.rol === "ROLE_ADMIN";
+                    return `
                     <tr>
                         <td class="admin-cell-id">${user.id}</td>
                         <td class="admin-cell-name" title="${user.firstName || ""} ${user.lastName || ""}">
@@ -98,6 +101,12 @@ function renderUsersTable(tableContainer, data) {
                         <td class="admin-role-cell admin-col-role"><span class="admin-role-badge">${formatRoleName(user.rol)}</span></td>
                         <td class="admin-date-cell">${formatAdminDate(user.createdAt)}</td>
                         <td class="admin-action-cell">
+                            ${isLastAdmin ? `
+                            <div class="admin-role-lock" title="Debe existir al menos un administrador activo">
+                                <span class="admin-role-badge">Admin</span>
+                                <small>Ultimo admin</small>
+                            </div>
+                            ` : `
                             <form action="/admin/update-role/${user.id}" method="post" class="admin-role-form" data-current-role="${user.rol}">
                                 <input type="hidden" name="_csrf" value="${csrfToken}">
                                 <div class="admin-role-dropdown" data-role-dropdown>
@@ -126,6 +135,7 @@ function renderUsersTable(tableContainer, data) {
                                     </div>
                                 </div>
                             </form>
+                            `}
                         </td>
                         <td class="admin-action-cell">
                             <button class="button button-small button-outline admin-delete-btn" type="button" data-user-id="${user.id}" data-user-name="${user.firstName || ""} ${user.lastName || ""}" title="Eliminar usuario">
@@ -133,7 +143,7 @@ function renderUsersTable(tableContainer, data) {
                             </button>
                         </td>
                     </tr>
-                `).join("")}
+                `;}).join("")}
             </tbody>
         </table>
         ${renderListPaginationControls(visibleUsers.length, users.length, "usuarios")}
@@ -548,6 +558,264 @@ function renderOrdersTable(tableContainer, data) {
     typeFilter.addEventListener("change", applyOrderFilters);
 }
 
+function renderOrdersTableWorkerStyle(tableContainer, data) {
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
+    const state = {
+        copisteriaVisibleCount: ADMIN_PAGE_SIZE,
+        tiendaVisibleCount: ADMIN_PAGE_SIZE
+    };
+
+    function def(value) {
+        return value != null && value !== "" ? value : "-";
+    }
+
+    function formatOrderStatus(status) {
+        const labels = {
+            PENDIENTE: "Pendiente",
+            EN_PREPARACION: "En preparacion",
+            LISTO_PARA_RECOGER: "Listo para recoger",
+            ENTREGADO: "Entregado",
+            CANCELADO: "Cancelado"
+        };
+
+        return labels[status] || def(status).replaceAll("_", " ");
+    }
+
+    function getOrderStateOptions(type, selectedStatus) {
+        const options = ["PENDIENTE", "EN_PREPARACION", "LISTO_PARA_RECOGER", "ENTREGADO", "CANCELADO"];
+
+        return options.map(status => `
+            <option value="${status}" ${status === selectedStatus ? "selected" : ""}>${formatOrderStatus(status)}</option>
+        `).join("");
+    }
+
+    function getOrderType(order) {
+        return normalizeAdminSearch(order.tipo) === "copisteria" ? "copisteria" : "tienda";
+    }
+
+    function renderOrderFileCell(order) {
+        if (!order.archivoDescargaUrl) {
+            return '<span class="worker-col-short">Sin archivo</span>';
+        }
+
+        const archivoNombre = def(order.archivoNombre);
+        const verUrl = order.archivoDescargaUrl;
+        const descargarUrl = `${order.archivoDescargaUrl}?download=true`;
+
+        return `
+            <div class="worker-file-actions" title="${archivoNombre}">
+                <a class="button button-secondary-dark worker-file-button" href="${verUrl}" target="_blank" rel="noopener noreferrer">Imprimir</a>
+                <a class="button button-primary worker-file-button" href="${descargarUrl}">Descargar</a>
+            </div>
+        `;
+    }
+
+    tableContainer.innerHTML = '<div class="admin-orders-board" data-orders-board></div>';
+    const board = tableContainer.querySelector("[data-orders-board]");
+
+    function filterOrdersByPanel(type) {
+        const searchInput = board.querySelector(`[data-admin-order-search="${type}"]`);
+        const statusInput = board.querySelector(`[data-admin-order-status="${type}"]`);
+        const dateInput = board.querySelector(`[data-admin-order-date="${type}"]`);
+        const visibilityInput = board.querySelector(`[data-admin-order-visibility="${type}"]`);
+        const query = normalizeAdminSearch(searchInput?.value || "");
+        const selectedStatus = statusInput?.value || "";
+        const selectedDate = dateInput?.value || "";
+        const selectedVisibility = visibilityInput?.value || "active";
+
+        return data.filter(order => {
+            if (getOrderType(order) !== type) {
+                return false;
+            }
+
+            const searchableText = type === "copisteria"
+                ? normalizeAdminSearch(`${order.id} ${order.cliente} ${order.email} ${order.telefono} ${order.codigoRecoger || ""} ${order.trabajo || ""}`)
+                : normalizeAdminSearch(`${order.id} ${order.cliente} ${order.email} ${order.telefono} ${order.resumenProductos || ""}`);
+
+            const matchesSearch = !query || searchableText.includes(query);
+            const matchesStatus = !selectedStatus || order.estado === selectedStatus;
+            const orderDate = order.fechaCreacion ? new Date(order.fechaCreacion).toISOString().slice(0, 10) : "";
+            const matchesDate = !selectedDate || orderDate === selectedDate;
+            const matchesVisibility = selectedVisibility === "all"
+                || (selectedVisibility === "deleted" && order.eliminado)
+                || (selectedVisibility === "active" && !order.eliminado);
+
+            return matchesSearch && matchesStatus && matchesDate && matchesVisibility;
+        });
+    }
+
+    function buildPanel(type) {
+        const filteredOrders = filterOrdersByPanel(type);
+        const visibleCount = type === "copisteria" ? state.copisteriaVisibleCount : state.tiendaVisibleCount;
+        const visibleOrders = filteredOrders.slice(0, visibleCount);
+        const isCopisteria = type === "copisteria";
+
+        return `
+            <section class="worker-section admin-order-panel">
+                <div class="worker-section-header">
+                    <div>
+                        <h2>${isCopisteria ? "Pedidos de copisteria" : "Pedidos de papeleria"}</h2>
+                        <p>${isCopisteria
+                            ? "Revisa archivos, codigos de recogida y actualiza el estado de cada encargo."
+                            : "Consulta pedidos de productos y controla su avance hasta la entrega."}</p>
+                    </div>
+                </div>
+                <div class="worker-filters">
+                    <label>
+                        <span>Buscar pedido</span>
+                        <input type="search" data-admin-order-search="${type}" placeholder="${isCopisteria ? "Cliente, email, codigo o ID" : "Cliente, email, productos o ID"}">
+                    </label>
+                    <label>
+                        <span>Estado</span>
+                        <select data-admin-order-status="${type}" class="worker-select select-modern">
+                            <option value="">Todos los estados</option>
+                            ${getOrderStateOptions(type, "")}
+                        </select>
+                    </label>
+                    <label>
+                        <span>Fecha</span>
+                        <input type="date" data-admin-order-date="${type}">
+                    </label>
+                    <label>
+                        <span>Visibilidad</span>
+                        <select data-admin-order-visibility="${type}" class="worker-select select-modern">
+                            <option value="active">Activos</option>
+                            <option value="deleted">Eliminados</option>
+                            <option value="all">Todos</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="worker-table-wrap">
+                    <table class="worker-table admin-orders-split-table">
+                        <thead>
+                            <tr>
+                                <th class="worker-col-id">ID</th>
+                                <th>Cliente</th>
+                                <th>Contacto</th>
+                                ${isCopisteria
+                                    ? `
+                                        <th class="worker-col-job">Trabajo</th>
+                                        <th class="worker-col-file">Archivo</th>
+                                        <th class="worker-col-code">Codigo</th>
+                                    `
+                                    : `
+                                        <th>Productos</th>
+                                        <th class="worker-col-price">Total</th>
+                                    `}
+                                <th class="worker-col-date">Fecha</th>
+                                <th class="worker-col-status">Estado</th>
+                                <th class="worker-col-status">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${visibleOrders.map(order => `
+                                <tr class="${order.eliminado ? "admin-order-row-deleted" : ""}">
+                                    <td class="worker-col-id">${def(order.id)}</td>
+                                    <td>${def(order.cliente)}</td>
+                                    <td class="worker-col-contact">
+                                        <span class="worker-cell-ellipsis">${def(order.email)}</span>
+                                        <small>${def(order.telefono)}</small>
+                                    </td>
+                                    ${isCopisteria
+                                        ? `
+                                            <td class="worker-col-job">
+                                                <span class="worker-cell-title">${def(order.trabajo)}</span>
+                                                <small>${def(order.copias)} copia(s)${order.tamano ? ` · ${order.tamano}` : ""}</small>
+                                            </td>
+                                            <td class="worker-col-file">${renderOrderFileCell(order)}</td>
+                                            <td class="worker-col-code"><strong>${def(order.codigoRecoger)}</strong></td>
+                                        `
+                                        : `
+                                            <td>${def(order.resumenProductos)}</td>
+                                            <td class="worker-col-price">${order.total != null ? `${order.total} €` : "-"}</td>
+                                        `}
+                                    <td class="worker-col-date">${formatAdminDate(order.fechaCreacion)}</td>
+                                    <td class="worker-col-status">
+                                        <form action="${isCopisteria ? `/worker/copisteria/${order.id}/estado` : `/worker/tienda/${order.id}/estado`}" method="post" class="worker-status-form">
+                                            <input type="hidden" name="_csrf" value="${csrfToken}">
+                                            <select name="estado" class="worker-select" onchange="this.form.submit()" ${order.eliminado ? "disabled" : ""}>
+                                                ${getOrderStateOptions(type, order.estado)}
+                                            </select>
+                                        </form>
+                                    </td>
+                                    <td class="worker-col-status">
+                                        ${order.eliminado
+                                            ? `<span class="admin-role-badge">Eliminado</span>`
+                                            : `
+                                                <button
+                                                    type="button"
+                                                    class="button button-outline admin-delete-btn"
+                                                    data-order-id="${order.id}"
+                                                    data-order-type="${type}"
+                                                    data-order-name="${isCopisteria ? `pedido de copisteria ${def(order.codigoRecoger)}` : `pedido de tienda #${def(order.id)}`}"
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            `}
+                                    </td>
+                                </tr>
+                            `).join("")}
+                        </tbody>
+                    </table>
+                    ${filteredOrders.length === 0 ? `<p class="worker-empty">No hay pedidos de ${isCopisteria ? "copisteria" : "papeleria"} con esos filtros.</p>` : ""}
+                    ${renderAdminOrderPaginationControls(type, visibleOrders.length, filteredOrders.length, "pedidos")}
+                </div>
+            </section>
+        `;
+    }
+
+    function bindPanelEvents(type) {
+        const searchInput = board.querySelector(`[data-admin-order-search="${type}"]`);
+        const statusInput = board.querySelector(`[data-admin-order-status="${type}"]`);
+        const dateInput = board.querySelector(`[data-admin-order-date="${type}"]`);
+        const visibilityInput = board.querySelector(`[data-admin-order-visibility="${type}"]`);
+        const loadMoreButton = board.querySelector(`[data-admin-order-load-more="${type}"]`);
+        const loadLessButton = board.querySelector(`[data-admin-order-load-less="${type}"]`);
+
+        [searchInput, statusInput, dateInput, visibilityInput].forEach(input => {
+            if (!input) {
+                return;
+            }
+
+            input.addEventListener("input", function () {
+                state[`${type}VisibleCount`] = ADMIN_PAGE_SIZE;
+                paintOrders();
+            });
+            input.addEventListener("change", function () {
+                state[`${type}VisibleCount`] = ADMIN_PAGE_SIZE;
+                paintOrders();
+            });
+        });
+
+        loadMoreButton?.addEventListener("click", function () {
+            state[`${type}VisibleCount`] += ADMIN_PAGE_SIZE;
+            paintOrders();
+        });
+
+        loadLessButton?.addEventListener("click", function () {
+            state[`${type}VisibleCount`] = Math.max(ADMIN_PAGE_SIZE, state[`${type}VisibleCount`] - ADMIN_PAGE_SIZE);
+            paintOrders();
+        });
+    }
+
+    function paintOrders() {
+        board.innerHTML = `
+            ${buildPanel("copisteria")}
+            ${buildPanel("tienda")}
+        `;
+
+        if (typeof initModernSelects === "function") {
+            initModernSelects();
+        }
+
+        bindPanelEvents("copisteria");
+        bindPanelEvents("tienda");
+        initAdminOrderDeleteButtons();
+    }
+
+    paintOrders();
+}
+
 function normalizeAdminSearch(value) {
     return String(value || "")
         .toLowerCase()
@@ -583,6 +851,32 @@ function renderListPaginationControls(visibleCount, totalCount, itemLabel) {
             ${visibleCount < totalCount ? `
                 <button class="button button-outline admin-load-more-button" type="button" data-load-more>
                     Ver más ${itemLabel}
+                </button>
+            ` : ""}
+            <span>${visibleCount} de ${totalCount}</span>
+        </div>
+    `;
+}
+
+function renderAdminOrderPaginationControls(type, visibleCount, totalCount, itemLabel) {
+    if (totalCount === 0) {
+        return "";
+    }
+
+    if (visibleCount >= totalCount && visibleCount <= ADMIN_PAGE_SIZE) {
+        return "";
+    }
+
+    return `
+        <div class="worker-load-more admin-order-load-more">
+            ${visibleCount > ADMIN_PAGE_SIZE ? `
+                <button class="button button-outline worker-load-more-button" type="button" data-admin-order-load-less="${type}">
+                    Ver menos
+                </button>
+            ` : ""}
+            ${visibleCount < totalCount ? `
+                <button class="button button-outline worker-load-more-button" type="button" data-admin-order-load-more="${type}">
+                    Ver mas ${itemLabel}
                 </button>
             ` : ""}
             <span>${visibleCount} de ${totalCount}</span>
@@ -829,6 +1123,18 @@ function initRoleDropdowns() {
     });
 }
 
+function initAdminOrderDeleteButtons() {
+    document.querySelectorAll(".admin-delete-btn[data-order-id]").forEach(button => {
+        button.addEventListener("click", function () {
+            openOrderDeleteModal(
+                this.dataset.orderType,
+                this.dataset.orderId,
+                this.dataset.orderName || "este pedido"
+            );
+        });
+    });
+}
+
 function syncRoleDropdown(select) {
     const dropdown = select.closest("[data-role-dropdown]");
 
@@ -894,6 +1200,16 @@ document.addEventListener("click", function (event) {
         const catId = event.target.dataset.categoryId;
         const catName = event.target.dataset.categoryName || "esta categoria";
         openCatalogDeleteModal("category", catId, catName);
+        return;
+    }
+
+    if (event.target.matches(".admin-delete-btn[data-order-id]")) {
+        event.preventDefault();
+        openOrderDeleteModal(
+            event.target.dataset.orderType,
+            event.target.dataset.orderId,
+            event.target.dataset.orderName || "este pedido"
+        );
         return;
     }
 
@@ -997,6 +1313,54 @@ function closeCatalogDeleteModal() {
     if (acceptButton) {
         delete acceptButton.dataset.deleteType;
         delete acceptButton.dataset.deleteId;
+    }
+
+    document.body.classList.remove("admin-modal-open");
+}
+
+function openOrderDeleteModal(type, id, name) {
+    const modal = document.querySelector("[data-catalog-delete-modal]");
+    const title = document.querySelector("[data-catalog-delete-title]");
+    const message = document.querySelector("[data-catalog-delete-message]");
+    const acceptButton = document.querySelector("[data-catalog-delete-accept]");
+    const cancelButtons = document.querySelectorAll("[data-catalog-delete-cancel]");
+
+    if (!modal || !title || !message || !acceptButton) {
+        return;
+    }
+
+    title.textContent = "Eliminar pedido";
+    message.textContent = `Seguro que quieres eliminar ${name}? Podras conservarlo en el historial interno.`;
+    acceptButton.textContent = "Eliminar pedido";
+    acceptButton.dataset.orderDeleteType = type;
+    acceptButton.dataset.orderDeleteId = id;
+
+    modal.hidden = false;
+    document.body.classList.add("admin-modal-open");
+    acceptButton.focus();
+
+    cancelButtons.forEach(button => {
+        button.onclick = function () {
+            closeOrderDeleteModal();
+        };
+    });
+
+    acceptButton.onclick = function () {
+        deleteOrder(this.dataset.orderDeleteType, this.dataset.orderDeleteId);
+    };
+}
+
+function closeOrderDeleteModal() {
+    const modal = document.querySelector("[data-catalog-delete-modal]");
+    const acceptButton = document.querySelector("[data-catalog-delete-accept]");
+
+    if (modal) {
+        modal.hidden = true;
+    }
+
+    if (acceptButton) {
+        delete acceptButton.dataset.orderDeleteType;
+        delete acceptButton.dataset.orderDeleteId;
     }
 
     document.body.classList.remove("admin-modal-open");
@@ -1135,5 +1499,34 @@ function deleteProduct(productId) {
         closeCatalogDeleteModal();
         console.error('Error:', error);
         openAdminMessageModal("Error al eliminar", "Error al eliminar: " + error.message, "error");
+    });
+}
+
+function deleteOrder(orderType, orderId) {
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
+    const endpoint = orderType === "copisteria"
+        ? `/admin/pedidos/copisteria/${orderId}/eliminar`
+        : `/admin/pedidos/tienda/${orderId}/eliminar`;
+
+    fetch(endpoint, {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": csrfToken
+        }
+    })
+    .then(response => {
+        closeOrderDeleteModal();
+
+        if (!response.ok) {
+            throw new Error("No se ha podido eliminar el pedido.");
+        }
+
+        const activeTabButton = document.querySelector(".admin-buttons .active");
+        switchTab(activeTabButton, "orders");
+    })
+    .catch(error => {
+        closeOrderDeleteModal();
+        console.error("Error:", error);
+        openAdminMessageModal("Error al eliminar", error.message, "error");
     });
 }

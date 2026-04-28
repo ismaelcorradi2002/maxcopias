@@ -29,7 +29,10 @@ public record PedidoAdminVista(
     String archivoDescargaUrl,
     String codigoRecoger,
     String resumenProductos,
-    String usuarioNombre
+    String usuarioNombre,
+    boolean eliminado,
+    LocalDateTime fechaEliminacion,
+    String eliminadoPor
 ) {
 }
 

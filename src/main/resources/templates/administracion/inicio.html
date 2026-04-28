@@ -3,6 +3,7 @@
 <head>
     <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Panel administrador', '/css/cuenta.css')}"></th:block>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/worker.css}">
 
 </head>
 <body class="account-page admin-page">
@@ -37,22 +38,75 @@
                         </div>
                     </div>
 
+                    <div class="worker-counter-groups admin-counter-groups" aria-label="Resumen de pedidos por area">
+                        <section class="worker-counter-group">
+                            <header>
+                                <span>Copisteria</span>
+                                <strong>Pedidos de impresion</strong>
+                            </header>
+                            <div class="worker-summary-grid">
+                                <article class="worker-summary-card">
+                                    <span>Pendientes</span>
+                                    <strong th:text="${contadoresCopisteria.pendientes}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Preparando</span>
+                                    <strong th:text="${contadoresCopisteria.preparando}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Listos</span>
+                                    <strong th:text="${contadoresCopisteria.listos}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Entregados</span>
+                                    <strong th:text="${contadoresCopisteria.entregados}">0</strong>
+                                </article>
+                            </div>
+                        </section>
+
+                        <section class="worker-counter-group worker-counter-group-store">
+                            <header>
+                                <span>Tienda</span>
+                                <strong>Pedidos de productos</strong>
+                            </header>
+                            <div class="worker-summary-grid">
+                                <article class="worker-summary-card">
+                                    <span>Pendientes</span>
+                                    <strong th:text="${contadoresTienda.pendientes}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Preparando</span>
+                                    <strong th:text="${contadoresTienda.preparando}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Listos</span>
+                                    <strong th:text="${contadoresTienda.listos}">0</strong>
+                                </article>
+                                <article class="worker-summary-card">
+                                    <span>Entregados</span>
+                                    <strong th:text="${contadoresTienda.entregados}">0</strong>
+                                </article>
+                            </div>
+                        </section>
+                    </div>
+
                     <section class="table-section" aria-labelledby="admin-table-title">
                         <div class="table-section-header">
                             <div>
                                 <h2 id="admin-table-title">Gestion del sistema</h2>
                                 <p>Alterna entre usuarios y productos sin salir del panel.</p>
                             </div>
-                            <div class="admin-buttons" role="tablist" aria-label="Secciones del panel">
+                            <div class="admin-buttons admin-panel-nav" role="navigation" aria-label="Secciones del panel">
                                 <button class="button button-primary active" type="button" data-tab="users" onclick="switchTab(this, 'users')">Usuarios</button>
                                 <button class="button button-primary" type="button" data-tab="products" onclick="switchTab(this, 'products')">Productos</button>
                                 <button class="button button-primary" type="button" data-tab="categories" onclick="switchTab(this, 'categories')">Categorías</button>
                                 <button class="button button-primary" type="button" data-tab="orders" onclick="switchTab(this, 'orders')">Pedidos</button>
-
+                                <a th:href="@{/admin/finanzas}" class="button button-primary admin-panel-link">Finanzas</a>
                             </div>
                         </div>
 
                         <div th:if="${roleUpdated}" class="admin-alert">Rol actualizado correctamente.</div>
+                        <div th:if="${roleProtected}" class="admin-alert admin-alert-error">No puedes cambiar el rol del unico administrador activo.</div>
 
                         <div class="table-container">
                             <div class="admin-loading">Cargando datos...</div>

@@ -1,9 +1,8 @@
 package com.maxcopias.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,12 +34,21 @@ public class PedidoTienda {
     @Column(precision = 10, scale = 2)
     private BigDecimal total = BigDecimal.ZERO;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = EstadoPedidoTiendaConverter.class)
     @Column(nullable = false, length = 30)
     private EstadoPedidoTienda estado = EstadoPedidoTienda.PENDIENTE;
 
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
+
+    @Column(nullable = false)
+    private boolean eliminado = false;
+
+    @Column(name = "fecha_eliminacion")
+    private LocalDateTime fechaEliminacion;
+
+    @Column(name = "eliminado_por", length = 160)
+    private String eliminadoPor;
 
     @PrePersist
     protected void onCreate() {
@@ -117,5 +125,29 @@ public class PedidoTienda {
 
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
+    }
+
+    public boolean isEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(boolean eliminado) {
+        this.eliminado = eliminado;
+    }
+
+    public LocalDateTime getFechaEliminacion() {
+        return fechaEliminacion;
+    }
+
+    public void setFechaEliminacion(LocalDateTime fechaEliminacion) {
+        this.fechaEliminacion = fechaEliminacion;
+    }
+
+    public String getEliminadoPor() {
+        return eliminadoPor;
+    }
+
+    public void setEliminadoPor(String eliminadoPor) {
+        this.eliminadoPor = eliminadoPor;
     }
 }
