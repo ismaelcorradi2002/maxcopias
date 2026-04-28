@@ -43,6 +43,14 @@ public class Bdinit implements CommandLineRunner {
                 "600 000 001", 
                 "carlos",
                 Rol.ROLE_USER
+            ),
+            new UsuarioSeed(
+                "Trabajador", 
+                "Usuario", 
+                "worker@gmail.com", 
+                "600 000 001", 
+                "worker",
+                Rol.ROLE_WORKER
             )
             );
 
