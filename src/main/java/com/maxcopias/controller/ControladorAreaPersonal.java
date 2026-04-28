@@ -470,6 +470,28 @@ public class ControladorAreaPersonal {
         return "redirect:/admin?tab=orders";
     }
 
+    @PostMapping("/admin/pedidos/copisteria/estado/bulk")
+    @ResponseBody
+    public Map<String, String> cambiarEstadoCopisteriaBulkAdmin(@RequestParam List<Long> ids, @RequestParam com.maxcopias.model.EstadoPedidoCopisteria estado) {
+        try {
+            servicioPedidosOperativos.cambiarEstadoCopisteriaBulk(ids, estado);
+            return Map.of("success", "true", "message", "Estado actualizado correctamente.");
+        } catch (Exception e) {
+            return Map.of("success", "false", "message", e.getMessage());
+        }
+    }
+
+    @PostMapping("/admin/pedidos/tienda/estado/bulk")
+    @ResponseBody
+    public Map<String, String> cambiarEstadoTiendaBulkAdmin(@RequestParam List<Long> ids, @RequestParam com.maxcopias.model.EstadoPedidoTienda estado) {
+        try {
+            servicioPedidosOperativos.cambiarEstadoTiendaBulk(ids, estado);
+            return Map.of("success", "true", "message", "Estado actualizado correctamente.");
+        } catch (Exception e) {
+            return Map.of("success", "false", "message", e.getMessage());
+        }
+    }
+
     private void populatePersonalAreaModel(Model model, Usuario currentUsuario, FormularioActualizarPerfil profileForm, boolean updated) {
         model.addAttribute("currentUsuario", currentUsuario);
         model.addAttribute("profileForm", profileForm);

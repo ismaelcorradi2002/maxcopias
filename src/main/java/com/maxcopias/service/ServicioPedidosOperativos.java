@@ -76,6 +76,20 @@ public class ServicioPedidosOperativos {
     }
 
     @Transactional
+    public void cambiarEstadoCopisteriaBulk(List<Long> ids, EstadoPedidoCopisteria estado) {
+        for (Long id : ids) {
+            cambiarEstadoCopisteria(id, estado);
+        }
+    }
+
+    @Transactional
+    public void cambiarEstadoTiendaBulk(List<Long> ids, EstadoPedidoTienda estado) {
+        for (Long id : ids) {
+            cambiarEstadoTienda(id, estado);
+        }
+    }
+
+    @Transactional
     public void eliminarPedidoCopisteria(Long pedidoId, String eliminadoPor) {
         PedidoCopisteria pedido = repositorioPedidoCopisteria.findByIdAndEliminadoFalse(pedidoId)
             .orElseThrow(() -> new IllegalArgumentException("No existe el pedido de copisteria indicado."));

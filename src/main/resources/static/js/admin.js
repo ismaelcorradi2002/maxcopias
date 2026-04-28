@@ -685,10 +685,27 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                         </select>
                     </label>
                 </div>
+                <div class="admin-bulk-toolbar" data-admin-bulk-toolbar="${type}">
+                    <label class="admin-bulk-checkbox-label">
+                        <input type="checkbox" data-admin-select-all="${type}">
+                        <span>Seleccionar todos</span>
+                    </label>
+                    <div class="admin-bulk-actions">
+                        <span data-admin-bulk-count="${type}">0 seleccionados</span>
+                        <select class="worker-select" data-admin-bulk-status="${type}">
+                            <option value="">Cambiar estado a...</option>
+                            ${getOrderStateOptions(type, "")}
+                        </select>
+                        <button type="button" class="button button-primary" data-admin-bulk-apply="${type}">Aplicar</button>
+                    </div>
+                </div>
                 <div class="worker-table-wrap">
                     <table class="worker-table admin-orders-split-table">
                         <thead>
                             <tr>
+                                <th class="worker-col-checkbox">
+                                    <input type="checkbox" data-admin-select-all="${type}">
+                                </th>
                                 <th class="worker-col-id">ID</th>
                                 <th>Cliente</th>
                                 <th>Contacto</th>
@@ -710,6 +727,9 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                         <tbody>
                             ${visibleOrders.map(order => `
                                 <tr class="${order.eliminado ? "admin-order-row-deleted" : ""}">
+                                    <td class="worker-col-checkbox">
+                                        <input type="checkbox" data-admin-order-checkbox="${type}" value="${order.id}" ${order.eliminado ? "disabled" : ""}>
+                                    </td>
                                     <td class="worker-col-id">${def(order.id)}</td>
                                     <td>${def(order.cliente)}</td>
                                     <td class="worker-col-contact">
@@ -811,6 +831,8 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
         bindPanelEvents("copisteria");
         bindPanelEvents("tienda");
         initAdminOrderDeleteButtons();
+        initAdminBulkActions("copisteria");
+        initAdminBulkActions("tienda");
     }
 
     paintOrders();
@@ -1532,4 +1554,97 @@ function deleteOrder(orderType, orderId) {
         console.error("Error:", error);
         openAdminMessageModal("Error al eliminar", error.message, "error");
     });
+}
+
+function initAdminBulkActions(type) {
+    const board = document.querySelector("[data-orders-board]");
+    if (!board) return;
+
+    const selectAllChecks = board.querySelectorAll(`[data-admin-select-all="${type}"]`);
+    const checkboxes = board.querySelectorAll(`[data-admin-order-checkbox="${type}"]`);
+    const bulkStatusSelect = board.querySelector(`[data-admin-bulk-status="${type}"]`);
+    const bulkApplyButton = board.querySelector(`[data-admin-bulk-apply="${type}"]`);
+    const bulkCountLabel = board.querySelector(`[data-admin-bulk-count="${type}"]`);
+    const toolbar = board.querySelector(`[data-admin-bulk-toolbar="${type}"]`);
+
+    if (!checkboxes.length || !bulkApplyButton) return;
+
+    function updateBulkCount() {
+        const selected = Array.from(checkboxes).filter(cb => cb.checked);
+        if (bulkCountLabel) {
+            bulkCountLabel.textContent = `${selected.length} seleccionado${selected.length !== 1 ? 's' : ''}`;
+        }
+        if (toolbar) {
+            toolbar.classList.toggle('has-selection', selected.length > 0);
+        }
+        selectAllChecks.forEach(sa => {
+            sa.checked = selected.length === checkboxes.length && checkboxes.length > 0;
+            sa.indeterminate = selected.length > 0 && selected.length < checkboxes.length;
+        });
+    }
+
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateBulkCount);
+    });
+
+    selectAllChecks.forEach(sa => {
+        sa.addEventListener('change', function () {
+            const checked = this.checked;
+            checkboxes.forEach(cb => {
+                if (!cb.disabled) cb.checked = checked;
+            });
+            updateBulkCount();
+        });
+    });
+
+    bulkApplyButton.addEventListener('click', function () {
+        const selectedIds = Array.from(checkboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        if (selectedIds.length === 0) {
+            openAdminMessageModal("Sin selección", "Selecciona al menos un pedido.", "error");
+            return;
+        }
+
+        const newStatus = bulkStatusSelect?.value;
+        if (!newStatus) {
+            openAdminMessageModal("Sin estado", "Selecciona un nuevo estado.", "error");
+            return;
+        }
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
+        const endpoint = type === "copisteria"
+            ? "/admin/pedidos/copisteria/estado/bulk"
+            : "/admin/pedidos/tienda/estado/bulk";
+
+        const formData = new URLSearchParams();
+        selectedIds.forEach(id => formData.append("ids", id));
+        formData.append("estado", newStatus);
+
+        fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRF-TOKEN": csrfToken
+            },
+            body: formData.toString()
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success === "true") {
+                const activeTabButton = document.querySelector(".admin-buttons .active");
+                switchTab(activeTabButton, "orders");
+                openAdminMessageModal("Estado actualizado", data.message || "Pedidos actualizados correctamente.");
+            } else {
+                openAdminMessageModal("Error", data.message || "No se pudo actualizar.", "error");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            openAdminMessageModal("Error", "Error al actualizar pedidos.", "error");
+        });
+    });
+
+    updateBulkCount();
 }

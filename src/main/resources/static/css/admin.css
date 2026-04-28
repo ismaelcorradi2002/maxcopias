@@ -397,6 +397,94 @@
     background: rgba(255, 244, 244, 0.68);
 }
 
+.admin-bulk-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(93, 187, 255, 0.12);
+    background: linear-gradient(135deg, rgba(247, 251, 255, 0.94), rgba(235, 247, 255, 0.94));
+}
+
+.admin-bulk-toolbar .admin-bulk-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #61728b;
+    font-size: 0.86rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.admin-bulk-toolbar .admin-bulk-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #3aa6ff;
+    cursor: pointer;
+}
+
+.admin-bulk-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-bulk-actions span {
+    color: #61728b;
+    font-size: 0.84rem;
+    font-weight: 800;
+}
+
+.admin-bulk-actions .worker-select {
+    min-height: 38px;
+    padding: 0 34px 0 12px;
+    border: 1px solid rgba(93, 187, 255, 0.24);
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(239, 248, 255, 0.98));
+    color: #13233f;
+    font-weight: 800;
+    font-size: 0.88rem;
+    cursor: pointer;
+    appearance: none;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #1d6fb8 50%),
+        linear-gradient(135deg, #1d6fb8 50%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(239, 248, 255, 0.98));
+    background-position:
+        calc(100% - 14px) 14px,
+        calc(100% - 9px) 14px,
+        0 0;
+    background-size:
+        5px 5px,
+        5px 5px,
+        100% 100%;
+    background-repeat: no-repeat;
+}
+
+.admin-bulk-actions .button {
+    min-height: 38px;
+    padding: 0 16px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+}
+
+.worker-col-checkbox {
+    width: 42px;
+    text-align: center;
+}
+
+.worker-col-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #3aa6ff;
+    cursor: pointer;
+}
+
+.admin-orders-split-table tbody tr:has(.worker-col-checkbox input:checked) {
+    background: rgba(93, 187, 255, 0.1);
+}
+
 .admin-finance-section {
     margin-top: 0;
 }
