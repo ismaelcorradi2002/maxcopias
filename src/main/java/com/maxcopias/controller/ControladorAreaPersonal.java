@@ -456,6 +456,18 @@ public class ControladorAreaPersonal {
         return "redirect:/admin";
     }
 
+    @PostMapping("/admin/pedidos/copisteria/{id}/estado")
+    public String cambiarEstadoCopisteriaAdmin(@PathVariable Long id, @RequestParam com.maxcopias.model.EstadoPedidoCopisteria estado) {
+        servicioPedidosOperativos.cambiarEstadoCopisteria(id, estado);
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/admin/pedidos/tienda/{id}/estado")
+    public String cambiarEstadoTiendaAdmin(@PathVariable Long id, @RequestParam com.maxcopias.model.EstadoPedidoTienda estado) {
+        servicioPedidosOperativos.cambiarEstadoTienda(id, estado);
+        return "redirect:/admin";
+    }
+
     private void populatePersonalAreaModel(Model model, Usuario currentUsuario, FormularioActualizarPerfil profileForm, boolean updated) {
         model.addAttribute("currentUsuario", currentUsuario);
         model.addAttribute("profileForm", profileForm);

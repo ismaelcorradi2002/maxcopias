@@ -731,7 +731,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                                         `}
                                     <td class="worker-col-date">${formatAdminDate(order.fechaCreacion)}</td>
                                     <td class="worker-col-status">
-                                        <form action="${isCopisteria ? `/worker/copisteria/${order.id}/estado` : `/worker/tienda/${order.id}/estado`}" method="post" class="worker-status-form">
+                                        <form action="${isCopisteria ? `/admin/pedidos/copisteria/${order.id}/estado` : `/admin/pedidos/tienda/${order.id}/estado`}" method="post" class="worker-status-form">
                                             <input type="hidden" name="_csrf" value="${csrfToken}">
                                             <select name="estado" class="worker-select" onchange="this.form.submit()" ${order.eliminado ? "disabled" : ""}>
                                                 ${getOrderStateOptions(type, order.estado)}
