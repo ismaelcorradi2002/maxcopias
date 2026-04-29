@@ -1,8 +1,11 @@
 package com.maxcopias.controller;
 
+import com.maxcopias.dto.DetallePedidoVista;
 import com.maxcopias.model.EstadoPedidoCopisteria;
 import com.maxcopias.model.EstadoPedidoTienda;
 import com.maxcopias.model.Oferta;
+import com.maxcopias.model.PedidoCopisteria;
+import com.maxcopias.model.PedidoTienda;
 import com.maxcopias.model.TipoOferta;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.service.ServicioOferta;
@@ -12,6 +15,7 @@ import com.maxcopias.service.ServicioUsuario;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -82,6 +86,51 @@ public class ControladorTrabajador {
         return "trabajador/pedidos-tienda";
     }
 
+    @GetMapping("/worker/pedidos/{id}")
+    public String detallePedidoWorker(
+        @PathVariable Long id,
+        @RequestParam String tipo,
+        Authentication authentication,
+        Model model
+    ) {
+        Usuario currentUsuario = servicioUsuario.findRequiredByEmail(authentication.getName());
+        boolean esCopisteria = "copisteria".equalsIgnoreCase(tipo);
+
+        populateWorkerBase(model, currentUsuario, esCopisteria ? "copisteria" : "tienda");
+
+        if (esCopisteria) {
+            PedidoCopisteria pedido = servicioPedidosOperativos.obtenerPedidoCopisteriaActivo(id);
+            DetallePedidoVista detalle = servicioPedidosOperativos.construirDetallePedidoCopisteria(pedido);
+            model.addAttribute("detallePedido", detalle);
+            model.addAttribute("estadoOptions", EstadoPedidoCopisteria.values());
+            model.addAttribute("estadoAction", "/worker/pedidos/" + id + "/estado");
+            model.addAttribute("tipoPedido", "copisteria");
+            model.addAttribute("timelineStates", EstadoPedidoCopisteria.values());
+            model.addAttribute("currentStepIndex", Math.max(0, IntStream.range(0, EstadoPedidoCopisteria.values().length)
+                .filter(index -> EstadoPedidoCopisteria.values()[index] == pedido.getEstado())
+                .findFirst()
+                .orElse(0)));
+        } else {
+            PedidoTienda pedido = servicioPedidosOperativos.obtenerPedidoTiendaActivo(id);
+            DetallePedidoVista detalle = servicioPedidosOperativos.construirDetallePedidoTienda(pedido);
+            model.addAttribute("detallePedido", detalle);
+            model.addAttribute("estadoOptions", EstadoPedidoTienda.values());
+            model.addAttribute("estadoAction", "/worker/pedidos/" + id + "/estado");
+            model.addAttribute("tipoPedido", "tienda");
+            model.addAttribute("timelineStates", EstadoPedidoTienda.values());
+            model.addAttribute("currentStepIndex", Math.max(0, IntStream.range(0, EstadoPedidoTienda.values().length)
+                .filter(index -> EstadoPedidoTienda.values()[index] == pedido.getEstado())
+                .findFirst()
+                .orElse(0)));
+        }
+
+        model.addAttribute("panelTipo", "worker");
+        model.addAttribute("backUrl", esCopisteria ? "/worker/pedidos-copisteria" : "/worker/pedidos-tienda");
+        model.addAttribute("backLabel", esCopisteria ? "Volver a pedidos de copisteria" : "Volver a pedidos de tienda");
+        model.addAttribute("pageTitle", "Maxcopias | Detalle pedido");
+        return "pedidos/detalle";
+    }
+
     @GetMapping("/worker/ofertas")
     public String ofertas(Authentication authentication, Model model) {
         Usuario currentUsuario = servicioUsuario.findRequiredByEmail(authentication.getName());
@@ -113,6 +162,21 @@ public class ControladorTrabajador {
     public String eliminarPedidoTienda(@PathVariable Long id, Authentication authentication) {
         servicioPedidosOperativos.eliminarPedidoTienda(id, authentication.getName());
         return "redirect:/worker/pedidos-tienda";
+    }
+
+    @PostMapping("/worker/pedidos/{id}/estado")
+    public String cambiarEstadoDesdeDetalleWorker(
+        @PathVariable Long id,
+        @RequestParam String tipo,
+        @RequestParam String estado
+    ) {
+        if ("copisteria".equalsIgnoreCase(tipo)) {
+            servicioPedidosOperativos.cambiarEstadoCopisteria(id, EstadoPedidoCopisteria.valueOf(estado));
+            return "redirect:/worker/pedidos/" + id + "?tipo=copisteria";
+        }
+
+        servicioPedidosOperativos.cambiarEstadoTienda(id, EstadoPedidoTienda.valueOf(estado));
+        return "redirect:/worker/pedidos/" + id + "?tipo=tienda";
     }
 
     @PostMapping("/worker/productos/{id}/activo")

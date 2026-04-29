@@ -126,6 +126,10 @@ function syncModernSelect(select) {
         label.classList.toggle("is-placeholder", !selectedOption.value);
     }
 
+    if (selectedOption) {
+        wrapper.dataset.currentValue = selectedOption.value || "";
+    }
+
     options.forEach(function (option) {
         const isSelected = option.dataset.optionValue === select.value;
         option.classList.toggle("is-selected", isSelected);

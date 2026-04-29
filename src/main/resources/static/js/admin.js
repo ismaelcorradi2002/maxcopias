@@ -569,6 +569,24 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
         return value != null && value !== "" ? value : "-";
     }
 
+    function stateLabel(value) {
+        const labels = {
+            PENDIENTE: "Pendiente",
+            EN_PREPARACION: "En preparacion",
+            LISTO_PARA_RECOGER: "Listo para recoger",
+            ENTREGADO: "Entregado",
+            CANCELADO: "Cancelado"
+        };
+        return labels[value] || def(value);
+    }
+
+    function stateBadgeClass(value) {
+        if (value === "ENTREGADO") return "worker-state-badge is-done";
+        if (value === "LISTO_PARA_RECOGER") return "worker-state-badge is-ready";
+        if (value === "CANCELADO") return "worker-state-badge is-cancelled";
+        return "worker-state-badge";
+    }
+
     function formatOrderStatus(status) {
         const labels = {
             PENDIENTE: "Pendiente",
@@ -600,12 +618,9 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
 
         const archivoNombre = def(order.archivoNombre);
         const verUrl = order.archivoDescargaUrl;
-        const descargarUrl = `${order.archivoDescargaUrl}?download=true`;
-
         return `
             <div class="worker-file-actions" title="${archivoNombre}">
-                <a class="button button-secondary-dark worker-file-button" href="${verUrl}" target="_blank" rel="noopener noreferrer">Imprimir</a>
-                <a class="button button-primary worker-file-button" href="${descargarUrl}">Descargar</a>
+                <a class="button button-secondary-dark worker-file-button" href="${verUrl}" target="_blank" rel="noopener noreferrer">Abrir</a>
             </div>
         `;
     }
@@ -692,7 +707,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                     </label>
                     <div class="admin-bulk-actions">
                         <span data-admin-bulk-count="${type}">0 seleccionados</span>
-                        <select class="worker-select" data-admin-bulk-status="${type}">
+                        <select class="worker-select select-modern" data-admin-bulk-status="${type}">
                             <option value="">Cambiar estado a...</option>
                             ${getOrderStateOptions(type, "")}
                         </select>
@@ -700,15 +715,13 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                     </div>
                 </div>
                 <div class="worker-table-wrap">
-                    <table class="worker-table admin-orders-split-table">
+                    <table class="worker-table worker-table-compact admin-orders-split-table">
                         <thead>
                             <tr>
                                 <th class="worker-col-checkbox">
                                     <input type="checkbox" data-admin-select-all="${type}">
                                 </th>
-                                <th class="worker-col-id">ID</th>
                                 <th>Cliente</th>
-                                <th>Contacto</th>
                                 ${isCopisteria
                                     ? `
                                         <th class="worker-col-job">Trabajo</th>
@@ -719,9 +732,8 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                                         <th>Productos</th>
                                         <th class="worker-col-price">Total</th>
                                     `}
-                                <th class="worker-col-date">Fecha</th>
                                 <th class="worker-col-status">Estado</th>
-                                <th class="worker-col-status">Eliminar</th>
+                                <th class="worker-col-actions">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -730,10 +742,8 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                                     <td class="worker-col-checkbox">
                                         <input type="checkbox" data-admin-order-checkbox="${type}" value="${order.id}" ${order.eliminado ? "disabled" : ""}>
                                     </td>
-                                    <td class="worker-col-id">${def(order.id)}</td>
-                                    <td>${def(order.cliente)}</td>
-                                    <td class="worker-col-contact">
-                                        <span class="worker-cell-ellipsis">${def(order.email)}</span>
+                                    <td>
+                                        <span class="worker-cell-title">${def(order.cliente)}</span>
                                         <small>${def(order.telefono)}</small>
                                     </td>
                                     ${isCopisteria
@@ -749,16 +759,20 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                                             <td>${def(order.resumenProductos)}</td>
                                             <td class="worker-col-price">${order.total != null ? `${order.total} €` : "-"}</td>
                                         `}
-                                    <td class="worker-col-date">${formatAdminDate(order.fechaCreacion)}</td>
                                     <td class="worker-col-status">
-                                        <form action="${isCopisteria ? `/admin/pedidos/copisteria/${order.id}/estado` : `/admin/pedidos/tienda/${order.id}/estado`}" method="post" class="worker-status-form">
-                                            <input type="hidden" name="_csrf" value="${csrfToken}">
-                                            <select name="estado" class="worker-select" onchange="this.form.submit()" ${order.eliminado ? "disabled" : ""}>
-                                                ${getOrderStateOptions(type, order.estado)}
-                                            </select>
-                                        </form>
+                                        <div class="worker-status-stack">
+                                            <form action="${isCopisteria ? `/admin/pedidos/copisteria/${order.id}/estado` : `/admin/pedidos/tienda/${order.id}/estado`}" method="post" class="worker-status-form">
+                                                <input type="hidden" name="_csrf" value="${csrfToken}">
+                                                <select name="estado" class="worker-select select-modern" onchange="this.form.submit()" ${order.eliminado ? "disabled" : ""}>
+                                                    ${getOrderStateOptions(type, order.estado)}
+                                                </select>
+                                            </form>
+                                        </div>
                                     </td>
-                                    <td class="worker-col-status">
+                                    <td class="worker-actions-cell worker-col-actions">
+                                        <a class="button button-outline-dark" href="/admin/pedidos/${order.id}?tipo=${type}">
+                                            Ver detalle
+                                        </a>
                                         ${order.eliminado
                                             ? `<span class="admin-role-badge">Eliminado</span>`
                                             : `

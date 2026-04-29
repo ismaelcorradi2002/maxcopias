@@ -40,14 +40,14 @@
                         </div>
 
                         <div class="worker-table-wrap">
-                            <table class="worker-table" data-worker-table="productos" data-worker-paginated="true">
+                            <table class="worker-table worker-products-table" data-worker-table="productos" data-worker-paginated="true">
                                 <thead>
                                 <tr>
                                     <th class="worker-col-id">ID</th>
                                     <th>Producto</th>
                                     <th class="worker-col-price">Precio</th>
                                     <th class="worker-col-count">Stock</th>
-                                    <th>Categorias</th>
+                                    <th class="worker-col-categories">Categorias</th>
                                     <th class="worker-col-status">Estado</th>
                                     <th class="worker-col-actions">Acciones</th>
                                 </tr>
@@ -58,11 +58,11 @@
                                     <td th:text="${producto.nombre}">Cuaderno A4</td>
                                     <td class="worker-col-price" th:text="${producto.precio} + ' €'">2.50 €</td>
                                     <td class="worker-col-count" th:text="${producto.stock}">10</td>
-                                    <td class="worker-col-status">
+                                    <td class="worker-col-categories">
                                         <span th:each="categoria, iter : ${producto.categorias}"
                                               th:text="${categoria.nombre + (!iter.last ? ', ' : '')}">Escolar</span>
                                     </td>
-                                    <td>
+                                    <td class="worker-col-status">
                                         <span class="worker-status-pill" th:classappend="${producto.activo} ? ' is-active' : ' is-inactive'"
                                               th:text="${producto.activo} ? 'Activo' : 'Inactivo'">Activo</span>
                                     </td>

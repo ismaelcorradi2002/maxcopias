@@ -5,6 +5,9 @@ package com.maxcopias.controller;
  */
 import com.maxcopias.dto.FormularioActualizarPerfil;
 import com.maxcopias.dto.PedidoAdminVista;
+import com.maxcopias.dto.DetallePedidoVista;
+import com.maxcopias.model.EstadoPedidoCopisteria;
+import com.maxcopias.model.EstadoPedidoTienda;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.service.ServicioUsuario;
 import com.maxcopias.model.Rol;
@@ -29,6 +32,7 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.time.YearMonth;
+import java.util.stream.IntStream;
 
 import com.maxcopias.model.Producto;
 import com.maxcopias.model.Categoria;
@@ -162,6 +166,51 @@ public class ControladorAreaPersonal {
         model.addAttribute("resumenFinanciero", servicioPedidosOperativos.obtenerResumenFinancieroMensual(anioSeleccionado, mesSeleccionado));
         model.addAttribute("pageTitle", "Maxcopias | Finanzas admin");
         return "administracion/finanzas";
+    }
+
+    @GetMapping("/admin/pedidos/{id}")
+    public String detallePedidoAdmin(
+        @PathVariable Long id,
+        @RequestParam String tipo,
+        Authentication authentication,
+        Model model
+    ) {
+        Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+        boolean esCopisteria = "copisteria".equalsIgnoreCase(tipo);
+
+        model.addAttribute("currentUsuario", currentUsuario);
+        model.addAttribute("panelTipo", "admin");
+        model.addAttribute("backUrl", "/admin?tab=orders");
+        model.addAttribute("backLabel", "Volver a pedidos");
+
+        if (esCopisteria) {
+            PedidoCopisteria pedido = servicioPedidosOperativos.obtenerPedidoCopisteriaIncluyendoEliminados(id);
+            DetallePedidoVista detalle = servicioPedidosOperativos.construirDetallePedidoCopisteria(pedido);
+            model.addAttribute("detallePedido", detalle);
+            model.addAttribute("estadoOptions", EstadoPedidoCopisteria.values());
+            model.addAttribute("estadoAction", "/admin/pedidos/" + id + "/estado");
+            model.addAttribute("tipoPedido", "copisteria");
+            model.addAttribute("timelineStates", EstadoPedidoCopisteria.values());
+            model.addAttribute("currentStepIndex", Math.max(0, IntStream.range(0, EstadoPedidoCopisteria.values().length)
+                .filter(index -> EstadoPedidoCopisteria.values()[index] == pedido.getEstado())
+                .findFirst()
+                .orElse(0)));
+        } else {
+            PedidoTienda pedido = servicioPedidosOperativos.obtenerPedidoTiendaIncluyendoEliminados(id);
+            DetallePedidoVista detalle = servicioPedidosOperativos.construirDetallePedidoTienda(pedido);
+            model.addAttribute("detallePedido", detalle);
+            model.addAttribute("estadoOptions", EstadoPedidoTienda.values());
+            model.addAttribute("estadoAction", "/admin/pedidos/" + id + "/estado");
+            model.addAttribute("tipoPedido", "tienda");
+            model.addAttribute("timelineStates", EstadoPedidoTienda.values());
+            model.addAttribute("currentStepIndex", Math.max(0, IntStream.range(0, EstadoPedidoTienda.values().length)
+                .filter(index -> EstadoPedidoTienda.values()[index] == pedido.getEstado())
+                .findFirst()
+                .orElse(0)));
+        }
+
+        model.addAttribute("pageTitle", "Maxcopias | Detalle pedido admin");
+        return "pedidos/detalle";
     }
 
     /**
@@ -468,6 +517,21 @@ public class ControladorAreaPersonal {
     public String cambiarEstadoTiendaAdmin(@PathVariable Long id, @RequestParam com.maxcopias.model.EstadoPedidoTienda estado) {
         servicioPedidosOperativos.cambiarEstadoTienda(id, estado);
         return "redirect:/admin?tab=orders";
+    }
+
+    @PostMapping("/admin/pedidos/{id}/estado")
+    public String cambiarEstadoDetalleAdmin(
+        @PathVariable Long id,
+        @RequestParam String tipo,
+        @RequestParam String estado
+    ) {
+        if ("copisteria".equalsIgnoreCase(tipo)) {
+            servicioPedidosOperativos.cambiarEstadoCopisteria(id, EstadoPedidoCopisteria.valueOf(estado));
+            return "redirect:/admin/pedidos/" + id + "?tipo=copisteria";
+        }
+
+        servicioPedidosOperativos.cambiarEstadoTienda(id, EstadoPedidoTienda.valueOf(estado));
+        return "redirect:/admin/pedidos/" + id + "?tipo=tienda";
     }
 
     @PostMapping("/admin/pedidos/copisteria/estado/bulk")

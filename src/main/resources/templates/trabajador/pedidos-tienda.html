@@ -43,43 +43,43 @@
                         </div>
 
                         <div class="worker-table-wrap">
-                            <table class="worker-table" data-worker-table="tienda" data-worker-paginated="true">
+                            <table class="worker-table worker-table-compact" data-worker-table="tienda" data-worker-paginated="true">
                                 <thead>
                                 <tr>
-                                    <th class="worker-col-id">ID</th>
                                     <th>Cliente</th>
-                                    <th>Contacto</th>
                                     <th>Productos</th>
                                     <th class="worker-col-price">Total</th>
-                                    <th class="worker-col-date">Fecha</th>
                                     <th class="worker-col-status">Estado</th>
-                                    <th class="worker-col-status">Eliminar</th>
+                                    <th class="worker-col-actions">Acciones</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="pedido : ${pedidosTienda}" th:data-status="${pedido.estado.name()}"
                                     th:data-date="${#temporals.format(pedido.fechaCreacion, 'yyyy-MM-dd')}">
-                                    <td class="worker-col-id" th:text="${pedido.id}">1</td>
-                                    <td th:text="${pedido.clienteNombre}">Cliente</td>
-                                    <td class="worker-col-contact">
-                                        <span class="worker-cell-ellipsis" th:text="${pedido.email}">email</span>
+                                    <td>
+                                        <span class="worker-cell-title" th:text="${pedido.clienteNombre}">Cliente</span>
                                         <small th:text="${pedido.telefono}">telefono</small>
                                     </td>
                                     <td th:text="${pedido.resumenProductos}">Productos</td>
                                     <td class="worker-col-price" th:text="${pedido.total} + ' €'">0 €</td>
-                                    <td class="worker-col-date" th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
                                     <td class="worker-col-status">
-                                        <form th:action="@{/worker/tienda/{id}/estado(id=${pedido.id})}" method="post" class="worker-status-form">
-                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                            <select name="estado" class="worker-select" onchange="this.form.submit()">
-                                                <option th:each="estado : ${estadosTienda}"
-                                                        th:value="${estado.name()}"
-                                                        th:text="${estado.label}"
-                                                        th:selected="${estado == pedido.estado}">Pendiente</option>
-                                            </select>
-                                        </form>
+                                        <div class="worker-status-stack">
+                                            <form th:action="@{/worker/tienda/{id}/estado(id=${pedido.id})}" method="post" class="worker-status-form">
+                                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                                <select name="estado" class="worker-select select-modern" onchange="this.form.submit()">
+                                                    <option th:each="estado : ${estadosTienda}"
+                                                            th:value="${estado.name()}"
+                                                            th:text="${estado.label}"
+                                                            th:selected="${estado == pedido.estado}">Pendiente</option>
+                                                </select>
+                                            </form>
+                                        </div>
                                     </td>
-                                    <td class="worker-col-status">
+                                    <td class="worker-actions-cell worker-col-actions">
+                                        <a class="button button-outline-dark"
+                                           th:href="@{/worker/pedidos/{id}(id=${pedido.id},tipo='tienda')}">
+                                            Ver detalle
+                                        </a>
                                         <form th:action="@{/worker/tienda/{id}/eliminar(id=${pedido.id})}" method="post" class="worker-delete-form">
                                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                             <button type="button"

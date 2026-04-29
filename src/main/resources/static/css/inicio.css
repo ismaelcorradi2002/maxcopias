@@ -297,6 +297,13 @@ a {
     transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
+.worker-status-stack .select-modern-menu {
+    right: auto;
+    min-width: 220px;
+    max-height: none;
+    overflow: visible;
+}
+
 .select-modern-dropdown.is-open .select-modern-menu {
     opacity: 1;
     pointer-events: auto;
@@ -313,6 +320,7 @@ a {
     font: inherit;
     font-weight: 850;
     text-align: left;
+    white-space: nowrap;
     cursor: pointer;
     transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
