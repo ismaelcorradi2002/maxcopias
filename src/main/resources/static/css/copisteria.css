@@ -1,4 +1,4 @@
-.copisteria-page {
+﻿.copisteria-page {
     background:
         radial-gradient(circle at top left, rgba(15, 111, 232, 0.08), transparent 24%),
         radial-gradient(circle at top right, rgba(121, 143, 184, 0.1), transparent 20%),
@@ -461,7 +461,7 @@
 }
 
 .service-link-text::after {
-    content: "→";
+    content: "â†’";
     font-size: 1rem;
 }
 
@@ -2386,7 +2386,7 @@
 }
 
 .wizard-option-card-toggle input:checked + .wizard-option-ui::after {
-    content: "✓";
+    content: "âœ“";
     position: absolute;
     top: 16px;
     right: 16px;
@@ -2681,3 +2681,1642 @@
 .wizard-price-total-row strong {
     color: #16345d;
 }
+
+.design-position-grid,
+.design-size-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.design-template-card input:checked + .design-template-ui::after {
+    content: "âœ“";
+}
+
+.design-position-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.design-size-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.design-position-card,
+.design-size-card {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+.design-position-card input,
+.design-size-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.design-position-ui,
+.design-size-ui {
+    display: grid;
+    gap: 8px;
+    min-height: 100%;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(18, 32, 51, 0.1);
+    background: #ffffff;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.design-position-card:hover .design-position-ui,
+.design-size-card:hover .design-size-ui {
+    transform: translateY(-2px);
+    border-color: rgba(15, 111, 232, 0.2);
+    box-shadow: 0 16px 30px rgba(15, 111, 232, 0.1);
+}
+
+.design-position-card input:checked + .design-position-ui,
+.design-size-card input:checked + .design-size-ui {
+    border-color: rgba(15, 111, 232, 0.34);
+    box-shadow: 0 18px 34px rgba(15, 111, 232, 0.12);
+}
+
+.design-preview-card {
+    overflow: hidden;
+}
+
+.design-preview-mockup {
+    padding: 22px;
+    border-radius: 34px;
+    background:
+        radial-gradient(circle at top left, rgba(255, 217, 101, 0.18), transparent 24%),
+        linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.92),
+        0 18px 34px rgba(92, 132, 184, 0.12);
+}
+
+.design-canvas {
+    overflow: hidden;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.design-canvas-copy {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    align-content: end;
+    gap: 12px;
+    min-height: 100%;
+    padding: 26px;
+}
+
+.design-canvas-copy.align-center {
+    justify-items: center;
+}
+
+.design-canvas-copy.align-right {
+    justify-items: end;
+}
+
+.design-canvas-copy.align-center p,
+.design-canvas-copy.align-right p {
+    max-width: 32ch;
+}
+
+.design-canvas-image-slot {
+    position: absolute;
+    inset: 20px auto 20px 20px;
+    width: 34%;
+    min-height: auto;
+    border-radius: 24px;
+    border: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 100%);
+    box-shadow: 0 18px 34px rgba(14, 29, 56, 0.18);
+}
+
+.design-canvas-image-slot.is-empty {
+    border: 1px dashed rgba(255, 255, 255, 0.24);
+}
+
+.design-canvas-image-slot.is-empty .design-canvas-image-placeholder {
+    padding: 12px;
+}
+
+.design-canvas-image {
+    display: block;
+}
+
+.design-canvas.image-left .design-canvas-copy {
+    padding-left: calc(34% + 40px);
+}
+
+.design-canvas.image-right .design-canvas-image-slot {
+    left: auto;
+    right: 20px;
+}
+
+.design-canvas.image-right .design-canvas-copy {
+    padding-right: calc(34% + 40px);
+}
+
+.design-canvas.image-background .design-canvas-image-slot {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    opacity: 0.48;
+}
+
+.design-canvas.image-background .design-canvas-image-slot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 23, 46, 0.16) 0%, rgba(10, 23, 46, 0.42) 100%);
+}
+
+.design-canvas.image-background .design-canvas-copy {
+    background: linear-gradient(180deg, rgba(9, 22, 42, 0.02) 0%, rgba(9, 22, 42, 0.28) 100%);
+}
+
+.design-canvas.size-small .design-canvas-image-slot {
+    width: 24%;
+}
+
+.design-canvas.size-medium .design-canvas-image-slot {
+    width: 34%;
+}
+
+.design-canvas.size-large .design-canvas-image-slot {
+    width: 44%;
+}
+
+.design-canvas.size-small.image-left .design-canvas-copy {
+    padding-left: calc(24% + 38px);
+}
+
+.design-canvas.size-large.image-left .design-canvas-copy {
+    padding-left: calc(44% + 42px);
+}
+
+.design-canvas.size-small.image-right .design-canvas-copy {
+    padding-right: calc(24% + 38px);
+}
+
+.design-canvas.size-large.image-right .design-canvas-copy {
+    padding-right: calc(44% + 42px);
+}
+
+.design-canvas.is-vertical {
+    aspect-ratio: 0.74 / 1;
+    min-height: 520px;
+}
+
+.design-canvas.is-horizontal {
+    aspect-ratio: 1.26 / 0.82;
+    min-height: 360px;
+}
+
+.design-canvas.is-vertical .design-canvas-copy {
+    padding-top: 220px;
+}
+
+.design-canvas.is-horizontal .design-canvas-copy {
+    padding-top: 26px;
+}
+
+.design-canvas.is-horizontal.image-left .design-canvas-copy,
+.design-canvas.is-horizontal.image-right .design-canvas-copy {
+    align-content: center;
+}
+
+.design-canvas h4 {
+    overflow-wrap: anywhere;
+    font-size: clamp(1.9rem, 2.8vw, 2.6rem);
+}
+
+.design-canvas p {
+    overflow-wrap: anywhere;
+}
+
+.design-canvas-logo {
+    z-index: 3;
+}
+
+@media (max-width: 820px) {
+    .design-position-grid,
+    .design-size-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .design-preview-mockup {
+        padding: 16px;
+    }
+
+    .design-canvas.is-vertical {
+        min-height: 440px;
+    }
+
+    .design-canvas.is-horizontal {
+        min-height: 300px;
+    }
+
+    .design-canvas.image-left .design-canvas-copy,
+    .design-canvas.image-right .design-canvas-copy,
+    .design-canvas.size-small.image-left .design-canvas-copy,
+    .design-canvas.size-large.image-left .design-canvas-copy,
+    .design-canvas.size-small.image-right .design-canvas-copy,
+    .design-canvas.size-large.image-right .design-canvas-copy {
+        padding-left: 22px;
+        padding-right: 22px;
+        padding-top: 180px;
+    }
+
+    .design-canvas-image-slot,
+    .design-canvas.image-right .design-canvas-image-slot {
+        inset: 18px 18px auto 18px;
+        width: auto;
+        min-height: 132px;
+    }
+
+    .design-canvas.image-background .design-canvas-image-slot {
+        inset: 0;
+        min-height: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .design-canvas-copy {
+        padding: 20px;
+        gap: 10px;
+    }
+
+    .design-canvas.is-vertical .design-canvas-copy,
+    .design-canvas.image-left .design-canvas-copy,
+    .design-canvas.image-right .design-canvas-copy {
+        padding-top: 164px;
+    }
+
+    .design-canvas h4 {
+        font-size: clamp(1.6rem, 7vw, 2.1rem);
+    }
+}
+
+/* Design studio layout refresh */
+.wizard-layout {
+    grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.82fr);
+    gap: 20px;
+}
+
+.design-studio {
+    display: grid;
+    grid-template-columns: minmax(0, 35fr) minmax(0, 35fr) minmax(280px, 30fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.design-studio-panel {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+}
+
+.design-studio-panel-config {
+    align-content: start;
+}
+
+.design-studio-block,
+.design-preview-card,
+.design-side-card {
+    padding: 24px;
+    border-radius: 26px;
+    border: 1px solid rgba(93, 187, 255, 0.16);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(244, 249, 255, 0.98) 100%);
+    box-shadow: 0 22px 48px rgba(92, 152, 214, 0.1);
+}
+
+.design-studio-head {
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.design-editor-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.design-editor-grid .field-group {
+    display: grid;
+    gap: 10px;
+}
+
+.design-editor-grid .field-group label,
+.design-logo-field label {
+    font-weight: 700;
+}
+
+.design-logo-field {
+    display: grid;
+    gap: 10px;
+}
+
+.design-logo-field small {
+    margin: 0;
+}
+
+.design-image-toolbar {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+}
+
+.design-image-toolbar-copy {
+    display: grid;
+    gap: 12px;
+}
+
+.design-image-toolbar-copy p {
+    margin: 0;
+    color: #5e7088;
+    line-height: 1.6;
+}
+
+.design-image-inline-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 22px;
+}
+
+.design-color-palette {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.design-color-swatch {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+}
+
+.design-position-grid,
+.design-size-grid {
+    gap: 14px;
+}
+
+.design-position-ui,
+.design-size-ui,
+.design-orientation-ui,
+.design-template-ui {
+    min-height: 100%;
+}
+
+.design-position-ui {
+    padding: 16px;
+    border-radius: 20px;
+}
+
+.design-size-ui {
+    min-height: 72px;
+    place-items: center;
+    padding: 16px;
+    border-radius: 20px;
+}
+
+.design-orientation-ui {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+}
+
+.design-template-grid {
+    gap: 16px;
+}
+
+.design-template-ui {
+    padding: 18px;
+}
+
+.design-template-preview {
+    min-height: 126px;
+}
+
+.design-preview-card {
+    position: sticky;
+    top: 120px;
+    gap: 20px;
+    overflow: visible;
+}
+
+.design-preview-head {
+    display: grid;
+    gap: 8px;
+}
+
+.design-preview-head h3,
+.design-side-card h3 {
+    margin: 0;
+}
+
+.design-preview-head p,
+.design-side-card p {
+    margin: 0;
+}
+
+.design-preview-mockup {
+    display: grid;
+    place-items: center;
+    min-height: 720px;
+    padding: 28px;
+    border-radius: 30px;
+}
+
+.design-canvas {
+    width: min(100%, 460px);
+    min-width: 0;
+    min-height: 0;
+    margin: 0 auto;
+    isolation: isolate;
+}
+
+.design-canvas.is-vertical {
+    aspect-ratio: 0.75 / 1;
+    min-height: clamp(520px, 58vw, 720px);
+}
+
+.design-canvas.is-horizontal {
+    width: min(100%, 560px);
+    aspect-ratio: 1.28 / 0.82;
+    min-height: clamp(340px, 38vw, 460px);
+}
+
+.design-canvas-copy {
+    min-width: 0;
+    overflow: hidden;
+    gap: 14px;
+    padding: 28px;
+}
+
+.design-canvas-copy.align-center {
+    text-align: center;
+}
+
+.design-canvas-copy.align-right {
+    text-align: right;
+}
+
+.design-canvas h4,
+.design-canvas p {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.design-canvas h4 {
+    font-size: clamp(2rem, 2.2vw, 2.6rem);
+    line-height: 0.96;
+}
+
+.design-canvas p {
+    max-width: 30ch;
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+.design-canvas-copy.align-center p,
+.design-canvas-copy.align-right p {
+    max-width: 34ch;
+}
+
+.design-canvas-copy.is-copy-dense h4 {
+    font-size: clamp(1.72rem, 2vw, 2.22rem);
+}
+
+.design-canvas-copy.is-copy-dense p {
+    font-size: 0.95rem;
+}
+
+.design-canvas-copy.is-copy-compact h4 {
+    font-size: clamp(1.52rem, 1.8vw, 1.95rem);
+}
+
+.design-canvas-copy.is-copy-compact p {
+    font-size: 0.88rem;
+    line-height: 1.48;
+}
+
+.design-canvas-copy.is-copy-compact .design-canvas-badge,
+.design-canvas-copy.is-copy-compact .design-canvas-footer {
+    transform: scale(0.96);
+    transform-origin: left center;
+}
+
+.design-canvas-copy.align-center.is-copy-compact .design-canvas-badge,
+.design-canvas-copy.align-center.is-copy-compact .design-canvas-footer {
+    transform-origin: center;
+}
+
+.design-canvas-copy.align-right.is-copy-compact .design-canvas-badge,
+.design-canvas-copy.align-right.is-copy-compact .design-canvas-footer {
+    transform-origin: right center;
+}
+
+.design-canvas-image-slot {
+    inset: 22px auto 22px 22px;
+    min-width: 0;
+}
+
+.design-canvas.image-left .design-canvas-copy {
+    padding-left: calc(34% + 42px);
+}
+
+.design-canvas.image-right .design-canvas-copy {
+    padding-right: calc(34% + 42px);
+}
+
+.design-canvas.size-small.image-left .design-canvas-copy {
+    padding-left: calc(24% + 38px);
+}
+
+.design-canvas.size-large.image-left .design-canvas-copy {
+    padding-left: calc(44% + 46px);
+}
+
+.design-canvas.size-small.image-right .design-canvas-copy {
+    padding-right: calc(24% + 38px);
+}
+
+.design-canvas.size-large.image-right .design-canvas-copy {
+    padding-right: calc(44% + 46px);
+}
+
+.design-canvas.is-vertical .design-canvas-copy {
+    padding-top: clamp(214px, 34%, 248px);
+}
+
+.design-canvas.is-horizontal .design-canvas-copy {
+    padding-top: 28px;
+}
+
+.design-side-card {
+    gap: 16px;
+}
+
+.design-side-card-highlight {
+    background:
+        radial-gradient(circle at top right, rgba(114, 201, 255, 0.18), transparent 24%),
+        linear-gradient(180deg, rgba(247, 251, 255, 0.99) 0%, rgba(235, 244, 255, 0.99) 100%);
+}
+
+.design-side-total {
+    margin-top: 4px;
+}
+
+.design-side-pages,
+.design-side-lines {
+    margin-top: 0;
+}
+
+.design-side-note {
+    font-size: 0.94rem;
+}
+
+.design-side-meta {
+    margin: 0;
+    display: grid;
+    gap: 12px;
+}
+
+.design-side-meta div {
+    display: grid;
+    gap: 4px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(93, 187, 255, 0.14);
+    background: rgba(240, 247, 255, 0.88);
+}
+
+.design-side-meta dt {
+    color: #73829a;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.design-side-meta dd {
+    margin: 0;
+    color: #16345d;
+    font-weight: 700;
+}
+
+@media (max-width: 1380px) {
+    .design-studio {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .design-studio-panel-summary {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .design-preview-card {
+        position: relative;
+        top: auto;
+    }
+}
+
+@media (max-width: 1120px) {
+    .wizard-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .design-studio {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .design-studio-panel-summary {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .design-preview-mockup {
+        min-height: 600px;
+    }
+}
+
+@media (max-width: 900px) {
+    .design-studio {
+        grid-template-columns: 1fr;
+    }
+
+    .design-studio-panel-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .design-preview-mockup {
+        min-height: 0;
+        padding: 18px;
+    }
+}
+
+@media (max-width: 820px) {
+    .design-editor-grid,
+    .design-template-grid,
+    .design-orientation-grid,
+    .design-position-grid,
+    .design-size-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .design-image-toolbar {
+        grid-template-columns: 1fr;
+        justify-items: start;
+    }
+
+    .design-color-palette {
+        flex-wrap: wrap;
+    }
+
+    .design-canvas,
+    .design-canvas.is-horizontal {
+        width: 100%;
+    }
+
+    .design-canvas.is-vertical {
+        min-height: 480px;
+    }
+
+    .design-canvas.is-horizontal {
+        min-height: 320px;
+    }
+}
+
+@media (max-width: 640px) {
+    .design-studio-block,
+    .design-preview-card,
+    .design-side-card {
+        padding: 18px;
+        border-radius: 22px;
+    }
+
+    .design-preview-mockup {
+        padding: 14px;
+    }
+
+    .design-image-inline-preview {
+        width: 100px;
+        height: 100px;
+    }
+
+    .design-canvas-copy,
+    .design-canvas.is-horizontal .design-canvas-copy,
+    .design-canvas.image-left .design-canvas-copy,
+    .design-canvas.image-right .design-canvas-copy,
+    .design-canvas.size-small.image-left .design-canvas-copy,
+    .design-canvas.size-large.image-left .design-canvas-copy,
+    .design-canvas.size-small.image-right .design-canvas-copy,
+    .design-canvas.size-large.image-right .design-canvas-copy {
+        padding: 18px;
+        padding-top: 164px;
+    }
+
+    .design-canvas.image-background .design-canvas-copy {
+        padding-top: 18px;
+    }
+
+    .design-canvas h4 {
+        font-size: clamp(1.56rem, 7vw, 2rem);
+    }
+
+    .design-canvas p {
+        font-size: 0.92rem;
+    }
+}
+
+/* Final layout override for design editor */
+.wizard-step[data-step-id="designStudio"] {
+    overflow: visible;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio {
+    display: grid;
+    grid-template-columns: minmax(360px, 400px) minmax(0, 1fr) minmax(300px, 340px);
+    gap: 24px;
+    align-items: start;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel {
+    min-width: 0;
+    display: grid;
+    gap: 24px;
+    align-content: start;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-config {
+    grid-template-columns: 1fr;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-preview {
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-summary {
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-block,
+.wizard-step[data-step-id="designStudio"] .design-preview-card,
+.wizard-step[data-step-id="designStudio"] .design-side-card {
+    padding: 24px;
+    border-radius: 24px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-editor-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group,
+.wizard-step[data-step-id="designStudio"] .field-group input,
+.wizard-step[data-step-id="designStudio"] .field-group select,
+.wizard-step[data-step-id="designStudio"] .field-group textarea {
+    width: 100%;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group {
+    display: grid;
+    gap: 10px;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.wizard-step[data-step-id="designStudio"] .wizard-option-card-compact .wizard-option-ui,
+.wizard-step[data-step-id="designStudio"] .design-template-ui,
+.wizard-step[data-step-id="designStudio"] .design-orientation-ui,
+.wizard-step[data-step-id="designStudio"] .design-position-ui,
+.wizard-step[data-step-id="designStudio"] .design-size-ui {
+    min-height: 100%;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-template-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-orientation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-orientation-ui {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-position-grid,
+.wizard-step[data-step-id="designStudio"] .design-size-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-position-ui,
+.wizard-step[data-step-id="designStudio"] .design-size-ui {
+    display: grid;
+    align-content: center;
+    min-height: 88px;
+    padding: 16px;
+    border-radius: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-color-palette {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 12px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-color-swatch {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar-copy {
+    display: grid;
+    gap: 12px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar-copy p {
+    margin: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-card {
+    position: sticky;
+    top: 110px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-head {
+    display: grid;
+    gap: 8px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-head h3,
+.wizard-step[data-step-id="designStudio"] .design-preview-head p {
+    margin: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-stage {
+    display: grid;
+    place-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-mockup {
+    width: 100%;
+    min-height: 640px;
+    padding: 24px;
+    display: grid;
+    place-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas {
+    width: min(100%, 540px);
+    margin: 0 auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas.is-vertical {
+    min-height: 620px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas.is-horizontal {
+    width: min(100%, 620px);
+    min-height: 400px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas-copy {
+    min-width: 0;
+    gap: 14px;
+    padding: 28px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas h4,
+.wizard-step[data-step-id="designStudio"] .design-canvas p {
+    overflow-wrap: anywhere;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas h4 {
+    font-size: clamp(2rem, 2.4vw, 2.7rem);
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas p {
+    max-width: 32ch;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-step-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 28px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-step-actions .button {
+    min-width: 160px;
+}
+
+@media (max-width: 1180px) {
+    .wizard-step[data-step-id="designStudio"] .design-studio {
+        grid-template-columns: minmax(340px, 380px) minmax(0, 1fr);
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-studio-panel-summary {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .wizard-step[data-step-id="designStudio"] .design-studio {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-studio-panel-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-preview-card {
+        position: static;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-preview-mockup {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .wizard-step[data-step-id="designStudio"] .design-template-grid,
+    .wizard-step[data-step-id="designStudio"] .design-orientation-grid,
+    .wizard-step[data-step-id="designStudio"] .design-position-grid,
+    .wizard-step[data-step-id="designStudio"] .design-size-grid,
+    .wizard-step[data-step-id="designStudio"] .design-studio-panel-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-image-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-step-actions {
+        flex-direction: column;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-step-actions .button {
+        width: 100%;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-canvas.is-vertical {
+        min-height: 500px;
+    }
+}
+
+/* Two-column rebuild for design editor */
+.wizard-step[data-step-id="designStudio"] .design-studio,
+.wizard-step[data-step-id="designStudio"] .design-studio * {
+    box-sizing: border-box;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio {
+    grid-template-columns: minmax(520px, 1fr) minmax(420px, 520px);
+    gap: 32px;
+    align-items: start;
+    overflow: visible;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-config {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-rail {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+    align-content: start;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-preview,
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-summary {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-preview {
+    position: sticky;
+    top: 120px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-card,
+.wizard-step[data-step-id="designStudio"] .design-side-card,
+.wizard-step[data-step-id="designStudio"] .design-studio-block {
+    width: 100%;
+    max-width: none;
+    overflow: visible;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-block {
+    padding: 26px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-template-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-editor-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:first-child,
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(2),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(3),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(4),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(5),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(6) {
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-logo-field,
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(2),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(5),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(6) {
+    grid-column: 1 / -1;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group,
+.wizard-step[data-step-id="designStudio"] .field-group input,
+.wizard-step[data-step-id="designStudio"] .field-group select,
+.wizard-step[data-step-id="designStudio"] .field-group textarea {
+    width: 100%;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group textarea {
+    min-height: 128px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-orientation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-orientation-ui {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-position-grid,
+.wizard-step[data-step-id="designStudio"] .design-size-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-position-ui,
+.wizard-step[data-step-id="designStudio"] .design-size-ui {
+    min-height: 82px;
+    padding: 16px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-color-palette {
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-color-swatch {
+    flex: 0 0 auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar {
+    grid-template-columns: 116px minmax(0, 1fr);
+    align-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-card {
+    position: static;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-mockup {
+    min-height: 680px;
+    padding: 28px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas {
+    width: min(100%, 100%);
+    max-width: 520px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas.is-vertical {
+    min-height: 640px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas.is-horizontal {
+    max-width: 520px;
+    min-height: 380px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas-copy {
+    overflow: hidden;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-side-card {
+    padding: 22px 24px;
+}
+
+.wizard-step[data-step-id="designStudio"] .wizard-step-actions {
+    justify-content: space-between;
+}
+
+@media (max-width: 1180px) {
+    .wizard-step[data-step-id="designStudio"] .design-studio {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-studio-panel-rail {
+        order: -1;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-studio-panel-preview {
+        position: static;
+        top: auto;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-preview-mockup {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 820px) {
+    .wizard-step[data-step-id="designStudio"] .design-editor-grid,
+    .wizard-step[data-step-id="designStudio"] .design-template-grid,
+    .wizard-step[data-step-id="designStudio"] .design-orientation-grid,
+    .wizard-step[data-step-id="designStudio"] .design-position-grid,
+    .wizard-step[data-step-id="designStudio"] .design-size-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-image-toolbar {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Clean base rebuild for design editor */
+.wizard-step[data-step-id="designStudio"] .design-studio,
+.wizard-step[data-step-id="designStudio"] .design-studio * {
+    box-sizing: border-box;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio {
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    gap: 40px;
+    align-items: start;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-config,
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-preview {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-block,
+.wizard-step[data-step-id="designStudio"] .design-preview-card {
+    width: 100%;
+    max-width: none;
+    padding: 26px;
+    overflow: hidden;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-head {
+    display: grid;
+    gap: 8px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-head h3,
+.wizard-step[data-step-id="designStudio"] .design-preview-head p {
+    margin: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-editor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(2),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(5),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(6),
+.wizard-step[data-step-id="designStudio"] .design-logo-field {
+    grid-column: 1 / -1;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group input,
+.wizard-step[data-step-id="designStudio"] .field-group select,
+.wizard-step[data-step-id="designStudio"] .field-group textarea {
+    width: 100%;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group textarea {
+    min-height: 128px;
+    resize: vertical;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-template-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-orientation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-orientation-ui {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-position-grid,
+.wizard-step[data-step-id="designStudio"] .design-size-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-position-ui,
+.wizard-step[data-step-id="designStudio"] .design-size-ui {
+    min-height: 84px;
+    padding: 16px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-color-palette {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-color-swatch {
+    flex: 0 0 auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar {
+    display: grid;
+    grid-template-columns: 116px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar-copy {
+    display: grid;
+    gap: 12px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar-copy p {
+    margin: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-card {
+    position: sticky;
+    top: 120px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-stage {
+    display: grid;
+    place-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-mockup {
+    width: 100%;
+    min-height: 680px;
+    padding: 28px;
+    display: grid;
+    place-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas.is-vertical {
+    min-height: 620px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas.is-horizontal {
+    max-width: 440px;
+    min-height: 340px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas-copy {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.wizard-step[data-step-id="designStudio"] .wizard-step-actions {
+    justify-content: space-between;
+    gap: 14px;
+}
+
+@media (max-width: 1180px) {
+    .wizard-step[data-step-id="designStudio"] .design-studio {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-studio-panel-preview {
+        order: -1;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-preview-card {
+        position: static;
+        top: auto;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-preview-mockup {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 820px) {
+    .wizard-step[data-step-id="designStudio"] .design-editor-grid,
+    .wizard-step[data-step-id="designStudio"] .design-template-grid,
+    .wizard-step[data-step-id="designStudio"] .design-orientation-grid,
+    .wizard-step[data-step-id="designStudio"] .design-position-grid,
+    .wizard-step[data-step-id="designStudio"] .design-size-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-image-toolbar {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Simplified professional layout for design editor */
+.wizard-step[data-step-id="designStudio"] .design-studio,
+.wizard-step[data-step-id="designStudio"] .design-studio * {
+    box-sizing: border-box;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio {
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    gap: 40px;
+    align-items: start;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-config {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-rail {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+    width: 100%;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-preview,
+.wizard-step[data-step-id="designStudio"] .design-studio-panel-summary {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-studio-block,
+.wizard-step[data-step-id="designStudio"] .design-preview-card,
+.wizard-step[data-step-id="designStudio"] .design-side-card {
+    width: 100%;
+    max-width: none;
+    padding: 26px;
+    overflow: hidden;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-card {
+    position: static;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-head,
+.wizard-step[data-step-id="designStudio"] .design-side-card {
+    display: grid;
+    gap: 10px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-head h3,
+.wizard-step[data-step-id="designStudio"] .design-preview-head p,
+.wizard-step[data-step-id="designStudio"] .design-side-card h3 {
+    margin: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-editor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(2),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(5),
+.wizard-step[data-step-id="designStudio"] .design-editor-grid .field-group:nth-child(6),
+.wizard-step[data-step-id="designStudio"] .design-logo-field {
+    grid-column: 1 / -1;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group input,
+.wizard-step[data-step-id="designStudio"] .field-group select,
+.wizard-step[data-step-id="designStudio"] .field-group textarea {
+    width: 100%;
+    min-width: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .field-group textarea {
+    min-height: 128px;
+    resize: vertical;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-template-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-orientation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-orientation-ui {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-position-grid,
+.wizard-step[data-step-id="designStudio"] .design-size-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-position-ui,
+.wizard-step[data-step-id="designStudio"] .design-size-ui {
+    min-height: 84px;
+    padding: 16px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-color-palette {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-color-swatch {
+    flex: 0 0 auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar {
+    display: grid;
+    grid-template-columns: 116px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar-copy {
+    display: grid;
+    gap: 12px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-image-toolbar-copy p {
+    margin: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-stage {
+    display: grid;
+    place-items: center;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-preview-mockup {
+    width: 100%;
+    min-height: 680px;
+    padding: 28px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas.is-vertical {
+    min-height: 620px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas.is-horizontal {
+    max-width: 440px;
+    min-height: 340px;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas-copy {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-canvas h4,
+.wizard-step[data-step-id="designStudio"] .design-canvas p {
+    overflow-wrap: anywhere;
+}
+
+.wizard-step[data-step-id="designStudio"] .design-side-meta {
+    margin: 0;
+}
+
+.wizard-step[data-step-id="designStudio"] .wizard-step-actions {
+    justify-content: space-between;
+    gap: 14px;
+}
+
+@media (max-width: 1180px) {
+    .wizard-step[data-step-id="designStudio"] .design-studio {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-studio-panel-rail {
+        order: -1;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-preview-mockup {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 820px) {
+    .wizard-step[data-step-id="designStudio"] .design-editor-grid,
+    .wizard-step[data-step-id="designStudio"] .design-template-grid,
+    .wizard-step[data-step-id="designStudio"] .design-orientation-grid,
+    .wizard-step[data-step-id="designStudio"] .design-position-grid,
+    .wizard-step[data-step-id="designStudio"] .design-size-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wizard-step[data-step-id="designStudio"] .design-image-toolbar {
+        grid-template-columns: 1fr;
+    }
+}
+

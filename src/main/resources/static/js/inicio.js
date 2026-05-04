@@ -1,10 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
     const body = document.body;
     const menuToggle = document.querySelector("[data-menu-toggle]");
-    const navLinks = document.querySelectorAll(".nav-panel a");
+    const navLinks = document.querySelectorAll(".nav-panel a, .nav-auth-actions a, .nav-user-dropdown a, .nav-icon-link");
+    const userMenu = document.querySelector("[data-user-menu]");
+    const userTrigger = document.querySelector("[data-user-menu-trigger]");
     const revealItems = document.querySelectorAll("[data-reveal]");
 
     initModernSelects();
+    initActiveNavState();
+    initCartBadgeAnimation();
 
     if ("IntersectionObserver" in window) {
         const observer = new IntersectionObserver(function (entries, currentObserver) {
@@ -31,12 +35,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (!menuToggle) {
+        initUserMenu(userMenu, userTrigger);
         return;
     }
 
     menuToggle.addEventListener("click", function () {
         const isOpen = body.classList.toggle("nav-open");
         menuToggle.setAttribute("aria-expanded", String(isOpen));
+        if (!isOpen) {
+            closeUserMenu(userMenu, userTrigger);
+        }
     });
 
     navLinks.forEach(function (link) {
@@ -45,7 +53,93 @@ document.addEventListener("DOMContentLoaded", function () {
             menuToggle.setAttribute("aria-expanded", "false");
         });
     });
+
+    initUserMenu(userMenu, userTrigger);
+
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".site-header .header-shell")) {
+            body.classList.remove("nav-open");
+            menuToggle.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            body.classList.remove("nav-open");
+            menuToggle.setAttribute("aria-expanded", "false");
+            closeUserMenu(userMenu, userTrigger);
+        }
+    });
 });
+
+function initActiveNavState() {
+    const currentPath = window.location.pathname || "/";
+    document.querySelectorAll("[data-nav-link]").forEach(function (link) {
+        const matchRaw = link.getAttribute("data-nav-match");
+        if (!matchRaw) {
+            return;
+        }
+
+        const matches = matchRaw.split(",").map(function (item) {
+            return item.trim();
+        }).filter(Boolean);
+
+        const isActive = matches.some(function (match) {
+            if (match === "/") {
+                return currentPath === "/" || currentPath === "";
+            }
+            return currentPath === match || currentPath.startsWith(match + "/") || currentPath.startsWith(match);
+        });
+
+        link.classList.toggle("is-active", isActive);
+    });
+}
+
+function initUserMenu(userMenu, userTrigger) {
+    if (!userMenu || !userTrigger) {
+        return;
+    }
+
+    userTrigger.addEventListener("click", function (event) {
+        event.stopPropagation();
+        const isOpen = userMenu.classList.toggle("is-open");
+        userTrigger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest("[data-user-menu]")) {
+            closeUserMenu(userMenu, userTrigger);
+        }
+    });
+}
+
+function closeUserMenu(userMenu, userTrigger) {
+    if (!userMenu || !userTrigger) {
+        return;
+    }
+    userMenu.classList.remove("is-open");
+    userTrigger.setAttribute("aria-expanded", "false");
+}
+
+function initCartBadgeAnimation() {
+    const badge = document.querySelector(".nav-cart-badge");
+    if (!badge) {
+        return;
+    }
+
+    const currentCount = Number.parseInt(badge.dataset.count || badge.textContent || "0", 10) || 0;
+    const storageKey = "maxcopias.nav.cartCount";
+    const previousCount = Number.parseInt(window.sessionStorage.getItem(storageKey) || String(currentCount), 10) || 0;
+
+    if (currentCount !== previousCount) {
+        badge.classList.add("is-bump");
+        window.setTimeout(function () {
+            badge.classList.remove("is-bump");
+        }, 380);
+    }
+
+    window.sessionStorage.setItem(storageKey, String(currentCount));
+}
 
 function initModernSelects() {
     document.querySelectorAll("select.select-modern").forEach(function (select) {

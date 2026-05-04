@@ -37,14 +37,6 @@ public enum TipoTrabajo {
         "PL",
         "Desde 1,80 EUR"
     ),
-    DISENO_GRAFICO(
-        "Diseno grafico",
-        "Sube bocetos, logos, imagenes o textos base para preparar el diseno.",
-        "Flyers, carteles, tarjetas, maquetacion y piezas visuales basicas.",
-        false,
-        "DG",
-        "Desde 25,00 EUR"
-    ),
     PUBLICIDAD_IMPRENTA(
         "Publicidad e imprenta",
         "Adjunta artes finales, logos o referencias visuales del material promocional.",
@@ -119,7 +111,7 @@ public enum TipoTrabajo {
 
     public boolean isPrimaryWizardOption() {
         return switch (this) {
-            case IMPRESION, FOTOCOPIAS, DISENO_GRAFICO, PUBLICIDAD_IMPRENTA, OTRO -> true;
+            case IMPRESION, FOTOCOPIAS, PUBLICIDAD_IMPRENTA, OTRO -> true;
             default -> false;
         };
     }

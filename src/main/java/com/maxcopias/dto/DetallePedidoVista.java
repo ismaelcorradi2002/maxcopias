@@ -3,6 +3,7 @@ package com.maxcopias.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.List;
 
@@ -38,6 +39,14 @@ public record DetallePedidoVista(
     LocalDateTime fechaCreacion,
     LocalDateTime fechaActualizacion,
     String resumenProductos,
+    String codigoPedido,
+    String metodoEntrega,
+    boolean pagado,
+    String metodoPago,
+    LocalDateTime fechaPago,
+    BigDecimal subtotalPedido,
+    BigDecimal gastosEnvio,
+    List<LineaPedidoTiendaVista> lineasTienda,
     boolean eliminado,
     String eliminadoPor
 ) {
@@ -74,5 +83,24 @@ public record DetallePedidoVista(
             return null;
         }
         return fechaCreacion.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+    }
+
+    public String getFechaPagoLabel() {
+        if (fechaPago == null) {
+            return null;
+        }
+        return fechaPago.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+    }
+
+    public boolean tieneLineasTienda() {
+        return lineasTienda != null && !lineasTienda.isEmpty();
+    }
+
+    public String getSubtotalPedidoFormateado() {
+        return subtotalPedido == null ? null : NumberFormat.getCurrencyInstance(new Locale("es", "ES")).format(subtotalPedido);
+    }
+
+    public String getGastosEnvioFormateado() {
+        return gastosEnvio == null ? null : NumberFormat.getCurrencyInstance(new Locale("es", "ES")).format(gastosEnvio);
     }
 }

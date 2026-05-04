@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Configurador de copisteria', '/css/copisteria.css')}"></head>
 <body class="copisteria-page">
@@ -93,11 +93,14 @@
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 1</span>
                                 <h2>Que tipo de trabajo quieres pedir</h2>
-                                <p>Selecciona el servicio principal. Si eliges impresion o fotocopias, activaremos toda la configuracion tecnica.</p>
+                                <p>Selecciona el servicio principal. Hemos simplificado las opciones para que encuentres antes el flujo adecuado para tu pedido.</p>
                             </div>
 
                             <div class="wizard-options-grid wizard-options-grid-large">
-                                <label class="wizard-option-card" th:each="jobType : ${primaryJobTypes}">
+                                <label
+                                    class="wizard-option-card"
+                                    th:each="jobType : ${primaryJobTypes}"
+                                    th:if="${jobType.name() == 'IMPRESION' or jobType.name() == 'PERSONALIZACION' or jobType.name() == 'OTRO'}">
                                     <input
                                         type="radio"
                                         name="jobType"
@@ -106,7 +109,9 @@
                                     <span class="wizard-option-ui">
                                         <span class="wizard-option-icon" th:text="${jobType.shortCode}">IM</span>
                                         <strong th:text="${jobType.label}">Impresion</strong>
-                                        <small th:text="${jobType.uploadDescription}">Descripcion del servicio.</small>
+                                        <small th:if="${jobType.name() == 'IMPRESION'}">Imprime documentos, apuntes y trabajos con opciones de color, copias, encuadernado, plastificado y mas.</small>
+                                        <small th:if="${jobType.name() == 'PERSONALIZACION'}">Solicita productos personalizados con imagenes, frases, logos o referencias para regalos y detalles.</small>
+                                        <small th:if="${jobType.name() == 'OTRO'}">Usa esta opcion para pedir un presupuesto libre o explicar un trabajo especial fuera de los flujos habituales.</small>
                                         <em th:text="${jobType.priceHint}">Desde 0,06 EUR</em>
                                     </span>
                                 </label>
@@ -312,7 +317,7 @@
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 9</span>
                                 <h2>Sube el archivo antes del resumen</h2>
-                                <p>El resumen final solo se habilita cuando hay al menos un archivo valido. En PDF contamos paginas reales; en imagenes, 1 pagina por archivo.</p>
+                                <p>Adjunta el archivo final del pedido para poder revisar el encargo completo antes de guardarlo.</p>
                             </div>
 
                             <div class="field-group">
@@ -322,13 +327,13 @@
                                         id="files"
                                         name="archivo"
                                         type="file"
-                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
                                         data-file-input>
                                     <div class="file-dropzone-copy wizard-dropzone-copy">
                                         <span class="wizard-dropzone-icon">+</span>
-                                        <strong data-upload-dropzone-title>Sube los archivos del pedido</strong>
+                                        <strong data-upload-dropzone-title>Sube el archivo del pedido</strong>
                                         <p data-upload-dropzone-description>
-                                            Puedes subir PDF, DOC, DOCX, JPG o PNG.
+                                            Puedes subir PDF, DOC, DOCX, JPG, PNG o WEBP.
                                         </p>
                                     </div>
                                 </div>
@@ -509,3 +514,6 @@
 <script th:src="@{/js/copisteria.js}"></script>
 </body>
 </html>
+
+
+

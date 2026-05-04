@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   initCarrusel();
   initFiltrosTienda();
+  initCartFeedback();
+  initCartForms();
 });
 
 function initCarrusel() {
@@ -92,4 +94,29 @@ function initFiltrosTienda() {
   });
 
   applyFilter("todos", "Todos");
+}
+
+function initCartFeedback() {
+  const feedbacks = document.querySelectorAll(".tienda-feedback");
+  if (!feedbacks.length) {
+    return;
+  }
+
+  setTimeout(() => {
+    feedbacks.forEach((feedback) => feedback.classList.add("is-hidden"));
+  }, 4000);
+}
+
+function initCartForms() {
+  const forms = document.querySelectorAll(".tienda-add-form, .producto-add-form");
+  forms.forEach((form) => {
+    form.addEventListener("submit", () => {
+      const button = form.querySelector("button[type='submit']");
+      if (!button) {
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "Anadiendo...";
+    });
+  });
 }

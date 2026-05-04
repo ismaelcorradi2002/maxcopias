@@ -12,8 +12,8 @@
                     <span class="eyebrow">Mis pedidos</span>
                     <h1>Consulta los encargos que ya has enviado a Maxcopias.</h1>
                     <p>
-                        Aqui puedes ver todos tus pedidos registrados, el codigo unico de recogida,
-                        los archivos adjuntos, las paginas detectadas y el estado actual del encargo.
+                        Aqui puedes ver tus pedidos de copisteria y tambien los pedidos de tienda,
+                        con su estado, metodo de entrega y resumen economico.
                     </p>
                 </div>
 
@@ -31,7 +31,7 @@
                         </li>
                         <li>
                             <span>Pedidos guardados</span>
-                            <strong th:text="${#lists.size(orders)}">0</strong>
+                            <strong th:text="${#lists.size(orders) + #lists.size(storeOrders)}">0</strong>
                         </li>
                     </ul>
                 </aside>
@@ -42,16 +42,59 @@
             <div class="container">
                 <div class="dashboard-actions dashboard-orders-actions">
                     <a th:href="@{/copisteria}" class="button button-secondary-dark">Ver copisteria</a>
+                    <a th:href="@{/tienda}" class="button button-outline-dark">Ir a la tienda</a>
                     <a th:href="@{/copisteria}" class="button button-primary">Hacer nuevo pedido</a>
                 </div>
 
-                <div class="empty-state dashboard-empty-state" th:if="${#lists.isEmpty(orders)}" data-reveal="up">
+                <div class="empty-state dashboard-empty-state" th:if="${#lists.isEmpty(orders) and #lists.isEmpty(storeOrders)}" data-reveal="up">
                     <strong>Aun no has realizado ningun pedido.</strong>
                     <p>
-                        Cuando completes tu primer encargo de copisteria, aparecera aqui con su codigo unico
-                        de recogida y el listado de archivos enviados.
+                        Cuando completes tu primer encargo de copisteria o tu primera compra en tienda,
+                        aparecera aqui con su estado y el resumen del pedido.
                     </p>
                     <a th:href="@{/copisteria}" class="button button-primary">Crear mi primer pedido</a>
+                </div>
+
+                <div class="orders-list" th:if="${!#lists.isEmpty(storeOrders)}">
+                    <article class="order-history-card order-history-card-store" th:each="order : ${storeOrders}" data-reveal="up">
+                        <div class="order-history-head">
+                            <div>
+                                <span class="section-kicker">Pedido de tienda</span>
+                                <h2 th:text="${order.codigoPedido()}">MT-000</h2>
+                                <p th:text="${#temporals.format(order.fechaCreacion(), 'dd/MM/yyyy HH:mm')}">09/04/2026 18:10</p>
+                            </div>
+                            <div class="order-history-badges">
+                                <span class="pickup-code-pill" th:text="${order.metodoEntregaLabel()}">Recogida en tienda</span>
+                                <span class="status-pill" th:text="${order.estadoLabel()}">Pendiente</span>
+                            </div>
+                        </div>
+
+                        <div class="order-history-grid order-history-grid-store">
+                            <div class="order-history-panel">
+                                <strong>Productos</strong>
+                                <ul class="order-history-files">
+                                    <li th:each="item : ${order.items()}">
+                                        <div>
+                                            <strong th:text="${item.nombre()}">Producto</strong>
+                                            <span th:text="|${item.cantidad()} uds. x ${item.precioUnitarioFormateado()}|">1 uds.</span>
+                                        </div>
+                                        <strong th:text="${item.subtotalFormateado()}">0,00 EUR</strong>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="order-history-panel">
+                                <strong>Resumen del pedido</strong>
+                                <ul class="order-history-meta">
+                                    <li><span>Subtotal</span><strong th:text="${order.subtotalFormateado()}">0,00 EUR</strong></li>
+                                    <li><span>Envio</span><strong th:text="${order.gastosEnvioFormateado()}">0,00 EUR</strong></li>
+                                    <li><span>Total</span><strong th:text="${order.totalFormateado()}">0,00 EUR</strong></li>
+                                    <li><span>Pago</span><strong th:text="${order.pagado()} ? 'Pagado' : 'Pendiente de pago'">Pendiente</strong></li>
+                                    <li><span>Estado cliente</span><strong th:text="${order.mensajeEstado()}">Pedido recibido</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
                 </div>
 
                 <div class="orders-list" th:if="${!#lists.isEmpty(orders)}">

@@ -63,6 +63,9 @@
 
         <section id="productos">
             <div class="container">
+                <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Producto anadido al carrito.</div>
+                <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido anadir el producto.</div>
+
                 <div class="section-tabs">
                     <button class="section-tab active" data-category="todos">Todos</button>
                     <button
@@ -98,6 +101,16 @@
                                 <span class="precio-tag" th:if="${!producto.tieneOferta()}" th:text="${producto.precioFormateado()}">0,00 EUR</span>
                             </div>
                         </a>
+                        <div class="tienda-card-actions">
+                            <span class="tienda-stock-label" th:text="${producto.stock() > 0 ? 'Stock: ' + producto.stock() : 'Sin stock'}">Stock: 0</span>
+                            <form th:if="${producto.stock() > 0}" th:action="@{/carrito/anadir}" method="post" class="tienda-add-form">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" name="productoId" th:value="${producto.id()}">
+                                <input type="hidden" name="cantidad" value="1">
+                                <input type="hidden" name="redirectTo" value="/tienda">
+                                <button type="submit" class="button button-primary tienda-add-button">Anadir al carrito</button>
+                            </form>
+                        </div>
                     </article>
                 </div>
             </div>

@@ -142,3 +142,70 @@ SELECT p.id, c.id
 FROM productos p
 JOIN categorias c ON c.nombre = 'Oficina'
 WHERE p.nombre = 'Cable organizador';
+
+CREATE TABLE IF NOT EXISTS carritos (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    usuario_id BIGINT NULL,
+    session_id VARCHAR(120) NULL,
+    activo BIT NOT NULL,
+    fecha_creacion DATETIME NOT NULL,
+    fecha_actualizacion DATETIME NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_carritos_usuario
+        FOREIGN KEY (usuario_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS carrito_items (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    carrito_id BIGINT NOT NULL,
+    producto_id BIGINT NOT NULL,
+    cantidad INT NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_carrito_items_carrito
+        FOREIGN KEY (carrito_id) REFERENCES carritos (id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_carrito_items_producto
+        FOREIGN KEY (producto_id) REFERENCES productos (id)
+);
+
+CREATE TABLE IF NOT EXISTS pedidos_tienda (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    cliente_nombre VARCHAR(160) NOT NULL,
+    usuario_id BIGINT NULL,
+    codigo_pedido VARCHAR(32) NULL,
+    email VARCHAR(140) NOT NULL,
+    telefono VARCHAR(20) NULL,
+    resumen_productos TEXT NULL,
+    subtotal DECIMAL(10,2) NULL,
+    gastos_envio DECIMAL(10,2) NULL,
+    total DECIMAL(10,2) NULL,
+    estado VARCHAR(30) NOT NULL,
+    fecha_creacion DATETIME NOT NULL,
+    metodo_entrega VARCHAR(30) NULL,
+    pagado BIT NOT NULL DEFAULT b'0',
+    metodo_pago VARCHAR(30) NULL,
+    fecha_pago DATETIME NULL,
+    eliminado BIT NOT NULL DEFAULT b'0',
+    fecha_eliminacion DATETIME NULL,
+    eliminado_por VARCHAR(160) NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_pedidos_tienda_usuario
+        FOREIGN KEY (usuario_id) REFERENCES users (id)
+);
+
+CREATE TABLE IF NOT EXISTS pedido_items (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    pedido_id BIGINT NOT NULL,
+    producto_id BIGINT NULL,
+    producto_nombre VARCHAR(160) NULL,
+    producto_imagen_url VARCHAR(1000) NULL,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_pedido_items_pedido
+        FOREIGN KEY (pedido_id) REFERENCES pedidos_tienda (id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_pedido_items_producto
+        FOREIGN KEY (producto_id) REFERENCES productos (id)
+);

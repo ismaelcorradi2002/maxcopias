@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("[data-copisteria-wizard]");
     const fileInput = document.querySelector("[data-file-input]");
     const fileList = document.querySelector("[data-file-list]");
@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!form || !priceEstimator || !fileInput || !fileList || !fileHint) {
         return;
     }
-
     const summary = createSummaryController(form, fileInput);
     const pricePreview = createPricePreviewController(form, priceEstimator, fileInput, fileList, fileHint);
     const wizard = createWizardController(form, fileInput, fileHint, filesError);
@@ -71,6 +70,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
     }
 
     function validateFilesStep() {
+
         const hasFiles = Boolean(fileInput.files && fileInput.files.length);
         const isValid = hasFiles && !fileHint.classList.contains("is-error");
 
@@ -138,6 +138,10 @@ function createWizardController(form, fileInput, fileHint, filesError) {
 
             item.hidden = !isVisible;
             item.disabled = !isVisible;
+            const stepNumber = item.querySelector("span");
+            if (stepNumber && isVisible) {
+                stepNumber.textContent = String(stepIndex + 1);
+            }
             item.classList.toggle("is-active", isVisible && stepIndex === currentIndex);
             item.classList.toggle("is-completed", isVisible && stepIndex < currentIndex);
             item.classList.toggle("is-clickable", isVisible && canNavigateTo(stepId));
@@ -275,6 +279,9 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             .forEach(function (input) {
                 input.addEventListener("change", function () {
                     if (input.name === "jobType") {
+                        if (filesError) {
+                            filesError.hidden = true;
+                        }
                         normalizeSequencePosition();
                     } else {
                         updateSteps();
@@ -328,20 +335,32 @@ function createWizardController(form, fileInput, fileHint, filesError) {
 }
 
 function createSummaryController(form, fileInput) {
+    function queryAll(selector) {
+        return Array.from(document.querySelectorAll(selector));
+    }
+
+    function setText(nodes, value) {
+        nodes.forEach(function (node) {
+            if (node) {
+                node.textContent = value;
+            }
+        });
+    }
+
     const nodes = {
-        jobType: document.querySelector("[data-summary-job-type]"),
-        colorMode: document.querySelector("[data-summary-color-mode]"),
-        paperSize: document.querySelector("[data-summary-paper-size]"),
-        copies: document.querySelector("[data-summary-copies]"),
-        printSide: document.querySelector("[data-summary-print-side]"),
-        paperType: document.querySelector("[data-summary-paper-type]"),
-        bindingType: document.querySelector("[data-summary-binding-type]"),
-        extras: document.querySelector("[data-summary-extras]"),
-        files: document.querySelector("[data-summary-files]"),
-        pages: document.querySelector("[data-summary-pages]"),
-        total: document.querySelector("[data-summary-total]"),
-        note: document.querySelector("[data-summary-note]"),
-        priceLines: document.querySelector("[data-summary-price-lines]")
+        jobType: queryAll("[data-summary-job-type]"),
+        colorMode: queryAll("[data-summary-color-mode]"),
+        paperSize: queryAll("[data-summary-paper-size]"),
+        copies: queryAll("[data-summary-copies]"),
+        printSide: queryAll("[data-summary-print-side]"),
+        paperType: queryAll("[data-summary-paper-type]"),
+        bindingType: queryAll("[data-summary-binding-type]"),
+        extras: queryAll("[data-summary-extras]"),
+        files: queryAll("[data-summary-files]"),
+        pages: queryAll("[data-summary-pages]"),
+        total: queryAll("[data-summary-total]"),
+        note: queryAll("[data-summary-note]"),
+        priceLines: queryAll("[data-summary-price-lines]")
     };
 
     function labelForRadio(name) {
@@ -395,25 +414,28 @@ function createSummaryController(form, fileInput) {
         const copiesValue = form.querySelector("#copies")?.value || "";
         const extras = getSelectedExtras();
 
-        nodes.jobType.textContent = labelForRadio("jobType") === "No aplica" ? "Sin seleccionar" : labelForRadio("jobType");
-        nodes.colorMode.textContent = isPrintFlow ? labelForRadio("colorMode") : "No aplica";
-        nodes.paperSize.textContent = isPrintFlow ? labelForRadio("paperSize") : "No aplica";
-        nodes.copies.textContent = isPrintFlow ? (copiesValue || "Pendiente") : "No aplica";
-        nodes.printSide.textContent = isPrintFlow ? labelForRadio("printSide") : "No aplica";
-        nodes.paperType.textContent = isPrintFlow ? labelForRadio("paperType") : "No aplica";
-        nodes.bindingType.textContent = isPrintFlow ? labelForRadio("bindingType") : "No aplica";
-        nodes.extras.textContent = extras.length ? extras.join(", ") : "Sin extras";
-        nodes.files.textContent = selectedFilesLabel();
-        nodes.pages.textContent = state.pageCountLabel;
-        nodes.total.textContent = state.formattedTotal;
-        nodes.note.textContent = state.note;
-        renderPriceLines(nodes.priceLines, state.lines);
+        setText(nodes.jobType, labelForRadio("jobType") === "No aplica" ? "Sin seleccionar" : labelForRadio("jobType"));
+        setText(nodes.colorMode, isPrintFlow ? labelForRadio("colorMode") : "No aplica");
+        setText(nodes.paperSize, isPrintFlow ? labelForRadio("paperSize") : "No aplica");
+        setText(nodes.copies, isPrintFlow ? (copiesValue || "Pendiente") : "No aplica");
+        setText(nodes.printSide, isPrintFlow ? labelForRadio("printSide") : "No aplica");
+        setText(nodes.paperType, isPrintFlow ? labelForRadio("paperType") : "No aplica");
+        setText(nodes.bindingType, isPrintFlow ? labelForRadio("bindingType") : "No aplica");
+        setText(nodes.extras, extras.length ? extras.join(", ") : "Sin extras");
+        setText(nodes.files, selectedFilesLabel());
+        setText(nodes.pages, state.pageCountLabel);
+        setText(nodes.total, state.formattedTotal);
+        setText(nodes.note, state.note);
+        nodes.priceLines.forEach(function (node) {
+            renderPriceLines(node, state.lines);
+        });
     }
 
     return {
         update: update
     };
 }
+
 
 function createPricePreviewController(form, priceEstimator, fileInput, fileList, fileHint) {
     const previewUrl = priceEstimator.dataset.previewUrl;
@@ -624,8 +646,6 @@ function calculateEstimate(input) {
             return calculatePrintLikeEstimate(input, 0.05, 0.18, "fotocopias");
         case "PUBLICIDAD_IMPRENTA":
             return calculateCampaignEstimate(input);
-        case "DISENO_GRAFICO":
-            return calculateQuoteStyleEstimate(input, 25, "diseno grafico");
         case "OTRO":
             return calculateQuoteStyleEstimate(input, 12, "encargo especial");
         default:
@@ -689,7 +709,7 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
 
     return {
         total: total,
-        breakdown: parts.join(" • "),
+        breakdown: parts.join(" â€¢ "),
         note: buildNote(input.fileCount, label),
         lines: lines
     };
@@ -720,7 +740,7 @@ function calculateCampaignEstimate(input) {
         },
         {
             concept: "Produccion " + colorLabel(colorMode),
-            detail: pages + " pagina(s) x " + copies + " unidad(es) • " + paperSize + " • " + paperTypeLabel(paperType),
+            detail: pages + " pagina(s) x " + copies + " unidad(es) â€¢ " + paperSize + " â€¢ " + paperTypeLabel(paperType),
             amount: production
         }
     ];
@@ -745,7 +765,7 @@ function calculateCampaignEstimate(input) {
 
     return {
         total: total,
-        breakdown: parts.join(" • "),
+        breakdown: parts.join(" â€¢ "),
         note: buildNote(input.fileCount, "publicidad e imprenta"),
         lines: lines
     };
@@ -783,7 +803,7 @@ function calculateQuoteStyleEstimate(input, basePrice, label) {
 
     return {
         total: total,
-        breakdown: parts.join(" • "),
+        breakdown: parts.join(" â€¢ "),
         note: buildNote(input.fileCount, label),
         lines: lines
     };
@@ -806,11 +826,11 @@ function renderSelectedFiles(fileInput, fileList, fileHint) {
     if (invalidFiles.length) {
         fileInput.value = "";
         fileHint.classList.add("is-error");
-        fileHint.textContent = "Formato no valido. Sube PDF, DOC, DOCX, JPG o PNG.";
+        fileHint.textContent = "Formato no valido. Sube PDF, DOC, DOCX, JPG, PNG o WEBP.";
         return {
             valid: false,
             fileCount: 0,
-            message: "Formato no valido. Sube PDF, DOC, DOCX, JPG o PNG."
+            message: "Formato no valido. Sube PDF, DOC, DOCX, JPG, PNG o WEBP."
         };
     }
 
@@ -1059,7 +1079,7 @@ function buildDetectedFileHint(files, pageCount) {
 
 function isAllowedFile(filename) {
     const extension = filename.split(".").pop().toLowerCase();
-    return ["pdf", "doc", "docx", "jpg", "jpeg", "png"].includes(extension);
+    return ["pdf", "doc", "docx", "jpg", "jpeg", "png", "webp"].includes(extension);
 }
 
 function appendIfValue(formData, name, value) {
@@ -1067,3 +1087,4 @@ function appendIfValue(formData, name, value) {
         formData.append(name, value);
     }
 }
+

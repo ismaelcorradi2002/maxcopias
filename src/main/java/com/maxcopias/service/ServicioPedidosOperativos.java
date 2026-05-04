@@ -12,11 +12,13 @@ import com.maxcopias.model.TipoTrabajo;
 import com.maxcopias.repository.RepositorioPedidoCopisteria;
 import com.maxcopias.repository.RepositorioPedidoTienda;
 import com.maxcopias.dto.DetallePedidoVista;
+import com.maxcopias.dto.LineaPedidoTiendaVista;
 import com.maxcopias.dto.LineaResumenEconomico;
 import com.maxcopias.dto.ResumenFinancieroMensual;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -36,18 +39,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ServicioPedidosOperativos {
 
+    private static final Locale LOCALE_ES = new Locale("es", "ES");
+
     private final RepositorioPedidoCopisteria repositorioPedidoCopisteria;
     private final RepositorioPedidoTienda repositorioPedidoTienda;
     private final ServicioAlmacenamientoArchivos servicioAlmacenamientoArchivos;
+    private final ServicioPedidosTienda servicioPedidosTienda;
 
     public ServicioPedidosOperativos(
         RepositorioPedidoCopisteria repositorioPedidoCopisteria,
         RepositorioPedidoTienda repositorioPedidoTienda,
-        ServicioAlmacenamientoArchivos servicioAlmacenamientoArchivos
+        ServicioAlmacenamientoArchivos servicioAlmacenamientoArchivos,
+        ServicioPedidosTienda servicioPedidosTienda
     ) {
         this.repositorioPedidoCopisteria = repositorioPedidoCopisteria;
         this.repositorioPedidoTienda = repositorioPedidoTienda;
         this.servicioAlmacenamientoArchivos = servicioAlmacenamientoArchivos;
+        this.servicioPedidosTienda = servicioPedidosTienda;
     }
 
     @Transactional(readOnly = true)
@@ -117,10 +125,12 @@ public class ServicioPedidosOperativos {
 
     @Transactional
     public void cambiarEstadoTienda(Long pedidoId, EstadoPedidoTienda estado) {
-        PedidoTienda pedido = repositorioPedidoTienda.findByIdAndEliminadoFalse(pedidoId)
-            .orElseThrow(() -> new IllegalArgumentException("No existe el pedido de tienda indicado."));
-        pedido.setEstado(estado);
-        repositorioPedidoTienda.save(pedido);
+        servicioPedidosTienda.cambiarEstado(pedidoId, estado);
+    }
+
+    @Transactional
+    public void marcarPagadoTienda(Long pedidoId, boolean pagado) {
+        servicioPedidosTienda.marcarPagado(pedidoId, pagado);
     }
 
     @Transactional
@@ -315,10 +325,15 @@ public class ServicioPedidosOperativos {
     private String calcularProductoMasVendido(List<PedidoTienda> pedidosTiendaMes) {
         return pedidosTiendaMes.stream()
             .filter(this::esEntregadoTienda)
-            .map(PedidoTienda::getResumenProductos)
-            .filter(Objects::nonNull)
-            .flatMap(resumen -> List.of(resumen.split(",")).stream())
-            .map(String::trim)
+            .flatMap(pedido -> {
+                if (pedido.getItems() != null && !pedido.getItems().isEmpty()) {
+                    return pedido.getItems().stream().map(item -> item.getProductoNombre());
+                }
+                if (pedido.getResumenProductos() == null) {
+                    return List.<String>of().stream();
+                }
+                return List.of(pedido.getResumenProductos().split(",")).stream().map(String::trim);
+            })
             .filter(texto -> !texto.isBlank())
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
             .entrySet()
@@ -368,6 +383,14 @@ public class ServicioPedidosOperativos {
             pedido.getFechaCreacion(),
             pedido.getFechaEliminacion() != null ? pedido.getFechaEliminacion() : pedido.getFechaCreacion(),
             null,
+            null,
+            null,
+            false,
+            null,
+            null,
+            null,
+            null,
+            List.of(),
             pedido.isEliminado(),
             pedido.getEliminadoPor()
         );
@@ -375,6 +398,18 @@ public class ServicioPedidosOperativos {
 
     @Transactional(readOnly = true)
     public DetallePedidoVista construirDetallePedidoTienda(PedidoTienda pedido) {
+        List<LineaPedidoTiendaVista> lineas = pedido.getItems().stream()
+            .map(item -> new LineaPedidoTiendaVista(
+                item.getProductoNombre(),
+                item.getProductoImagenUrl(),
+                item.getCantidad(),
+                item.getPrecioUnitario(),
+                item.getSubtotal(),
+                formatearDinero(item.getPrecioUnitario()),
+                formatearDinero(item.getSubtotal())
+            ))
+            .toList();
+
         return new DetallePedidoVista(
             pedido.getId(),
             "Tienda",
@@ -407,6 +442,14 @@ public class ServicioPedidosOperativos {
             pedido.getFechaCreacion(),
             pedido.getFechaEliminacion() != null ? pedido.getFechaEliminacion() : pedido.getFechaCreacion(),
             pedido.getResumenProductos(),
+            pedido.getCodigoPedido(),
+            pedido.getMetodoEntrega() != null ? pedido.getMetodoEntrega().getLabel() : null,
+            pedido.isPagado(),
+            pedido.getMetodoPago() != null ? pedido.getMetodoPago().getLabel() : null,
+            pedido.getFechaPago(),
+            pedido.getSubtotal(),
+            pedido.getGastosEnvio(),
+            lineas,
             pedido.isEliminado(),
             pedido.getEliminadoPor()
         );
@@ -458,7 +501,6 @@ public class ServicioPedidosOperativos {
             case IMPRESION -> construirResumenImpresion(pedido, pageCount, new BigDecimal("0.06"), new BigDecimal("0.45"), extras);
             case FOTOCOPIAS -> construirResumenImpresion(pedido, pageCount, new BigDecimal("0.05"), new BigDecimal("0.18"), extras);
             case PUBLICIDAD_IMPRENTA -> construirResumenPublicidad(pedido, pageCount, extras);
-            case DISENO_GRAFICO -> construirResumenTipoPresupuesto(pedido, pageCount, extras, new BigDecimal("25.00"), "Base de diseno grafico");
             case OTRO, ENCUADERNACION, PLASTIFICADO, PERSONALIZACION, SERVICIOS_ADICIONALES ->
                 construirResumenTipoPresupuesto(pedido, pageCount, extras, new BigDecimal("12.00"), "Base del servicio");
         };
@@ -653,15 +695,40 @@ public class ServicioPedidosOperativos {
 
     private List<LineaResumenEconomico> construirResumenEconomicoTienda(PedidoTienda pedido) {
         List<LineaResumenEconomico> lines = new ArrayList<>();
-        lines.add(new LineaResumenEconomico(
-            "Productos del pedido",
-            pedido.getResumenProductos(),
-            "x1",
-            pedido.getTotal(),
-            pedido.getTotal(),
-            false,
-            false
-        ));
+        if (pedido.getItems() != null && !pedido.getItems().isEmpty()) {
+            pedido.getItems().forEach(item -> lines.add(new LineaResumenEconomico(
+                item.getProductoNombre(),
+                "Producto de tienda",
+                "x" + item.getCantidad(),
+                item.getPrecioUnitario(),
+                item.getSubtotal(),
+                false,
+                false
+            )));
+        } else {
+            lines.add(new LineaResumenEconomico(
+                "Productos del pedido",
+                pedido.getResumenProductos(),
+                "x1",
+                pedido.getTotal(),
+                pedido.getSubtotal() != null ? pedido.getSubtotal() : pedido.getTotal(),
+                false,
+                false
+            ));
+        }
+
+        if (money(pedido.getGastosEnvio()).compareTo(BigDecimal.ZERO) > 0) {
+            lines.add(new LineaResumenEconomico(
+                "Gastos de envio",
+                pedido.getMetodoEntrega() != null ? pedido.getMetodoEntrega().getLabel() : "Envio",
+                "x1",
+                pedido.getGastosEnvio(),
+                pedido.getGastosEnvio(),
+                false,
+                false
+            ));
+        }
+
         return finalizarResumen(lines, pedido.getTotal());
     }
 
@@ -833,6 +900,10 @@ public class ServicioPedidosOperativos {
 
     private BigDecimal money(BigDecimal value) {
         return value == null ? BigDecimal.ZERO : value.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private String formatearDinero(BigDecimal valor) {
+        return NumberFormat.getCurrencyInstance(LOCALE_ES).format(money(valor));
     }
 
     private record ArchivoDetalle(int pageCount, String readableSize) {

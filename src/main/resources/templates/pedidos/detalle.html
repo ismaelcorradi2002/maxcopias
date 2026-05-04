@@ -46,6 +46,7 @@
                                     <li><span>Nombre</span><strong th:text="${detallePedido.cliente}">Cliente</strong></li>
                                     <li><span>Email</span><strong th:text="${detallePedido.email}">correo@maxcopias.es</strong></li>
                                     <li><span>Telefono</span><strong th:text="${detallePedido.telefono}">600000000</strong></li>
+                                    <li th:if="${detallePedido.codigoPedido != null}"><span>Codigo pedido</span><strong th:text="${detallePedido.codigoPedido}">MT-000</strong></li>
                                 </ul>
                             </article>
 
@@ -71,9 +72,24 @@
                                     <strong th:text="${detallePedido.codigoRecogida}">ABC123</strong>
                                 </div>
                                 <ul class="worker-detail-list">
+                                    <li th:if="${detallePedido.metodoEntrega != null}"><span>Entrega</span><strong th:text="${detallePedido.metodoEntrega}">Recogida en tienda</strong></li>
+                                    <li th:if="${detallePedido.metodoPago != null}"><span>Metodo de pago</span><strong th:text="${detallePedido.metodoPago}">Pago en tienda</strong></li>
+                                    <li th:if="${detallePedido.metodoPago != null}"><span>Pago</span><strong th:text="${detallePedido.pagado} ? 'Pagado' : 'No pagado'">No pagado</strong></li>
+                                    <li th:if="${detallePedido.fechaPagoLabel != null}"><span>Fecha pago</span><strong th:text="${detallePedido.fechaPagoLabel}">29/04/2026 16:08</strong></li>
                                     <li th:if="${detallePedido.codigoRecogida == null}"><span>Codigo recogida</span><strong>No aplica</strong></li>
                                     <li th:if="${detallePedido.eliminado}"><span>Eliminado por</span><strong th:text="${detallePedido.eliminadoPor}">admin@maxcopias.es</strong></li>
                                 </ul>
+                                <form th:if="${tipoPedido == 'tienda'}" th:action="@{${pagoAction}}" method="post" class="worker-status-detail-form">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <label>
+                                        <span>Actualizar pago</span>
+                                        <select name="pagado" class="worker-select select-modern">
+                                            <option value="false" th:selected="${!detallePedido.pagado}">No pagado</option>
+                                            <option value="true" th:selected="${detallePedido.pagado}">Pagado</option>
+                                        </select>
+                                    </label>
+                                    <button type="submit" class="button button-secondary-dark">Guardar pago</button>
+                                </form>
                             </article>
 
                             <article class="worker-detail-card worker-detail-card-wide">
@@ -90,12 +106,28 @@
                                 <ul class="worker-detail-list worker-detail-list-compact">
                                     <li th:if="${detallePedido.copias != null}"><span>Numero de copias</span><strong th:text="${detallePedido.copias}">1</strong></li>
                                     <li th:if="${detallePedido.resumenProductos != null}"><span>Productos</span><strong th:text="${detallePedido.resumenProductos}">Productos</strong></li>
+                                    <li th:if="${detallePedido.subtotalPedidoFormateado != null}"><span>Subtotal</span><strong th:text="${detallePedido.subtotalPedidoFormateado}">0,00 EUR</strong></li>
+                                    <li th:if="${detallePedido.gastosEnvioFormateado != null}"><span>Envio</span><strong th:text="${detallePedido.gastosEnvioFormateado}">0,00 EUR</strong></li>
                                     <li><span>Observaciones</span><strong th:text="${detallePedido.observaciones != null && !detallePedido.observaciones.isBlank() ? detallePedido.observaciones : 'Sin observaciones'}">Sin observaciones</strong></li>
                                 </ul>
                                 <div class="worker-detail-tags" th:if="${detallePedido.tieneExtras()}">
                                     <span th:each="extra : ${detallePedido.extras}" class="worker-detail-tag" th:text="${extra}">Urgente</span>
                                 </div>
                                 <p class="worker-empty" th:if="${!detallePedido.tieneExtras()}">Sin extras seleccionados.</p>
+                            </article>
+
+                            <article class="worker-detail-card worker-detail-card-wide" th:if="${detallePedido.tieneLineasTienda()}">
+                                <span class="section-kicker">Productos</span>
+                                <h2>Detalle del pedido de tienda</h2>
+                                <div class="checkout-review-list worker-store-lines">
+                                    <article class="checkout-review-item" th:each="linea : ${detallePedido.lineasTienda}">
+                                        <div>
+                                            <strong th:text="${linea.nombre()}">Producto</strong>
+                                            <small th:text="|${linea.cantidad()} uds. x ${linea.precioUnitarioFormateado()}|">1 uds.</small>
+                                        </div>
+                                        <strong th:text="${linea.subtotalFormateado()}">0,00 EUR</strong>
+                                    </article>
+                                </div>
                             </article>
 
                             <article class="worker-detail-card" th:if="${detallePedido.tieneArchivo()}">

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head(${pageTitle}, '/css/tienda.css')}"></head>
+<body class="tienda-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="tienda-main carrito-main">
+        <section class="carrito-section">
+            <div class="container">
+                <div class="carrito-header">
+                    <div>
+                        <span class="section-kicker">Tu cesta</span>
+                        <h1>Carrito de compra</h1>
+                        <p>Gestiona cantidades, revisa el total y prepara una compra simulada con flujo profesional.</p>
+                    </div>
+                    <a class="button button-outline-dark" th:href="@{/tienda}">Volver a la tienda</a>
+                </div>
+
+                <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Carrito actualizado.</div>
+                <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido actualizar el carrito.</div>
+
+                <div class="carrito-empty" th:if="${carrito.vacio}">
+                    <strong>Tu carrito esta vacio.</strong>
+                    <p>Aun no has anadido productos. Explora la tienda y monta tu pedido cuando quieras.</p>
+                    <a class="button button-primary" th:href="@{/tienda}">Volver a la tienda</a>
+                </div>
+
+                <div class="carrito-layout" th:if="${!carrito.vacio}">
+                    <section class="carrito-items">
+                        <article class="carrito-item-card" th:each="item : ${carrito.items}">
+                            <img th:src="${item.imagenUrl()}" th:alt="${item.nombre()}">
+                            <div class="carrito-item-copy">
+                                <h2 th:text="${item.nombre()}">Producto</h2>
+                                <p th:text="${item.descripcion()}">Descripcion</p>
+                                <span class="carrito-price-unit" th:text="${'Precio unitario: ' + item.precioUnitarioFormateado()}">Precio unitario</span>
+                            </div>
+                            <form class="carrito-item-qty" th:action="@{/carrito/actualizar}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" name="productoId" th:value="${item.productoId()}">
+                                <label>
+                                    <span>Cantidad</span>
+                                    <input type="number" name="cantidad" min="1" th:attr="max=${item.stockDisponible()}" th:value="${item.cantidad()}">
+                                </label>
+                                <button type="submit" class="button button-secondary-dark">Actualizar</button>
+                            </form>
+                            <div class="carrito-item-total">
+                                <span>Subtotal</span>
+                                <strong th:text="${item.subtotalFormateado()}">0,00 EUR</strong>
+                                <form th:action="@{/carrito/eliminar}" method="post">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <input type="hidden" name="productoId" th:value="${item.productoId()}">
+                                    <button type="submit" class="button button-outline">Eliminar</button>
+                                </form>
+                            </div>
+                        </article>
+                    </section>
+
+                    <aside class="carrito-summary-card">
+                        <span class="section-kicker">Resumen</span>
+                        <h2>Checkout rapido</h2>
+
+                        <form th:action="@{/carrito/entrega}" method="post" class="carrito-delivery-form">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <label class="delivery-option" th:classappend="${carrito.metodoEntrega.name() == 'RECOGIDA_TIENDA'} ? ' is-active' : ''">
+                                <input type="radio" name="metodoEntrega" value="RECOGIDA_TIENDA" onchange="this.form.submit()" th:checked="${carrito.metodoEntrega.name() == 'RECOGIDA_TIENDA'}">
+                                <span>
+                                    <strong>Recogida en tienda</strong>
+                                    <small>Gratis. Pagaras en tienda cuando recojas el pedido.</small>
+                                </span>
+                            </label>
+                            <label class="delivery-option" th:classappend="${carrito.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
+                                <input type="radio" name="metodoEntrega" value="ENVIO_DOMICILIO" onchange="this.form.submit()" th:checked="${carrito.metodoEntrega.name() == 'ENVIO_DOMICILIO'}">
+                                <span>
+                                    <strong>Envio a domicilio</strong>
+                                    <small>4,99 EUR. Envio simulado, funcionalidad en desarrollo.</small>
+                                </span>
+                            </label>
+                        </form>
+
+                        <ul class="carrito-summary-list">
+                            <li><span>Subtotal</span><strong th:text="${carrito.subtotalFormateado()}">0,00 EUR</strong></li>
+                            <li><span>Gastos de envio</span><strong th:text="${carrito.gastosEnvioFormateado()}">0,00 EUR</strong></li>
+                            <li class="is-total"><span>Total final</span><strong th:text="${carrito.totalFormateado()}">0,00 EUR</strong></li>
+                        </ul>
+
+                        <a class="button button-primary" th:href="@{/checkout}">Ir al checkout</a>
+                        <p class="carrito-login-note" th:if="${carrito.requiereLoginParaConfirmar}">
+                            Necesitaras iniciar sesion antes de confirmar el pedido.
+                        </p>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/tienda.js}"></script>
+</body>
+</html>

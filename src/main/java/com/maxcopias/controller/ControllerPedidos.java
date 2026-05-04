@@ -69,7 +69,6 @@ public class ControllerPedidos {
         orderForm.setPaperType(TipoPapel.NORMAL);
         orderForm.setBindingType(TipoEncuadernacion.SIN_ENCUADERNACION);
         orderForm.setCopies(1);
-        
         // Populate enum lists for template dropdowns
         model.addAttribute("primaryJobTypes", TipoTrabajo.values());
         model.addAttribute("colorModes", ModoColor.values());
@@ -79,7 +78,7 @@ public class ControllerPedidos {
         model.addAttribute("bindingTypes", TipoEncuadernacion.values());
         
         // Static preview and config
-        model.addAttribute("acceptedFormats", "PDF, DOC, DOCX, JPG, JPEG, PNG");
+        model.addAttribute("acceptedFormats", "PDF, DOC, DOCX, JPG, JPEG, PNG, WEBP");
         model.addAttribute("maxFileSizeLabel", "20 MB");
         
         // Empty price preview (will be populated by JS/service)
@@ -127,8 +126,7 @@ public class ControllerPedidos {
             pedido.setPapel(null);
             pedido.setTamano(null);
         }
-        String extrasStr = String.format("plastificado=%b,urgente=%b,escaneado=%b,observaciones='%s'",
-            orderForm.getPlastificado(), orderForm.getUrgente(), orderForm.getEscaneado(), orderForm.getObservations());
+        String extrasStr = construirExtrasPedido(orderForm);
         pedido.setExtras(extrasStr);
         // Use the price calculated by the frontend wizard
         String estimatedPrice = orderForm.getEstimatedPrice();
@@ -154,7 +152,8 @@ public class ControllerPedidos {
         Usuario usuario = userService.findRequiredByEmail(username);
         pedido.setUsuario(usuario);
 
-        if (archivo == null || archivo.isEmpty()) {
+        boolean requiereArchivo = true;
+        if (requiereArchivo && (archivo == null || archivo.isEmpty())) {
             result.reject("archivo.required", "Debes adjuntar un archivo valido para guardar el pedido.");
             formulario(orderForm, model);
             return "copisteria/formulario";
@@ -164,9 +163,11 @@ public class ControllerPedidos {
         try {
             pedido.setCodigoRecoger(generarCodigoRecogerUnico());
             savedPedido = pedidoRepository.saveAndFlush(pedido);
-            DatosArchivoGuardado archivoGuardado = storageService.storeOrderFile(archivo, savedPedido.getCodigoRecoger());
-            savedPedido.setRutaArchivo(archivoGuardado.getRelativePath());
-            pedidoRepository.saveAndFlush(savedPedido);
+            if (archivo != null && !archivo.isEmpty()) {
+                DatosArchivoGuardado archivoGuardado = storageService.storeOrderFile(archivo, savedPedido.getCodigoRecoger());
+                savedPedido.setRutaArchivo(archivoGuardado.getRelativePath());
+                pedidoRepository.saveAndFlush(savedPedido);
+            }
         } catch (ExcepcionAlmacenamientoArchivos exception) {
             if (savedPedido != null && savedPedido.getId() != null) {
                 pedidoRepository.deleteById(savedPedido.getId());
@@ -217,6 +218,23 @@ public class ControllerPedidos {
             codigo = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
         } while (pedidoRepository.existsByCodigoRecoger(codigo));
         return codigo;
+    }
+
+    private String construirExtrasPedido(FormularioPedidoCopisteria orderForm) {
+        StringBuilder extras = new StringBuilder();
+        extras.append("plastificado=").append(Boolean.TRUE.equals(orderForm.getPlastificado()));
+        extras.append(",urgente=").append(Boolean.TRUE.equals(orderForm.getUrgente()));
+        extras.append(",escaneado=").append(Boolean.TRUE.equals(orderForm.getEscaneado()));
+        extras.append(",observaciones='").append(sanitizarTexto(orderForm.getObservations())).append("'");
+
+        return extras.toString();
+    }
+
+    private String sanitizarTexto(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace("'", " ").trim();
     }
 
     @GetMapping("/mis-pedidos")

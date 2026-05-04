@@ -116,6 +116,7 @@ public class ControladorTrabajador {
             model.addAttribute("detallePedido", detalle);
             model.addAttribute("estadoOptions", EstadoPedidoTienda.values());
             model.addAttribute("estadoAction", "/worker/pedidos/" + id + "/estado");
+            model.addAttribute("pagoAction", "/worker/pedidos/" + id + "/pago");
             model.addAttribute("tipoPedido", "tienda");
             model.addAttribute("timelineStates", EstadoPedidoTienda.values());
             model.addAttribute("currentStepIndex", Math.max(0, IntStream.range(0, EstadoPedidoTienda.values().length)
@@ -176,6 +177,15 @@ public class ControladorTrabajador {
         }
 
         servicioPedidosOperativos.cambiarEstadoTienda(id, EstadoPedidoTienda.valueOf(estado));
+        return "redirect:/worker/pedidos/" + id + "?tipo=tienda";
+    }
+
+    @PostMapping("/worker/pedidos/{id}/pago")
+    public String actualizarPagoDesdeDetalleWorker(
+        @PathVariable Long id,
+        @RequestParam boolean pagado
+    ) {
+        servicioPedidosOperativos.marcarPagadoTienda(id, pagado);
         return "redirect:/worker/pedidos/" + id + "?tipo=tienda";
     }
 

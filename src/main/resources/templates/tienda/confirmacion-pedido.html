@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head(${pageTitle}, '/css/tienda.css')}"></head>
+<body class="tienda-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="tienda-main confirmacion-main">
+        <section class="confirmacion-section">
+            <div class="container">
+                <article class="confirmacion-card">
+                    <span class="section-kicker">Pedido confirmado</span>
+                    <h1>Tu pedido de tienda ya esta registrado</h1>
+                    <p th:text="${confirmacion.mensajePrincipal()}">Pedido recibido.</p>
+
+                    <div class="confirmacion-meta-grid">
+                        <div><span>Codigo</span><strong th:text="${confirmacion.pedido().codigoPedido()}">MT-000</strong></div>
+                        <div><span>Estado inicial</span><strong th:text="${confirmacion.pedido().estadoLabel()}">Pendiente</strong></div>
+                        <div><span>Entrega</span><strong th:text="${confirmacion.pedido().metodoEntregaLabel()}">Recogida en tienda</strong></div>
+                        <div><span>Total</span><strong th:text="${confirmacion.pedido().totalFormateado()}">0,00 EUR</strong></div>
+                    </div>
+
+                    <div class="checkout-review-list">
+                        <article class="checkout-review-item" th:each="item : ${confirmacion.pedido().items()}">
+                            <div>
+                                <strong th:text="${item.nombre()}">Producto</strong>
+                                <small th:text="|${item.cantidad()} uds.|">1 uds.</small>
+                            </div>
+                            <strong th:text="${item.subtotalFormateado()}">0,00 EUR</strong>
+                        </article>
+                    </div>
+
+                    <div class="confirmacion-actions">
+                        <a class="button button-primary" th:href="@{/mis-pedidos}">Ver mis pedidos</a>
+                        <a class="button button-outline-dark" th:href="@{/tienda}">Seguir comprando</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/tienda.js}"></script>
+</body>
+</html>

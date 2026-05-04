@@ -729,6 +729,16 @@
     font-size: 0.94rem;
 }
 
+.order-history-card-store .pickup-code-pill {
+    background: rgba(255, 217, 101, 0.22);
+    color: #8b6500;
+}
+
+.order-history-grid-store .order-history-files li {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+}
+
 .admin-card {
     max-width: 880px;
 }

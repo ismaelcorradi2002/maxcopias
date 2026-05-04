@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head(${pageTitle}, '/css/tienda.css')}"></head>
+<body class="tienda-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="tienda-main checkout-main">
+        <section class="checkout-section">
+            <div class="container">
+                <div class="carrito-header">
+                    <div>
+                        <span class="section-kicker">Checkout</span>
+                        <h1>Finaliza tu pedido</h1>
+                        <p>Sin pasarela real por ahora: el flujo simula una compra profesional completa.</p>
+                    </div>
+                    <a class="button button-outline-dark" th:href="@{/carrito}">Volver al carrito</a>
+                </div>
+
+                <div class="checkout-layout">
+                    <form th:action="@{/checkout}" th:object="${checkoutForm}" method="post" class="checkout-form-card">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                        <section class="checkout-step-card">
+                            <span class="checkout-step-index">Paso 1</span>
+                            <h2>Datos del cliente</h2>
+                            <div class="checkout-field-grid">
+                                <label>
+                                    <span>Nombre</span>
+                                    <input th:field="*{nombre}" type="text" placeholder="Nombre y apellidos">
+                                    <small class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error</small>
+                                </label>
+                                <label>
+                                    <span>Email</span>
+                                    <input th:field="*{email}" type="email" placeholder="correo@ejemplo.com">
+                                    <small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</small>
+                                </label>
+                                <label class="is-wide">
+                                    <span>Telefono</span>
+                                    <input th:field="*{telefono}" type="text" placeholder="600123123">
+                                    <small class="field-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Error</small>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="checkout-step-card">
+                            <span class="checkout-step-index">Paso 2</span>
+                            <h2>Metodo de entrega</h2>
+                            <div class="checkout-delivery-options">
+                                <label class="delivery-option" th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'RECOGIDA_TIENDA'} ? ' is-active' : ''">
+                                    <input th:field="*{metodoEntrega}" type="radio" value="RECOGIDA_TIENDA">
+                                    <span>
+                                        <strong>Recogida en tienda</strong>
+                                        <small>Gratis. Pago en tienda cuando el pedido se entregue.</small>
+                                    </span>
+                                </label>
+                                <label class="delivery-option" th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
+                                    <input th:field="*{metodoEntrega}" type="radio" value="ENVIO_DOMICILIO">
+                                    <span>
+                                        <strong>Envio simulado</strong>
+                                        <small>4,99 EUR. Envio simulado, funcionalidad en desarrollo.</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="checkout-step-card">
+                            <span class="checkout-step-index">Paso 3</span>
+                            <h2>Resumen del pedido</h2>
+                            <div class="checkout-review-list">
+                                <article class="checkout-review-item" th:each="item : ${carrito.items}">
+                                    <div>
+                                        <strong th:text="${item.nombre()}">Producto</strong>
+                                        <small th:text="|${item.cantidad()} uds. x ${item.precioUnitarioFormateado()}|">1 uds.</small>
+                                    </div>
+                                    <strong th:text="${item.subtotalFormateado()}">0,00 EUR</strong>
+                                </article>
+                            </div>
+                            <ul class="carrito-summary-list checkout-summary-list">
+                                <li><span>Subtotal</span><strong th:text="${carrito.subtotalFormateado()}">0,00 EUR</strong></li>
+                                <li><span>Envio</span><strong th:text="${carrito.gastosEnvioFormateado()}">0,00 EUR</strong></li>
+                                <li class="is-total"><span>Total</span><strong th:text="${carrito.totalFormateado()}">0,00 EUR</strong></li>
+                            </ul>
+                        </section>
+
+                        <button type="submit" class="button button-primary checkout-submit-button">Confirmar pedido</button>
+                    </form>
+
+                    <aside class="carrito-summary-card checkout-sidebar-card">
+                        <span class="section-kicker">Nota</span>
+                        <h2>Pago simulado</h2>
+                        <p>
+                            Para recogida en tienda, el pedido se guarda con pago pendiente.
+                            Cuando el equipo marque el pedido como entregado, tambien podra marcarlo como pagado.
+                        </p>
+                        <p>
+                            Si eliges envio, el pedido se registra igualmente, pero el envio sigue siendo una simulacion.
+                        </p>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/tienda.js}"></script>
+</body>
+</html>

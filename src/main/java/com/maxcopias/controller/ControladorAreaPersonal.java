@@ -15,6 +15,7 @@ import com.maxcopias.repository.RepositorioCategoria;
 import com.maxcopias.repository.RepositorioPedidoCopisteria;
 import com.maxcopias.repository.RepositorioUsuario;
 import com.maxcopias.service.ServicioPedidosOperativos;
+import com.maxcopias.service.ServicioPedidosTienda;
 import com.maxcopias.model.PedidoCopisteria;
 import com.maxcopias.model.PedidoTienda;
 import jakarta.validation.Valid;
@@ -59,14 +60,24 @@ public class ControladorAreaPersonal {
      */
     private final ServicioTienda servicioTienda;
     private final ServicioPedidosOperativos servicioPedidosOperativos;
+    private final ServicioPedidosTienda servicioPedidosTienda;
 
-    public ControladorAreaPersonal(ServicioUsuario userService, RepositorioUsuario userRepository, ServicioTienda servicioTienda, RepositorioCategoria repositorioCategoria, ServicioPedidosOperativos servicioPedidosOperativos, RepositorioPedidoCopisteria repositorioPedidoCopisteria) {
+    public ControladorAreaPersonal(
+        ServicioUsuario userService,
+        RepositorioUsuario userRepository,
+        ServicioTienda servicioTienda,
+        RepositorioCategoria repositorioCategoria,
+        ServicioPedidosOperativos servicioPedidosOperativos,
+        RepositorioPedidoCopisteria repositorioPedidoCopisteria,
+        ServicioPedidosTienda servicioPedidosTienda
+    ) {
         this.repositorioCategoria = repositorioCategoria;
         this.userService = userService;
         this.userRepository = userRepository;
         this.servicioTienda = servicioTienda;
         this.servicioPedidosOperativos = servicioPedidosOperativos;
         this.repositorioPedidoCopisteria = repositorioPedidoCopisteria;
+        this.servicioPedidosTienda = servicioPedidosTienda;
     }
 
     /**
@@ -117,6 +128,9 @@ public class ControladorAreaPersonal {
         Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
         model.addAttribute("currentUsuario", currentUsuario);
         model.addAttribute("orders", repositorioPedidoCopisteria.findAllByUsuarioAndEliminadoFalseOrderByFechaCreacionDesc(currentUsuario));
+        model.addAttribute("storeOrders", servicioPedidosTienda.obtenerPedidosUsuario(authentication).stream()
+            .map(servicioPedidosTienda::construirResumen)
+            .toList());
         model.addAttribute("pageTitle", "Maxcopias | Mis pedidos");
         return "area-personal/pedidos";
     }
@@ -201,6 +215,7 @@ public class ControladorAreaPersonal {
             model.addAttribute("detallePedido", detalle);
             model.addAttribute("estadoOptions", EstadoPedidoTienda.values());
             model.addAttribute("estadoAction", "/admin/pedidos/" + id + "/estado");
+            model.addAttribute("pagoAction", "/admin/pedidos/" + id + "/pago");
             model.addAttribute("tipoPedido", "tienda");
             model.addAttribute("timelineStates", EstadoPedidoTienda.values());
             model.addAttribute("currentStepIndex", Math.max(0, IntStream.range(0, EstadoPedidoTienda.values().length)
@@ -304,9 +319,9 @@ public class ControladorAreaPersonal {
                 null,
                 null,
                 null,
-                null,
+                p.getCodigoPedido(),
                 p.getResumenProductos(),
-                null,
+                p.getUsuario() != null ? p.getUsuario().getFullName() : null,
                 p.isEliminado(),
                 p.getFechaEliminacion(),
                 p.getEliminadoPor()
@@ -531,6 +546,15 @@ public class ControladorAreaPersonal {
         }
 
         servicioPedidosOperativos.cambiarEstadoTienda(id, EstadoPedidoTienda.valueOf(estado));
+        return "redirect:/admin/pedidos/" + id + "?tipo=tienda";
+    }
+
+    @PostMapping("/admin/pedidos/{id}/pago")
+    public String actualizarPagoDetalleAdmin(
+        @PathVariable Long id,
+        @RequestParam boolean pagado
+    ) {
+        servicioPedidosOperativos.marcarPagadoTienda(id, pagado);
         return "redirect:/admin/pedidos/" + id + "?tipo=tienda";
     }
 
