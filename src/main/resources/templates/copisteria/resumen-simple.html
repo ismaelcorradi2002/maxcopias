@@ -10,7 +10,7 @@
             <div class="container summary-hero-grid">
                 <div class="summary-hero-copy" data-reveal="up">
                     <span class="eyebrow">Pedido preparado</span>
-                    <h1>Tu pedido ya esta guardado y tiene un codigo unico de recogida.</h1>
+                    <h1>Tu pedido ya esta guardado y ya tiene su referencia de seguimiento.</h1>
                     <p>
                         Hemos registrado tu encargo dentro de tu cuenta para que puedas consultarlo,
                         descargar el archivo y seguir su estado desde la web.
@@ -18,9 +18,9 @@
                 </div>
 
                 <aside class="summary-highlight" data-reveal="left">
-                    <span class="card-chip">Codigo de recogida</span>
+                    <span class="card-chip">Referencia del pedido</span>
                     <strong th:text="${pickupCode}">ABC12345</strong>
-                    <p>Guarda este codigo para recoger el pedido en tienda con rapidez.</p>
+                    <p>Guarda esta referencia para identificar el pedido rapidamente.</p>
                     <div class="summary-highlight-price">
                         <span>Precio estimado</span>
                         <strong th:text="${formattedEstimatedPrice}">0,00 EUR</strong>
@@ -82,7 +82,7 @@
                     </div>
 
                     <p class="summary-note">
-                        En tienda podras identificar este encargo con el codigo
+                        Podras identificar este encargo con la referencia
                         <strong th:text="${pickupCode}">ABC12345</strong>.
                     </p>
                 </article>
@@ -142,6 +142,18 @@
                                 <dd th:text="${extrasSummary}">Sin extras</dd>
                             </div>
                             <div>
+                                <dt>Entrega</dt>
+                                <dd th:text="${deliveryMethodLabel}">Recogida en tienda</dd>
+                            </div>
+                            <div th:if="${deliveryAddress != null}">
+                                <dt>Direccion</dt>
+                                <dd th:text="${deliveryAddress}">Calle de ejemplo 12</dd>
+                            </div>
+                            <div th:if="${deliveryEtaLabel != null}">
+                                <dt>Urgente</dt>
+                                <dd th:text="${deliveryEtaLabel}">Recogida urgente estimada en 10 minutos</dd>
+                            </div>
+                            <div>
                                 <dt>Observaciones</dt>
                                 <dd th:text="${observations}">Sin observaciones.</dd>
                             </div>
@@ -152,23 +164,29 @@
 
             <div class="container">
                 <article class="summary-card files-card" data-reveal="up">
-                    <h3>Archivo subido</h3>
-                    <div th:if="${rutaArchivo != null}">
-                        <div class="uploaded-file-main">
-                            <strong th:text="${nombreArchivo}">archivo.pdf</strong>
-                            <span th:text="${tamanoArchivoFormateado != null ? tamanoArchivoFormateado : 'Tamano no disponible'}">1.2 MB</span>
-                        </div>
-                        <small th:text="${rutaArchivo}">uploads/copisteria/archivo.pdf</small>
-                        <div class="summary-actions">
-                            <a class="button button-outline-dark" th:href="${archivoVerUrl}" target="_blank" rel="noopener noreferrer">
-                                Ver archivo
-                            </a>
-                            <a class="button button-primary" th:href="${archivoDescargaUrl}">
-                                Descargar archivo
-                            </a>
+                    <h3>Archivos subidos</h3>
+                    <p class="summary-note" th:if="${fileCount > 1}">
+                        Todos estos archivos se han guardado con la misma configuracion de impresion.
+                        Si necesitas ajustes distintos por archivo, crea pedidos separados.
+                    </p>
+                    <div th:if="${archivosPedido != null and !archivosPedido.isEmpty()}">
+                        <div class="uploaded-file-main" th:each="archivo : ${archivosPedido}">
+                            <div>
+                                <strong th:text="${archivo.nombre}">archivo.pdf</strong>
+                                <span th:text="${archivo.tamano != null ? archivo.tamano : 'Tamano no disponible'}">1.2 MB</span>
+                                <small th:text="${archivo.ruta}">uploads/copisteria/archivo.pdf</small>
+                            </div>
+                            <div class="summary-actions">
+                                <a class="button button-outline-dark" th:href="${archivo.verUrl}" target="_blank" rel="noopener noreferrer">
+                                    Ver archivo
+                                </a>
+                                <a class="button button-primary" th:href="${archivo.descargaUrl}">
+                                    Descargar archivo
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <p th:if="${rutaArchivo == null}">Sin archivo</p>
+                    <p th:if="${archivosPedido == null or archivosPedido.isEmpty()}">Sin archivo</p>
                 </article>
             </div>
         </section>

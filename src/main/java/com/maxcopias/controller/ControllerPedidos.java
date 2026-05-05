@@ -31,7 +31,14 @@ import com.maxcopias.dto.RespuestaVistaPreviaPrecioCopisteria;
 import com.maxcopias.model.EstimacionPrecioCopisteria;
 import com.maxcopias.model.LineaPrecioCopisteria;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.UUID;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/copisteria")
@@ -62,13 +69,30 @@ public class ControllerPedidos {
             orderForm.setEmail(user.getEmail());
         }
         // Pre-select defaults for smooth JS wizard progression
-        orderForm.setJobType(TipoTrabajo.IMPRESION);
-        orderForm.setColorMode(ModoColor.BLACK_AND_WHITE);
-        orderForm.setPaperSize(TamanoPapel.A4);
-        orderForm.setPrintSide(CaraImpresion.ONE_SIDED);
-        orderForm.setPaperType(TipoPapel.NORMAL);
-        orderForm.setBindingType(TipoEncuadernacion.SIN_ENCUADERNACION);
-        orderForm.setCopies(1);
+        if (orderForm.getJobType() == null) {
+            orderForm.setJobType(TipoTrabajo.IMPRESION);
+        }
+        if (orderForm.getColorMode() == null) {
+            orderForm.setColorMode(ModoColor.BLACK_AND_WHITE);
+        }
+        if (orderForm.getPaperSize() == null) {
+            orderForm.setPaperSize(TamanoPapel.A4);
+        }
+        if (orderForm.getPrintSide() == null) {
+            orderForm.setPrintSide(CaraImpresion.ONE_SIDED);
+        }
+        if (orderForm.getPaperType() == null) {
+            orderForm.setPaperType(TipoPapel.NORMAL);
+        }
+        if (orderForm.getBindingType() == null) {
+            orderForm.setBindingType(TipoEncuadernacion.SIN_ENCUADERNACION);
+        }
+        if (orderForm.getCopies() == null || orderForm.getCopies() < 1) {
+            orderForm.setCopies(1);
+        }
+        if (orderForm.getDeliveryMethod() == null || orderForm.getDeliveryMethod().isBlank()) {
+            orderForm.setDeliveryMethod("STORE_PICKUP");
+        }
         // Populate enum lists for template dropdowns
         model.addAttribute("primaryJobTypes", TipoTrabajo.values());
         model.addAttribute("colorModes", ModoColor.values());
@@ -96,11 +120,18 @@ public class ControllerPedidos {
     public String procesarPedido(
             @Valid @ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm,
             BindingResult result,
-            @RequestParam(value = "archivo", required = false) MultipartFile archivo,
+            @RequestParam(value = "archivo", required = false) MultipartFile[] archivos,
             Model model) {
         
         if (result.hasErrors()) {
             // Re-populate model attributes on validation error
+            formulario(orderForm, model);
+            return "copisteria/formulario";
+        }
+
+        if ("HOME_DELIVERY".equals(orderForm.getDeliveryMethod())
+            && (orderForm.getDeliveryAddress() == null || orderForm.getDeliveryAddress().isBlank())) {
+            result.reject("deliveryAddress.required", "Debes indicar la direccion si eliges envio a domicilio.");
             formulario(orderForm, model);
             return "copisteria/formulario";
         }
@@ -153,7 +184,13 @@ public class ControllerPedidos {
         pedido.setUsuario(usuario);
 
         boolean requiereArchivo = true;
-        if (requiereArchivo && (archivo == null || archivo.isEmpty())) {
+        List<MultipartFile> archivosValidos = archivos == null
+            ? List.of()
+            : java.util.Arrays.stream(archivos)
+                .filter(file -> file != null && !file.isEmpty())
+                .toList();
+
+        if (requiereArchivo && archivosValidos.isEmpty()) {
             result.reject("archivo.required", "Debes adjuntar un archivo valido para guardar el pedido.");
             formulario(orderForm, model);
             return "copisteria/formulario";
@@ -163,9 +200,13 @@ public class ControllerPedidos {
         try {
             pedido.setCodigoRecoger(generarCodigoRecogerUnico());
             savedPedido = pedidoRepository.saveAndFlush(pedido);
-            if (archivo != null && !archivo.isEmpty()) {
-                DatosArchivoGuardado archivoGuardado = storageService.storeOrderFile(archivo, savedPedido.getCodigoRecoger());
-                savedPedido.setRutaArchivo(archivoGuardado.getRelativePath());
+            if (!archivosValidos.isEmpty()) {
+                List<DatosArchivoGuardado> archivosGuardados = storageService.storeFiles(archivosValidos, savedPedido.getCodigoRecoger());
+                savedPedido.setRutasArchivo(
+                    archivosGuardados.stream()
+                        .map(DatosArchivoGuardado::getRelativePath)
+                        .collect(Collectors.toList())
+                );
                 pedidoRepository.saveAndFlush(savedPedido);
             }
         } catch (ExcepcionAlmacenamientoArchivos exception) {
@@ -189,7 +230,7 @@ public class ControllerPedidos {
         model.addAttribute("formattedEstimatedPrice", pedido.getFormattedEstimatedPrice());
         model.addAttribute("formattedCreatedAt", pedido.getFormattedCreatedAt());
         model.addAttribute("fileCount", pedido.getFileCount());
-        model.addAttribute("totalPageCount", pedido.getTotalPageCount());
+        model.addAttribute("totalPageCount", resolverPaginasTotales(pedido));
         model.addAttribute("estadoLabel", pedido.getStatus() != null ? pedido.getStatus().getLabel() : "Sin estado");
         model.addAttribute("trabajoLabel", pedido.getJobType() != null ? pedido.getJobType().getLabel() : "Sin tipo");
         model.addAttribute("customerName", pedido.getCustomerName());
@@ -201,14 +242,18 @@ public class ControllerPedidos {
         model.addAttribute("printSideLabel", pedido.getPrintSide() != null ? pedido.getPrintSide().getLabel() : null);
         model.addAttribute("paperTypeLabel", pedido.getPaperType() != null ? pedido.getPaperType().getLabel() : null);
         model.addAttribute("bindingLabel", pedido.getBindingType() != null && !pedido.getBindingType().isNone() ? pedido.getBindingType().getLabel() : null);
-        model.addAttribute("extrasSummary", pedido.getExtrasSummary());
-        model.addAttribute("observations", pedido.getObservationsOrDefault());
+        model.addAttribute("extrasSummary", resolverResumenExtras(pedido));
+        model.addAttribute("observations", resolverObservaciones(pedido));
+        model.addAttribute("deliveryMethodLabel", resolverMetodoEntrega(pedido));
+        model.addAttribute("deliveryAddress", resolverDireccionEntrega(pedido));
+        model.addAttribute("deliveryEtaLabel", resolverVentanaUrgente(pedido));
         model.addAttribute("priceBreakdown", pedido.getPriceBreakdownOrDefault());
         model.addAttribute("rutaArchivo", pedido.getRutaArchivo());
         model.addAttribute("nombreArchivo", pedido.getNombreArchivo());
         model.addAttribute("tamanoArchivoFormateado", pedido.getTamanoArchivoFormateado());
         model.addAttribute("archivoVerUrl", "/pedidos/copisteria/" + pedido.getId() + "/archivo");
         model.addAttribute("archivoDescargaUrl", "/pedidos/copisteria/" + pedido.getId() + "/archivo?download=true");
+        model.addAttribute("archivosPedido", construirArchivosPedido(pedido));
         return "copisteria/resumen-simple";
     }
 
@@ -225,6 +270,8 @@ public class ControllerPedidos {
         extras.append("plastificado=").append(Boolean.TRUE.equals(orderForm.getPlastificado()));
         extras.append(",urgente=").append(Boolean.TRUE.equals(orderForm.getUrgente()));
         extras.append(",escaneado=").append(Boolean.TRUE.equals(orderForm.getEscaneado()));
+        extras.append(",deliveryMethod='").append(sanitizarTexto(orderForm.getDeliveryMethod())).append("'");
+        extras.append(",deliveryAddress='").append(sanitizarTexto(orderForm.getDeliveryAddress())).append("'");
         extras.append(",observaciones='").append(sanitizarTexto(orderForm.getObservations())).append("'");
 
         return extras.toString();
@@ -235,6 +282,133 @@ public class ControllerPedidos {
             return "";
         }
         return value.replace("'", " ").trim();
+    }
+
+    private List<Map<String, String>> construirArchivosPedido(PedidoCopisteria pedido) {
+        List<Map<String, String>> archivos = new ArrayList<>();
+        List<String> rutas = pedido.getRutasArchivo();
+
+        for (int index = 0; index < rutas.size(); index += 1) {
+            String ruta = rutas.get(index);
+            Map<String, String> item = new LinkedHashMap<>();
+            item.put("nombre", Path.of(ruta).getFileName().toString());
+            item.put("ruta", ruta);
+            item.put("tamano", resolverTamanoArchivo(ruta));
+            item.put("verUrl", "/pedidos/copisteria/" + pedido.getId() + "/archivo?index=" + index);
+            item.put("descargaUrl", "/pedidos/copisteria/" + pedido.getId() + "/archivo?download=true&index=" + index);
+            archivos.add(item);
+        }
+
+        return archivos;
+    }
+
+    private String resolverTamanoArchivo(String rutaRelativa) {
+        try {
+            Path path = storageService.resolveStoredPath(rutaRelativa);
+            long size = Files.exists(path) ? Files.size(path) : 0L;
+            return formatearTamanoArchivo(size);
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    private String formatearTamanoArchivo(long sizeInBytes) {
+        if (sizeInBytes <= 0) {
+            return null;
+        }
+        if (sizeInBytes < 1024) {
+            return sizeInBytes + " B";
+        }
+        double sizeInKb = sizeInBytes / 1024.0;
+        if (sizeInKb < 1024) {
+            return String.format("%.1f KB", sizeInKb);
+        }
+        return String.format("%.2f MB", sizeInKb / 1024.0);
+    }
+
+    private int resolverPaginasTotales(PedidoCopisteria pedido) {
+        int total = 0;
+
+        for (String ruta : pedido.getRutasArchivo()) {
+            try {
+                Path path = storageService.resolveStoredPath(ruta);
+                String filename = path.getFileName().toString().toLowerCase();
+
+                if (filename.endsWith(".pdf")) {
+                    try (org.apache.pdfbox.pdmodel.PDDocument document = org.apache.pdfbox.pdmodel.PDDocument.load(path.toFile())) {
+                        total += Math.max(document.getNumberOfPages(), 1);
+                    }
+                } else {
+                    total += 1;
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        return total;
+    }
+
+    private String resolverMetodoEntrega(PedidoCopisteria pedido) {
+        String value = extraValue(pedido.getExtras(), "deliveryMethod");
+        return "HOME_DELIVERY".equalsIgnoreCase(value) ? "Envio a domicilio" : "Recogida en tienda";
+    }
+
+    private String resolverDireccionEntrega(PedidoCopisteria pedido) {
+        String value = extraValue(pedido.getExtras(), "deliveryAddress");
+        return value == null || value.isBlank() ? null : value;
+    }
+
+    private String resolverVentanaUrgente(PedidoCopisteria pedido) {
+        boolean urgente = "true".equalsIgnoreCase(extraValue(pedido.getExtras(), "urgente"));
+        if (!urgente) {
+            return null;
+        }
+        return "HOME_DELIVERY".equalsIgnoreCase(extraValue(pedido.getExtras(), "deliveryMethod"))
+            ? "Entrega urgente estimada en 20 minutos"
+            : "Recogida urgente estimada en 10 minutos";
+    }
+
+    private String extraValue(String extras, String key) {
+        if (extras == null || extras.isBlank()) {
+            return null;
+        }
+
+        String quotedPrefix = key + "='";
+        int quotedStart = extras.indexOf(quotedPrefix);
+        if (quotedStart >= 0) {
+            int valueStart = quotedStart + quotedPrefix.length();
+            int valueEnd = extras.indexOf("'", valueStart);
+            return valueEnd >= valueStart ? extras.substring(valueStart, valueEnd) : null;
+        }
+
+        String plainPrefix = key + "=";
+        int plainStart = extras.indexOf(plainPrefix);
+        if (plainStart >= 0) {
+            int valueStart = plainStart + plainPrefix.length();
+            int valueEnd = extras.indexOf(",", valueStart);
+            return valueEnd >= valueStart ? extras.substring(valueStart, valueEnd) : extras.substring(valueStart);
+        }
+
+        return null;
+    }
+
+    private String resolverResumenExtras(PedidoCopisteria pedido) {
+        List<String> extras = new ArrayList<>();
+        if ("true".equalsIgnoreCase(extraValue(pedido.getExtras(), "plastificado"))) {
+            extras.add("Plastificado");
+        }
+        if ("true".equalsIgnoreCase(extraValue(pedido.getExtras(), "urgente"))) {
+            extras.add("Urgente");
+        }
+        if ("true".equalsIgnoreCase(extraValue(pedido.getExtras(), "escaneado"))) {
+            extras.add("Escaneado");
+        }
+        return extras.isEmpty() ? "Sin extras" : String.join(", ", extras);
+    }
+
+    private String resolverObservaciones(PedidoCopisteria pedido) {
+        String value = extraValue(pedido.getExtras(), "observaciones");
+        return value == null || value.isBlank() ? "Sin observaciones." : value;
     }
 
     @GetMapping("/mis-pedidos")

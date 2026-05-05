@@ -11,14 +11,14 @@
                 <div class="hero-copy" data-reveal="up">
                     <span class="eyebrow">Impresion online y tienda local</span>
                     <h1>
-                        Sube tus archivos, prepara tu pedido y recoge en tienda
+                        Sube tus archivos, prepara tu pedido y recoge en tienda o recíbelo en casa
                         <span class="hero-accent">con todo listo</span>
                     </h1>
                     <p class="hero-lead">
-                        En Maxcopias puedes enviar apuntes, documentos y trabajos online para imprimir,
-                        pedir acabados profesionales y pasar a recogerlos en tienda. Ademas, tienes
-                        papeleria, material escolar y suministros de oficina en el mismo sitio.
+                        En Maxcopias puedes enviar tus documentos online, prepararlos facilmente y elegir
+                        entre recogida en tienda o entrega rapida a domicilio.
                     </p>
+                    <p class="hero-lead hero-lead-micro">Recogida en tienda o entrega en casa.</p>
 
                     <div class="hero-actions">
                         <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Encargar impresion</a>
@@ -26,48 +26,10 @@
                         <a href="#servicios" class="button button-secondary">Ver servicios</a>
                     </div>
 
-                    <article class="home-main-offer home-offer-spotlight" th:if="${ofertaPrincipal != null}">
-                        <div class="home-offer-glow" aria-hidden="true"></div>
-                        <div class="home-offer-content">
-                            <div class="home-offer-topline">
-                                <span class="home-offer-kicker">Oferta destacada</span>
-                                <span class="home-offer-urgency" th:if="${ofertaPrincipal.fechaFin != null}" th:text="${'Hasta el ' + #temporals.format(ofertaPrincipal.fechaFin, 'dd/MM')}">Hasta el 30/05</span>
-                                <span class="home-offer-urgency" th:if="${ofertaPrincipal.fechaFin == null}">Oferta limitada</span>
-                            </div>
-                            <div class="home-offer-header">
-                                <small th:if="${ofertaPrincipal.porcentajeDescuento != null}" th:text="${ofertaPrincipal.porcentajeDescuento + '% OFF'}">20% OFF</small>
-                                <strong th:text="${ofertaPrincipal.titulo}">Promocion Maxcopias</strong>
-                            </div>
-                            <p th:if="${!#strings.isEmpty(ofertaPrincipal.descripcion) and !#strings.equalsIgnoreCase(#strings.trim(ofertaPrincipal.descripcion), 'hola')}" th:text="${ofertaPrincipal.descripcion}">Oferta activa para clientes.</p>
-                            <p th:if="${#strings.isEmpty(ofertaPrincipal.descripcion) or #strings.equalsIgnoreCase(#strings.trim(ofertaPrincipal.descripcion), 'hola')}">Descuento activo para pedidos y compras seleccionadas en Maxcopias.</p>
-                            <span class="home-offer-note">Aplicable a impresion y productos seleccionados</span>
-                            <div class="home-offer-meta">
-                                <em th:if="${ofertaPrincipal.tipoOferta.name() == 'GLOBAL'}">En toda la tienda</em>
-                                <em th:if="${ofertaPrincipal.tipoOferta.name() == 'PRODUCTO' and ofertaPrincipal.producto != null}" th:text="${'Producto: ' + ofertaPrincipal.producto.nombre}">Producto</em>
-                                <em th:if="${ofertaPrincipal.tipoOferta.name() == 'CATEGORIA' and ofertaPrincipal.categoria != null}" th:text="${'Categoria: ' + ofertaPrincipal.categoria.nombre}">Categoria</em>
-                                <em th:if="${ofertaPrincipal.fechaFin != null}" th:text="${'Termina el ' + #temporals.format(ofertaPrincipal.fechaFin, 'dd/MM/yyyy')}">Termina el 30/05/2026</em>
-                            </div>
-                            <div class="home-offer-actions">
-                                <a th:href="@{/tienda}" class="button button-primary home-offer-button">
-                                    <span>Ver oferta ahora</span>
-                                    <span class="home-offer-button-icon" aria-hidden="true">→</span>
-                                </a>
-                            </div>
-                            <span class="home-offer-trust">Sin complicaciones · Recogida en tienda</span>
-                        </div>
-                    </article>
-
-                    <article class="home-offer-placeholder" th:if="${ofertaPrincipal == null}">
-                        <div class="home-offer-placeholder-copy">
-                            <span class="home-offer-kicker">Servicio completo</span>
-                            <strong>Impresion online y tienda fisica en un solo flujo</strong>
-                            <p>Prepara tu pedido, recoge cuando quieras y aprovecha la visita para comprar material de papeleria.</p>
-                        </div>
-                    </article>
-
                     <ul class="hero-highlights" aria-label="Puntos clave">
                         <li>Subida de archivos online</li>
                         <li>Recogida rapida en tienda</li>
+                        <li>Entrega a domicilio</li>
                         <li>Papeleria y oficina en un solo lugar</li>
                     </ul>
                 </div>
@@ -352,7 +314,6 @@
     <div th:replace="~{fragmentos/pie :: footer}"></div>
 </div>
 
-<script th:src="@{/js/ofertas.js}"></script>
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>

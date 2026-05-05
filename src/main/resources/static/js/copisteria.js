@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("[data-copisteria-wizard]");
     const fileInput = document.querySelector("[data-file-input]");
     const fileList = document.querySelector("[data-file-list]");
@@ -9,6 +9,7 @@
     if (!form || !priceEstimator || !fileInput || !fileList || !fileHint) {
         return;
     }
+
     const summary = createSummaryController(form, fileInput);
     const pricePreview = createPricePreviewController(form, priceEstimator, fileInput, fileList, fileHint);
     const wizard = createWizardController(form, fileInput, fileHint, filesError);
@@ -32,6 +33,27 @@ function createWizardController(form, fileInput, fileHint, filesError) {
     const nextButtons = Array.from(form.querySelectorAll("[data-step-next]"));
     const prevButtons = Array.from(form.querySelectorAll("[data-step-prev]"));
     const copiesInput = form.querySelector("#copies");
+    const deliveryAddress = form.querySelector("#deliveryAddress");
+    const deliveryAddressBlock = form.querySelector("[data-delivery-address-block]");
+    const deliverySummary = form.querySelector("[data-delivery-summary]");
+    const deliveryFields = {
+        street: form.querySelector("#deliveryStreet"),
+        number: form.querySelector("#deliveryNumber"),
+        unit: form.querySelector("#deliveryUnit"),
+        postalCode: form.querySelector("#deliveryPostalCode"),
+        city: form.querySelector("#deliveryCity"),
+        province: form.querySelector("#deliveryProvince"),
+        contactPhone: form.querySelector("#deliveryContactPhone"),
+        instructions: form.querySelector("#deliveryInstructions")
+    };
+    const deliveryFieldErrors = {
+        street: form.querySelector("[data-delivery-field-error='street']"),
+        number: form.querySelector("[data-delivery-field-error='number']"),
+        postalCode: form.querySelector("[data-delivery-field-error='postalCode']"),
+        city: form.querySelector("[data-delivery-field-error='city']"),
+        province: form.querySelector("[data-delivery-field-error='province']"),
+        contactPhone: form.querySelector("[data-delivery-field-error='contactPhone']")
+    };
     const quantityButtons = Array.from(form.querySelectorAll("[data-quantity-action]"));
     const listeners = [];
     let currentIndex = 0;
@@ -44,23 +66,19 @@ function createWizardController(form, fileInput, fileHint, filesError) {
     function getSequence() {
         const jobType = getSelectedValue("jobType");
         if (jobType === "IMPRESION" || jobType === "FOTOCOPIAS") {
-            return ["jobType", "colorMode", "paperSize", "copies", "printSide", "paperType", "bindingType", "extras", "files", "review"];
+            return ["jobType", "colorMode", "paperSize", "copies", "printSide", "paperType", "bindingType", "extras", "delivery", "files", "review"];
         }
 
-        return ["jobType", "extras", "files", "review"];
-    }
-
-    function getCurrentSequence() {
-        return getSequence();
+        return ["jobType", "extras", "delivery", "files", "review"];
     }
 
     function getCurrentStepId() {
-        const sequence = getCurrentSequence();
+        const sequence = getSequence();
         return sequence[currentIndex] || "jobType";
     }
 
     function findStepIndex(stepId) {
-        return getCurrentSequence().indexOf(stepId);
+        return getSequence().indexOf(stepId);
     }
 
     function getStepElement(stepId) {
@@ -70,7 +88,6 @@ function createWizardController(form, fileInput, fileHint, filesError) {
     }
 
     function validateFilesStep() {
-
         const hasFiles = Boolean(fileInput.files && fileInput.files.length);
         const isValid = hasFiles && !fileHint.classList.contains("is-error");
 
@@ -79,6 +96,133 @@ function createWizardController(form, fileInput, fileHint, filesError) {
         }
 
         return isValid;
+    }
+
+    function selectedDeliveryMethod() {
+        return getSelectedValue("deliveryMethod") || "STORE_PICKUP";
+    }
+
+    function deliveryCost() {
+        return selectedDeliveryMethod() === "HOME_DELIVERY" ? "4,95 €" : "0,00 €";
+    }
+
+    function updateDeliverySummary() {
+        if (deliverySummary) {
+            deliverySummary.textContent = "Entrega simulada · coste estimado " + deliveryCost();
+        }
+    }
+
+    function parseStructuredDeliveryAddress() {
+        const value = deliveryAddress ? deliveryAddress.value : "";
+        if (!value) {
+            return;
+        }
+
+        const mappings = [
+            ["street", "Calle"],
+            ["number", "Numero"],
+            ["unit", "Piso / puerta / bloque"],
+            ["postalCode", "Codigo postal"],
+            ["city", "Ciudad"],
+            ["province", "Provincia"],
+            ["contactPhone", "Telefono de contacto"],
+            ["instructions", "Indicaciones"]
+        ];
+
+        mappings.forEach(function (entry) {
+            const match = value.match(new RegExp(entry[1] + ":\\s*(.*)"));
+            if (match && deliveryFields[entry[0]] && !deliveryFields[entry[0]].value) {
+                deliveryFields[entry[0]].value = match[1].trim();
+            }
+        });
+    }
+
+    function composeDeliveryAddress() {
+        if (!deliveryAddress) {
+            return "";
+        }
+
+        if (selectedDeliveryMethod() !== "HOME_DELIVERY") {
+            deliveryAddress.value = "";
+            return "";
+        }
+
+        const lines = [
+            "Calle: " + (deliveryFields.street?.value.trim() || ""),
+            "Numero: " + (deliveryFields.number?.value.trim() || ""),
+            "Piso / puerta / bloque: " + (deliveryFields.unit?.value.trim() || ""),
+            "Codigo postal: " + (deliveryFields.postalCode?.value.trim() || ""),
+            "Ciudad: " + (deliveryFields.city?.value.trim() || ""),
+            "Provincia: " + (deliveryFields.province?.value.trim() || ""),
+            "Telefono de contacto: " + (deliveryFields.contactPhone?.value.trim() || ""),
+            "Indicaciones: " + (deliveryFields.instructions?.value.trim() || "")
+        ];
+
+        deliveryAddress.value = lines.join("\n");
+        return deliveryAddress.value;
+    }
+
+    function setDeliveryFieldState(fieldName, isValid) {
+        const field = deliveryFields[fieldName];
+        const error = deliveryFieldErrors[fieldName];
+
+        if (field) {
+            field.classList.toggle("is-invalid", !isValid);
+        }
+        if (error) {
+            error.hidden = isValid;
+        }
+    }
+
+    function updateDeliveryVisibility() {
+        const showAddress = selectedDeliveryMethod() === "HOME_DELIVERY";
+        if (deliveryAddressBlock) {
+            deliveryAddressBlock.hidden = !showAddress;
+        }
+        updateDeliverySummary();
+        if (!showAddress) {
+            Object.keys(deliveryFieldErrors).forEach(function (fieldName) {
+                setDeliveryFieldState(fieldName, true);
+            });
+            if (deliveryAddress) {
+                deliveryAddress.value = "";
+            }
+        }
+    }
+
+    function validateDeliveryStep() {
+        const requiresAddress = selectedDeliveryMethod() === "HOME_DELIVERY";
+        if (!requiresAddress) {
+            composeDeliveryAddress();
+            return true;
+        }
+
+        const street = deliveryFields.street?.value.trim() || "";
+        const number = deliveryFields.number?.value.trim() || "";
+        const postalCode = deliveryFields.postalCode?.value.trim() || "";
+        const city = deliveryFields.city?.value.trim() || "";
+        const province = deliveryFields.province?.value.trim() || "";
+        const contactPhone = (deliveryFields.contactPhone?.value || "").replace(/\s+/g, "");
+
+        const validity = {
+            street: street.length > 0,
+            number: number.length > 0,
+            postalCode: /^\d{5}$/.test(postalCode),
+            city: city.length > 0,
+            province: province.length > 0,
+            contactPhone: /^\d{9}$/.test(contactPhone)
+        };
+
+        Object.keys(validity).forEach(function (fieldName) {
+            setDeliveryFieldState(fieldName, validity[fieldName]);
+        });
+
+        if (deliveryFields.contactPhone) {
+            deliveryFields.contactPhone.value = contactPhone;
+        }
+
+        composeDeliveryAddress();
+        return Object.values(validity).every(Boolean);
     }
 
     function validateStep(stepId) {
@@ -97,6 +241,8 @@ function createWizardController(form, fileInput, fileHint, filesError) {
                 return Boolean(getSelectedValue("paperType"));
             case "bindingType":
                 return Boolean(getSelectedValue("bindingType"));
+            case "delivery":
+                return validateDeliveryStep();
             case "files":
                 return validateFilesStep();
             case "extras":
@@ -118,7 +264,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             return true;
         }
 
-        const sequence = getCurrentSequence();
+        const sequence = getSequence();
         for (let index = 0; index < targetIndex; index += 1) {
             if (!validateStep(sequence[index])) {
                 return false;
@@ -129,7 +275,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
     }
 
     function updateProgress() {
-        const sequence = getCurrentSequence();
+        const sequence = getSequence();
 
         progressItems.forEach(function (item) {
             const stepId = item.dataset.progressStep;
@@ -138,10 +284,12 @@ function createWizardController(form, fileInput, fileHint, filesError) {
 
             item.hidden = !isVisible;
             item.disabled = !isVisible;
+
             const stepNumber = item.querySelector("span");
             if (stepNumber && isVisible) {
                 stepNumber.textContent = String(stepIndex + 1);
             }
+
             item.classList.toggle("is-active", isVisible && stepIndex === currentIndex);
             item.classList.toggle("is-completed", isVisible && stepIndex < currentIndex);
             item.classList.toggle("is-clickable", isVisible && canNavigateTo(stepId));
@@ -150,7 +298,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
 
     function updateSteps() {
         const currentStepId = getCurrentStepId();
-        const currentSequence = getCurrentSequence();
+        const currentSequence = getSequence();
 
         stepElements.forEach(function (element) {
             const stepId = element.dataset.stepId;
@@ -162,6 +310,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             element.classList.toggle("is-complete", isVisibleInFlow && currentSequence.indexOf(stepId) < currentIndex);
         });
 
+        updateDeliveryVisibility();
         updateProgress();
     }
 
@@ -208,7 +357,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             return;
         }
 
-        const sequence = getCurrentSequence();
+        const sequence = getSequence();
         if (currentIndex < sequence.length - 1) {
             currentIndex += 1;
             updateSteps();
@@ -227,7 +376,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
     }
 
     function normalizeSequencePosition() {
-        const sequence = getCurrentSequence();
+        const sequence = getSequence();
 
         if (currentIndex > sequence.length - 1) {
             currentIndex = sequence.length - 1;
@@ -275,7 +424,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             });
         });
 
-        form.querySelectorAll("input[name='jobType'], input[name='colorMode'], input[name='paperSize'], input[name='printSide'], input[name='paperType'], input[name='bindingType']")
+        form.querySelectorAll("input[name='jobType'], input[name='colorMode'], input[name='paperSize'], input[name='printSide'], input[name='paperType'], input[name='bindingType'], input[name='deliveryMethod']")
             .forEach(function (input) {
                 input.addEventListener("change", function () {
                     if (input.name === "jobType") {
@@ -315,6 +464,27 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             observations.addEventListener("change", notify);
         }
 
+        Object.keys(deliveryFields).forEach(function (fieldName) {
+            const field = deliveryFields[fieldName];
+            if (!field) {
+                return;
+            }
+
+            field.addEventListener("input", function () {
+                composeDeliveryAddress();
+                if (deliveryFieldErrors[fieldName]) {
+                    setDeliveryFieldState(fieldName, true);
+                }
+                updateSteps();
+                notify();
+            });
+            field.addEventListener("change", function () {
+                composeDeliveryAddress();
+                updateSteps();
+                notify();
+            });
+        });
+
         fileInput.addEventListener("change", function () {
             if (filesError) {
                 filesError.hidden = true;
@@ -324,6 +494,8 @@ function createWizardController(form, fileInput, fileHint, filesError) {
         });
     }
 
+    parseStructuredDeliveryAddress();
+    composeDeliveryAddress();
     attachEvents();
     normalizeSequencePosition();
 
@@ -356,6 +528,8 @@ function createSummaryController(form, fileInput) {
         paperType: queryAll("[data-summary-paper-type]"),
         bindingType: queryAll("[data-summary-binding-type]"),
         extras: queryAll("[data-summary-extras]"),
+        deliveryMethod: queryAll("[data-summary-delivery-method]"),
+        deliveryAddress: queryAll("[data-summary-delivery-address]"),
         files: queryAll("[data-summary-files]"),
         pages: queryAll("[data-summary-pages]"),
         total: queryAll("[data-summary-total]"),
@@ -408,6 +582,25 @@ function createSummaryController(form, fileInput) {
         return files[0].name + " y " + (files.length - 1) + " archivo(s) mas";
     }
 
+    function deliveryMethodLabel() {
+        return getCheckedValue(form, "deliveryMethod") === "HOME_DELIVERY"
+            ? "Envio a domicilio"
+            : "Recogida en tienda";
+    }
+
+    function deliveryAddressLabel() {
+        const street = form.querySelector("#deliveryStreet")?.value.trim() || "";
+        const number = form.querySelector("#deliveryNumber")?.value.trim() || "";
+        const unit = form.querySelector("#deliveryUnit")?.value.trim() || "";
+        const postalCode = form.querySelector("#deliveryPostalCode")?.value.trim() || "";
+        const city = form.querySelector("#deliveryCity")?.value.trim() || "";
+        const province = form.querySelector("#deliveryProvince")?.value.trim() || "";
+
+        const primary = [street, number].filter(Boolean).join(", ");
+        const secondary = [unit, postalCode, city, province].filter(Boolean).join(" · ");
+        return [primary, secondary].filter(Boolean).join(" | ");
+    }
+
     function update(state) {
         const jobType = selectedJobType();
         const isPrintFlow = jobType === "IMPRESION" || jobType === "FOTOCOPIAS";
@@ -422,10 +615,18 @@ function createSummaryController(form, fileInput) {
         setText(nodes.paperType, isPrintFlow ? labelForRadio("paperType") : "No aplica");
         setText(nodes.bindingType, isPrintFlow ? labelForRadio("bindingType") : "No aplica");
         setText(nodes.extras, extras.length ? extras.join(", ") : "Sin extras");
+        setText(nodes.deliveryMethod, deliveryMethodLabel());
+        setText(
+            nodes.deliveryAddress,
+            getCheckedValue(form, "deliveryMethod") === "HOME_DELIVERY"
+                ? (deliveryAddressLabel() || "Pendiente")
+                : "No aplica"
+        );
         setText(nodes.files, selectedFilesLabel());
         setText(nodes.pages, state.pageCountLabel);
         setText(nodes.total, state.formattedTotal);
         setText(nodes.note, state.note);
+
         nodes.priceLines.forEach(function (node) {
             renderPriceLines(node, state.lines);
         });
@@ -435,7 +636,6 @@ function createSummaryController(form, fileInput) {
         update: update
     };
 }
-
 
 function createPricePreviewController(form, priceEstimator, fileInput, fileList, fileHint) {
     const previewUrl = priceEstimator.dataset.previewUrl;
@@ -514,6 +714,7 @@ function createPricePreviewController(form, priceEstimator, fileInput, fileList,
         appendIfValue(formData, "printSide", getCheckedValue(form, "printSide"));
         appendIfValue(formData, "paperType", getCheckedValue(form, "paperType"));
         appendIfValue(formData, "bindingType", getCheckedValue(form, "bindingType"));
+        appendIfValue(formData, "deliveryMethod", getCheckedValue(form, "deliveryMethod"));
         appendIfValue(formData, "observations", form.querySelector("#observations")?.value || "");
 
         if (form.querySelector("input[name='plastificado']")?.checked) {
@@ -557,7 +758,7 @@ function createPricePreviewController(form, priceEstimator, fileInput, fileList,
                 state.fileCount = data.fileCount || 0;
                 state.pageCount = data.pageCount || 0;
                 fileHint.textContent = buildDetectedFileHint(fileInput.files || [], state.pageCount);
-                updateEstimate(data.note);
+                updateEstimate();
             })
             .catch(function (error) {
                 if (currentRequestId !== state.requestId) {
@@ -578,6 +779,7 @@ function createPricePreviewController(form, priceEstimator, fileInput, fileList,
             printSide: getCheckedValue(form, "printSide"),
             paperType: getCheckedValue(form, "paperType"),
             bindingType: getCheckedValue(form, "bindingType"),
+            deliveryMethod: getCheckedValue(form, "deliveryMethod") || "STORE_PICKUP",
             plastificado: Boolean(form.querySelector("input[name='plastificado']")?.checked),
             urgente: Boolean(form.querySelector("input[name='urgente']")?.checked),
             escaneado: Boolean(form.querySelector("input[name='escaneado']")?.checked),
@@ -641,19 +843,15 @@ function calculateEstimate(input) {
 
     switch (input.jobType) {
         case "IMPRESION":
-            return calculatePrintLikeEstimate(input, 0.06, 0.45, "impresion");
+            return calculatePrintLikeEstimate(input, 0.06, 0.45);
         case "FOTOCOPIAS":
-            return calculatePrintLikeEstimate(input, 0.05, 0.18, "fotocopias");
-        case "PUBLICIDAD_IMPRENTA":
-            return calculateCampaignEstimate(input);
-        case "OTRO":
-            return calculateQuoteStyleEstimate(input, 12, "encargo especial");
+            return calculatePrintLikeEstimate(input, 0.05, 0.18);
         default:
             return calculateQuoteStyleEstimate(input, 12, "encargo especial");
     }
 }
 
-function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
+function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice) {
     const copies = normalizeCopies(input.copies);
     const pages = Math.max(input.pageCount, 1);
     const colorMode = input.colorMode || "BLACK_AND_WHITE";
@@ -661,6 +859,7 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
     const printSide = input.printSide || "ONE_SIDED";
     const paperType = input.paperType || "NORMAL";
     const bindingType = input.bindingType || "SIN_ENCUADERNACION";
+    const deliveryMethod = input.deliveryMethod || "STORE_PICKUP";
     const baseUnit = colorMode === "COLOR" ? colorUnitPrice : bwUnitPrice;
     const basePrint = roundPrice(baseUnit * pages * copies);
     const sizeExtra = roundPrice(basePrint * (sizeMultiplier(paperSize) - 1));
@@ -668,14 +867,15 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
     const sideExtra = roundPrice(withSize * (sideMultiplier(printSide) - 1));
     const withSides = withSize + sideExtra;
     const paperExtra = roundPrice(withSides * (paperTypeMultiplier(paperType) - 1));
+    const deliveryExtra = deliveryMethod === "HOME_DELIVERY" ? 4.95 : 0;
     const plastificadoExtra = input.plastificado ? roundPrice(1.8 * Math.max(input.fileCount, 1)) : 0;
-    const urgenteExtra = input.urgente ? 2 : 0;
+    const urgenteExtra = input.urgente ? (deliveryMethod === "HOME_DELIVERY" ? 4 : 2) : 0;
     const escaneadoExtra = input.escaneado ? roundPrice(0.5 * pages) : 0;
     const bindingExtra = bindingPrice(bindingType);
 
     const lines = [
         {
-            concept: (input.jobType === "FOTOCOPIAS" ? "Fotocopias " : "Impresion ") + colorLabel(colorMode),
+            concept: "Impresion " + colorLabel(colorMode),
             detail: pages + " pagina(s) x " + copies + " copia(s)",
             amount: basePrint
         }
@@ -685,8 +885,9 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
     addLineIfPositive(lines, printSideLabel(printSide), "Configuracion de caras del pedido", sideExtra);
     addLineIfPositive(lines, "Papel " + paperTypeLabel(paperType), "Acabado seleccionado", paperExtra);
     addLineIfPositive(lines, "Encuadernacion " + bindingLabel(bindingType), "Acabado adicional", bindingExtra);
+    addLineIfPositive(lines, "Entrega " + deliveryLabel(deliveryMethod), deliveryDetail(deliveryMethod), deliveryExtra);
     addLineIfPositive(lines, "Plastificado", "Proteccion del documento", plastificadoExtra);
-    addLineIfPositive(lines, "Servicio urgente", "Prioridad de preparacion", urgenteExtra);
+    addLineIfPositive(lines, "Servicio urgente", urgentDetail(deliveryMethod), urgenteExtra);
     addLineIfPositive(lines, "Escaneado", pages + " pagina(s) a digitalizar", escaneadoExtra);
 
     const total = roundPrice(lines.reduce(function (accumulator, line) {
@@ -698,7 +899,8 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
         colorLabel(colorMode),
         paperSize,
         printSideLabel(printSide),
-        paperTypeLabel(paperType)
+        paperTypeLabel(paperType),
+        deliveryLabel(deliveryMethod)
     ];
 
     if (bindingType !== "SIN_ENCUADERNACION") {
@@ -709,72 +911,18 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice, label) {
 
     return {
         total: total,
-        breakdown: parts.join(" â€¢ "),
-        note: buildNote(input.fileCount, label),
-        lines: lines
-    };
-}
-
-function calculateCampaignEstimate(input) {
-    const copies = normalizeCopies(input.copies);
-    const pages = Math.max(input.pageCount, 1);
-    const colorMode = input.colorMode || "COLOR";
-    const paperSize = input.paperSize || "A4";
-    const paperType = input.paperType || "NORMAL";
-    const production = roundPrice(
-        (colorMode === "COLOR" ? 0.22 : 0.12)
-        * campaignSizeMultiplier(paperSize)
-        * paperTypeMultiplier(paperType)
-        * pages
-        * copies
-    );
-    const plastificadoExtra = input.plastificado ? roundPrice(1.8 * Math.max(input.fileCount, 1)) : 0;
-    const urgenteExtra = input.urgente ? 2 : 0;
-    const escaneadoExtra = input.escaneado ? roundPrice(0.5 * pages) : 0;
-
-    const lines = [
-        {
-            concept: "Base de publicidad e imprenta",
-            detail: "Preparacion del encargo",
-            amount: 19
-        },
-        {
-            concept: "Produccion " + colorLabel(colorMode),
-            detail: pages + " pagina(s) x " + copies + " unidad(es) â€¢ " + paperSize + " â€¢ " + paperTypeLabel(paperType),
-            amount: production
-        }
-    ];
-
-    addLineIfPositive(lines, "Plastificado", "Proteccion del documento", plastificadoExtra);
-    addLineIfPositive(lines, "Servicio urgente", "Prioridad de preparacion", urgenteExtra);
-    addLineIfPositive(lines, "Escaneado", pages + " pagina(s) a digitalizar", escaneadoExtra);
-
-    const total = roundPrice(lines.reduce(function (accumulator, line) {
-        return accumulator + line.amount;
-    }, 0));
-
-    const parts = [
-        "Base de imprenta",
-        pageReference(input.pageCount, input.fileCount) + " x " + copies + " unidad(es)",
-        colorLabel(colorMode),
-        paperSize,
-        paperTypeLabel(paperType)
-    ];
-
-    appendExtras(parts, input);
-
-    return {
-        total: total,
-        breakdown: parts.join(" â€¢ "),
-        note: buildNote(input.fileCount, "publicidad e imprenta"),
+        breakdown: parts.join(" • "),
+        note: buildNote(input.fileCount, "impresion", input),
         lines: lines
     };
 }
 
 function calculateQuoteStyleEstimate(input, basePrice, label) {
     const additionalFiles = roundPrice((Math.max(input.fileCount, 1) - 1) * 2.5);
+    const deliveryMethod = input.deliveryMethod || "STORE_PICKUP";
+    const deliveryExtra = deliveryMethod === "HOME_DELIVERY" ? 4.95 : 0;
     const plastificadoExtra = input.plastificado ? roundPrice(1.8 * Math.max(input.fileCount, 1)) : 0;
-    const urgenteExtra = input.urgente ? 2 : 0;
+    const urgenteExtra = input.urgente ? (deliveryMethod === "HOME_DELIVERY" ? 4 : 2) : 0;
     const escaneadoExtra = input.escaneado ? roundPrice(0.5 * Math.max(input.pageCount, 1)) : 0;
 
     const lines = [
@@ -786,8 +934,9 @@ function calculateQuoteStyleEstimate(input, basePrice, label) {
     ];
 
     addLineIfPositive(lines, "Archivos adicionales", Math.max(input.fileCount - 1, 0) + " archivo(s)", additionalFiles);
+    addLineIfPositive(lines, "Entrega " + deliveryLabel(deliveryMethod), deliveryDetail(deliveryMethod), deliveryExtra);
     addLineIfPositive(lines, "Plastificado", "Proteccion del documento", plastificadoExtra);
-    addLineIfPositive(lines, "Servicio urgente", "Prioridad de preparacion", urgenteExtra);
+    addLineIfPositive(lines, "Servicio urgente", urgentDetail(deliveryMethod), urgenteExtra);
     addLineIfPositive(lines, "Escaneado", Math.max(input.pageCount, 1) + " pagina(s) a digitalizar", escaneadoExtra);
 
     const total = roundPrice(lines.reduce(function (accumulator, line) {
@@ -796,15 +945,16 @@ function calculateQuoteStyleEstimate(input, basePrice, label) {
 
     const parts = [
         "Base de " + label,
-        fileReference(input.fileCount)
+        fileReference(input.fileCount),
+        deliveryLabel(deliveryMethod)
     ];
 
     appendExtras(parts, input);
 
     return {
         total: total,
-        breakdown: parts.join(" â€¢ "),
-        note: buildNote(input.fileCount, label),
+        breakdown: parts.join(" • "),
+        note: buildNote(input.fileCount, label, input),
         lines: lines
     };
 }
@@ -924,17 +1074,6 @@ function paperTypeMultiplier(paperType) {
     }
 }
 
-function campaignSizeMultiplier(paperSize) {
-    switch (paperSize) {
-        case "A5":
-            return 0.78;
-        case "A3":
-            return 1.4;
-        default:
-            return 1;
-    }
-}
-
 function bindingPrice(bindingType) {
     switch (bindingType) {
         case "ESPIRAL":
@@ -994,12 +1133,16 @@ function pageCountLabel(pageCount) {
     return pageCount === 1 ? "1 pagina detectada" : pageCount + " paginas detectadas";
 }
 
-function buildNote(fileCount, label) {
+function buildNote(fileCount, label, input) {
+    const urgentCopy = input && input.urgente
+        ? " Con urgente, la entrega estimada es de " + urgentEta(input.deliveryMethod || "STORE_PICKUP") + "."
+        : "";
+
     if (fileCount > 0) {
-        return "Precio orientativo calculado con el servicio, las paginas detectadas y la configuracion elegida. El importe final puede ajustarse al revisar acabados especiales.";
+        return "Precio orientativo calculado con el servicio, las paginas detectadas y la configuracion elegida." + urgentCopy + " El importe final puede ajustarse al revisar acabados especiales.";
     }
 
-    return "Configura el pedido y sube tus archivos para afinar mejor el importe orientativo de " + label + ".";
+    return "Configura el pedido y sube tus archivos para afinar mejor el importe orientativo de " + label + "." + urgentCopy;
 }
 
 function colorLabel(colorMode) {
@@ -1032,6 +1175,24 @@ function bindingLabel(bindingType) {
         default:
             return "Sin encuadernacion";
     }
+}
+
+function deliveryLabel(deliveryMethod) {
+    return deliveryMethod === "HOME_DELIVERY" ? "Envio a domicilio" : "Recogida en tienda";
+}
+
+function deliveryDetail(deliveryMethod) {
+    return deliveryMethod === "HOME_DELIVERY" ? "Suplemento de envio al domicilio" : "Sin suplemento de entrega";
+}
+
+function urgentDetail(deliveryMethod) {
+    return deliveryMethod === "HOME_DELIVERY"
+        ? "Preparacion prioritaria con entrega estimada en 20 minutos"
+        : "Preparacion prioritaria con recogida estimada en 10 minutos";
+}
+
+function urgentEta(deliveryMethod) {
+    return deliveryMethod === "HOME_DELIVERY" ? "20 minutos a domicilio" : "10 minutos en tienda";
 }
 
 function roundPrice(amount) {
@@ -1087,4 +1248,3 @@ function appendIfValue(formData, name, value) {
         formData.append(name, value);
     }
 }
-

@@ -111,7 +111,7 @@ public enum TipoTrabajo {
 
     public boolean isPrimaryWizardOption() {
         return switch (this) {
-            case IMPRESION, FOTOCOPIAS, PUBLICIDAD_IMPRENTA, OTRO -> true;
+            case IMPRESION, FOTOCOPIAS -> true;
             default -> false;
         };
     }

@@ -55,6 +55,11 @@ public class FormularioPedidoCopisteria {
 
     private Boolean escaneado = Boolean.FALSE;
 
+    private String deliveryMethod = "STORE_PICKUP";
+
+    @Size(max = 240, message = "La direccion no puede superar los 240 caracteres.")
+    private String deliveryAddress;
+
     @Size(max = 600, message = "Las observaciones no pueden superar los 600 caracteres.")
     private String observations;
 
@@ -202,6 +207,22 @@ public class FormularioPedidoCopisteria {
 
     public void setEscaneado(Boolean escaneado) {
         this.escaneado = escaneado;
+    }
+
+    public String getDeliveryMethod() {
+        return deliveryMethod;
+    }
+
+    public void setDeliveryMethod(String deliveryMethod) {
+        this.deliveryMethod = deliveryMethod;
+    }
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 
     public String getObservations() {

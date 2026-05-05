@@ -40,6 +40,7 @@ public class ControladorArchivosPedido {
     @GetMapping("/pedidos/copisteria/{id}/archivo")
     public ResponseEntity<Resource> descargarArchivoPedido(
         @PathVariable Long id,
+        @RequestParam(name = "index", defaultValue = "0") int index,
         @RequestParam(name = "download", defaultValue = "false") boolean download,
         Authentication authentication
     ) {
@@ -52,7 +53,11 @@ public class ControladorArchivosPedido {
             throw new ResponseStatusException(NOT_FOUND, "El pedido no tiene archivo asociado.");
         }
 
-        Path archivo = servicioAlmacenamientoArchivos.resolveStoredPath(pedido.getRutaArchivo());
+        if (index < 0 || index >= pedido.getRutasArchivo().size()) {
+            throw new ResponseStatusException(NOT_FOUND, "El archivo solicitado no existe en este pedido.");
+        }
+
+        Path archivo = servicioAlmacenamientoArchivos.resolveStoredPath(pedido.getRutasArchivo().get(index));
         if (!Files.exists(archivo) || !Files.isRegularFile(archivo)) {
             throw new ResponseStatusException(NOT_FOUND, "No se ha encontrado el archivo del pedido.");
         }

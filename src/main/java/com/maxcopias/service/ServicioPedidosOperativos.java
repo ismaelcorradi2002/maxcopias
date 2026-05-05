@@ -630,7 +630,7 @@ public class ServicioPedidosOperativos {
         BigDecimal basePrice,
         String baseConcept
     ) {
-        int fileCount = pedido.getRutaArchivo() != null ? 1 : 0;
+        int fileCount = pedido.getFileCount();
         BigDecimal additionalFiles = money(BigDecimal.valueOf(Math.max(fileCount, 1) - 1).multiply(new BigDecimal("2.50")));
         List<LineaResumenEconomico> lines = new ArrayList<>();
         lines.add(new LineaResumenEconomico(baseConcept, pedido.getTrabajo().getLabel(), "x1", basePrice, basePrice, false, false));
@@ -644,7 +644,7 @@ public class ServicioPedidosOperativos {
 
     private List<LineaResumenEconomico> construirLineasExtras(PedidoCopisteria pedido, List<String> extras, int pages) {
         List<LineaResumenEconomico> lines = new ArrayList<>();
-        int fileCount = pedido.getRutaArchivo() != null ? 1 : 0;
+        int fileCount = pedido.getFileCount();
         if (extras.contains("Plastificado")) {
             BigDecimal plastificado = money(new BigDecimal("1.80").multiply(BigDecimal.valueOf(Math.max(fileCount, 1))));
             lines.add(new LineaResumenEconomico(
@@ -790,9 +790,19 @@ public class ServicioPedidosOperativos {
         }
 
         try {
-            Path path = servicioAlmacenamientoArchivos.resolveStoredPath(pedido.getRutaArchivo());
-            long size = Files.exists(path) ? Files.size(path) : 0L;
-            return new ArchivoDetalle(resolverPaginasArchivo(path), formatFileSize(size));
+            int totalPages = 0;
+            long totalSize = 0L;
+
+            for (String ruta : pedido.getRutasArchivo()) {
+                Path path = servicioAlmacenamientoArchivos.resolveStoredPath(ruta);
+                if (!Files.exists(path)) {
+                    continue;
+                }
+                totalSize += Files.size(path);
+                totalPages += resolverPaginasArchivo(path);
+            }
+
+            return new ArchivoDetalle(totalPages, formatFileSize(totalSize));
         } catch (Exception exception) {
             return new ArchivoDetalle(0, null);
         }

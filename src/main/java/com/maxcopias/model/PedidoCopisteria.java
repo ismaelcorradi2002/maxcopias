@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Entidad para pedidos de copisteria.
@@ -136,6 +139,28 @@ public class PedidoCopisteria {
     public String getRutaArchivo() { return rutaArchivo; }
     public void setRutaArchivo(String rutaArchivo) { this.rutaArchivo = rutaArchivo; }
 
+    public List<String> getRutasArchivo() {
+        if (rutaArchivo == null || rutaArchivo.isBlank()) {
+            return List.of();
+        }
+
+        return Arrays.stream(rutaArchivo.split("\\R"))
+            .map(String::trim)
+            .filter(value -> !value.isBlank())
+            .collect(Collectors.toList());
+    }
+
+    public void setRutasArchivo(List<String> rutasArchivo) {
+        if (rutasArchivo == null || rutasArchivo.isEmpty()) {
+            this.rutaArchivo = null;
+            return;
+        }
+
+        this.rutaArchivo = rutasArchivo.stream()
+            .filter(path -> path != null && !path.isBlank())
+            .collect(Collectors.joining("\n"));
+    }
+
     public BigDecimal getPrecio() { return precio; }
     public void setPrecio(BigDecimal precio) { this.precio = precio; }
 
@@ -210,17 +235,15 @@ public class PedidoCopisteria {
     }
 
     public int getFileCount() {
-        if (rutaArchivo == null || rutaArchivo.isBlank()) {
-            return 0;
-        }
-        return 1;
+        return getRutasArchivo().size();
     }
 
     public String getNombreArchivo() {
-        if (rutaArchivo == null || rutaArchivo.isBlank()) {
+        List<String> rutas = getRutasArchivo();
+        if (rutas.isEmpty()) {
             return null;
         }
-        return Path.of(rutaArchivo).getFileName().toString();
+        return Path.of(rutas.get(0)).getFileName().toString();
     }
 
     public String getTamanoArchivoFormateado() {

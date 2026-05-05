@@ -57,12 +57,16 @@
                         <span>8</span>
                         <strong>Extras</strong>
                     </button>
-                    <button class="wizard-progress-item" type="button" data-progress-step="files">
+                    <button class="wizard-progress-item" type="button" data-progress-step="delivery">
                         <span>9</span>
+                        <strong>Entrega</strong>
+                    </button>
+                    <button class="wizard-progress-item" type="button" data-progress-step="files">
+                        <span>10</span>
                         <strong>Archivo</strong>
                     </button>
                     <button class="wizard-progress-item" type="button" data-progress-step="review">
-                        <span>10</span>
+                        <span>11</span>
                         <strong>Resumen</strong>
                     </button>
                 </div>
@@ -100,7 +104,7 @@
                                 <label
                                     class="wizard-option-card"
                                     th:each="jobType : ${primaryJobTypes}"
-                                    th:if="${jobType.name() == 'IMPRESION' or jobType.name() == 'PERSONALIZACION' or jobType.name() == 'OTRO'}">
+                                    th:if="${jobType.name() == 'IMPRESION'}">
                                     <input
                                         type="radio"
                                         name="jobType"
@@ -110,8 +114,6 @@
                                         <span class="wizard-option-icon" th:text="${jobType.shortCode}">IM</span>
                                         <strong th:text="${jobType.label}">Impresion</strong>
                                         <small th:if="${jobType.name() == 'IMPRESION'}">Imprime documentos, apuntes y trabajos con opciones de color, copias, encuadernado, plastificado y mas.</small>
-                                        <small th:if="${jobType.name() == 'PERSONALIZACION'}">Solicita productos personalizados con imagenes, frases, logos o referencias para regalos y detalles.</small>
-                                        <small th:if="${jobType.name() == 'OTRO'}">Usa esta opcion para pedir un presupuesto libre o explicar un trabajo especial fuera de los flujos habituales.</small>
                                         <em th:text="${jobType.priceHint}">Desde 0,06 EUR</em>
                                     </span>
                                 </label>
@@ -313,9 +315,136 @@
                             </div>
                         </article>
 
-                        <article class="wizard-step" data-step-id="files">
+                        <article class="wizard-step" data-step-id="delivery">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 9</span>
+                                <h2>Como quieres recibir el pedido</h2>
+                                <p>La recogida en tienda no tiene suplemento. El envio a domicilio anade gastos de entrega.</p>
+                            </div>
+
+                            <div class="wizard-options-grid wizard-options-grid-2">
+                                <label class="wizard-option-card wizard-option-card-compact">
+                                    <input type="radio" th:field="*{deliveryMethod}" value="STORE_PICKUP" data-step-choice>
+                                    <span class="wizard-option-ui">
+                                        <strong>Recogida en tienda</strong>
+                                        <small>Sin suplemento. Si marcas urgente, estara listo en unos 10 minutos.</small>
+                                    </span>
+                                </label>
+
+                                <label class="wizard-option-card wizard-option-card-compact">
+                                    <input type="radio" th:field="*{deliveryMethod}" value="HOME_DELIVERY" data-step-choice>
+                                    <span class="wizard-option-ui">
+                                        <strong>Envio a domicilio</strong>
+                                        <small>Con suplemento de envio. Si marcas urgente, entrega estimada en unos 20 minutos.</small>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="wizard-address-card" data-delivery-address-block hidden>
+                                <input type="hidden" id="deliveryAddress" th:field="*{deliveryAddress}">
+
+                                <div class="wizard-address-head">
+                                    <div>
+                                        <label class="wizard-address-title" for="deliveryStreet">Direccion de entrega</label>
+                                        <p>Usaremos esta direccion solo para este pedido.</p>
+                                    </div>
+                                    <div class="wizard-address-summary" data-delivery-summary>
+                                        Entrega simulada · coste estimado 0,00 €
+                                    </div>
+                                </div>
+
+                                <div class="wizard-address-grid">
+                                    <div class="field-group wizard-inline-field">
+                                        <label for="deliveryStreet">Calle</label>
+                                        <input
+                                            id="deliveryStreet"
+                                            type="text"
+                                            maxlength="120"
+                                            placeholder="Ej. Calle Mayor">
+                                        <small class="field-error" data-delivery-field-error="street" hidden>Introduce la calle.</small>
+                                    </div>
+
+                                    <div class="field-group wizard-inline-field">
+                                        <label for="deliveryNumber">Numero</label>
+                                        <input
+                                            id="deliveryNumber"
+                                            type="text"
+                                            maxlength="20"
+                                            placeholder="Ej. 24">
+                                        <small class="field-error" data-delivery-field-error="number" hidden>Introduce el numero.</small>
+                                    </div>
+
+                                    <div class="field-group wizard-inline-field">
+                                        <label for="deliveryUnit">Piso / puerta / bloque</label>
+                                        <input
+                                            id="deliveryUnit"
+                                            type="text"
+                                            maxlength="60"
+                                            placeholder="Ej. 3B, Bloque 2">
+                                    </div>
+
+                                    <div class="field-group wizard-inline-field">
+                                        <label for="deliveryPostalCode">Codigo postal</label>
+                                        <input
+                                            id="deliveryPostalCode"
+                                            type="text"
+                                            inputmode="numeric"
+                                            maxlength="5"
+                                            placeholder="28001">
+                                        <small class="field-error" data-delivery-field-error="postalCode" hidden>Introduce un codigo postal de 5 digitos.</small>
+                                    </div>
+
+                                    <div class="field-group wizard-inline-field">
+                                        <label for="deliveryCity">Ciudad</label>
+                                        <input
+                                            id="deliveryCity"
+                                            type="text"
+                                            maxlength="80"
+                                            placeholder="Madrid">
+                                        <small class="field-error" data-delivery-field-error="city" hidden>Introduce la ciudad.</small>
+                                    </div>
+
+                                    <div class="field-group wizard-inline-field">
+                                        <label for="deliveryProvince">Provincia</label>
+                                        <input
+                                            id="deliveryProvince"
+                                            type="text"
+                                            maxlength="80"
+                                            placeholder="Madrid">
+                                        <small class="field-error" data-delivery-field-error="province" hidden>Introduce la provincia.</small>
+                                    </div>
+
+                                    <div class="field-group wizard-inline-field">
+                                        <label for="deliveryContactPhone">Telefono de contacto</label>
+                                        <input
+                                            id="deliveryContactPhone"
+                                            type="tel"
+                                            inputmode="numeric"
+                                            maxlength="9"
+                                            placeholder="612345678">
+                                        <small class="field-error" data-delivery-field-error="contactPhone" hidden>Introduce un telefono de 9 digitos.</small>
+                                    </div>
+
+                                    <div class="field-group wizard-inline-field wizard-inline-field-full">
+                                        <label for="deliveryInstructions">Indicaciones para el repartidor</label>
+                                        <textarea
+                                            id="deliveryInstructions"
+                                            rows="4"
+                                            maxlength="240"
+                                            placeholder="Portal, referencia del edificio, horario o cualquier indicacion util."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="wizard-step-actions">
+                                <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
+                                <button type="button" class="button button-primary" data-step-next>Continuar</button>
+                            </div>
+                        </article>
+
+                        <article class="wizard-step" data-step-id="files">
+                            <div class="wizard-step-head">
+                                <span class="section-kicker">Paso 10</span>
                                 <h2>Sube el archivo antes del resumen</h2>
                                 <p>Adjunta el archivo final del pedido para poder revisar el encargo completo antes de guardarlo.</p>
                             </div>
@@ -327,11 +456,12 @@
                                         id="files"
                                         name="archivo"
                                         type="file"
+                                        multiple
                                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
                                         data-file-input>
                                     <div class="file-dropzone-copy wizard-dropzone-copy">
                                         <span class="wizard-dropzone-icon">+</span>
-                                        <strong data-upload-dropzone-title>Sube el archivo del pedido</strong>
+                                        <strong data-upload-dropzone-title>Sube uno o varios archivos del pedido</strong>
                                         <p data-upload-dropzone-description>
                                             Puedes subir PDF, DOC, DOCX, JPG, PNG o WEBP.
                                         </p>
@@ -345,6 +475,10 @@
                                 </p>
                                 <small class="field-error" data-files-error hidden>Adjunta al menos un archivo antes de pasar al resumen.</small>
                                 <small class="field-error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></small>
+                                <p class="wizard-multi-file-note">
+                                    Si subes varios archivos, todos se imprimiran con las mismas opciones elegidas.
+                                    Si necesitas configuraciones distintas, crea pedidos separados.
+                                </p>
                                 <ul class="selected-files" data-file-list></ul>
                             </div>
 
@@ -427,6 +561,14 @@
                                             <strong data-summary-extras>Sin extras</strong>
                                         </li>
                                         <li>
+                                            <span>Entrega</span>
+                                            <strong data-summary-delivery-method>Recogida en tienda</strong>
+                                        </li>
+                                        <li>
+                                            <span>Direccion</span>
+                                            <strong data-summary-delivery-address>No aplica</strong>
+                                        </li>
+                                        <li>
                                             <span>Archivo</span>
                                             <strong data-summary-files>Sin archivo</strong>
                                         </li>
@@ -497,7 +639,7 @@
                             <h3>Como se guarda</h3>
                             <ul class="side-check-list">
                                 <li>Se guarda dentro de tu cuenta.</li>
-                                <li>Genera un codigo unico de recogida.</li>
+                                <li>Genera una referencia unica del pedido.</li>
                                 <li>Lo veras despues en Mis pedidos.</li>
                             </ul>
                         </article>
