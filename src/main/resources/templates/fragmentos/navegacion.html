@@ -4,17 +4,24 @@
 <header class="site-header" th:fragment="navbar">
     <div class="container header-shell">
         <a class="brand" th:href="@{/#inicio}" aria-label="Ir al inicio de Maxcopias">
-            <span class="brand-mark">M</span>
-            <span class="brand-text">
-                <strong>Maxcopias</strong>
-                <small>Copisteria y papeleria</small>
-            </span>
+            <img class="brand-logo brand-logo-navbar"
+                 th:src="@{/images/branding/maxcopias-logo-navbar.png(v='20260506a')}"
+                 alt="Maxcopias">
         </a>
 
         <nav class="nav-panel" id="primary-navigation" aria-label="Principal">
             <div class="nav-panel-inner">
                 <div class="nav-primary-links">
                     <a th:href="@{/#inicio}" data-nav-link data-nav-match="/">Inicio</a>
+                    <a th:href="@{/ofertas}"
+                       class="nav-offers-link"
+                       th:classappend="${navOfertaPrincipal == null} ? ' is-idle' : ' is-live'"
+                       data-nav-link
+                       data-nav-match="/ofertas"
+                       aria-label="Ver ofertas activas de Maxcopias">
+                        <span class="nav-offers-icon" aria-hidden="true">%</span>
+                        <span class="nav-offers-link-text">Ofertas</span>
+                    </a>
                     <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" data-nav-link data-nav-match="/copisteria">Copisteria</a>
                     <a th:href="@{/tienda}" data-nav-link data-nav-match="/tienda,/detalles-producto">Tienda</a>
                     <a th:href="@{/contacto}" data-nav-link data-nav-match="/contacto">Contacto</a>

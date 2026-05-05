@@ -27,16 +27,57 @@
                     </div>
 
                     <ul class="hero-highlights" aria-label="Puntos clave">
-                        <li>Subida de archivos online</li>
-                        <li>Recogida rapida en tienda</li>
-                        <li>Entrega a domicilio</li>
-                        <li>Papeleria y oficina en un solo lugar</li>
+                        <li class="hero-highlight-item hero-highlight-upload">
+                            <span class="hero-highlight-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 15V5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                    <path d="m8.5 8.5 3.5-3.5 3.5 3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                    <path d="M6 16.5a3.5 3.5 0 0 1 .4-7 5.5 5.5 0 0 1 10.7 1.3A3.8 3.8 0 1 1 18 18.5H7.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                </svg>
+                            </span>
+                            <span>Subida de archivos online</span>
+                        </li>
+                        <li class="hero-highlight-item hero-highlight-store">
+                            <span class="hero-highlight-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M4.5 9.5h15" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+                                    <path d="M6.5 9.5V18h11V9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                    <path d="M5 9.5 6.3 5h11.4L19 9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                    <path d="M10 18v-4.5h4V18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                </svg>
+                            </span>
+                            <span>Recogida rapida en tienda</span>
+                        </li>
+                        <li class="hero-highlight-item hero-highlight-delivery">
+                            <span class="hero-highlight-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3.5 7.5h10V16h-10z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                    <path d="M13.5 10h3l2 2.5V16h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                    <circle cx="8" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                    <circle cx="17" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                </svg>
+                            </span>
+                            <span>Entrega a domicilio</span>
+                        </li>
+                        <li class="hero-highlight-item hero-highlight-stationery">
+                            <span class="hero-highlight-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M7 4.5h7l3 3V19.5H7z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                    <path d="M14 4.5v3h3" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                    <path d="M9.2 12h5.6M9.2 15h5.6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+                                </svg>
+                            </span>
+                            <span>Papeleria y oficina en un solo lugar</span>
+                        </li>
                     </ul>
                 </div>
 
                 <div class="hero-visual" data-reveal="left">
+                    <div class="hero-visual-dots" aria-hidden="true"></div>
+                    <div class="hero-visual-arc hero-visual-arc-gold" aria-hidden="true"></div>
+                    <div class="hero-visual-arc hero-visual-arc-blue" aria-hidden="true"></div>
                     <div class="hero-visual-stage">
-                        <img th:src="@{/images/maxcopias-welcome-hero.svg}" alt="Bienvenida visual de Maxcopias con productos de copisteria y papeleria">
+                        <img th:src="@{/images/maxcopias-welcome-hero-premium.png(v='20260506b')}" alt="Hero visual de Maxcopias con materiales de copisteria, papeleria y branding de la marca">
                     </div>
 
                     <div class="hero-badge hero-badge-top">

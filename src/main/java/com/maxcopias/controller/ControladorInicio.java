@@ -2,6 +2,7 @@ package com.maxcopias.controller;
 
 import com.maxcopias.dto.CategoriaTiendaVista;
 import com.maxcopias.dto.ProductoTiendaVista;
+import com.maxcopias.model.Oferta;
 import com.maxcopias.model.Producto;
 import com.maxcopias.service.ServicioCatalogoTiendaVisual;
 import com.maxcopias.service.ServicioOferta;
@@ -33,7 +34,6 @@ public class ControladorInicio {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("ofertaPrincipal", servicioOferta.obtenerOfertaPrincipalActiva().orElse(null));
         return "inicio/inicio";
     }
 
@@ -51,6 +51,29 @@ public class ControladorInicio {
         model.addAttribute("categoriasTienda", categorias);
         model.addAttribute("productosTienda", productosVista);
         return "tienda/tienda";
+    }
+
+    @GetMapping("/ofertas")
+    public String ofertas(Model model) {
+        List<Oferta> ofertasActivas = servicioOferta.obtenerActivas();
+        Oferta ofertaPrincipal = servicioOferta.obtenerOfertaPrincipalActiva().orElse(null);
+
+        List<Oferta> ofertasDestacadas = ofertaPrincipal == null
+            ? List.of()
+            : ofertasActivas.stream()
+                .filter(oferta -> oferta.getId() != null && oferta.getId().equals(ofertaPrincipal.getId()))
+                .toList();
+
+        List<Oferta> ofertasSecundarias = ofertaPrincipal == null
+            ? ofertasActivas
+            : ofertasActivas.stream()
+                .filter(oferta -> oferta.getId() == null || !oferta.getId().equals(ofertaPrincipal.getId()))
+                .toList();
+
+        model.addAttribute("ofertasDestacadas", ofertasDestacadas);
+        model.addAttribute("ofertas", ofertasSecundarias);
+        model.addAttribute("hayOfertasActivas", !ofertasActivas.isEmpty());
+        return "ofertas/ofertas";
     }
 
     @GetMapping("/detalles-producto/{id}")

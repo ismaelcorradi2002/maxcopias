@@ -6,61 +6,6 @@
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
     <main class="tienda-main">
-        <section id="ofertas">
-            <div class="container">
-                <div class="section-heading">
-                    <span class="section-kicker">En oferta</span>
-                    <h2>Productos en promocion especial</h2>
-                </div>
-                <div class="oferta-carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="https://m.media-amazon.com/images/I/81p-CEe3RwL._AC_UF894,1000_QL80_.jpg" alt="Cuadernos en oferta - 30 por ciento OFF">
-                            <div class="carousel-overlay">
-                                <h3>Cuadernos 3x2</h3>
-                                <span>30% OFF</span>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://images-na.ssl-images-amazon.com/images/I/71+TJYgLkVL._AC_UL375_SR375,375_.jpg" alt="Boligrafos en oferta - 25 por ciento OFF">
-                            <div class="carousel-overlay">
-                                <h3>Pack boligrafos</h3>
-                                <span>25% OFF</span>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://media.cartabon.com/product/carpetas-de-gomas-tamanos-grandes-para-dibujo-800x800.jpg?width=1200" alt="Carpetas en oferta - 20 por ciento OFF">
-                            <div class="carousel-overlay">
-                                <h3>Carpetas rigidas</h3>
-                                <span>20% OFF</span>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://quecartucho.es/3456-large_default/papel-economico-din-a4-80-gramos-paquete-500-folios.jpg" alt="Papel A4 en oferta - 15 por ciento OFF">
-                            <div class="carousel-overlay">
-                                <h3>Papel A4 reams</h3>
-                                <span>15% OFF</span>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://m.media-amazon.com/images/I/81yZmHtCTdL.jpg" alt="Rotuladores en oferta - 35 por ciento OFF">
-                            <div class="carousel-overlay">
-                                <h3>Rotuladores set</h3>
-                                <span>35% OFF</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-indicators">
-                        <span class="carousel-indicator active"></span>
-                        <span class="carousel-indicator"></span>
-                        <span class="carousel-indicator"></span>
-                        <span class="carousel-indicator"></span>
-                        <span class="carousel-indicator"></span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section id="productos">
             <div class="container">
                 <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Producto anadido al carrito.</div>

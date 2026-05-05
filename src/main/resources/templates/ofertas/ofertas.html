@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Ofertas activas', '/css/ofertas.css')}"></head>
+<body class="ofertas-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="ofertas-main">
+        <section class="ofertas-hero">
+            <div class="container ofertas-hero-layout">
+                <div class="ofertas-copy" data-reveal="up">
+                    <span class="section-kicker">Promociones activas</span>
+                    <h1>Ofertas reales creadas desde Maxcopias, listas para aprovechar ahora.</h1>
+                    <p>
+                        Consulta descuentos activos en tienda y promociones disponibles en este momento.
+                        Solo mostramos ofertas vigentes.
+                    </p>
+                </div>
+
+                <div class="ofertas-hero-badge" data-reveal="left">
+                    <span class="ofertas-hero-badge-label">Activas ahora</span>
+                    <strong th:text="${hayOfertasActivas ? (#lists.size(ofertasDestacadas) + #lists.size(ofertas)) : 0}">0</strong>
+                    <small>promociones visibles</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="ofertas-section" th:if="${hayOfertasActivas}">
+            <div class="container">
+                <div class="section-heading" th:if="${!#lists.isEmpty(ofertasDestacadas)}">
+                    <span class="section-kicker">Destacada</span>
+                    <h2>La promoción principal del momento</h2>
+                </div>
+
+                <div class="ofertas-featured-grid" th:if="${!#lists.isEmpty(ofertasDestacadas)}">
+                    <article class="oferta-featured-card" th:each="oferta : ${ofertasDestacadas}">
+                        <div class="oferta-featured-media" th:if="${oferta.imagenUrl != null and !#strings.isEmpty(oferta.imagenUrl)}">
+                            <img th:src="${oferta.imagenUrl}" th:alt="${oferta.titulo}">
+                        </div>
+                        <div class="oferta-featured-media oferta-featured-media-placeholder" th:if="${oferta.imagenUrl == null or #strings.isEmpty(oferta.imagenUrl)}">
+                            <span class="oferta-discount-chip" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</span>
+                        </div>
+
+                        <div class="oferta-featured-copy">
+                            <div class="oferta-meta-row">
+                                <span class="oferta-tag oferta-tag-main">Destacada</span>
+                                <span class="oferta-tag" th:text="${oferta.tipoOferta.label}">Global</span>
+                            </div>
+                            <h3 th:text="${oferta.titulo}">Oferta principal</h3>
+                            <p th:text="${oferta.descripcion}">Descripcion de la oferta.</p>
+
+                            <div class="oferta-data-row">
+                                <strong class="oferta-discount" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</strong>
+                                <span class="oferta-date" th:if="${oferta.fechaFin != null}" th:text="${'Hasta el ' + #temporals.format(oferta.fechaFin, 'dd/MM/yyyy')}">Hasta el 31/05/2026</span>
+                                <span class="oferta-date" th:if="${oferta.fechaFin == null}">Sin fecha de fin indicada</span>
+                            </div>
+
+                            <div class="oferta-actions">
+                                <a class="button button-primary" th:href="@{/tienda}">Ver en tienda</a>
+                                <a class="button button-secondary" sec:authorize="isAuthenticated()" th:href="@{/copisteria}">Encargar impresion</a>
+                                <a class="button button-secondary" sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}">Encargar impresion</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="section-heading" th:if="${!#lists.isEmpty(ofertas)}">
+                    <span class="section-kicker">Más promociones</span>
+                    <h2>Otras ofertas activas</h2>
+                </div>
+
+                <div class="ofertas-grid" th:if="${!#lists.isEmpty(ofertas)}">
+                    <article class="oferta-card" th:each="oferta : ${ofertas}">
+                        <div class="oferta-card-media" th:if="${oferta.imagenUrl != null and !#strings.isEmpty(oferta.imagenUrl)}">
+                            <img th:src="${oferta.imagenUrl}" th:alt="${oferta.titulo}">
+                        </div>
+                        <div class="oferta-card-media oferta-card-media-placeholder" th:if="${oferta.imagenUrl == null or #strings.isEmpty(oferta.imagenUrl)}">
+                            <span class="oferta-discount-chip" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</span>
+                        </div>
+
+                        <div class="oferta-card-body">
+                            <div class="oferta-meta-row">
+                                <span class="oferta-tag" th:text="${oferta.tipoOferta.label}">Global</span>
+                                <span class="oferta-tag" th:if="${oferta.principal}">Principal</span>
+                            </div>
+                            <h3 th:text="${oferta.titulo}">Oferta</h3>
+                            <p th:text="${oferta.descripcion}">Descripcion</p>
+
+                            <div class="oferta-data-row oferta-data-row-stack">
+                                <strong class="oferta-discount" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</strong>
+                                <span class="oferta-date" th:if="${oferta.fechaFin != null}" th:text="${'Hasta el ' + #temporals.format(oferta.fechaFin, 'dd/MM/yyyy')}">Hasta el 31/05/2026</span>
+                                <span class="oferta-date" th:if="${oferta.fechaFin == null}">Activa sin fecha de fin</span>
+                            </div>
+
+                            <div class="oferta-actions oferta-actions-compact">
+                                <a class="button button-primary" th:href="@{/tienda}">Ver oferta</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="ofertas-empty" th:if="${!hayOfertasActivas}">
+            <div class="container">
+                <article class="ofertas-empty-card">
+                    <span class="section-kicker">Sin promociones</span>
+                    <h2>No hay ofertas activas ahora mismo</h2>
+                    <p>
+                        Vuelve pronto para ver nuevas promociones o sigue comprando en tienda y copistería.
+                    </p>
+                    <div class="oferta-actions ofertas-empty-actions">
+                        <a class="button button-primary" th:href="@{/tienda}">Ir a tienda</a>
+                        <a class="button button-secondary" sec:authorize="isAuthenticated()" th:href="@{/copisteria}">Encargar impresion</a>
+                        <a class="button button-secondary" sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}">Encargar impresion</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>
