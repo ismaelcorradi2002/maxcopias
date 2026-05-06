@@ -33,7 +33,7 @@ public class ConfiguracionSeguridad {
         http
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/contacto", "/tienda", "/detalles-producto/**", "/api/tienda/**", "/carrito", "/carrito/**", "/login", "/register", "/register/check-email", "/error", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/contacto", "/tienda", "/detalles-producto/**", "/api/tienda/**", "/carrito", "/carrito/**", "/login", "/register", "/register/check-email", "/error", "/css/**", "/js/**", "/images/**", "/media/productos/**").permitAll()
                 .requestMatchers(
                     "/admin/api/products",
                     "/admin/api/categorias",

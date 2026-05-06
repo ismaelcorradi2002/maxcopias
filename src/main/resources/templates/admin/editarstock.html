@@ -18,15 +18,20 @@
                             <span class="section-kicker">Administracion</span>
                             <h1>Editar producto</h1>
                             <p>
-                                Actualiza el stock, precio, categorias y datos principales del producto
+                                Actualiza el stock, precio, categorias, datos principales e imagen del producto
                                 <strong th:text="${producto.nombre ?: 'seleccionado'}">seleccionado</strong>.
                             </p>
                         </div>
                         <span class="admin-status-pill">Producto tienda</span>
                     </header>
 
-                    <form th:action="@{/admin/update-producto/{id}(id=${producto.id})}" th:object="${producto}" method="post" class="admin-edit-form">
+                    <form th:action="@{/admin/update-producto/{id}(id=${producto.id})}" th:object="${productoForm}" method="post" enctype="multipart/form-data" class="admin-edit-form" data-product-image-form>
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <input type="hidden" th:field="*{eliminarImagen}" data-product-image-remove>
+
+                        <div th:if="${error}">
+                            <div class="alert alert-error" th:text="${error}">Error en formulario</div>
+                        </div>
 
                         <fieldset class="admin-form-panel">
                             <legend>Datos del producto</legend>
@@ -34,7 +39,7 @@
                             <div class="admin-form-grid">
                                 <div class="admin-form-group">
                                     <label for="id">ID</label>
-                                    <input type="number" th:field="*{id}" id="id" disabled>
+                                    <input type="number" th:value="${producto.id}" id="id" disabled>
                                 </div>
 
                                 <div class="admin-form-group">
@@ -59,26 +64,47 @@
 
                                 <div class="admin-form-group">
                                     <label for="categoriaId">Categoria principal <span class="required">*</span></label>
-                                    <select name="categoriaId" id="categoriaId" class="admin-form-select select-modern" required>
+                                    <select th:field="*{categoriaId}" id="categoriaId" class="admin-form-select select-modern" required>
                                         <option value="">Seleccionar (obligatorio)</option>
-                                        <option th:each="cat : ${categorias}" 
-                                                th:value="${cat.id}" 
-                                                th:text="${cat.nombre}"
-                                                th:selected="${producto.categorias[0]?.id == cat.id}">
-                                        </option>
+                                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
                                     </select>
                                 </div>
 
                                 <div class="admin-form-group">
                                     <label for="categoriaOpcionalId">Categoria opcional</label>
-                                    <select name="categoriaOpcionalId" id="categoriaOpcionalId" class="admin-form-select select-modern">
+                                    <select th:field="*{categoriaOpcionalId}" id="categoriaOpcionalId" class="admin-form-select select-modern">
                                         <option value="">Ninguna</option>
-                                        <option th:each="cat : ${categorias}" 
-                                                th:value="${cat.id}" 
-                                                th:text="${cat.nombre}"
-                                                th:selected="${producto.categorias.size() > 1 ? (producto.categorias[1].id == cat.id) : false}">
-                                        </option>
+                                        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
                                     </select>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="admin-form-panel">
+                            <legend>Imagen del producto</legend>
+
+                            <div class="product-image-upload" data-product-image-upload>
+                                <div class="product-image-preview" data-product-image-preview>
+                                    <img th:src="${producto != null && producto.tieneImagen()} ? ${producto.imagenUrl} : @{/images/placeholders/product-placeholder-card.svg}"
+                                         alt="Preview de producto"
+                                         data-product-image-preview-img
+                                         th:attr="data-existing-image=${producto != null && producto.tieneImagen() ? 'true' : 'false'}">
+                                </div>
+                                <div class="product-image-upload-copy">
+                                    <strong>Imagen del producto</strong>
+                                    <p>Recomendado: imagen cuadrada 800x800 px. Formatos admitidos: JPG, PNG y WEBP. Tamano maximo: 5 MB.</p>
+                                    <label class="product-image-upload-dropzone" for="imagenProducto">
+                                        <input type="file" id="imagenProducto" name="imagenProducto" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-product-image-input>
+                                        <span class="product-image-upload-title">Subir o cambiar imagen</span>
+                                        <small>Arrastra la imagen aqui o pulsa para seleccionarla</small>
+                                    </label>
+                                    <div class="product-image-upload-actions">
+                                        <button type="button" class="button button-secondary-dark" data-product-image-change>Cambiar imagen</button>
+                                        <button type="button" class="button button-outline-dark" data-product-image-clear>Eliminar imagen</button>
+                                    </div>
+                                    <small th:if="${producto != null && producto.imagenNombre != null}" class="product-image-meta">
+                                        Imagen actual: <span th:text="${producto.imagenNombre}">producto.webp</span>
+                                    </small>
                                 </div>
                             </div>
                         </fieldset>
@@ -102,5 +128,6 @@
 
 <script th:src="@{/js/admin.js}"></script>
 <script th:src="@{/js/inicio.js}"></script>
+<script th:src="@{/js/admin-product-image.js}"></script>
 </body>
 </html>

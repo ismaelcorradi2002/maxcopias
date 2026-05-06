@@ -1,0 +1,701 @@
+.pedido-detalle-page .worker-card {
+    overflow: visible;
+}
+
+.pedido-worktop {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(300px, 0.95fr);
+    gap: 1.2rem;
+    margin-top: 1.6rem;
+    padding: 1.35rem;
+    border: 1px solid rgba(108, 198, 255, 0.24);
+    border-radius: 30px;
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.22), transparent 30%),
+        linear-gradient(140deg, rgba(236, 247, 255, 0.98), rgba(255, 255, 255, 0.98));
+    box-shadow: 0 26px 60px rgba(22, 68, 109, 0.12);
+}
+
+.pedido-worktop-main,
+.pedido-worktop-actions,
+.pedido-worktop-meta {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.pedido-worktop h2,
+.pedido-panel h2 {
+    margin: 0;
+    color: #152033;
+    letter-spacing: -0.04em;
+}
+
+.pedido-worktop h2 {
+    font-size: clamp(1.8rem, 3vw, 2.35rem);
+}
+
+.pedido-worktop-meta {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.pedido-worktop-chip {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1rem 1.05rem;
+    border: 1px solid rgba(108, 198, 255, 0.18);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.88);
+    min-width: 0;
+}
+
+.pedido-worktop-chip span {
+    color: #6a82a0;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.pedido-worktop-chip strong {
+    color: #152033;
+    font-size: 1.02rem;
+    overflow-wrap: anywhere;
+}
+
+.pedido-worktop-chip-code {
+    background:
+        radial-gradient(circle at top left, rgba(255, 217, 101, 0.18), transparent 46%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(234, 247, 255, 0.96));
+}
+
+.pedido-worktop-chip-code strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.4rem, 2.1vw, 1.9rem);
+    letter-spacing: 0.08em;
+}
+
+.pedido-worktop-actions {
+    align-content: start;
+}
+
+.pedido-worktop-actions .button {
+    justify-content: center;
+    min-height: 48px;
+    border-radius: 18px;
+}
+
+.pedido-state-shortcut {
+    border-color: rgba(58, 166, 255, 0.24);
+}
+
+.pedido-workgrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.85fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.pedido-workgrid-main,
+.pedido-workgrid-side {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+}
+
+.pedido-panel {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(108, 198, 255, 0.2);
+    border-radius: 28px;
+    background:
+        linear-gradient(155deg, rgba(255, 255, 255, 0.98), rgba(241, 249, 255, 0.9));
+    box-shadow: 0 18px 48px rgba(31, 85, 120, 0.08);
+}
+
+.pedido-panel-primary {
+    padding: 1.35rem;
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.18), transparent 30%),
+        linear-gradient(150deg, rgba(255, 255, 255, 1), rgba(237, 247, 255, 0.96));
+}
+
+.pedido-panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.pedido-panel-head p {
+    margin: 0.35rem 0 0;
+    color: #6b7c93;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.pedido-spec-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.pedido-spec-card {
+    display: grid;
+    gap: 0.45rem;
+    padding: 1rem;
+    min-height: 116px;
+    border-radius: 22px;
+    border: 1px solid rgba(58, 166, 255, 0.16);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.pedido-spec-card span {
+    color: #6d84a1;
+    font-size: 0.74rem;
+    font-weight: 950;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.pedido-spec-card strong {
+    color: #152033;
+    font-size: clamp(1rem, 1.8vw, 1.22rem);
+    line-height: 1.25;
+}
+
+.pedido-spec-card-emphasis {
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.22), transparent 38%),
+        linear-gradient(135deg, rgba(85, 186, 255, 0.14), rgba(255, 255, 255, 0.96));
+    border-color: rgba(58, 166, 255, 0.24);
+}
+
+.pedido-spec-card-emphasis strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.3rem, 2vw, 1.7rem);
+}
+
+.pedido-extra-block {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem 1.05rem;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px dashed rgba(108, 198, 255, 0.26);
+}
+
+.pedido-extra-label {
+    color: #6d84a1;
+    font-size: 0.78rem;
+    font-weight: 950;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.pedido-extra-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.pedido-extra-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0.6rem 0.95rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(85, 186, 255, 0.14), rgba(255, 217, 101, 0.16));
+    color: #0f6fe8;
+    font-weight: 900;
+}
+
+.pedido-extra-empty {
+    margin: 0;
+    color: #64748b;
+    font-weight: 800;
+}
+
+.pedido-file-card {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 24px;
+    border: 1px solid rgba(108, 198, 255, 0.18);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.12), transparent 36%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(241, 249, 255, 0.94));
+}
+
+.pedido-file-top {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.95rem;
+    align-items: center;
+}
+
+.pedido-file-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #0f6fe8, #6cc6ff 62%, #ffd965);
+    color: #ffffff;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 950;
+    letter-spacing: 0.08em;
+    box-shadow: 0 18px 34px rgba(15, 111, 232, 0.22);
+}
+
+.pedido-file-copy {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.pedido-file-copy strong {
+    color: #152033;
+    font-size: 1.06rem;
+    overflow-wrap: anywhere;
+}
+
+.pedido-file-copy span {
+    color: #64748b;
+    font-weight: 800;
+}
+
+.pedido-file-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.pedido-file-meta article,
+.pedido-status-list article,
+.pedido-client-card article {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.9rem 0.95rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(108, 198, 255, 0.12);
+}
+
+.pedido-file-meta span,
+.pedido-status-list span,
+.pedido-client-card span {
+    color: #6d84a1;
+    font-size: 0.72rem;
+    font-weight: 950;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.pedido-file-meta strong,
+.pedido-status-list strong,
+.pedido-client-card strong {
+    color: #152033;
+    overflow-wrap: anywhere;
+}
+
+.pedido-status-list .pedido-delivery-article {
+    gap: 0.55rem;
+}
+
+.pedido-delivery-card {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(108, 198, 255, 0.16);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.14), transparent 36%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(241, 249, 255, 0.94));
+}
+
+.pedido-delivery-copy {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.pedido-delivery-copy strong {
+    color: #152033;
+    font-size: 1rem;
+    line-height: 1.45;
+}
+
+.pedido-delivery-copy small {
+    color: #607595;
+    font-size: 0.86rem;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.pedido-delivery-meta,
+.pedido-delivery-note {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(108, 198, 255, 0.12);
+}
+
+.pedido-delivery-meta span,
+.pedido-delivery-note span {
+    color: #6d84a1;
+    font-size: 0.7rem;
+    font-weight: 950;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.pedido-delivery-meta strong {
+    color: #152033;
+    font-weight: 900;
+}
+
+.pedido-delivery-note p {
+    margin: 0;
+    color: #24344d;
+    font-weight: 700;
+    line-height: 1.55;
+}
+
+.pedido-file-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.7rem;
+}
+
+.pedido-file-actions .button {
+    min-height: 46px;
+    border-radius: 16px;
+    justify-content: center;
+}
+
+.pedido-note-card {
+    padding: 1.05rem 1.1rem;
+    border-radius: 22px;
+    background: rgba(248, 252, 255, 0.84);
+    border: 1px dashed rgba(108, 198, 255, 0.2);
+}
+
+.pedido-note-card.has-note {
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.16), transparent 34%),
+        linear-gradient(135deg, rgba(236, 247, 255, 0.94), rgba(255, 255, 255, 0.98));
+    border-style: solid;
+}
+
+.pedido-note-card p {
+    margin: 0;
+    color: #24344d;
+    font-weight: 700;
+    line-height: 1.65;
+    white-space: pre-wrap;
+}
+
+.pedido-status-form {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.pedido-field {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.pedido-field > span {
+    color: #6d84a1;
+    font-size: 0.74rem;
+    font-weight: 950;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.pedido-status-form .select-modern-dropdown {
+    z-index: 20;
+}
+
+.pedido-status-form .select-modern-trigger {
+    min-height: 58px;
+    padding: 0 18px 0 20px;
+    border-radius: 20px;
+    border-color: rgba(58, 166, 255, 0.26);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.18), transparent 34%),
+        linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(236, 247, 255, 0.98));
+    color: #13233f;
+    font-size: 1rem;
+    font-weight: 900;
+    box-shadow:
+        0 16px 34px rgba(93, 187, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.96);
+}
+
+.pedido-status-form .select-modern-trigger:hover,
+.pedido-status-form .select-modern-trigger:focus-visible,
+.pedido-status-form .select-modern-dropdown.is-open .select-modern-trigger {
+    border-color: rgba(15, 111, 232, 0.34);
+    box-shadow:
+        0 0 0 5px rgba(93, 187, 255, 0.12),
+        0 20px 42px rgba(93, 187, 255, 0.16);
+}
+
+.pedido-status-form .select-modern-trigger [data-select-modern-label] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pedido-status-form .select-modern-arrow {
+    width: 13px;
+    height: 13px;
+    flex-basis: 13px;
+    border-right-width: 2.5px;
+    border-bottom-width: 2.5px;
+    border-color: #1479c9;
+}
+
+.pedido-status-form .select-modern-menu {
+    top: calc(100% + 10px);
+    padding: 10px;
+    border-radius: 22px;
+    border-color: rgba(58, 166, 255, 0.2);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.18), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(241, 249, 255, 0.98));
+    box-shadow:
+        0 26px 52px rgba(32, 91, 152, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.pedido-status-form .select-modern-option {
+    min-height: 46px;
+    border-radius: 14px;
+    padding: 0 14px;
+    font-weight: 850;
+}
+
+.pedido-status-form .select-modern-option:hover {
+    transform: none;
+}
+
+.pedido-status-form .select-modern-option.is-selected {
+    background: linear-gradient(135deg, rgba(15, 111, 232, 0.16), rgba(255, 217, 101, 0.2));
+    color: #0f5ca3;
+}
+
+.pedido-status-form .button {
+    min-height: 46px;
+    border-radius: 16px;
+    justify-content: center;
+}
+
+.pedido-status-list,
+.pedido-client-card {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.pedido-price-panel {
+    gap: 0.9rem;
+}
+
+.pedido-price-total {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 1.05rem;
+    border-radius: 22px;
+    border: 1px solid rgba(58, 166, 255, 0.18);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.22), transparent 42%),
+        linear-gradient(135deg, rgba(85, 186, 255, 0.12), rgba(255, 255, 255, 0.96));
+}
+
+.pedido-price-total span {
+    color: #0f6fe8;
+    font-size: 0.72rem;
+    font-weight: 950;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.pedido-price-total strong {
+    color: #152033;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    letter-spacing: -0.04em;
+}
+
+.pedido-price-breakdown {
+    border: 1px solid rgba(108, 198, 255, 0.16);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+}
+
+.pedido-price-breakdown summary {
+    padding: 1rem 1.05rem;
+    cursor: pointer;
+    list-style: none;
+    color: #173554;
+    font-weight: 900;
+}
+
+.pedido-price-breakdown summary::-webkit-details-marker {
+    display: none;
+}
+
+.pedido-price-breakdown summary::after {
+    content: "+";
+    float: right;
+    color: #0f6fe8;
+    font-size: 1.1rem;
+}
+
+.pedido-price-breakdown[open] summary::after {
+    content: "-";
+}
+
+.pedido-price-list {
+    display: grid;
+    gap: 0;
+    padding: 0 1.05rem 1rem;
+}
+
+.pedido-price-list article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-top: 1px solid #e7eff8;
+}
+
+.pedido-price-list article:first-child {
+    border-top: 1px solid #e7eff8;
+}
+
+.pedido-price-list article div {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.pedido-price-list strong {
+    color: #152033;
+}
+
+.pedido-price-list small {
+    color: #6b7c93;
+    line-height: 1.4;
+}
+
+.pedido-price-list > article > span {
+    color: #152033;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.pedido-price-list article.is-total {
+    margin-top: 0.3rem;
+    padding-top: 1rem;
+}
+
+.pedido-empty-state {
+    display: grid;
+    gap: 0.35rem;
+    min-height: 180px;
+    place-content: center;
+    padding: 1.2rem;
+    border: 1px dashed rgba(108, 198, 255, 0.24);
+    border-radius: 24px;
+    background: rgba(248, 252, 255, 0.86);
+    text-align: center;
+}
+
+.pedido-empty-state strong {
+    color: #152033;
+}
+
+.pedido-empty-state p {
+    margin: 0;
+    color: #64748b;
+    font-weight: 700;
+    line-height: 1.55;
+}
+
+.pedido-timeline-panel {
+    margin-top: 1rem;
+}
+
+.pedido-timeline {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@media (max-width: 1180px) {
+    .pedido-worktop,
+    .pedido-workgrid {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-worktop-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pedido-worktop-meta,
+    .pedido-spec-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .pedido-worktop,
+    .pedido-panel {
+        padding: 1rem;
+        border-radius: 24px;
+    }
+
+    .pedido-worktop-actions,
+    .pedido-file-actions,
+    .pedido-file-meta,
+    .pedido-timeline {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-panel-head {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 640px) {
+    .pedido-worktop h2 {
+        font-size: 1.55rem;
+    }
+
+    .pedido-worktop-meta,
+    .pedido-spec-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-worktop-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-file-top {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-file-badge {
+        width: 68px;
+        height: 68px;
+    }
+
+    .pedido-price-list article {
+        grid-template-columns: 1fr;
+    }
+}

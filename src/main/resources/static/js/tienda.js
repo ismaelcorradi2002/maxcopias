@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initFiltrosTienda();
   initCartFeedback();
   initCartForms();
+  initCheckoutDeliveryForm();
 });
 
 function initCarrusel() {
@@ -119,4 +120,25 @@ function initCartForms() {
       button.textContent = "Anadiendo...";
     });
   });
+}
+
+function initCheckoutDeliveryForm() {
+  const addressBlock = document.querySelector("[data-checkout-delivery-address]");
+  const deliveryInputs = document.querySelectorAll('input[name="metodoEntrega"]');
+
+  if (!addressBlock || !deliveryInputs.length) {
+    return;
+  }
+
+  function syncDeliveryAddress() {
+    const selected = document.querySelector('input[name="metodoEntrega"]:checked');
+    const isHomeDelivery = selected && selected.value === "ENVIO_DOMICILIO";
+    addressBlock.classList.toggle("is-visible", Boolean(isHomeDelivery));
+  }
+
+  deliveryInputs.forEach((input) => {
+    input.addEventListener("change", syncDeliveryAddress);
+  });
+
+  syncDeliveryAddress();
 }

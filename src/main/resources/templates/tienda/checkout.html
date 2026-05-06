@@ -57,10 +57,32 @@
                                 <label class="delivery-option" th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
                                     <input th:field="*{metodoEntrega}" type="radio" value="ENVIO_DOMICILIO">
                                     <span>
-                                        <strong>Envio simulado</strong>
-                                        <small>4,99 EUR. Envio simulado, funcionalidad en desarrollo.</small>
+                                        <strong>Envio a domicilio</strong>
+                                        <small>4,99 EUR. Reparto disponible solo en Torrejon de Ardoz.</small>
                                     </span>
                                 </label>
+                            </div>
+                            <div class="checkout-delivery-address"
+                                 data-checkout-delivery-address
+                                 th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-visible' : ''">
+                                <p class="checkout-delivery-note">Si eliges envio, indica una direccion de Torrejon de Ardoz.</p>
+                                <div class="checkout-field-grid">
+                                    <label class="is-wide">
+                                        <span>Direccion de entrega</span>
+                                        <input th:field="*{direccionEntrega}" type="text" placeholder="Calle, numero, piso, puerta">
+                                        <small class="field-error" th:if="${#fields.hasErrors('direccionEntrega')}" th:errors="*{direccionEntrega}">Error</small>
+                                    </label>
+                                    <label>
+                                        <span>Codigo postal</span>
+                                        <input th:field="*{codigoPostalEntrega}" type="text" inputmode="numeric" placeholder="28850">
+                                        <small class="field-error" th:if="${#fields.hasErrors('codigoPostalEntrega')}" th:errors="*{codigoPostalEntrega}">Error</small>
+                                    </label>
+                                    <label>
+                                        <span>Ciudad</span>
+                                        <input th:field="*{ciudadEntrega}" type="text" placeholder="Torrejon de Ardoz">
+                                        <small class="field-error" th:if="${#fields.hasErrors('ciudadEntrega')}" th:errors="*{ciudadEntrega}">Error</small>
+                                    </label>
+                                </div>
                             </div>
                         </section>
 

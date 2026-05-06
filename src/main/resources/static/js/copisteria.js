@@ -179,6 +179,14 @@ function createWizardController(form, fileInput, fileHint, filesError) {
         if (deliveryAddressBlock) {
             deliveryAddressBlock.hidden = !showAddress;
         }
+        if (showAddress) {
+            if (deliveryFields.city && !deliveryFields.city.value.trim()) {
+                deliveryFields.city.value = "Torrejon de Ardoz";
+            }
+            if (deliveryFields.province && !deliveryFields.province.value.trim()) {
+                deliveryFields.province.value = "Madrid";
+            }
+        }
         updateDeliverySummary();
         if (!showAddress) {
             Object.keys(deliveryFieldErrors).forEach(function (fieldName) {
@@ -208,7 +216,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             street: street.length > 0,
             number: number.length > 0,
             postalCode: /^\d{5}$/.test(postalCode),
-            city: city.length > 0,
+            city: city.length > 0 && normalizeDeliveryCity(city) === "torrejon de ardoz",
             province: province.length > 0,
             contactPhone: /^\d{9}$/.test(contactPhone)
         };
@@ -223,6 +231,14 @@ function createWizardController(form, fileInput, fileHint, filesError) {
 
         composeDeliveryAddress();
         return Object.values(validity).every(Boolean);
+    }
+
+    function normalizeDeliveryCity(value) {
+        return String(value || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
     }
 
     function validateStep(stepId) {

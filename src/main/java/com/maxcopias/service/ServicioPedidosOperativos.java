@@ -4,6 +4,7 @@ import com.maxcopias.model.EstadoPedidoCopisteria;
 import com.maxcopias.model.EstadoPedidoTienda;
 import com.maxcopias.model.CaraImpresion;
 import com.maxcopias.model.ModoColor;
+import com.maxcopias.model.MetodoEntregaPedidoTienda;
 import com.maxcopias.model.PedidoCopisteria;
 import com.maxcopias.model.PedidoTienda;
 import com.maxcopias.model.TipoEncuadernacion;
@@ -384,7 +385,8 @@ public class ServicioPedidosOperativos {
             pedido.getFechaEliminacion() != null ? pedido.getFechaEliminacion() : pedido.getFechaCreacion(),
             null,
             null,
-            null,
+            resolverMetodoEntregaCopisteria(pedido),
+            resolverDireccionEntregaCopisteria(pedido),
             false,
             null,
             null,
@@ -444,6 +446,7 @@ public class ServicioPedidosOperativos {
             pedido.getResumenProductos(),
             pedido.getCodigoPedido(),
             pedido.getMetodoEntrega() != null ? pedido.getMetodoEntrega().getLabel() : null,
+            formatearDireccionEntrega(pedido),
             pedido.isPagado(),
             pedido.getMetodoPago() != null ? pedido.getMetodoPago().getLabel() : null,
             pedido.getFechaPago(),
@@ -914,6 +917,59 @@ public class ServicioPedidosOperativos {
 
     private String formatearDinero(BigDecimal valor) {
         return NumberFormat.getCurrencyInstance(LOCALE_ES).format(money(valor));
+    }
+
+    private String formatearDireccionEntrega(PedidoTienda pedido) {
+        if (pedido.getMetodoEntrega() != MetodoEntregaPedidoTienda.ENVIO_DOMICILIO) {
+            return null;
+        }
+
+        List<String> parts = new ArrayList<>();
+        if (pedido.getDireccionEntrega() != null && !pedido.getDireccionEntrega().isBlank()) {
+            parts.add(pedido.getDireccionEntrega().trim());
+        }
+        if (pedido.getCodigoPostalEntrega() != null && !pedido.getCodigoPostalEntrega().isBlank()) {
+            parts.add(pedido.getCodigoPostalEntrega().trim());
+        }
+        if (pedido.getCiudadEntrega() != null && !pedido.getCiudadEntrega().isBlank()) {
+            parts.add(pedido.getCiudadEntrega().trim());
+        }
+
+        return parts.isEmpty() ? null : String.join(", ", parts);
+    }
+
+    private String resolverMetodoEntregaCopisteria(PedidoCopisteria pedido) {
+        String value = extraValue(pedido.getExtras(), "deliveryMethod");
+        return "HOME_DELIVERY".equalsIgnoreCase(value) ? "Envio a domicilio" : "Recogida en tienda";
+    }
+
+    private String resolverDireccionEntregaCopisteria(PedidoCopisteria pedido) {
+        String value = extraValue(pedido.getExtras(), "deliveryAddress");
+        return value == null || value.isBlank() ? null : value;
+    }
+
+    private String extraValue(String extras, String key) {
+        if (extras == null || extras.isBlank()) {
+            return null;
+        }
+
+        String quotedPrefix = key + "='";
+        int quotedStart = extras.indexOf(quotedPrefix);
+        if (quotedStart >= 0) {
+            int valueStart = quotedStart + quotedPrefix.length();
+            int valueEnd = extras.indexOf("'", valueStart);
+            return valueEnd >= valueStart ? extras.substring(valueStart, valueEnd) : null;
+        }
+
+        String plainPrefix = key + "=";
+        int plainStart = extras.indexOf(plainPrefix);
+        if (plainStart >= 0) {
+            int valueStart = plainStart + plainPrefix.length();
+            int valueEnd = extras.indexOf(",", valueStart);
+            return valueEnd >= valueStart ? extras.substring(valueStart, valueEnd) : extras.substring(valueStart);
+        }
+
+        return null;
     }
 
     private record ArchivoDetalle(int pageCount, String readableSize) {

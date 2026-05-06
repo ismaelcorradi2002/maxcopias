@@ -41,6 +41,18 @@ public class Producto {
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
     private Boolean activo = true;
 
+    @Column(name = "imagen_url", length = 500)
+    private String imagenUrl;
+
+    @Column(name = "imagen_nombre", length = 255)
+    private String imagenNombre;
+
+    @Column(name = "imagen_tipo", length = 120)
+    private String imagenTipo;
+
+    @Column(name = "imagen_tamano")
+    private Long imagenTamano;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "producto_categoria",
@@ -113,6 +125,42 @@ public class Producto {
 
     public boolean isActivo() {
         return Boolean.TRUE.equals(activo);
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+
+    public String getImagenNombre() {
+        return imagenNombre;
+    }
+
+    public void setImagenNombre(String imagenNombre) {
+        this.imagenNombre = imagenNombre;
+    }
+
+    public String getImagenTipo() {
+        return imagenTipo;
+    }
+
+    public void setImagenTipo(String imagenTipo) {
+        this.imagenTipo = imagenTipo;
+    }
+
+    public Long getImagenTamano() {
+        return imagenTamano;
+    }
+
+    public void setImagenTamano(Long imagenTamano) {
+        this.imagenTamano = imagenTamano;
+    }
+
+    public boolean tieneImagen() {
+        return imagenUrl != null && !imagenUrl.isBlank();
     }
 
     public Set<Categoria> getCategorias() {

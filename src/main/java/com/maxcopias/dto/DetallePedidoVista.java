@@ -41,6 +41,7 @@ public record DetallePedidoVista(
     String resumenProductos,
     String codigoPedido,
     String metodoEntrega,
+    String direccionEntrega,
     boolean pagado,
     String metodoPago,
     LocalDateTime fechaPago,

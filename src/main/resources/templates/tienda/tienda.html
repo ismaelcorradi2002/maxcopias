@@ -33,7 +33,9 @@
                         class="mini-service-card tienda-producto-card"
                         th:attr="data-categories=${producto.categoriasSlug()},data-product-name=${producto.nombre()},data-product-price=${producto.precioFormateado()}">
                         <a class="tienda-producto-link" th:href="@{/detalles-producto/{id}(id=${producto.id()})}">
-                            <img th:src="${producto.imagenUrl()}" th:alt="${producto.alt()}">
+                            <div class="tienda-producto-media">
+                                <img th:src="${producto.imagenUrl()}" th:alt="${producto.alt()}">
+                            </div>
                             <div>
                                 <span class="tienda-producto-categorias" th:text="${producto.categoriasTexto()}">Escolar</span>
                                 <h3 th:text="${producto.nombre()}">Producto</h3>

@@ -40,21 +40,15 @@ public class ServicioCatalogoTiendaVisual {
 
     public List<ProductoTiendaVista> mapearProductos(List<Producto> productos) {
         return productos.stream()
-            .filter(producto -> catalogoVisual.containsKey(producto.getNombre()))
             .map(this::mapearProducto)
             .toList();
     }
 
     public List<CategoriaTiendaVista> obtenerCategoriasVisibles(List<Producto> productos) {
         Set<Categoria> categoriasVisibles = new LinkedHashSet<>();
-
         for (Producto producto : productos) {
-            if (!catalogoVisual.containsKey(producto.getNombre())) {
-                continue;
-            }
             categoriasVisibles.addAll(producto.getCategorias());
         }
-
         return mapearCategorias(categoriasVisibles.stream().toList());
     }
 
@@ -74,6 +68,7 @@ public class ServicioCatalogoTiendaVisual {
             .map(this::generarSlug)
             .sorted()
             .collect(Collectors.joining(","));
+
         ResultadoOfertaProducto resultadoOferta = servicioOferta.calcularOfertaParaProducto(producto);
 
         return new ProductoTiendaVista(
@@ -81,8 +76,8 @@ public class ServicioCatalogoTiendaVisual {
             producto.getNombre(),
             producto.getDescripcion(),
             resultadoOferta.aplicable() ? formatearPrecio(resultadoOferta.precioFinal()) : formatearPrecio(producto),
-            metadatos.imagenUrl(),
-            metadatos.alt(),
+            resolverImagenProducto(producto, metadatos),
+            producto.tieneImagen() ? producto.getNombre() : metadatos.alt(),
             categorias.isEmpty() ? "Sin categoria" : String.join(" · ", categorias),
             categoriasSlug,
             categorias,
@@ -120,6 +115,10 @@ public class ServicioCatalogoTiendaVisual {
 
     private String formatearPrecio(BigDecimal precio) {
         return NumberFormat.getCurrencyInstance(LOCALE_ES).format(precio);
+    }
+
+    private String resolverImagenProducto(Producto producto, MetadatosProductoTienda metadatos) {
+        return producto.tieneImagen() ? producto.getImagenUrl() : metadatos.imagenUrl();
     }
 
     private Map<String, MetadatosProductoTienda> crearCatalogoVisual() {
@@ -249,7 +248,7 @@ public class ServicioCatalogoTiendaVisual {
     ) {
         private static MetadatosProductoTienda porDefecto(String nombre, String descripcion) {
             return new MetadatosProductoTienda(
-                "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop",
+                "/images/placeholders/product-placeholder-card.svg",
                 nombre,
                 nombre,
                 descripcion,

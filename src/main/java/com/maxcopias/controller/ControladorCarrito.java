@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.text.Normalizer;
+import java.util.Locale;
 
 @Controller
 @RequestMapping
@@ -133,6 +135,7 @@ public class ControladorCarrito {
         }
 
         servicioCarrito.actualizarMetodoEntregaSeleccionado(session, formulario.getMetodoEntrega());
+        validarDireccionEntrega(formulario, bindingResult);
         if (bindingResult.hasErrors()) {
             return cargarCheckout(model, authentication, session, formulario, null);
         }
@@ -181,5 +184,35 @@ public class ControladorCarrito {
         model.addAttribute("carrito", servicioCarrito.obtenerVista(authentication, session, formulario.getMetodoEntrega()));
         model.addAttribute("pageTitle", "Maxcopias | Checkout");
         return "tienda/checkout";
+    }
+
+    private void validarDireccionEntrega(FormularioCheckoutTienda formulario, BindingResult bindingResult) {
+        if (formulario.getMetodoEntrega() != com.maxcopias.model.MetodoEntregaPedidoTienda.ENVIO_DOMICILIO) {
+            return;
+        }
+
+        if (formulario.getDireccionEntrega() == null || formulario.getDireccionEntrega().isBlank()) {
+            bindingResult.rejectValue("direccionEntrega", "deliveryAddress.required", "Introduce la direccion de entrega.");
+        }
+
+        if (formulario.getCodigoPostalEntrega() == null || formulario.getCodigoPostalEntrega().isBlank()) {
+            bindingResult.rejectValue("codigoPostalEntrega", "deliveryPostalCode.required", "Introduce el codigo postal.");
+        }
+
+        if (formulario.getCiudadEntrega() == null || formulario.getCiudadEntrega().isBlank()) {
+            bindingResult.rejectValue("ciudadEntrega", "deliveryCity.required", "Introduce la ciudad.");
+            return;
+        }
+
+        String ciudadNormalizada = normalizeCity(formulario.getCiudadEntrega());
+        if (!"torrejon de ardoz".equals(ciudadNormalizada) && !"torrejon".equals(ciudadNormalizada)) {
+            bindingResult.rejectValue("ciudadEntrega", "deliveryCity.unsupported", "Solo repartimos en Torrejon de Ardoz.");
+        }
+    }
+
+    private String normalizeCity(String value) {
+        return Normalizer.normalize(value == null ? "" : value.trim(), Normalizer.Form.NFD)
+            .replaceAll("\\p{M}+", "")
+            .toLowerCase(Locale.ROOT);
     }
 }

@@ -20,6 +20,9 @@ public class PropiedadesMaxcopias {
     @NotBlank
     private String uploadDir = "uploads/copisteria";
 
+    @NotBlank
+    private String productImageUploadDir = "uploads/productos";
+
     @Min(1)
     private int maxFiles = 5;
 
@@ -38,6 +41,14 @@ public class PropiedadesMaxcopias {
 
     public void setUploadDir(String uploadDir) {
         this.uploadDir = uploadDir;
+    }
+
+    public String getProductImageUploadDir() {
+        return productImageUploadDir;
+    }
+
+    public void setProductImageUploadDir(String productImageUploadDir) {
+        this.productImageUploadDir = productImageUploadDir;
     }
 
     public int getMaxFiles() {

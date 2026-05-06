@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 import java.util.Map;
+import java.text.Normalizer;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Controller
@@ -130,8 +132,7 @@ public class ControllerPedidos {
         }
 
         if ("HOME_DELIVERY".equals(orderForm.getDeliveryMethod())
-            && (orderForm.getDeliveryAddress() == null || orderForm.getDeliveryAddress().isBlank())) {
-            result.reject("deliveryAddress.required", "Debes indicar la direccion si eliges envio a domicilio.");
+            && !validarDireccionEntrega(orderForm, result)) {
             formulario(orderForm, model);
             return "copisteria/formulario";
         }
@@ -409,6 +410,73 @@ public class ControllerPedidos {
     private String resolverObservaciones(PedidoCopisteria pedido) {
         String value = extraValue(pedido.getExtras(), "observaciones");
         return value == null || value.isBlank() ? "Sin observaciones." : value;
+    }
+
+    private boolean validarDireccionEntrega(FormularioPedidoCopisteria orderForm, BindingResult result) {
+        if (orderForm.getDeliveryAddress() == null || orderForm.getDeliveryAddress().isBlank()) {
+            result.rejectValue("deliveryAddress", "deliveryAddress.required", "Debes indicar la direccion si eliges envio a domicilio.");
+            return false;
+        }
+
+        String street = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Calle:");
+        String number = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Numero:");
+        String postalCode = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Codigo postal:");
+        String city = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Ciudad:");
+        String province = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Provincia:");
+        String contactPhone = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Telefono de contacto:");
+
+        boolean valid = true;
+
+        if (street.isBlank()) {
+            result.rejectValue("deliveryAddress", "deliveryStreet.required", "Introduce la calle de entrega.");
+            valid = false;
+        }
+        if (number.isBlank()) {
+            result.rejectValue("deliveryAddress", "deliveryNumber.required", "Introduce el numero de la direccion.");
+            valid = false;
+        }
+        if (!postalCode.matches("\\d{5}")) {
+            result.rejectValue("deliveryAddress", "deliveryPostalCode.invalid", "Introduce un codigo postal valido de 5 digitos.");
+            valid = false;
+        }
+        if (city.isBlank()) {
+            result.rejectValue("deliveryAddress", "deliveryCity.required", "Introduce la ciudad de entrega.");
+            valid = false;
+        } else {
+            String normalizedCity = normalizeCity(city);
+            if (!"torrejon de ardoz".equals(normalizedCity) && !"torrejon".equals(normalizedCity)) {
+                result.rejectValue("deliveryAddress", "deliveryCity.unsupported", "Solo repartimos en Torrejon de Ardoz.");
+                valid = false;
+            }
+        }
+        if (province.isBlank()) {
+            result.rejectValue("deliveryAddress", "deliveryProvince.required", "Introduce la provincia.");
+            valid = false;
+        }
+        if (!contactPhone.matches("\\d{9}")) {
+            result.rejectValue("deliveryAddress", "deliveryContactPhone.invalid", "Introduce un telefono de contacto valido de 9 digitos.");
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    private String extraerLineaDireccion(String address, String prefix) {
+        if (address == null || address.isBlank()) {
+            return "";
+        }
+
+        return address.lines()
+            .filter(line -> line.startsWith(prefix))
+            .findFirst()
+            .map(line -> line.substring(prefix.length()).trim())
+            .orElse("");
+    }
+
+    private String normalizeCity(String value) {
+        return Normalizer.normalize(value == null ? "" : value.trim(), Normalizer.Form.NFD)
+            .replaceAll("\\p{M}+", "")
+            .toLowerCase(Locale.ROOT);
     }
 
     @GetMapping("/mis-pedidos")

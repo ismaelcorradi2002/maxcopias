@@ -9,7 +9,9 @@
         <section class="producto-detail-hero">
             <div class="container producto-detail-grid">
                 <div class="producto-detail-media">
-                    <img th:src="${productoTienda.imagenUrl()}" th:alt="${productoTienda.alt()}">
+                    <div class="producto-detail-media-frame">
+                        <img th:src="${productoTienda.imagenUrl()}" th:alt="${productoTienda.alt()}">
+                    </div>
                 </div>
 
                 <div class="producto-detail-copy">

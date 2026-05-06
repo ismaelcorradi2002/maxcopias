@@ -77,6 +77,9 @@ public class ServicioPedidosTienda {
         pedido.setEmail(normalizar(formulario.getEmail()).toLowerCase(Locale.ROOT));
         pedido.setTelefono(normalizar(formulario.getTelefono()));
         pedido.setMetodoEntrega(metodoEntrega);
+        pedido.setDireccionEntrega(normalizar(formulario.getDireccionEntrega()));
+        pedido.setCodigoPostalEntrega(normalizar(formulario.getCodigoPostalEntrega()));
+        pedido.setCiudadEntrega(normalizar(formulario.getCiudadEntrega()));
         pedido.setEstado(EstadoPedidoTienda.PENDIENTE);
         pedido.setMetodoPago(metodoEntrega == MetodoEntregaPedidoTienda.RECOGIDA_TIENDA
             ? MetodoPagoPedidoTienda.PAGO_EN_TIENDA

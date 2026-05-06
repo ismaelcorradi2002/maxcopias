@@ -625,6 +625,50 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
         `;
     }
 
+    function isUrgentCopyOrder(order) {
+        return getOrderType(order) === "copisteria"
+            && typeof order.extras === "string"
+            && order.extras.includes("urgente=true");
+    }
+
+    function isHomeDeliveryCopyOrder(order) {
+        return getOrderType(order) === "copisteria"
+            && typeof order.extras === "string"
+            && order.extras.includes("deliveryMethod='HOME_DELIVERY'");
+    }
+
+    function isStorePickupCopyOrder(order) {
+        return getOrderType(order) === "copisteria"
+            && typeof order.extras === "string"
+            && order.extras.includes("deliveryMethod='STORE_PICKUP'");
+    }
+
+    function isHomeDeliveryOrder(order) {
+        return getOrderType(order) === "tienda" && order.metodoEntrega === "ENVIO_DOMICILIO";
+    }
+
+    function renderPriorityFlags(order) {
+        const flags = [];
+
+        if (isUrgentCopyOrder(order)) {
+            flags.push('<span class="worker-order-flag is-urgent">Urgente</span>');
+        }
+
+        if (isHomeDeliveryCopyOrder(order)) {
+            flags.push('<span class="worker-order-flag is-delivery">A domicilio</span>');
+        }
+
+        if (isStorePickupCopyOrder(order)) {
+            flags.push('<span class="worker-order-flag is-pickup">Recogida</span>');
+        }
+
+        if (isHomeDeliveryOrder(order)) {
+            flags.push('<span class="worker-order-flag is-delivery">A domicilio</span>');
+        }
+
+        return flags.length ? `<div class="worker-order-flags">${flags.join("")}</div>` : "";
+    }
+
     tableContainer.innerHTML = '<div class="admin-orders-board" data-orders-board></div>';
     const board = tableContainer.querySelector("[data-orders-board]");
 
@@ -738,13 +782,17 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                         </thead>
                         <tbody>
                             ${visibleOrders.map(order => `
-                                <tr class="${order.eliminado ? "admin-order-row-deleted" : ""}">
+                                <tr class="${[
+                                    order.eliminado ? "admin-order-row-deleted" : "",
+                                    isUrgentCopyOrder(order) || isHomeDeliveryCopyOrder(order) || isHomeDeliveryOrder(order) ? "worker-order-row-priority" : ""
+                                ].filter(Boolean).join(" ")}">
                                     <td class="worker-col-checkbox">
                                         <input type="checkbox" data-admin-order-checkbox="${type}" value="${order.id}" ${order.eliminado ? "disabled" : ""}>
                                     </td>
                                     <td>
                                         <span class="worker-cell-title">${def(order.cliente)}</span>
                                         <small>${def(order.telefono)}</small>
+                                        ${renderPriorityFlags(order)}
                                     </td>
                                     ${isCopisteria
                                         ? `
@@ -769,23 +817,29 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                                             </form>
                                         </div>
                                     </td>
-                                    <td class="worker-actions-cell worker-col-actions">
-                                        <a class="button button-outline-dark" href="/admin/pedidos/${order.id}?tipo=${type}">
-                                            Ver detalle
+                                    <td class="worker-col-actions">
+                                        <div class="worker-actions-cell order-actions">
+                                        <a class="order-action-btn order-action-view" href="/admin/pedidos/${order.id}?tipo=${type}" title="Ver detalle" aria-label="Ver detalle">
+                                            <span aria-hidden="true">👁</span>
+                                            <span class="worker-sr-only">Ver detalle</span>
                                         </a>
                                         ${order.eliminado
                                             ? `<span class="admin-role-badge">Eliminado</span>`
                                             : `
                                                 <button
                                                     type="button"
-                                                    class="button button-outline admin-delete-btn"
+                                                    class="order-action-btn order-action-delete admin-delete-btn"
+                                                    title="Eliminar pedido"
+                                                    aria-label="Eliminar pedido"
                                                     data-order-id="${order.id}"
                                                     data-order-type="${type}"
                                                     data-order-name="${isCopisteria ? `pedido de copisteria ${def(order.codigoRecoger)}` : `pedido de tienda #${def(order.id)}`}"
                                                 >
-                                                    Eliminar
+                                                    <span aria-hidden="true">🗑</span>
+                                                    <span class="worker-sr-only">Eliminar</span>
                                                 </button>
                                             `}
+                                        </div>
                                     </td>
                                 </tr>
                             `).join("")}

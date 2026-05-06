@@ -60,6 +60,9 @@ public class ServicioTienda {
         producto.setStock(producto.getStock() == null ? 0 : producto.getStock());
         producto.setPrecio(producto.getPrecio() == null ? BigDecimal.ZERO : producto.getPrecio());
         producto.setActivo(producto.getActivo() == null ? true : producto.getActivo());
+        producto.setImagenUrl(normalizarTextoOpcional(producto.getImagenUrl()));
+        producto.setImagenNombre(normalizarTextoOpcional(producto.getImagenNombre()));
+        producto.setImagenTipo(normalizarTextoOpcional(producto.getImagenTipo()));
         
         return repositorioProducto.save(producto);
     }
@@ -118,6 +121,10 @@ public class ServicioTienda {
 
     private String normalizarTexto(String valor) {
         return StringUtils.hasText(valor) ? valor.trim() : "";
+    }
+
+    private String normalizarTextoOpcional(String valor) {
+        return StringUtils.hasText(valor) ? valor.trim() : null;
     }
 
     /**

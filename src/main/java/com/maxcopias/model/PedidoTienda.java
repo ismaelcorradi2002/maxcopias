@@ -67,6 +67,15 @@ public class PedidoTienda {
     @Column(name = "metodo_entrega", length = 30)
     private MetodoEntregaPedidoTienda metodoEntrega = MetodoEntregaPedidoTienda.RECOGIDA_TIENDA;
 
+    @Column(name = "direccion_entrega", length = 240)
+    private String direccionEntrega;
+
+    @Column(name = "codigo_postal_entrega", length = 12)
+    private String codigoPostalEntrega;
+
+    @Column(name = "ciudad_entrega", length = 120)
+    private String ciudadEntrega;
+
     @Column(nullable = false)
     private boolean pagado = false;
 
@@ -213,6 +222,30 @@ public class PedidoTienda {
 
     public void setMetodoEntrega(MetodoEntregaPedidoTienda metodoEntrega) {
         this.metodoEntrega = metodoEntrega;
+    }
+
+    public String getDireccionEntrega() {
+        return direccionEntrega;
+    }
+
+    public void setDireccionEntrega(String direccionEntrega) {
+        this.direccionEntrega = direccionEntrega;
+    }
+
+    public String getCodigoPostalEntrega() {
+        return codigoPostalEntrega;
+    }
+
+    public void setCodigoPostalEntrega(String codigoPostalEntrega) {
+        this.codigoPostalEntrega = codigoPostalEntrega;
+    }
+
+    public String getCiudadEntrega() {
+        return ciudadEntrega;
+    }
+
+    public void setCiudadEntrega(String ciudadEntrega) {
+        this.ciudadEntrega = ciudadEntrega;
     }
 
     public boolean isPagado() {

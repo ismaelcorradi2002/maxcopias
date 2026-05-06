@@ -27,6 +27,7 @@ public record PedidoAdminVista(
     String archivoNombre,
     String rutaArchivo,
     String archivoDescargaUrl,
+    String metodoEntrega,
     String codigoRecoger,
     String resumenProductos,
     String usuarioNombre,

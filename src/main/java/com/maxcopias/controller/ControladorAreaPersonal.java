@@ -4,6 +4,7 @@ package com.maxcopias.controller;
  * Controlador del área personal del usuario (perfil, pedidos).
  */
 import com.maxcopias.dto.FormularioActualizarPerfil;
+import com.maxcopias.dto.FormularioProductoAdmin;
 import com.maxcopias.dto.PedidoAdminVista;
 import com.maxcopias.dto.DetallePedidoVista;
 import com.maxcopias.model.EstadoPedidoCopisteria;
@@ -16,6 +17,7 @@ import com.maxcopias.repository.RepositorioPedidoCopisteria;
 import com.maxcopias.repository.RepositorioUsuario;
 import com.maxcopias.service.ServicioPedidosOperativos;
 import com.maxcopias.service.ServicioPedidosTienda;
+import com.maxcopias.service.ServicioImagenProducto;
 import com.maxcopias.model.PedidoCopisteria;
 import com.maxcopias.model.PedidoTienda;
 import jakarta.validation.Valid;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
@@ -61,6 +64,7 @@ public class ControladorAreaPersonal {
     private final ServicioTienda servicioTienda;
     private final ServicioPedidosOperativos servicioPedidosOperativos;
     private final ServicioPedidosTienda servicioPedidosTienda;
+    private final ServicioImagenProducto servicioImagenProducto;
 
     public ControladorAreaPersonal(
         ServicioUsuario userService,
@@ -69,7 +73,8 @@ public class ControladorAreaPersonal {
         RepositorioCategoria repositorioCategoria,
         ServicioPedidosOperativos servicioPedidosOperativos,
         RepositorioPedidoCopisteria repositorioPedidoCopisteria,
-        ServicioPedidosTienda servicioPedidosTienda
+        ServicioPedidosTienda servicioPedidosTienda,
+        ServicioImagenProducto servicioImagenProducto
     ) {
         this.repositorioCategoria = repositorioCategoria;
         this.userService = userService;
@@ -78,6 +83,7 @@ public class ControladorAreaPersonal {
         this.servicioPedidosOperativos = servicioPedidosOperativos;
         this.repositorioPedidoCopisteria = repositorioPedidoCopisteria;
         this.servicioPedidosTienda = servicioPedidosTienda;
+        this.servicioImagenProducto = servicioImagenProducto;
     }
 
     /**
@@ -289,6 +295,7 @@ public class ControladorAreaPersonal {
                 p.getNombreArchivo(),
                 p.getRutaArchivo(),
                 p.getRutaArchivo() != null ? "/pedidos/copisteria/" + p.getId() + "/archivo" : null,
+                null,
                 p.getCodigoRecoger(),
                 null,
                 p.getUsuario() != null ? p.getUsuario().getFullName() : null,
@@ -319,6 +326,7 @@ public class ControladorAreaPersonal {
                 null,
                 null,
                 null,
+                p.getMetodoEntrega() != null ? p.getMetodoEntrega().name() : null,
                 p.getCodigoPedido(),
                 p.getResumenProductos(),
                 p.getUsuario() != null ? p.getUsuario().getFullName() : null,
@@ -365,52 +373,33 @@ public class ControladorAreaPersonal {
 
 @GetMapping("/admin/crear-producto")
     public String crearProducto(Model model, Authentication authentication) {
-        Producto nuevoProducto = new Producto();
-        model.addAttribute("producto", nuevoProducto);
-        model.addAttribute("pageTitle", "Maxcopias | Crear producto");
-        model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
-        model.addAttribute("catalogReturnUrl", catalogReturnUrl(authentication));
-        model.addAttribute("catalogReturnLabel", catalogReturnLabel(authentication));
-
-        Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
-        model.addAttribute("currentUsuario", currentUsuario);
+        model.addAttribute("productoForm", new FormularioProductoAdmin());
+        prepararModeloFormularioProducto(model, authentication, null, "Maxcopias | Crear producto");
         return "admin/crearproducto";
     }
 
 @PostMapping("/admin/crear-producto")
-    public String guardarNuevoProducto(@RequestParam("nombre") String nombre, @RequestParam("descripcion") String descripcion,
-                                      @RequestParam("stock") Integer stock, @RequestParam("precio") BigDecimal precio,
-                                      @RequestParam("categoriaId") Long categoriaId,
-                                      @RequestParam(value = "categoriaOpcionalId", required = false) Long categoriaOpcionalId, 
-                                      Model model, Authentication authentication) {
+    public String guardarNuevoProducto(
+        @Valid @ModelAttribute("productoForm") FormularioProductoAdmin formulario,
+        BindingResult bindingResult,
+        @RequestParam(value = "imagenProducto", required = false) MultipartFile imagenProducto,
+        Model model,
+        Authentication authentication
+    ) {
         try {
-            Producto producto = new Producto();
-            producto.setNombre(nombre);
-            producto.setDescripcion(descripcion);
-            producto.setStock(stock);
-            producto.setPrecio(precio);
-            
-            Categoria categoriaPrincipal = servicioTienda.obtenerCategoriaObligatoria(categoriaId);
-            producto.clearCategorias();
-            producto.addCategoria(categoriaPrincipal);
-            
-            if (categoriaOpcionalId != null) {
-                Categoria categoriaOpcional = servicioTienda.obtenerCategoriaPorId(categoriaOpcionalId);
-                if (categoriaOpcional != null && !categoriaOpcionalId.equals(categoriaId)) {
-                    producto.addCategoria(categoriaOpcional);
-                }
+            if (bindingResult.hasErrors()) {
+                throw new IllegalArgumentException("Revisa los campos obligatorios del producto.");
             }
-            
+
+            Producto producto = new Producto();
+            aplicarFormularioProducto(producto, formulario);
+            aplicarCategoriasProducto(producto, formulario.getCategoriaId(), formulario.getCategoriaOpcionalId());
+            aplicarImagenProducto(producto, imagenProducto, formulario.isEliminarImagen());
             servicioTienda.guardarProducto(producto);
             return redirectAfterCatalogChange(authentication);
         } catch (Exception e) {
             model.addAttribute("error", "Error al crear producto: " + e.getMessage());
-            Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
-            model.addAttribute("currentUsuario", currentUsuario);
-            model.addAttribute("pageTitle", "Maxcopias | Crear producto");
-            model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
-            model.addAttribute("catalogReturnUrl", catalogReturnUrl(authentication));
-            model.addAttribute("catalogReturnLabel", catalogReturnLabel(authentication));
+            prepararModeloFormularioProducto(model, authentication, null, "Maxcopias | Crear producto");
             return "admin/crearproducto";
         }
     }
@@ -418,44 +407,37 @@ public class ControladorAreaPersonal {
 @GetMapping("/editarstock/{id}")
     public String editarStock(@PathVariable Long id, Model model, Authentication authentication) {
         Producto producto = servicioTienda.obtenerProductoPorId(id);
-        model.addAttribute("producto", producto);
-        model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
-        model.addAttribute("pageTitle", "Maxcopias | Editar producto");
-        model.addAttribute("catalogReturnUrl", catalogReturnUrl(authentication));
-        model.addAttribute("catalogReturnLabel", catalogReturnLabel(authentication));
-        Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
-        model.addAttribute("currentUsuario", currentUsuario);
+        model.addAttribute("productoForm", FormularioProductoAdmin.desdeProducto(producto));
+        prepararModeloFormularioProducto(model, authentication, producto, "Maxcopias | Editar producto");
         return "admin/editarstock";
     }
 
 @PostMapping("/admin/update-producto/{id}")
-    public String updateProducto(@PathVariable Long id, 
-                                @RequestParam("nombre") String nombre,
-                                @RequestParam("descripcion") String descripcion,
-                                @RequestParam("stock") Integer stock,
-                                @RequestParam("precio") BigDecimal precio,
-                                @RequestParam("categoriaId") Long categoriaId,
-                                @RequestParam(value="categoriaOpcionalId", required=false) Long categoriaOpcionalId,
-                                Authentication authentication) {
+    public String updateProducto(
+        @PathVariable Long id,
+        @Valid @ModelAttribute("productoForm") FormularioProductoAdmin formulario,
+        BindingResult bindingResult,
+        @RequestParam(value = "imagenProducto", required = false) MultipartFile imagenProducto,
+        Model model,
+        Authentication authentication
+    ) {
         Producto existingProducto = servicioTienda.obtenerProductoPorId(id);
-        existingProducto.setNombre(nombre);
-        existingProducto.setDescripcion(descripcion);
-        existingProducto.setStock(stock);
-        existingProducto.setPrecio(precio);
-        
-        existingProducto.clearCategorias();
-        Categoria catPrincipal = servicioTienda.obtenerCategoriaObligatoria(categoriaId);
-        existingProducto.addCategoria(catPrincipal);
-        
-        if (categoriaOpcionalId != null) {
-            Categoria catOpcional = servicioTienda.obtenerCategoriaPorId(categoriaOpcionalId);
-            if (catOpcional != null && !catOpcional.getId().equals(categoriaId)) {
-                existingProducto.addCategoria(catOpcional);
+
+        try {
+            if (bindingResult.hasErrors()) {
+                throw new IllegalArgumentException("Revisa los campos obligatorios del producto.");
             }
+
+            aplicarFormularioProducto(existingProducto, formulario);
+            aplicarCategoriasProducto(existingProducto, formulario.getCategoriaId(), formulario.getCategoriaOpcionalId());
+            aplicarImagenProducto(existingProducto, imagenProducto, formulario.isEliminarImagen());
+            servicioTienda.guardarProducto(existingProducto);
+            return redirectAfterCatalogChange(authentication);
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al actualizar producto: " + e.getMessage());
+            prepararModeloFormularioProducto(model, authentication, existingProducto, "Maxcopias | Editar producto");
+            return "admin/editarstock";
         }
-        
-        servicioTienda.guardarProducto(existingProducto);
-        return redirectAfterCatalogChange(authentication);
     }
 
     /**
@@ -585,6 +567,65 @@ public class ControladorAreaPersonal {
         model.addAttribute("profileForm", profileForm);
         model.addAttribute("profileUpdated", updated);
         model.addAttribute("pageTitle", "Maxcopias | Area personal");
+    }
+
+    private void prepararModeloFormularioProducto(Model model, Authentication authentication, Producto producto, String pageTitle) {
+        Usuario currentUsuario = userService.findRequiredByEmail(authentication.getName());
+        model.addAttribute("currentUsuario", currentUsuario);
+        model.addAttribute("producto", producto);
+        model.addAttribute("categorias", servicioTienda.obtenerTodasCategorias());
+        model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("catalogReturnUrl", catalogReturnUrl(authentication));
+        model.addAttribute("catalogReturnLabel", catalogReturnLabel(authentication));
+    }
+
+    private void aplicarFormularioProducto(Producto producto, FormularioProductoAdmin formulario) {
+        producto.setNombre(formulario.getNombre());
+        producto.setDescripcion(formulario.getDescripcion());
+        producto.setStock(formulario.getStock());
+        producto.setPrecio(formulario.getPrecio());
+    }
+
+    private void aplicarCategoriasProducto(Producto producto, Long categoriaId, Long categoriaOpcionalId) {
+        Categoria categoriaPrincipal = servicioTienda.obtenerCategoriaObligatoria(categoriaId);
+        producto.clearCategorias();
+        producto.addCategoria(categoriaPrincipal);
+
+        if (categoriaOpcionalId == null) {
+            return;
+        }
+
+        Categoria categoriaOpcional = servicioTienda.obtenerCategoriaPorId(categoriaOpcionalId);
+        if (categoriaOpcional != null && !categoriaOpcionalId.equals(categoriaId)) {
+            producto.addCategoria(categoriaOpcional);
+        }
+    }
+
+    private void aplicarImagenProducto(Producto producto, MultipartFile imagenProducto, boolean eliminarImagen) {
+        if (eliminarImagen && producto.tieneImagen()) {
+            servicioImagenProducto.eliminarSiEsLocal(producto.getImagenUrl());
+            producto.setImagenUrl(null);
+            producto.setImagenNombre(null);
+            producto.setImagenTipo(null);
+            producto.setImagenTamano(null);
+        }
+
+        if (imagenProducto == null || imagenProducto.isEmpty()) {
+            return;
+        }
+
+        if (producto.tieneImagen()) {
+            servicioImagenProducto.eliminarSiEsLocal(producto.getImagenUrl());
+        }
+
+        ServicioImagenProducto.ImagenProductoGuardada imagenGuardada = servicioImagenProducto.guardar(
+            imagenProducto,
+            producto.getNombre()
+        );
+        producto.setImagenUrl(imagenGuardada.imageUrl());
+        producto.setImagenNombre(imagenGuardada.imageName());
+        producto.setImagenTipo(imagenGuardada.imageType());
+        producto.setImagenTamano(imagenGuardada.imageSize());
     }
 
     private String redirectAfterCatalogChange(Authentication authentication) {

@@ -2372,11 +2372,19 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(115, 203, 255, 0.24), rgba(255, 217, 101, 0.24));
-    color: #1d5d95;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 28% 28%, rgba(255, 255, 255, 0.8), transparent 45%),
+        linear-gradient(135deg, #0f6fe8, #5dbbff 58%, #ffd965 100%);
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 10px 20px rgba(15, 111, 232, 0.22);
 }
 
 .nav-user-copy {
@@ -2387,23 +2395,19 @@ body {
 }
 
 .nav-user-copy strong {
-    max-width: 140px;
+    max-width: 156px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.9rem;
+    font-size: 0.94rem;
     color: #173554;
-}
-
-.nav-user-copy small {
-    font-size: 0.74rem;
-    color: #6b83a3;
 }
 
 .nav-user-chevron {
     width: 18px;
     height: 18px;
     transition: transform 0.24s ease;
+    color: #5b7da4;
 }
 
 .nav-user-menu.is-open .nav-user-chevron {
@@ -2414,16 +2418,20 @@ body {
     position: absolute;
     top: calc(100% + 12px);
     right: 0;
-    width: 220px;
-    padding: 10px;
-    border-radius: 22px;
-    background: rgba(246, 251, 255, 0.98);
-    border: 1px solid rgba(93, 187, 255, 0.14);
-    box-shadow: 0 24px 54px rgba(92, 152, 214, 0.18);
+    width: min(320px, calc(100vw - 24px));
+    padding: 12px;
+    border-radius: 26px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 249, 255, 0.98));
+    border: 1px solid rgba(93, 187, 255, 0.18);
+    box-shadow:
+        0 28px 56px rgba(18, 73, 129, 0.16),
+        0 8px 20px rgba(93, 187, 255, 0.12);
     opacity: 0;
     visibility: hidden;
     transform: translateY(6px);
     transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
+    overflow: hidden;
 }
 
 .nav-user-menu.is-open .nav-user-dropdown {
@@ -2432,14 +2440,63 @@ body {
     transform: translateY(0);
 }
 
+.nav-user-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 10px 14px;
+}
+
+.nav-user-avatar-large {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    font-size: 1rem;
+}
+
+.nav-user-dropdown-copy {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.nav-user-dropdown-copy strong,
+.nav-user-dropdown-copy small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nav-user-dropdown-copy strong {
+    font-size: 0.95rem;
+    color: #173554;
+}
+
+.nav-user-dropdown-copy small {
+    font-size: 0.8rem;
+    color: #6782a6;
+}
+
+.nav-user-dropdown-section {
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid rgba(93, 187, 255, 0.12);
+}
+
+.nav-user-dropdown-section:first-of-type {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: 0;
+}
+
 .nav-user-dropdown .nav-user-menu-link,
 .nav-user-dropdown .nav-logout-button-menu {
     width: 100%;
     justify-content: flex-start;
-    min-height: 44px;
+    min-height: 46px;
     padding: 0 14px;
     border: 0;
-    border-radius: 14px;
+    border-radius: 16px;
     background: transparent;
     color: #20354f;
     font: inherit;
@@ -2450,7 +2507,7 @@ body {
 
 .nav-user-dropdown .nav-user-menu-link:hover,
 .nav-user-dropdown .nav-logout-button-menu:hover {
-    background: rgba(93, 187, 255, 0.1);
+    background: linear-gradient(135deg, rgba(93, 187, 255, 0.12), rgba(255, 217, 101, 0.16));
     color: #0f6fe8;
 }
 
@@ -2553,18 +2610,13 @@ body.nav-open .nav-toggle span:nth-child(3) {
     }
 
     .nav-user-avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 11px;
+        width: 32px;
+        height: 32px;
     }
 
     .nav-user-copy strong {
-        max-width: 104px;
-        font-size: 0.84rem;
-    }
-
-    .nav-user-copy small {
-        font-size: 0.7rem;
+        max-width: 112px;
+        font-size: 0.86rem;
     }
 }
 
