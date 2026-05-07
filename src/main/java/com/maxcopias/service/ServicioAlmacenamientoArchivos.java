@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,13 +22,20 @@ import org.springframework.web.multipart.MultipartFile;
 public class ServicioAlmacenamientoArchivos {
 
     private static final DateTimeFormatter DATE_FOLDER_FORMAT = DateTimeFormatter.ISO_DATE;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServicioAlmacenamientoArchivos.class);
 
     private final PropiedadesMaxcopias properties;
     private final ServicioInspeccionArchivos fileInspectionService;
+    private final CloudinaryStorageService cloudinaryStorageService;
 
-    public ServicioAlmacenamientoArchivos(PropiedadesMaxcopias properties, ServicioInspeccionArchivos fileInspectionService) {
+    public ServicioAlmacenamientoArchivos(
+        PropiedadesMaxcopias properties,
+        ServicioInspeccionArchivos fileInspectionService,
+        CloudinaryStorageService cloudinaryStorageService
+    ) {
         this.properties = properties;
         this.fileInspectionService = fileInspectionService;
+        this.cloudinaryStorageService = cloudinaryStorageService;
     }
 
     public List<DatosArchivoGuardado> storeFiles(List<MultipartFile> files, String reference) {
@@ -34,6 +43,14 @@ public class ServicioAlmacenamientoArchivos {
             ? List.of()
             : files.stream().filter(file -> file != null && !file.isEmpty()).toList();
         List<AnalisisArchivoSubido> analyzedFiles = fileInspectionService.inspectOrderFiles(safeFiles);
+
+        if (cloudinaryStorageService.estaConfigurado()) {
+            try {
+                return storeFilesInCloudinary(safeFiles, analyzedFiles, reference);
+            } catch (RuntimeException exception) {
+                LOGGER.warn("Fallo al subir archivos del pedido a Cloudinary. Se usara almacenamiento local.", exception);
+            }
+        }
 
         Path orderDirectory = null;
 
@@ -88,6 +105,10 @@ public class ServicioAlmacenamientoArchivos {
             throw new ExcepcionAlmacenamientoArchivos("El pedido no tiene archivo asociado.");
         }
 
+        if (relativePath.startsWith("https://") || relativePath.startsWith("http://")) {
+            throw new ExcepcionAlmacenamientoArchivos("El archivo indicado esta almacenado en Cloudinary y no existe en el disco local.");
+        }
+
         Path uploadRoot = Path.of(properties.getUploadDir()).toAbsolutePath().normalize();
         Path resolvedPath = uploadRoot.resolve(relativePath).normalize();
 
@@ -139,6 +160,47 @@ public class ServicioAlmacenamientoArchivos {
             });
         } catch (IOException ignored) {
         }
+    }
+
+    private List<DatosArchivoGuardado> storeFilesInCloudinary(
+        List<MultipartFile> files,
+        List<AnalisisArchivoSubido> analyzedFiles,
+        String reference
+    ) {
+        LOGGER.info("Subida definitiva de pedido a Cloudinary. reference={}, files={}", reference, files.size());
+        List<DatosArchivoGuardado> storedFiles = new ArrayList<>();
+
+        for (int index = 0; index < files.size(); index++) {
+            MultipartFile file = files.get(index);
+            AnalisisArchivoSubido analysis = analyzedFiles.get(index);
+            CloudinaryStorageService.ResultadoSubidaCloudinary resultado = cloudinaryStorageService.subirArchivo(
+                file,
+                "maxcopias/pedidos/" + sanitizeReference(reference)
+            );
+
+            String originalFilename = StringUtils.hasText(resultado.originalFilename())
+                ? resultado.originalFilename()
+                : "archivo";
+            storedFiles.add(new DatosArchivoGuardado(
+                originalFilename,
+                originalFilename,
+                resultado.secureUrl(),
+                resultado.contentType(),
+                resultado.sizeInBytes(),
+                analysis.getPageCount()
+            ));
+        }
+
+        return storedFiles;
+    }
+
+    private String sanitizeReference(String reference) {
+        String safeReference = StringUtils.hasText(reference) ? reference : "pedido";
+        String normalized = safeReference
+            .replaceAll("[^A-Za-z0-9_-]+", "-")
+            .replaceAll("(^-+|-+$)", "")
+            .toLowerCase();
+        return StringUtils.hasText(normalized) ? normalized : "pedido";
     }
 }
 

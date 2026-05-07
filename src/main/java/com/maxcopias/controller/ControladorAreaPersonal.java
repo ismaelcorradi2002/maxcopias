@@ -42,9 +42,11 @@ import com.maxcopias.model.Producto;
 import com.maxcopias.model.Categoria;
 import java.math.BigDecimal;
 import com.maxcopias.service.ServicioTienda;
+import com.maxcopias.service.CloudinaryStorageService;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.util.StringUtils;
 
 @Controller
 public class ControladorAreaPersonal {
@@ -65,6 +67,7 @@ public class ControladorAreaPersonal {
     private final ServicioPedidosOperativos servicioPedidosOperativos;
     private final ServicioPedidosTienda servicioPedidosTienda;
     private final ServicioImagenProducto servicioImagenProducto;
+    private final CloudinaryStorageService cloudinaryStorageService;
 
     public ControladorAreaPersonal(
         ServicioUsuario userService,
@@ -74,7 +77,8 @@ public class ControladorAreaPersonal {
         ServicioPedidosOperativos servicioPedidosOperativos,
         RepositorioPedidoCopisteria repositorioPedidoCopisteria,
         ServicioPedidosTienda servicioPedidosTienda,
-        ServicioImagenProducto servicioImagenProducto
+        ServicioImagenProducto servicioImagenProducto,
+        CloudinaryStorageService cloudinaryStorageService
     ) {
         this.repositorioCategoria = repositorioCategoria;
         this.userService = userService;
@@ -84,6 +88,7 @@ public class ControladorAreaPersonal {
         this.repositorioPedidoCopisteria = repositorioPedidoCopisteria;
         this.servicioPedidosTienda = servicioPedidosTienda;
         this.servicioImagenProducto = servicioImagenProducto;
+        this.cloudinaryStorageService = cloudinaryStorageService;
     }
 
     /**
@@ -294,7 +299,7 @@ public class ControladorAreaPersonal {
                 p.getExtras(),
                 p.getNombreArchivo(),
                 p.getRutaArchivo(),
-                p.getRutaArchivo() != null ? "/pedidos/copisteria/" + p.getId() + "/archivo" : null,
+                resolverUrlArchivoAdmin(p),
                 null,
                 p.getCodigoRecoger(),
                 null,
@@ -655,6 +660,19 @@ public class ControladorAreaPersonal {
             .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
 
         return isWorker && !isAdmin ? "Volver a productos" : "Volver al panel";
+    }
+
+    private String resolverUrlArchivoAdmin(PedidoCopisteria pedido) {
+        if (pedido == null || !StringUtils.hasText(pedido.getRutaArchivo()) || pedido.getRutasArchivo().isEmpty()) {
+            return null;
+        }
+
+        String primeraRuta = pedido.getRutasArchivo().get(0);
+        if (cloudinaryStorageService.esUrlCloudinary(primeraRuta)) {
+            return primeraRuta;
+        }
+
+        return "/pedidos/copisteria/" + pedido.getId() + "/archivo";
     }
 }
 

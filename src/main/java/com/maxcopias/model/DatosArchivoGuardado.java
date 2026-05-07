@@ -61,5 +61,10 @@ public class DatosArchivoGuardado {
 
         return String.format("%.2f MB", sizeInKb / 1024.0);
     }
+
+    public boolean isRemote() {
+        return relativePath != null
+            && (relativePath.startsWith("https://") || relativePath.startsWith("http://"));
+    }
 }
 

@@ -24,5 +24,7 @@ public interface RepositorioProducto extends JpaRepository<Producto, Long> {
     @EntityGraph(attributePaths = "categorias")
     List<Producto> findDistinctByCategoriasIdAndActivoTrueOrderByNombreAsc(Long categoriaId);
 
+    Optional<Producto> findByNombreIgnoreCase(String nombre);
+
     boolean existsByNombreIgnoreCase(String nombre);
 }

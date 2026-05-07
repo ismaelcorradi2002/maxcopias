@@ -2,6 +2,7 @@ package com.maxcopias.controller;
 
 import com.maxcopias.model.PedidoCopisteria;
 import com.maxcopias.repository.RepositorioPedidoCopisteria;
+import com.maxcopias.service.CloudinaryStorageService;
 import com.maxcopias.service.ServicioAlmacenamientoArchivos;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,6 +11,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,13 +30,16 @@ public class ControladorArchivosPedido {
 
     private final RepositorioPedidoCopisteria repositorioPedidoCopisteria;
     private final ServicioAlmacenamientoArchivos servicioAlmacenamientoArchivos;
+    private final CloudinaryStorageService cloudinaryStorageService;
 
     public ControladorArchivosPedido(
         RepositorioPedidoCopisteria repositorioPedidoCopisteria,
-        ServicioAlmacenamientoArchivos servicioAlmacenamientoArchivos
+        ServicioAlmacenamientoArchivos servicioAlmacenamientoArchivos,
+        CloudinaryStorageService cloudinaryStorageService
     ) {
         this.repositorioPedidoCopisteria = repositorioPedidoCopisteria;
         this.servicioAlmacenamientoArchivos = servicioAlmacenamientoArchivos;
+        this.cloudinaryStorageService = cloudinaryStorageService;
     }
 
     @GetMapping("/pedidos/copisteria/{id}/archivo")
@@ -57,13 +62,22 @@ public class ControladorArchivosPedido {
             throw new ResponseStatusException(NOT_FOUND, "El archivo solicitado no existe en este pedido.");
         }
 
-        Path archivo = servicioAlmacenamientoArchivos.resolveStoredPath(pedido.getRutasArchivo().get(index));
+        String rutaArchivo = pedido.getRutasArchivo().get(index);
+        if (cloudinaryStorageService.esUrlCloudinary(rutaArchivo)) {
+            return ResponseEntity.status(HttpStatus.FOUND)
+                .header(HttpHeaders.LOCATION, rutaArchivo)
+                .build();
+        }
+
+        Path archivo = servicioAlmacenamientoArchivos.resolveStoredPath(rutaArchivo);
         if (!Files.exists(archivo) || !Files.isRegularFile(archivo)) {
             throw new ResponseStatusException(NOT_FOUND, "No se ha encontrado el archivo del pedido.");
         }
 
         String contentType = detectarContentType(archivo);
-        String nombreArchivo = pedido.getNombreArchivo() != null ? pedido.getNombreArchivo() : archivo.getFileName().toString();
+        String nombreArchivo = pedido.getNombresArchivo().size() > index
+            ? pedido.getNombresArchivo().get(index)
+            : (pedido.getNombreArchivo() != null ? pedido.getNombreArchivo() : archivo.getFileName().toString());
         ContentDisposition disposition = (download ? ContentDisposition.attachment() : ContentDisposition.inline())
             .filename(nombreArchivo)
             .build();

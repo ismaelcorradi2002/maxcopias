@@ -91,6 +91,7 @@
                     <input type="hidden" th:field="*{phone}">
                     <input type="hidden" th:field="*{email}">
                     <input type="hidden" th:field="*{estimatedPrice}" data-estimated-price-input>
+                    <input type="hidden" name="submissionToken" th:value="${submissionToken}">
 
                     <section class="wizard-stage" data-reveal="up">
                         <article class="wizard-step is-active" data-step-id="jobType">

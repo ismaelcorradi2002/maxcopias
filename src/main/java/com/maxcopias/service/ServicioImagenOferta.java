@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,15 +20,26 @@ public class ServicioImagenOferta {
     private static final long MAX_IMAGE_SIZE_BYTES = 5L * 1024L * 1024L;
     private static final List<String> ALLOWED_CONTENT_TYPES = List.of("image/jpeg", "image/png", "image/webp");
     private static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png", "webp");
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServicioImagenOferta.class);
 
     private final PropiedadesMaxcopias properties;
+    private final CloudinaryStorageService cloudinaryStorageService;
 
-    public ServicioImagenOferta(PropiedadesMaxcopias properties) {
+    public ServicioImagenOferta(PropiedadesMaxcopias properties, CloudinaryStorageService cloudinaryStorageService) {
         this.properties = properties;
+        this.cloudinaryStorageService = cloudinaryStorageService;
     }
 
     public String guardar(MultipartFile imagen, String referencia) {
         validar(imagen);
+
+        if (cloudinaryStorageService.estaConfigurado()) {
+            try {
+                return cloudinaryStorageService.subirArchivo(imagen, "maxcopias/ofertas").secureUrl();
+            } catch (RuntimeException exception) {
+                LOGGER.warn("Fallo al subir imagen de oferta a Cloudinary. Se usara almacenamiento local.", exception);
+            }
+        }
 
         Path root = Path.of(properties.getOfferImageUploadDir()).toAbsolutePath().normalize();
         String extension = obtenerExtension(imagen.getOriginalFilename());

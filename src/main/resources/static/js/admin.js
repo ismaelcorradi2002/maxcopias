@@ -427,7 +427,8 @@ function renderOrdersTable(tableContainer, data) {
 
         const archivoNombre = def(order.archivoNombre);
         const verUrl = order.archivoDescargaUrl;
-        const descargarUrl = order.archivoDescargaUrl + "?download=true";
+        const isRemoteUrl = /^https?:\/\//i.test(order.archivoDescargaUrl);
+        const descargarUrl = isRemoteUrl ? order.archivoDescargaUrl : order.archivoDescargaUrl + "?download=true";
 
         return `
             <div class="admin-order-file-cell">

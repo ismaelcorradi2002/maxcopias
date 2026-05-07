@@ -36,15 +36,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.text.Normalizer;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 @RequestMapping("/copisteria")
 public class ControllerPedidos {
+
+    private static final String ORDER_SUBMISSION_TOKEN_ATTR = "copisteriaOrderSubmissionToken";
+    private static final String ORDER_SUBMISSION_RESULTS_ATTR = "copisteriaOrderSubmissionResults";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ControllerPedidos.class);
 
     @Autowired
     private RepositorioPedidoCopisteria pedidoRepository;
@@ -64,7 +73,7 @@ public class ControllerPedidos {
     }
 
 @GetMapping({"", "/pedido", "/formulario"})
-    public String formulario(@ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm, Model model) {
+    public String formulario(@ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm, Model model, HttpSession session) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
             String username = auth.getName();
@@ -118,8 +127,17 @@ public class ControllerPedidos {
             "El importe se calcula automaticamente segun la configuracion y los archivos.", 
             0, 0
         ));
+        model.addAttribute("submissionToken", ensureSubmissionToken(session));
         
         return "copisteria/formulario";
+    }
+
+    private String formulario(FormularioPedidoCopisteria orderForm, Model model) {
+        jakarta.servlet.http.HttpServletRequest request =
+            ((org.springframework.web.context.request.ServletRequestAttributes)
+                org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        return formulario(orderForm, model, request.getSession());
     }
 
     @PostMapping
@@ -127,17 +145,25 @@ public class ControllerPedidos {
             @Valid @ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm,
             BindingResult result,
             @RequestParam(value = "archivo", required = false) MultipartFile[] archivos,
-            Model model) {
+            @RequestParam("submissionToken") String submissionToken,
+            Model model,
+            HttpSession session) {
         
+        Long existingOrderId = findOrderIdBySubmissionToken(session, submissionToken);
+        if (existingOrderId != null) {
+            LOGGER.warn("POST duplicado de copisteria detectado. token={}, pedidoExistente={}", submissionToken, existingOrderId);
+            return "redirect:/copisteria/resumen?id=" + existingOrderId;
+        }
+
         if (result.hasErrors()) {
             // Re-populate model attributes on validation error
-            formulario(orderForm, model);
+            formulario(orderForm, model, session);
             return "copisteria/formulario";
         }
 
         if ("HOME_DELIVERY".equals(orderForm.getDeliveryMethod())
             && !validarDireccionEntrega(orderForm, result)) {
-            formulario(orderForm, model);
+            formulario(orderForm, model, session);
             return "copisteria/formulario";
         }
         
@@ -203,6 +229,7 @@ public class ControllerPedidos {
 
         PedidoCopisteria savedPedido = null;
         try {
+            LOGGER.info("Guardando pedido de copisteria. token={}, archivos={}", submissionToken, archivosValidos.size());
             pedido.setCodigoRecoger(generarCodigoRecogerUnico());
             savedPedido = pedidoRepository.saveAndFlush(pedido);
             if (!archivosValidos.isEmpty()) {
@@ -212,8 +239,30 @@ public class ControllerPedidos {
                         .map(DatosArchivoGuardado::getRelativePath)
                         .collect(Collectors.toList())
                 );
+                savedPedido.setNombresArchivo(
+                    archivosGuardados.stream()
+                        .map(DatosArchivoGuardado::getOriginalFilename)
+                        .collect(Collectors.toList())
+                );
+                savedPedido.setTiposArchivo(
+                    archivosGuardados.stream()
+                        .map(DatosArchivoGuardado::getContentType)
+                        .collect(Collectors.toList())
+                );
+                savedPedido.setTamanosArchivoLista(
+                    archivosGuardados.stream()
+                        .map(DatosArchivoGuardado::getSizeInBytes)
+                        .collect(Collectors.toList())
+                );
+                savedPedido.setPaginasArchivoLista(
+                    archivosGuardados.stream()
+                        .map(DatosArchivoGuardado::getPageCount)
+                        .collect(Collectors.toList())
+                );
                 pedidoRepository.saveAndFlush(savedPedido);
             }
+            registerOrderIdForSubmissionToken(session, submissionToken, savedPedido.getId());
+            rotateSubmissionToken(session);
         } catch (ExcepcionAlmacenamientoArchivos exception) {
             if (savedPedido != null && savedPedido.getId() != null) {
                 pedidoRepository.deleteById(savedPedido.getId());
@@ -266,6 +315,50 @@ public class ControllerPedidos {
         return generadorCodigoPedido.generarCodigoCopisteria(pedidoRepository::existsByCodigoRecoger);
     }
 
+    private String ensureSubmissionToken(HttpSession session) {
+        Object current = session.getAttribute(ORDER_SUBMISSION_TOKEN_ATTR);
+        if (current instanceof String token && !token.isBlank()) {
+            return token;
+        }
+
+        String newToken = UUID.randomUUID().toString();
+        session.setAttribute(ORDER_SUBMISSION_TOKEN_ATTR, newToken);
+        return newToken;
+    }
+
+    private void rotateSubmissionToken(HttpSession session) {
+        session.setAttribute(ORDER_SUBMISSION_TOKEN_ATTR, UUID.randomUUID().toString());
+    }
+
+    @SuppressWarnings("unchecked")
+    private Long findOrderIdBySubmissionToken(HttpSession session, String submissionToken) {
+        if (submissionToken == null || submissionToken.isBlank()) {
+            return null;
+        }
+
+        Object attribute = session.getAttribute(ORDER_SUBMISSION_RESULTS_ATTR);
+        if (!(attribute instanceof Map<?, ?> storedMap)) {
+            return null;
+        }
+
+        Object orderId = storedMap.get(submissionToken);
+        return orderId instanceof Long value ? value : null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void registerOrderIdForSubmissionToken(HttpSession session, String submissionToken, Long orderId) {
+        if (submissionToken == null || submissionToken.isBlank() || orderId == null) {
+            return;
+        }
+
+        Object attribute = session.getAttribute(ORDER_SUBMISSION_RESULTS_ATTR);
+        Map<String, Long> results = attribute instanceof Map<?, ?> existingMap
+            ? (Map<String, Long>) existingMap
+            : new HashMap<>();
+        results.put(submissionToken, orderId);
+        session.setAttribute(ORDER_SUBMISSION_RESULTS_ATTR, results);
+    }
+
     private String construirExtrasPedido(FormularioPedidoCopisteria orderForm) {
         StringBuilder extras = new StringBuilder();
         extras.append("plastificado=").append(Boolean.TRUE.equals(orderForm.getPlastificado()));
@@ -292,9 +385,9 @@ public class ControllerPedidos {
         for (int index = 0; index < rutas.size(); index += 1) {
             String ruta = rutas.get(index);
             Map<String, String> item = new LinkedHashMap<>();
-            item.put("nombre", Path.of(ruta).getFileName().toString());
+            item.put("nombre", resolverNombreArchivo(pedido, index, ruta));
             item.put("ruta", ruta);
-            item.put("tamano", resolverTamanoArchivo(ruta));
+            item.put("tamano", resolverTamanoArchivo(pedido, index, ruta));
             item.put("verUrl", "/pedidos/copisteria/" + pedido.getId() + "/archivo?index=" + index);
             item.put("descargaUrl", "/pedidos/copisteria/" + pedido.getId() + "/archivo?download=true&index=" + index);
             archivos.add(item);
@@ -303,13 +396,37 @@ public class ControllerPedidos {
         return archivos;
     }
 
-    private String resolverTamanoArchivo(String rutaRelativa) {
+    private String resolverTamanoArchivo(PedidoCopisteria pedido, int index, String rutaRelativa) {
+        List<Long> tamanos = pedido.getTamanosArchivoLista();
+        if (index >= 0 && index < tamanos.size() && tamanos.get(index) != null) {
+            return formatearTamanoArchivo(tamanos.get(index));
+        }
+
         try {
             Path path = storageService.resolveStoredPath(rutaRelativa);
             long size = Files.exists(path) ? Files.size(path) : 0L;
             return formatearTamanoArchivo(size);
         } catch (Exception exception) {
             return null;
+        }
+    }
+
+    private String resolverNombreArchivo(PedidoCopisteria pedido, int index, String ruta) {
+        List<String> nombres = pedido.getNombresArchivo();
+        if (index >= 0 && index < nombres.size() && nombres.get(index) != null && !nombres.get(index).isBlank()) {
+            return nombres.get(index);
+        }
+
+        try {
+            if (ruta.startsWith("http://") || ruta.startsWith("https://")) {
+                return java.net.URLDecoder.decode(
+                    Path.of(java.net.URI.create(ruta).getPath()).getFileName().toString(),
+                    java.nio.charset.StandardCharsets.UTF_8
+                );
+            }
+            return Path.of(ruta).getFileName().toString();
+        } catch (Exception exception) {
+            return ruta;
         }
     }
 
@@ -328,6 +445,11 @@ public class ControllerPedidos {
     }
 
     private int resolverPaginasTotales(PedidoCopisteria pedido) {
+        int totalDesdeMetadatos = pedido.getTotalPageCount();
+        if (totalDesdeMetadatos > 0) {
+            return totalDesdeMetadatos;
+        }
+
         int total = 0;
 
         for (String ruta : pedido.getRutasArchivo()) {

@@ -2,6 +2,9 @@ package com.maxcopias.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -60,8 +63,20 @@ public class PedidoCopisteria {
     @Column(columnDefinition = "TEXT")
     private String extras;
 
-    @Column(name = "ruta_archivo", length = 500)
+    @Column(name = "ruta_archivo", columnDefinition = "TEXT")
     private String rutaArchivo;
+
+    @Column(name = "archivo_nombres", columnDefinition = "TEXT")
+    private String archivoNombres;
+
+    @Column(name = "archivo_tipos", columnDefinition = "TEXT")
+    private String archivoTipos;
+
+    @Column(name = "archivo_tamanos", columnDefinition = "TEXT")
+    private String archivoTamanos;
+
+    @Column(name = "archivo_paginas", columnDefinition = "TEXT")
+    private String archivoPaginas;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal precio;
@@ -138,6 +153,14 @@ public class PedidoCopisteria {
 
     public String getRutaArchivo() { return rutaArchivo; }
     public void setRutaArchivo(String rutaArchivo) { this.rutaArchivo = rutaArchivo; }
+    public String getArchivoNombres() { return archivoNombres; }
+    public void setArchivoNombres(String archivoNombres) { this.archivoNombres = archivoNombres; }
+    public String getArchivoTipos() { return archivoTipos; }
+    public void setArchivoTipos(String archivoTipos) { this.archivoTipos = archivoTipos; }
+    public String getArchivoTamanos() { return archivoTamanos; }
+    public void setArchivoTamanos(String archivoTamanos) { this.archivoTamanos = archivoTamanos; }
+    public String getArchivoPaginas() { return archivoPaginas; }
+    public void setArchivoPaginas(String archivoPaginas) { this.archivoPaginas = archivoPaginas; }
 
     public List<String> getRutasArchivo() {
         if (rutaArchivo == null || rutaArchivo.isBlank()) {
@@ -159,6 +182,62 @@ public class PedidoCopisteria {
         this.rutaArchivo = rutasArchivo.stream()
             .filter(path -> path != null && !path.isBlank())
             .collect(Collectors.joining("\n"));
+    }
+
+    public List<String> getNombresArchivo() {
+        return splitLines(archivoNombres);
+    }
+
+    public void setNombresArchivo(List<String> nombresArchivo) {
+        this.archivoNombres = joinLines(nombresArchivo);
+    }
+
+    public List<String> getTiposArchivo() {
+        return splitLines(archivoTipos);
+    }
+
+    public void setTiposArchivo(List<String> tiposArchivo) {
+        this.archivoTipos = joinLines(tiposArchivo);
+    }
+
+    public List<Long> getTamanosArchivoLista() {
+        return splitLines(archivoTamanos).stream()
+            .map(value -> {
+                try {
+                    return Long.parseLong(value);
+                } catch (NumberFormatException exception) {
+                    return null;
+                }
+            })
+            .collect(Collectors.toList());
+    }
+
+    public void setTamanosArchivoLista(List<Long> tamanosArchivo) {
+        this.archivoTamanos = joinLines(
+            tamanosArchivo == null ? List.of() : tamanosArchivo.stream()
+                .map(value -> value == null ? null : String.valueOf(value))
+                .collect(Collectors.toList())
+        );
+    }
+
+    public List<Integer> getPaginasArchivoLista() {
+        return splitLines(archivoPaginas).stream()
+            .map(value -> {
+                try {
+                    return Integer.parseInt(value);
+                } catch (NumberFormatException exception) {
+                    return null;
+                }
+            })
+            .collect(Collectors.toList());
+    }
+
+    public void setPaginasArchivoLista(List<Integer> paginasArchivo) {
+        this.archivoPaginas = joinLines(
+            paginasArchivo == null ? List.of() : paginasArchivo.stream()
+                .map(value -> value == null ? null : String.valueOf(value))
+                .collect(Collectors.toList())
+        );
     }
 
     public BigDecimal getPrecio() { return precio; }
@@ -239,19 +318,31 @@ public class PedidoCopisteria {
     }
 
     public String getNombreArchivo() {
+        List<String> nombres = getNombresArchivo();
+        if (!nombres.isEmpty()) {
+            return nombres.get(0);
+        }
+
         List<String> rutas = getRutasArchivo();
         if (rutas.isEmpty()) {
             return null;
         }
-        return Path.of(rutas.get(0)).getFileName().toString();
+        return extraerNombreDesdeRuta(rutas.get(0));
     }
 
     public String getTamanoArchivoFormateado() {
-        return null;
+        List<Long> tamanos = getTamanosArchivoLista();
+        if (tamanos.isEmpty() || tamanos.get(0) == null) {
+            return null;
+        }
+        return formatearTamano(tamanos.get(0));
     }
 
     public int getTotalPageCount() {
-        return 0;
+        return getPaginasArchivoLista().stream()
+            .filter(value -> value != null && value > 0)
+            .mapToInt(Integer::intValue)
+            .sum();
     }
 
     public String getExtrasSummary() {
@@ -266,5 +357,58 @@ public class PedidoCopisteria {
             return "Sin observaciones.";
         }
         return extras;
+    }
+
+    private List<String> splitLines(String value) {
+        if (value == null || value.isBlank()) {
+            return List.of();
+        }
+
+        return Arrays.stream(value.split("\\R"))
+            .map(String::trim)
+            .filter(item -> !item.isBlank())
+            .collect(Collectors.toList());
+    }
+
+    private String joinLines(List<String> values) {
+        if (values == null || values.isEmpty()) {
+            return null;
+        }
+
+        List<String> filteredValues = values.stream()
+            .filter(item -> item != null && !item.isBlank())
+            .toList();
+        return filteredValues.isEmpty() ? null : String.join("\n", filteredValues);
+    }
+
+    private String extraerNombreDesdeRuta(String ruta) {
+        if (ruta == null || ruta.isBlank()) {
+            return null;
+        }
+
+        try {
+            if (ruta.startsWith("http://") || ruta.startsWith("https://")) {
+                String path = URI.create(ruta).getPath();
+                String nombre = Path.of(path).getFileName().toString();
+                return URLDecoder.decode(nombre, StandardCharsets.UTF_8);
+            }
+            return Path.of(ruta).getFileName().toString();
+        } catch (Exception exception) {
+            return ruta;
+        }
+    }
+
+    private String formatearTamano(long sizeInBytes) {
+        if (sizeInBytes <= 0) {
+            return null;
+        }
+        if (sizeInBytes < 1024) {
+            return sizeInBytes + " B";
+        }
+        double sizeInKb = sizeInBytes / 1024.0;
+        if (sizeInKb < 1024) {
+            return String.format("%.1f KB", sizeInKb);
+        }
+        return String.format("%.2f MB", sizeInKb / 1024.0);
     }
 }

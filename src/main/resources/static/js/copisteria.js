@@ -25,7 +25,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
     pricePreview.initialize();
     summary.update(pricePreview.getState());
+    preventDoubleSubmit(form);
 });
+
+function preventDoubleSubmit(form) {
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener("submit", function (event) {
+        if (form.dataset.submitting === "true") {
+            event.preventDefault();
+            return;
+        }
+
+        form.dataset.submitting = "true";
+        const submitButtons = Array.from(form.querySelectorAll("button[type='submit']"));
+        submitButtons.forEach(function (button) {
+            button.disabled = true;
+            if (!button.dataset.originalText) {
+                button.dataset.originalText = button.textContent || "";
+            }
+            button.textContent = "Guardando pedido...";
+        });
+    });
+}
 
 function createWizardController(form, fileInput, fileHint, filesError) {
     const stepElements = Array.from(form.querySelectorAll("[data-step-id]"));

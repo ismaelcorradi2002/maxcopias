@@ -63,6 +63,8 @@ public class ServicioTienda {
         producto.setImagenUrl(normalizarTextoOpcional(producto.getImagenUrl()));
         producto.setImagenNombre(normalizarTextoOpcional(producto.getImagenNombre()));
         producto.setImagenTipo(normalizarTextoOpcional(producto.getImagenTipo()));
+
+        validarNombreProductoUnico(producto);
         
         return repositorioProducto.save(producto);
     }
@@ -125,6 +127,18 @@ public class ServicioTienda {
 
     private String normalizarTextoOpcional(String valor) {
         return StringUtils.hasText(valor) ? valor.trim() : null;
+    }
+
+    private void validarNombreProductoUnico(Producto producto) {
+        if (!StringUtils.hasText(producto.getNombre())) {
+            throw new IllegalArgumentException("El nombre del producto es obligatorio.");
+        }
+
+        repositorioProducto.findByNombreIgnoreCase(producto.getNombre())
+            .filter(existente -> producto.getId() == null || !existente.getId().equals(producto.getId()))
+            .ifPresent(existente -> {
+                throw new IllegalArgumentException("Ya existe un producto con ese nombre.");
+            });
     }
 
     /**
