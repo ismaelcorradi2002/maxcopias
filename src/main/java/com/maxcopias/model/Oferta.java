@@ -43,10 +43,10 @@ public class Oferta {
     @Column(name = "porcentaje_descuento", nullable = false)
     private Integer porcentajeDescuento = 10;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(nullable = false)
     private Boolean activa = true;
 
-    @Column(name = "principal_home", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    @Column(name = "principal_home", nullable = false)
     private Boolean principalHome = false;
 
     @ManyToOne

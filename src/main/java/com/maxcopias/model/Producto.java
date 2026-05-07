@@ -38,7 +38,7 @@ public class Producto {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(nullable = false)
     private Boolean activo = true;
 
     @Column(name = "imagen_url", length = 500)
