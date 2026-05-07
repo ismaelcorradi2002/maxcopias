@@ -32,9 +32,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Optional;
 import java.time.YearMonth;
 import java.util.stream.IntStream;
 
@@ -200,8 +200,8 @@ public class ControladorAreaPersonal {
 
         model.addAttribute("currentUsuario", currentUsuario);
         model.addAttribute("panelTipo", "admin");
-        model.addAttribute("backUrl", "/admin?tab=orders");
-        model.addAttribute("backLabel", "Volver a pedidos");
+        model.addAttribute("backUrl", esCopisteria ? "/admin?tab=orders-copy" : "/admin?tab=orders-store");
+        model.addAttribute("backLabel", esCopisteria ? "Volver a pedidos de copisteria" : "Volver a pedidos de tienda");
 
         if (esCopisteria) {
             PedidoCopisteria pedido = servicioPedidosOperativos.obtenerPedidoCopisteriaIncluyendoEliminados(id);
@@ -298,6 +298,7 @@ public class ControladorAreaPersonal {
                 null,
                 p.getCodigoRecoger(),
                 null,
+                false,
                 p.getUsuario() != null ? p.getUsuario().getFullName() : null,
                 p.isEliminado(),
                 p.getFechaEliminacion(),
@@ -329,6 +330,7 @@ public class ControladorAreaPersonal {
                 p.getMetodoEntrega() != null ? p.getMetodoEntrega().name() : null,
                 p.getCodigoPedido(),
                 p.getResumenProductos(),
+                p.isPagado(),
                 p.getUsuario() != null ? p.getUsuario().getFullName() : null,
                 p.isEliminado(),
                 p.getFechaEliminacion(),
@@ -507,13 +509,13 @@ public class ControladorAreaPersonal {
     @PostMapping("/admin/pedidos/copisteria/{id}/estado")
     public String cambiarEstadoCopisteriaAdmin(@PathVariable Long id, @RequestParam com.maxcopias.model.EstadoPedidoCopisteria estado) {
         servicioPedidosOperativos.cambiarEstadoCopisteria(id, estado);
-        return "redirect:/admin?tab=orders";
+        return "redirect:/admin?tab=orders-copy";
     }
 
     @PostMapping("/admin/pedidos/tienda/{id}/estado")
     public String cambiarEstadoTiendaAdmin(@PathVariable Long id, @RequestParam com.maxcopias.model.EstadoPedidoTienda estado) {
         servicioPedidosOperativos.cambiarEstadoTienda(id, estado);
-        return "redirect:/admin?tab=orders";
+        return "redirect:/admin?tab=orders-store";
     }
 
     @PostMapping("/admin/pedidos/{id}/estado")
@@ -542,23 +544,23 @@ public class ControladorAreaPersonal {
 
     @PostMapping("/admin/pedidos/copisteria/estado/bulk")
     @ResponseBody
-    public Map<String, String> cambiarEstadoCopisteriaBulkAdmin(@RequestParam List<Long> ids, @RequestParam com.maxcopias.model.EstadoPedidoCopisteria estado) {
+    public java.util.Map<String, String> cambiarEstadoCopisteriaBulkAdmin(@RequestParam List<Long> ids, @RequestParam com.maxcopias.model.EstadoPedidoCopisteria estado) {
         try {
             servicioPedidosOperativos.cambiarEstadoCopisteriaBulk(ids, estado);
-            return Map.of("success", "true", "message", "Estado actualizado correctamente.");
+            return java.util.Map.of("success", "true", "message", "Estado actualizado correctamente.");
         } catch (Exception e) {
-            return Map.of("success", "false", "message", e.getMessage());
+            return java.util.Map.of("success", "false", "message", e.getMessage());
         }
     }
 
     @PostMapping("/admin/pedidos/tienda/estado/bulk")
     @ResponseBody
-    public Map<String, String> cambiarEstadoTiendaBulkAdmin(@RequestParam List<Long> ids, @RequestParam com.maxcopias.model.EstadoPedidoTienda estado) {
+    public java.util.Map<String, String> cambiarEstadoTiendaBulkAdmin(@RequestParam List<Long> ids, @RequestParam com.maxcopias.model.EstadoPedidoTienda estado) {
         try {
             servicioPedidosOperativos.cambiarEstadoTiendaBulk(ids, estado);
-            return Map.of("success", "true", "message", "Estado actualizado correctamente.");
+            return java.util.Map.of("success", "true", "message", "Estado actualizado correctamente.");
         } catch (Exception e) {
-            return Map.of("success", "false", "message", e.getMessage());
+            return java.util.Map.of("success", "false", "message", e.getMessage());
         }
     }
 

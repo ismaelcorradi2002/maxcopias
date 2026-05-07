@@ -16,16 +16,16 @@
                 <article class="worker-card">
                     <header class="worker-header worker-module-header">
                         <div>
-                            <span class="section-kicker" th:text="${panelTipo == 'admin'} ? 'Administracion' : 'Panel operativo'">Panel operativo</span>
-                            <h1 th:text="${tipoPedido == 'copisteria'} ? |Orden de trabajo #${detallePedido.id}| : |Detalle del pedido #${detallePedido.id}|">Detalle del pedido</h1>
-                            <p th:text="${detallePedido.tipo == 'Copisteria'} ? 'Consulta y ejecuta el trabajo de impresion desde una vista operativa clara y directa.' : 'Consulta los datos del pedido, productos incluidos y estado actual de entrega.'">
+                            <span class="section-kicker" th:text="${panelTipo == 'admin' ? 'Administracion' : 'Panel operativo'}">Panel operativo</span>
+                            <h1 th:text="${tipoPedido == 'copisteria' ? 'Orden de trabajo #' + detallePedido.id : 'Detalle del pedido #' + detallePedido.id}">Detalle del pedido</h1>
+                            <p th:text="${detallePedido.tipo == 'Copisteria' ? 'Consulta y ejecuta el trabajo de impresion desde una vista operativa clara y directa.' : 'Consulta los datos del pedido, productos incluidos y estado actual de entrega.'}">
                                 Consulta la informacion completa del pedido.
                             </p>
                         </div>
                         <div class="worker-detail-head-badges">
                             <span class="worker-status-pill" th:text="${detallePedido.tipo}">Copisteria</span>
                             <span class="worker-order-flag is-delivery" th:if="${detallePedido.metodoEntrega != null && #strings.containsIgnoreCase(detallePedido.metodoEntrega, 'domicilio')}">A domicilio</span>
-                            <span class="worker-status-pill" th:classappend="${detallePedido.eliminado} ? ' is-inactive' : ' is-main'" th:text="${detallePedido.estadoLabel}">Pendiente</span>
+                            <span class="worker-status-pill" th:classappend="${detallePedido.eliminado ? ' is-inactive' : ' is-main'}" th:text="${detallePedido.estadoLabel}">Pendiente</span>
                         </div>
                     </header>
 
@@ -35,7 +35,7 @@
                         <a th:href="@{/admin(tab='users')}" class="button button-primary admin-panel-link">Usuarios</a>
                         <a th:href="@{/admin(tab='products')}" class="button button-primary admin-panel-link">Productos</a>
                         <a th:href="@{/admin(tab='categories')}" class="button button-primary admin-panel-link">Categorias</a>
-                        <a th:href="@{/admin(tab='orders')}" class="button button-primary admin-panel-link active">Pedidos</a>
+                        <a th:href="@{/admin(tab='orders-copy')}" class="button button-primary admin-panel-link active">Pedidos</a>
                         <a th:href="@{/admin/finanzas}" class="button button-primary admin-panel-link">Finanzas</a>
                     </div>
 
@@ -188,7 +188,7 @@
                                             <h2>Notas del cliente</h2>
                                         </div>
                                     </div>
-                                    <div class="pedido-note-card" th:classappend="${detallePedido.observaciones != null && !detallePedido.observaciones.isBlank()} ? ' has-note' : ''">
+                                    <div class="pedido-note-card" th:classappend="${detallePedido.observaciones != null && !detallePedido.observaciones.isBlank() ? ' has-note' : ''}">
                                         <p th:text="${detallePedido.observaciones != null && !detallePedido.observaciones.isBlank() ? detallePedido.observaciones : 'Sin observaciones'}">Sin observaciones</p>
                                     </div>
                                 </article>
@@ -338,7 +338,7 @@
                             </div>
                             <div class="worker-timeline pedido-timeline">
                                 <article class="worker-timeline-step" th:each="estado, iter : ${timelineStates}"
-                                         th:classappend="${iter.index < currentStepIndex} ? ' is-completed' : (${iter.index == currentStepIndex} ? ' is-current' : '')">
+                                         th:classappend="${iter.index < currentStepIndex ? ' is-completed' : (iter.index == currentStepIndex ? ' is-current' : '')}">
                                     <span th:text="${iter.index + 1}">1</span>
                                     <strong th:text="${estado.label}">Pendiente</strong>
                                 </article>
@@ -346,190 +346,275 @@
                         </section>
                     </th:block>
 
-                    <th:block th:if="${tipoPedido != 'copisteria'}">
-                        <section class="worker-section">
-                            <div class="worker-detail-grid">
-                                <article class="worker-detail-card">
-                                    <span class="section-kicker">Datos cliente</span>
-                                    <h2>Cliente</h2>
-                                    <ul class="worker-detail-list">
-                                        <li><span>Nombre</span><strong th:text="${detallePedido.cliente}">Cliente</strong></li>
-                                        <li><span>Email</span><strong th:text="${detallePedido.email}">correo@maxcopias.es</strong></li>
-                                        <li><span>Telefono</span><strong th:text="${detallePedido.telefono}">600000000</strong></li>
-                                        <li th:if="${detallePedido.codigoPedido != null}"><span>Codigo pedido</span><strong th:text="${detallePedido.codigoPedido}">MT-000</strong></li>
-                                    </ul>
-                                </article>
-
-                                <article class="worker-detail-card">
-                                    <span class="section-kicker">Estado</span>
-                                    <h2>Seguimiento</h2>
-                                    <form th:action="@{${estadoAction}}" method="post" class="worker-status-detail-form">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                        <input type="hidden" name="tipo" th:value="${tipoPedido}">
-                                        <label>
-                                            <span>Estado actual</span>
-                                            <select name="estado" class="worker-select select-modern">
-                                                <option th:each="estado : ${estadoOptions}"
-                                                        th:value="${estado.name()}"
-                                                        th:text="${estado.label}"
-                                                        th:selected="${estado.name() == detallePedido.estado}">Pendiente</option>
-                                            </select>
-                                        </label>
-                                        <button type="submit" class="button button-primary">Actualizar estado</button>
-                                    </form>
-                                    <div class="worker-pickup-code-card" th:if="${detallePedido.codigoRecogida != null}">
-                                        <span>Codigo de recogida</span>
-                                        <strong th:text="${detallePedido.codigoRecogida}">ABC123</strong>
+                    <th:block th:if="${tipoPedido == 'tienda'}">
+                        <section class="pedido-store-shell">
+                            <section class="pedido-store-hero">
+                                <div class="pedido-store-hero-head">
+                                    <div>
+                                        <span class="section-kicker">Pedido de tienda</span>
+                                        <h2 th:text="${detallePedido.codigoPedido != null ? detallePedido.codigoPedido : 'Sin codigo'}">T-3DA8Q</h2>
+                                        <p>Vista pensada para identificar cliente, entrega, productos y estado de pago de un vistazo.</p>
                                     </div>
-                                    <ul class="worker-detail-list">
-                                        <li th:if="${detallePedido.metodoEntrega != null}"><span>Entrega</span><strong th:text="${detallePedido.metodoEntrega}">Recogida en tienda</strong></li>
-                                        <li th:if="${detallePedido.direccionEntrega != null}"><span>Direccion</span><strong th:text="${detallePedido.direccionEntrega}">Calle Mayor 1, 28850, Torrejon de Ardoz</strong></li>
-                                        <li th:if="${detallePedido.metodoPago != null}"><span>Metodo de pago</span><strong th:text="${detallePedido.metodoPago}">Pago en tienda</strong></li>
-                                        <li th:if="${detallePedido.metodoPago != null}"><span>Pago</span><strong th:text="${detallePedido.pagado} ? 'Pagado' : 'No pagado'">No pagado</strong></li>
-                                        <li th:if="${detallePedido.fechaPagoLabel != null}"><span>Fecha pago</span><strong th:text="${detallePedido.fechaPagoLabel}">29/04/2026 16:08</strong></li>
-                                        <li th:if="${detallePedido.codigoRecogida == null}"><span>Codigo recogida</span><strong>No aplica</strong></li>
-                                        <li th:if="${detallePedido.eliminado}"><span>Eliminado por</span><strong th:text="${detallePedido.eliminadoPor}">admin@maxcopias.es</strong></li>
-                                    </ul>
-                                    <form th:if="${tipoPedido == 'tienda'}" th:action="@{${pagoAction}}" method="post" class="worker-status-detail-form">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                        <label>
-                                            <span>Actualizar pago</span>
-                                            <select name="pagado" class="worker-select select-modern">
-                                                <option value="false" th:selected="${!detallePedido.pagado}">No pagado</option>
-                                                <option value="true" th:selected="${detallePedido.pagado}">Pagado</option>
-                                            </select>
-                                        </label>
-                                        <button type="submit" class="button button-secondary-dark">Guardar pago</button>
-                                    </form>
-                                </article>
-
-                                <article class="worker-detail-card worker-detail-card-wide">
-                                    <span class="section-kicker">Configuracion del pedido</span>
-                                    <h2>Resumen tecnico</h2>
-                                    <div class="worker-detail-badges">
-                                        <span class="worker-status-pill" th:if="${detallePedido.trabajo != null}" th:text="${detallePedido.trabajo}">Impresion</span>
-                                        <span class="worker-status-pill" th:if="${detallePedido.tamano != null}" th:text="${detallePedido.tamano}">A4</span>
-                                        <span class="worker-status-pill" th:if="${detallePedido.color != null}" th:text="${detallePedido.color}">Color</span>
-                                        <span class="worker-status-pill" th:if="${detallePedido.caras != null}" th:text="${detallePedido.caras}">Una cara</span>
-                                        <span class="worker-status-pill" th:if="${detallePedido.papel != null}" th:text="${detallePedido.papel}">Normal</span>
-                                        <span class="worker-status-pill" th:if="${detallePedido.encuadernacion != null}" th:text="${detallePedido.encuadernacion}">Sin encuadernacion</span>
+                                    <div class="pedido-store-hero-badges">
+                                        <span class="pedido-store-pill is-type">Tienda</span>
+                                        <span class="pedido-store-pill"
+                                              th:classappend="${detallePedido.metodoEntrega != null && #strings.containsIgnoreCase(detallePedido.metodoEntrega, 'domicilio') ? ' is-delivery' : ' is-pickup'}"
+                                              th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Recogida en tienda'}">Recogida en tienda</span>
+                                        <span class="pedido-store-pill"
+                                              th:classappend="${detallePedido.pagado ? ' is-paid' : ' is-unpaid'}"
+                                              th:text="${detallePedido.pagado ? 'Pagado' : 'No pagado'}">No pagado</span>
+                                        <span class="pedido-store-pill is-state" th:text="${detallePedido.estadoLabel}">Pendiente</span>
                                     </div>
-                                    <ul class="worker-detail-list worker-detail-list-compact">
-                                        <li th:if="${detallePedido.copias != null}"><span>Numero de copias</span><strong th:text="${detallePedido.copias}">1</strong></li>
-                                        <li th:if="${detallePedido.resumenProductos != null}"><span>Productos</span><strong th:text="${detallePedido.resumenProductos}">Productos</strong></li>
-                                        <li th:if="${detallePedido.subtotalPedidoFormateado != null}"><span>Subtotal</span><strong th:text="${detallePedido.subtotalPedidoFormateado}">0,00 EUR</strong></li>
-                                        <li th:if="${detallePedido.gastosEnvioFormateado != null}"><span>Envio</span><strong th:text="${detallePedido.gastosEnvioFormateado}">0,00 EUR</strong></li>
-                                        <li><span>Observaciones</span><strong th:text="${detallePedido.observaciones != null && !detallePedido.observaciones.isBlank() ? detallePedido.observaciones : 'Sin observaciones'}">Sin observaciones</strong></li>
-                                    </ul>
-                                    <div class="worker-detail-tags" th:if="${detallePedido.tieneExtras()}">
-                                        <span th:each="extra : ${detallePedido.extras}" class="worker-detail-tag" th:text="${extra}">Urgente</span>
-                                    </div>
-                                    <p class="worker-empty" th:if="${!detallePedido.tieneExtras()}">Sin extras seleccionados.</p>
-                                </article>
-
-                                <article class="worker-detail-card worker-detail-card-wide" th:if="${detallePedido.tieneLineasTienda()}">
-                                    <span class="section-kicker">Productos</span>
-                                    <h2>Detalle del pedido de tienda</h2>
-                                    <div class="checkout-review-list worker-store-lines">
-                                        <article class="checkout-review-item" th:each="linea : ${detallePedido.lineasTienda}">
-                                            <div>
-                                                <strong th:text="${linea.nombre()}">Producto</strong>
-                                                <small th:text="|${linea.cantidad()} uds. x ${linea.precioUnitarioFormateado()}|">1 uds.</small>
-                                            </div>
-                                            <strong th:text="${linea.subtotalFormateado()}">0,00 EUR</strong>
-                                        </article>
-                                    </div>
-                                </article>
-
-                                <article class="worker-detail-card" th:if="${detallePedido.tieneArchivo()}">
-                                    <span class="section-kicker">Archivo</span>
-                                    <h2>Documento adjunto</h2>
-                                    <div class="worker-file-card">
-                                        <div class="worker-file-head">
-                                            <div class="worker-file-badge" th:text="${detallePedido.archivoExtension}">PDF</div>
-                                            <div class="worker-file-copy">
-                                                <strong th:text="${detallePedido.archivoNombre}">documento.pdf</strong>
-                                                <span th:text="${detallePedido.archivoTipoLabel}">Documento PDF</span>
-                                            </div>
-                                        </div>
-                                        <div class="worker-file-meta">
-                                            <div class="worker-file-meta-row">
-                                                <span>Paginas</span>
-                                                <strong th:text="${detallePedido.paginas != null ? detallePedido.paginas + ' pagina(s)' : 'No disponible'}">No disponible</strong>
-                                            </div>
-                                            <div class="worker-file-meta-row">
-                                                <span>Tamano</span>
-                                                <strong th:text="${detallePedido.tamanoArchivo != null ? detallePedido.tamanoArchivo : 'No disponible'}">No disponible</strong>
-                                            </div>
-                                            <div class="worker-file-meta-row">
-                                                <span>Tipo</span>
-                                                <strong th:text="${detallePedido.archivoTipoLabel}">Documento PDF</strong>
-                                            </div>
-                                            <div class="worker-file-meta-row" th:if="${detallePedido.archivoFechaLabel != null}">
-                                                <span>Subido</span>
-                                                <strong th:text="${detallePedido.archivoFechaLabel}">29/04/2026 16:08</strong>
-                                            </div>
-                                        </div>
-                                        <div class="worker-file-actions">
-                                            <a class="button button-primary" th:href="@{${detallePedido.archivoDescargaUrl}}">Descargar</a>
-                                            <a class="button button-outline-dark" th:href="@{${detallePedido.archivoVerUrl}}" target="_blank" rel="noopener noreferrer">Ver archivo</a>
-                                            <a class="button button-secondary-dark" th:href="@{${detallePedido.archivoImprimirUrl}}" target="_blank" rel="noopener noreferrer">Imprimir</a>
-                                        </div>
-                                    </div>
-                                </article>
-
-                                <article class="worker-detail-card" th:if="${!detallePedido.tieneArchivo()}">
-                                    <span class="section-kicker">Archivo</span>
-                                    <h2>Documento adjunto</h2>
-                                    <p class="worker-empty worker-file-empty">No hay archivo adjunto.</p>
-                                </article>
-
-                                <article class="worker-detail-card worker-detail-card-price">
-                                    <span class="section-kicker">Precio</span>
-                                    <h2>Resumen economico</h2>
-                                    <div class="worker-price-card">
-                                        <div class="worker-price-head">
-                                            <span>Concepto</span>
-                                            <span>Unitario</span>
-                                            <span>Cantidad</span>
-                                            <span>Subtotal</span>
-                                        </div>
-                                        <div class="worker-price-body">
-                                            <div class="worker-price-row"
-                                                 th:each="linea : ${detallePedido.resumenEconomico}"
-                                                 th:classappend="${linea.rowCssClass}">
-                                                <div class="worker-price-concept">
-                                                    <strong th:text="${linea.concepto()}">Impresion blanco y negro A4</strong>
-                                                    <small th:if="${linea.hasDetalle()}" th:text="${linea.detalle()}">Detalle</small>
-                                                </div>
-                                                <span class="worker-price-cell" th:text="${linea.precioUnitarioFormateado}">0,00 €</span>
-                                                <span class="worker-price-cell" th:text="${linea.cantidadFormateada}">x1</span>
-                                                <div class="worker-price-total-cell">
-                                                    <strong th:text="${linea.subtotalFormateado}">0,00 €</strong>
-                                                    <small th:if="${linea.showsZeroLabel()}">Sin coste</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-                        </section>
-
-                        <section class="worker-section">
-                            <div class="worker-section-header">
-                                <div>
-                                    <span class="section-kicker">Timeline</span>
-                                    <h2>Estado del pedido</h2>
-                                    <p>Seguimiento visual del avance operativo del encargo.</p>
                                 </div>
-                            </div>
-                            <div class="worker-timeline">
-                                <article class="worker-timeline-step" th:each="estado, iter : ${timelineStates}"
-                                         th:classappend="${iter.index < currentStepIndex} ? ' is-completed' : (${iter.index == currentStepIndex} ? ' is-current' : '')">
-                                    <span th:text="${iter.index + 1}">1</span>
-                                    <strong th:text="${estado.label}">Pendiente</strong>
-                                </article>
-                            </div>
+
+                                <div class="pedido-store-kpis">
+                                    <article class="pedido-store-kpi">
+                                        <span>Cliente</span>
+                                        <strong th:text="${detallePedido.cliente}">Cliente</strong>
+                                        <small th:text="${detallePedido.email}">correo@maxcopias.es</small>
+                                    </article>
+                                    <article class="pedido-store-kpi">
+                                        <span>Total</span>
+                                        <strong th:text="${detallePedido.precioTotal != null ? #numbers.formatDecimal(detallePedido.precioTotal, 1, 'POINT', 2, 'COMMA') + ' €' : 'No disponible'}">9,24 €</strong>
+                                        <small th:text="${detallePedido.subtotalPedidoFormateado != null ? 'Subtotal ' + detallePedido.subtotalPedidoFormateado : 'Resumen del pedido'}">Subtotal 9,24 €</small>
+                                    </article>
+                                    <article class="pedido-store-kpi">
+                                        <span>Entrega</span>
+                                        <strong th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Recogida en tienda'}">Recogida en tienda</strong>
+                                        <small th:text="${detallePedido.direccionEntrega != null ? detallePedido.direccionEntrega : 'Sin direccion asociada'}">Sin direccion asociada</small>
+                                    </article>
+                                    <article class="pedido-store-kpi">
+                                        <span>Pago</span>
+                                        <strong th:text="${detallePedido.pagado ? 'Pagado' : 'Pendiente'}">Pendiente</strong>
+                                        <small th:text="${detallePedido.metodoPago != null ? detallePedido.metodoPago : 'Sin metodo registrado'}">Pago en tienda</small>
+                                    </article>
+                                    <article class="pedido-store-kpi">
+                                        <span>Estado</span>
+                                        <strong th:text="${detallePedido.estadoLabel}">Pendiente</strong>
+                                        <small th:text="${detallePedido.fechaCreacion != null ? #temporals.format(detallePedido.fechaCreacion, 'dd/MM/yyyy HH:mm') : 'Fecha no disponible'}">06/05/2026 14:01</small>
+                                    </article>
+                                    <article class="pedido-store-kpi">
+                                        <span>Nº productos</span>
+                                        <strong th:text="${detallePedido.numeroProductos}">2</strong>
+                                        <small th:text="${detallePedido.resumenProductos != null ? detallePedido.resumenProductos : 'Sin productos'}">Cable organizador x1</small>
+                                    </article>
+                                </div>
+                            </section>
+
+                            <section class="pedido-store-layout">
+                                <div class="pedido-store-main">
+                                    <article class="pedido-panel pedido-store-panel">
+                                        <div class="pedido-panel-head">
+                                            <div>
+                                                <span class="section-kicker">Cliente</span>
+                                                <h2>Ficha del comprador</h2>
+                                            </div>
+                                        </div>
+                                        <div class="pedido-store-info-card pedido-store-client-card">
+                                            <div class="pedido-store-client-identity">
+                                                <strong th:text="${detallePedido.cliente}">Cliente</strong>
+                                                <span th:text="${detallePedido.codigoPedido != null ? detallePedido.codigoPedido : 'Pedido sin codigo'}">T-3DA8Q</span>
+                                            </div>
+                                            <div class="pedido-store-info-grid">
+                                                <article>
+                                                    <span>Telefono</span>
+                                                    <strong th:text="${detallePedido.telefono}">600000000</strong>
+                                                </article>
+                                                <article>
+                                                    <span>Email</span>
+                                                    <strong th:text="${detallePedido.email}">correo@maxcopias.es</strong>
+                                                </article>
+                                            </div>
+                                        </div>
+                                    </article>
+
+                                    <article class="pedido-panel pedido-store-panel">
+                                        <div class="pedido-panel-head">
+                                            <div>
+                                                <span class="section-kicker">Entrega</span>
+                                                <h2>Metodo y direccion</h2>
+                                            </div>
+                                        </div>
+
+                                        <div class="pedido-store-delivery-card" th:if="${detallePedido.tieneDireccionEntrega()}">
+                                            <div class="pedido-store-delivery-top">
+                                                <span class="pedido-store-delivery-icon">📍</span>
+                                                <div>
+                                                    <strong>Envio a domicilio</strong>
+                                                    <span th:text="${detallePedido.metodoEntrega}">Envio a domicilio</span>
+                                                </div>
+                                            </div>
+                                            <div class="pedido-store-address-lines">
+                                                <strong th:text="${detallePedido.direccionEntregaLineaPrincipal != null ? detallePedido.direccionEntregaLineaPrincipal : detallePedido.direccionEntrega}">Calle Mayor 1</strong>
+                                                <small th:text="${detallePedido.direccionEntregaLineaSecundaria != null ? detallePedido.direccionEntregaLineaSecundaria : 'Direccion pendiente de completar'}">28850 · Torrejon de Ardoz</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="pedido-store-delivery-card is-pickup" th:if="${!detallePedido.tieneDireccionEntrega()}">
+                                            <div class="pedido-store-delivery-top">
+                                                <span class="pedido-store-delivery-icon">🏬</span>
+                                                <div>
+                                                    <strong>Recogida en tienda</strong>
+                                                    <span th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Recogida en tienda'}">Recogida en tienda</span>
+                                                </div>
+                                            </div>
+                                            <p>El pedido se entregara en tienda cuando el estado pase a listo para recoger.</p>
+                                        </div>
+
+                                        <div class="pedido-store-note-card">
+                                            <span>Comentarios del pedido</span>
+                                            <p th:text="${detallePedido.observaciones != null && !detallePedido.observaciones.isBlank() ? detallePedido.observaciones : 'Sin comentarios adicionales.'}">Sin comentarios adicionales.</p>
+                                        </div>
+                                    </article>
+
+                                    <article class="pedido-panel pedido-store-panel">
+                                        <div class="pedido-panel-head">
+                                            <div>
+                                                <span class="section-kicker">Productos</span>
+                                                <h2>Contenido del pedido</h2>
+                                                <p>Listado claro con imagen, categoria, cantidad, precio unitario y subtotal.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="pedido-store-products" th:if="${detallePedido.tieneLineasTienda()}">
+                                            <article class="pedido-store-product-card" th:each="linea : ${detallePedido.lineasTienda}">
+                                                <div class="pedido-store-product-media">
+                                                    <img th:if="${linea.imagenUrl != null && !#strings.isEmpty(#strings.trim(linea.imagenUrl))}"
+                                                         th:src="@{${linea.imagenUrl}}"
+                                                         th:alt="${linea.nombre}">
+                                                    <div class="pedido-store-product-placeholder" th:if="${linea.imagenUrl == null || #strings.isEmpty(#strings.trim(linea.imagenUrl))}">
+                                                        <span th:text="${#strings.substring(linea.nombre, 0, 1)}">P</span>
+                                                    </div>
+                                                </div>
+                                                <div class="pedido-store-product-copy">
+                                                    <div>
+                                                        <span class="pedido-store-product-category" th:text="${linea.categoria != null ? linea.categoria : 'Producto de tienda'}">Oficina</span>
+                                                        <h3 th:text="${linea.nombre}">Cable organizador</h3>
+                                                    </div>
+                                                    <div class="pedido-store-product-meta">
+                                                        <article>
+                                                            <span>Precio unitario</span>
+                                                            <strong th:text="${linea.precioUnitarioFormateado}">4,25 €</strong>
+                                                        </article>
+                                                        <article>
+                                                            <span>Cantidad</span>
+                                                            <strong th:text="${linea.cantidad}">1</strong>
+                                                        </article>
+                                                        <article>
+                                                            <span>Subtotal</span>
+                                                            <strong th:text="${linea.subtotalFormateado}">4,25 €</strong>
+                                                        </article>
+                                                    </div>
+                                                </div>
+                                            </article>
+                                        </div>
+
+                                        <div class="pedido-empty-state" th:if="${!detallePedido.tieneLineasTienda()}">
+                                            <strong>Sin lineas de producto</strong>
+                                            <p>No se han encontrado articulos asociados a este pedido.</p>
+                                        </div>
+                                    </article>
+                                </div>
+
+                                <aside class="pedido-store-side">
+                                    <article class="pedido-panel pedido-store-panel">
+                                        <div class="pedido-panel-head">
+                                            <div>
+                                                <span class="section-kicker">Acciones</span>
+                                                <h2>Gestion rapida</h2>
+                                            </div>
+                                        </div>
+                                        <div class="pedido-store-actions">
+                                            <form th:action="@{${estadoAction}}" method="post" class="pedido-status-form pedido-store-form">
+                                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                                <input type="hidden" name="tipo" th:value="${tipoPedido}">
+                                                <label class="pedido-field">
+                                                    <span>Cambiar estado</span>
+                                                    <select name="estado" class="worker-select select-modern">
+                                                        <option th:each="estado : ${estadoOptions}"
+                                                                th:value="${estado.name()}"
+                                                                th:text="${estado.label}"
+                                                                th:selected="${estado.name() == detallePedido.estado}">Pendiente</option>
+                                                    </select>
+                                                </label>
+                                                <button type="submit" class="button button-primary">Actualizar pedido</button>
+                                            </form>
+
+                                            <form th:action="@{${pagoAction}}" method="post" class="pedido-status-form pedido-store-form">
+                                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                                <label class="pedido-field">
+                                                    <span>Estado de pago</span>
+                                                    <select name="pagado" class="worker-select select-modern">
+                                                        <option value="false" th:selected="${!detallePedido.pagado}">No pagado</option>
+                                                        <option value="true" th:selected="${detallePedido.pagado}">Pagado</option>
+                                                    </select>
+                                                </label>
+                                                <button type="submit" class="button button-secondary-dark">Guardar pago</button>
+                                            </form>
+
+                                            <div class="pedido-store-action-links">
+                                                <a th:href="@{${backUrl}}" class="button button-outline-dark">Volver a pedidos</a>
+                                                <button type="button" class="button button-outline-dark" onclick="window.print()">Imprimir pedido</button>
+                                            </div>
+                                        </div>
+                                    </article>
+
+                                    <article class="pedido-panel pedido-store-panel">
+                                        <div class="pedido-panel-head">
+                                            <div>
+                                                <span class="section-kicker">Timeline</span>
+                                                <h2>Estado del pedido</h2>
+                                            </div>
+                                        </div>
+                                        <div class="worker-timeline pedido-timeline pedido-store-timeline">
+                                            <article class="worker-timeline-step" th:each="estado, iter : ${timelineStates}"
+                                                     th:classappend="${iter.index < currentStepIndex ? ' is-completed' : (iter.index == currentStepIndex ? ' is-current' : '')}">
+                                                <span th:text="${iter.index + 1}">1</span>
+                                                <strong th:text="${estado.label}">Pendiente</strong>
+                                            </article>
+                                        </div>
+                                    </article>
+
+                                    <article class="pedido-panel pedido-store-panel pedido-store-price-panel">
+                                        <div class="pedido-panel-head">
+                                            <div>
+                                                <span class="section-kicker">Resumen economico</span>
+                                                <h2>Total del pedido</h2>
+                                            </div>
+                                        </div>
+                                        <div class="pedido-store-price-list">
+                                            <article>
+                                                <span>Subtotal productos</span>
+                                                <strong th:text="${detallePedido.subtotalPedidoFormateado != null ? detallePedido.subtotalPedidoFormateado : 'No disponible'}">8,50 €</strong>
+                                            </article>
+                                            <article>
+                                                <span>Coste de envio</span>
+                                                <strong th:text="${detallePedido.gastosEnvioFormateado != null ? detallePedido.gastosEnvioFormateado : '0,00 €'}">0,00 €</strong>
+                                            </article>
+                                            <article>
+                                                <span>Estado de pago</span>
+                                                <strong th:text="${detallePedido.pagado ? 'Pagado' : 'No pagado'}">No pagado</strong>
+                                            </article>
+                                        </div>
+                                        <div class="pedido-store-total-card">
+                                            <span>Total final</span>
+                                            <strong th:text="${detallePedido.precioTotal != null ? #numbers.formatDecimal(detallePedido.precioTotal, 1, 'POINT', 2, 'COMMA') + ' €' : 'No disponible'}">9,24 €</strong>
+                                        </div>
+                                        <details class="pedido-price-breakdown">
+                                            <summary>Ver desglose</summary>
+                                            <div class="pedido-price-list">
+                                                <article th:each="linea : ${detallePedido.resumenEconomico}" th:classappend="${linea.rowCssClass}">
+                                                    <div>
+                                                        <strong th:text="${linea.concepto()}">Productos</strong>
+                                                        <small th:if="${linea.hasDetalle()}" th:text="${linea.detalle()}">Detalle</small>
+                                                    </div>
+                                                    <span th:text="${linea.subtotalFormateado}">0,00 €</span>
+                                                </article>
+                                            </div>
+                                        </details>
+                                    </article>
+                                </aside>
+                            </section>
                         </section>
                     </th:block>
 

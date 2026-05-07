@@ -10,18 +10,18 @@
             <div class="container auth-layout auth-layout-login">
                 <div class="auth-copy" data-reveal="up">
                     <span class="eyebrow">Acceso seguro</span>
-                    <h1>Entra en tu cuenta para continuar con tu zona privada.</h1>
+                    <h1>Accede a tu cuenta para continuar con tus pedidos y tu area personal.</h1>
                     <p>
-                        Identificate con tu email y contrasena para acceder a tu area personal,
-                        gestionar tu sesion y preparar el acceso a funcionalidades privadas.
+                        Inicia sesion con tu email y tu contrasena para consultar tus pedidos,
+                        gestionar tu cuenta y seguir preparando tus encargos.
                     </p>
 
                     <div class="auth-copy-card">
-                        <strong>Acceso disponible</strong>
+                        <strong>Desde tu cuenta podras</strong>
                         <ul>
-                            <li>Usuarios: area personal y zona privada</li>
-                            <li>Admins: acceso directo a la zona admin basica</li>
-                            <li>Logout seguro y navegacion por roles</li>
+                            <li>Consultar tus datos y pedidos</li>
+                            <li>Acceder rapidamente a copisteria y tienda</li>
+                            <li>Seguir tu actividad con acceso seguro</li>
                         </ul>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                         </div>
 
                         <p class="form-helper">
-                            Todavia no tienes cuenta?
+                            Aun no tienes cuenta?
                             <a th:if="${param.copisteriaRequired}" th:href="@{/register(copisteriaRequired=true)}">Registrate aqui</a>
                             <a th:unless="${param.copisteriaRequired}" th:href="@{/register}">Registrate aqui</a>
                         </p>

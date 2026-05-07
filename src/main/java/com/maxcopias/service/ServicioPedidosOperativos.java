@@ -403,6 +403,7 @@ public class ServicioPedidosOperativos {
         List<LineaPedidoTiendaVista> lineas = pedido.getItems().stream()
             .map(item -> new LineaPedidoTiendaVista(
                 item.getProductoNombre(),
+                null,
                 item.getProductoImagenUrl(),
                 item.getCantidad(),
                 item.getPrecioUnitario(),

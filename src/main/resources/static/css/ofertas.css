@@ -123,6 +123,7 @@
 
 .oferta-featured-media {
     min-height: 340px;
+    aspect-ratio: 4 / 3;
 }
 
 .oferta-featured-media-placeholder,
@@ -244,16 +245,19 @@
 }
 
 .ofertas-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     margin-top: 24px;
 }
 
 .oferta-card {
     overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
 }
 
 .oferta-card-media {
     min-height: 220px;
+    aspect-ratio: 4 / 3;
 }
 
 .ofertas-empty-card {
@@ -272,6 +276,10 @@
         grid-template-columns: 1fr;
     }
 
+    .ofertas-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .ofertas-hero-badge {
         justify-self: start;
     }
@@ -284,6 +292,10 @@
 @media (max-width: 640px) {
     .ofertas-copy h1 {
         font-size: 2.1rem;
+    }
+
+    .ofertas-grid {
+        grid-template-columns: 1fr;
     }
 
     .oferta-featured-copy,

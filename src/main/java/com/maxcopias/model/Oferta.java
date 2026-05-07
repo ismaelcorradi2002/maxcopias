@@ -15,6 +15,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -215,6 +216,23 @@ public class Oferta {
 
     public void setImagenUrl(String imagenUrl) {
         this.imagenUrl = imagenUrl;
+    }
+
+    public String getImagenVisualUrl() {
+        if (imagenUrl != null && !imagenUrl.isBlank()) {
+            return imagenUrl;
+        }
+
+        if (producto != null && producto.tieneImagen()) {
+            return producto.getImagenUrl();
+        }
+
+        return productos == null ? null : productos.stream()
+            .filter(Producto::tieneImagen)
+            .sorted(Comparator.comparing(Producto::getId, Comparator.nullsLast(Long::compareTo)))
+            .map(Producto::getImagenUrl)
+            .findFirst()
+            .orElse(null);
     }
 
     public LocalDate getFechaInicio() {

@@ -97,6 +97,30 @@ public record DetallePedidoVista(
         return lineasTienda != null && !lineasTienda.isEmpty();
     }
 
+    public boolean tieneDireccionEntrega() {
+        return direccionEntrega != null && !direccionEntrega.isBlank();
+    }
+
+    public int getNumeroProductos() {
+        return lineasTienda == null ? 0 : lineasTienda.size();
+    }
+
+    public String getDireccionEntregaLineaPrincipal() {
+        if (!tieneDireccionEntrega()) {
+            return null;
+        }
+        String[] partes = direccionEntrega.split(",", 2);
+        return partes[0].trim();
+    }
+
+    public String getDireccionEntregaLineaSecundaria() {
+        if (!tieneDireccionEntrega() || !direccionEntrega.contains(",")) {
+            return null;
+        }
+        String[] partes = direccionEntrega.split(",", 2);
+        return partes[1].trim().replace(", ", " · ");
+    }
+
     public String getSubtotalPedidoFormateado() {
         return subtotalPedido == null ? null : NumberFormat.getCurrencyInstance(new Locale("es", "ES")).format(subtotalPedido);
     }

@@ -70,6 +70,23 @@
     padding: clamp(28px, 4vw, 46px);
 }
 
+.contacto-card-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.contacto-card-kicker {
+    display: inline-block;
+    margin-bottom: 6px;
+    color: #1d6fb8;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
 .contacto-card-icon,
 .contacto-info-icon {
     display: inline-grid;
@@ -90,6 +107,11 @@
     font-size: 1.55rem;
 }
 
+.contacto-card-brand h2 {
+    margin: 0;
+    font-size: clamp(1.55rem, 2vw, 2rem);
+}
+
 .contacto-highlight-card p {
     margin: 0 0 22px;
     color: #61728b;
@@ -106,6 +128,76 @@
 .contacto-highlight-card a:hover,
 .contacto-info-card a:hover {
     color: #0f5b99;
+}
+
+.contacto-highlight-grid {
+    display: grid;
+    gap: 14px;
+}
+
+.contacto-highlight-item {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    padding: 18px 20px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px solid rgba(93, 187, 255, 0.14);
+}
+
+.contacto-highlight-item-icon {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(114, 201, 255, 0.18), rgba(255, 217, 101, 0.28));
+    color: #16345d;
+    font-size: 1.15rem;
+}
+
+.contacto-highlight-item strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #13233f;
+    font-size: 0.94rem;
+}
+
+.contacto-highlight-item a {
+    display: inline-block;
+    color: #335476;
+    font-weight: 800;
+    line-height: 1.65;
+}
+
+.contacto-highlight-link-primary {
+    color: #116be3 !important;
+    font-size: 1.2rem;
+    font-weight: 900 !important;
+}
+
+.contacto-highlight-item p {
+    margin: 0;
+    color: #61728b;
+    font-size: 0.96rem;
+    line-height: 1.65;
+}
+
+.contacto-highlight-item-hours p + p {
+    margin-top: 4px;
+}
+
+.contacto-highlight-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.contacto-highlight-actions .button {
+    justify-content: center;
+    text-align: center;
 }
 
 .contacto-info-section,
@@ -176,10 +268,15 @@
     .contacto-info-grid {
         grid-template-columns: 1fr;
     }
+
+    .contacto-highlight-actions {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 560px) {
-    .contacto-actions .button {
+    .contacto-actions .button,
+    .contacto-highlight-actions .button {
         width: 100%;
     }
 
@@ -187,5 +284,14 @@
     .contacto-info-card,
     .contacto-map-card {
         border-radius: 26px;
+    }
+
+    .contacto-highlight-item {
+        grid-template-columns: 1fr;
+    }
+
+    .contacto-highlight-item-icon {
+        width: 44px;
+        height: 44px;
     }
 }

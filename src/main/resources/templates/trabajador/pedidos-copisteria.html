@@ -58,7 +58,7 @@
                                 <tbody>
                                 <tr th:each="pedido : ${pedidosCopisteria}" th:data-status="${pedido.estado.name()}"
                                     th:data-date="${#temporals.format(pedido.fechaCreacion, 'yyyy-MM-dd')}"
-                                    th:classappend="${pedido.extras != null && (pedido.extras.contains('urgente=true') || pedido.extras.contains('HOME_DELIVERY'))} ? ' worker-order-row-priority worker-order-row-card' : ' worker-order-row-card'">
+                                    th:classappend="${pedido.extras != null && (pedido.extras.contains('urgente=true') || pedido.extras.contains('HOME_DELIVERY'))} ? ' worker-order-row-priority worker-order-row-card' : ' worker-order-row-standard worker-order-row-card'">
                                     <td data-label="Codigo">
                                         <div class="worker-order-code">
                                             <span class="worker-cell-title" th:text="${pedido.codigoRecoger}">ABC123</span>

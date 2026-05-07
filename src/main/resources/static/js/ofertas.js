@@ -24,6 +24,14 @@ function initOfferForm() {
     const discountLabel = form.querySelector("[data-discount-label]");
     const startInput = form.querySelector("[data-offer-start]");
     const endInput = form.querySelector("[data-offer-end]");
+    const imagePanel = form.querySelector("[data-offer-image-panel]");
+    const imageHelp = form.querySelector("[data-offer-image-help]");
+    const imageUpload = form.querySelector("[data-offer-image-upload]");
+    const imageInput = form.querySelector("[data-offer-image-input]");
+    const imagePreview = form.querySelector("[data-offer-image-preview]");
+    const imagePlaceholder = form.querySelector("[data-offer-image-placeholder]");
+    const imageRemove = form.querySelector("[data-offer-image-remove]");
+    const imageRemoveWrapper = form.querySelector("[data-offer-remove-wrapper]");
 
     function currentType() {
         return form.querySelector("[data-offer-type]:checked")?.value || "GLOBAL";
@@ -37,11 +45,55 @@ function initOfferForm() {
         const type = currentType();
         productBlock.hidden = type !== "PRODUCTO";
         categoryBlock.hidden = type !== "CATEGORIA";
+        syncImageBlock(type);
         if (type === "PRODUCTO") {
             productState.visibleCount = OFFER_PRODUCT_PAGE_SIZE;
             renderOfferProductList();
         }
         updateOfferPreview();
+    }
+
+    function syncImageBlock(type) {
+        if (!imagePanel || !imageUpload) {
+            return;
+        }
+
+        const isProductOffer = type === "PRODUCTO";
+        imageUpload.classList.toggle("is-disabled", isProductOffer);
+        imageInput.disabled = isProductOffer;
+
+        if (imageHelp) {
+            imageHelp.textContent = isProductOffer
+                ? "En ofertas de producto se usara automaticamente la imagen del producto seleccionado."
+                : "Sube una imagen para ofertas globales o de categoria.";
+        }
+    }
+
+    function syncImagePreview(file) {
+        if (!imagePreview) {
+            return;
+        }
+
+        if (file) {
+            imagePreview.src = URL.createObjectURL(file);
+            imagePreview.hidden = false;
+            imageRemoveWrapper?.removeAttribute("hidden");
+            if (imageRemove) {
+                imageRemove.checked = false;
+            }
+            return;
+        }
+
+        const initialSrc = imagePreview.dataset.initialSrc || "";
+        if (initialSrc) {
+            imagePreview.src = initialSrc;
+            imagePreview.hidden = false;
+            return;
+        }
+
+        if (!imagePreview.getAttribute("src") || imagePreview.src.startsWith("data:image/gif;base64")) {
+            imagePreview.hidden = true;
+        }
     }
 
     function syncDiscount(source) {
@@ -134,6 +186,22 @@ function initOfferForm() {
         productState.visibleCount = OFFER_PRODUCT_PAGE_SIZE;
         renderOfferProductList();
     });
+    imageInput?.addEventListener("change", function () {
+        syncImagePreview(this.files?.[0]);
+    });
+    imageRemove?.addEventListener("change", function () {
+        if (!this.checked) {
+            return;
+        }
+        if (imageInput) {
+            imageInput.value = "";
+        }
+        if (imagePreview) {
+            imagePreview.removeAttribute("src");
+            imagePreview.dataset.initialSrc = "";
+            imagePreview.hidden = true;
+        }
+    });
 
     typeInputs.forEach(input => input.addEventListener("change", syncTargetBlocks));
     productItems.forEach(item => item.addEventListener("change", updateOfferPreview));
@@ -146,6 +214,7 @@ function initOfferForm() {
     syncTargetBlocks();
     syncDiscount(discountInput);
     renderOfferProductList();
+    syncImagePreview(imageInput?.files?.[0]);
 }
 
 function updateOfferPreview() {
@@ -169,6 +238,21 @@ function updateOfferPreview() {
     const dateText = form.querySelector("[data-preview-date]");
     const start = form.querySelector("[data-offer-start]")?.value;
     const end = form.querySelector("[data-offer-end]")?.value;
+    const previewImage = form.querySelector("[data-offer-image-preview]");
+
+    if (type === "PRODUCTO") {
+        const previewProductImage = selectedProducts.find(item => item.dataset.productImage)?.dataset.productImage || "";
+        if (previewImage) {
+            if (previewProductImage) {
+                previewImage.src = previewProductImage;
+                previewImage.hidden = false;
+            } else if (!previewImage.dataset.initialSrc) {
+                previewImage.hidden = true;
+            }
+        }
+    } else {
+        syncImagePreview(form.querySelector("[data-offer-image-input]")?.files?.[0]);
+    }
 
     if (type === "PRODUCTO" && selectedProducts.length === 1) {
         const selectedProduct = selectedProducts[0];

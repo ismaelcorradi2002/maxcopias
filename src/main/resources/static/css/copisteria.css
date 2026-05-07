@@ -3754,4 +3754,66 @@
     }
 }
 
+@media (max-width: 900px) {
+    .wizard-layout,
+    .wizard-main-grid,
+    .wizard-summary-grid,
+    .wizard-option-grid,
+    .summary-layout,
+    .resumen-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    .wizard-sidebar,
+    .wizard-summary,
+    .summary-sidebar,
+    .resumen-sidebar {
+        position: static !important;
+        top: auto !important;
+    }
+
+    .wizard-actions,
+    .summary-actions,
+    .resumen-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .wizard-actions .button,
+    .summary-actions .button,
+    .resumen-actions .button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .wizard-stepper,
+    .wizard-progress,
+    .wizard-steps {
+        overflow-x: auto;
+        padding-bottom: 0.35rem;
+    }
+
+    .wizard-card,
+    .wizard-option-ui,
+    .wizard-summary,
+    .summary-card,
+    .resumen-card {
+        border-radius: 20px;
+    }
+
+    .wizard-card,
+    .summary-card,
+    .resumen-card {
+        padding: 16px;
+    }
+
+    .wizard-option-grid,
+    .wizard-summary-grid,
+    .design-studio-panel-summary {
+        grid-template-columns: 1fr !important;
+    }
+}
+
 

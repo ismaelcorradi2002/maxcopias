@@ -8,6 +8,7 @@ import com.maxcopias.model.PedidoCopisteria;
 import com.maxcopias.model.PedidoTienda;
 import com.maxcopias.model.TipoOferta;
 import com.maxcopias.model.Usuario;
+import com.maxcopias.service.ServicioImagenOferta;
 import com.maxcopias.service.ServicioOferta;
 import com.maxcopias.service.ServicioPedidosOperativos;
 import com.maxcopias.service.ServicioTienda;
@@ -19,6 +20,7 @@ import java.util.stream.IntStream;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,17 +34,20 @@ public class ControladorTrabajador {
     private final ServicioTienda servicioTienda;
     private final ServicioPedidosOperativos servicioPedidosOperativos;
     private final ServicioOferta servicioOferta;
+    private final ServicioImagenOferta servicioImagenOferta;
 
     public ControladorTrabajador(
         ServicioUsuario servicioUsuario,
         ServicioTienda servicioTienda,
         ServicioPedidosOperativos servicioPedidosOperativos,
-        ServicioOferta servicioOferta
+        ServicioOferta servicioOferta,
+        ServicioImagenOferta servicioImagenOferta
     ) {
         this.servicioUsuario = servicioUsuario;
         this.servicioTienda = servicioTienda;
         this.servicioPedidosOperativos = servicioPedidosOperativos;
         this.servicioOferta = servicioOferta;
+        this.servicioImagenOferta = servicioImagenOferta;
     }
 
     @GetMapping("/worker")
@@ -215,10 +220,13 @@ public class ControladorTrabajador {
         @ModelAttribute Oferta oferta,
         @RequestParam(value = "productoIds", required = false) List<Long> productoIds,
         @RequestParam(value = "categoriaId", required = false) Long categoriaId,
+        @RequestParam(value = "imagenOferta", required = false) MultipartFile imagenOferta,
+        @RequestParam(value = "eliminarImagenOferta", required = false, defaultValue = "false") boolean eliminarImagenOferta,
         Authentication authentication,
         Model model
     ) {
         try {
+            aplicarImagenOferta(oferta, imagenOferta, eliminarImagenOferta);
             guardarOfertaDesdeFormulario(oferta, productoIds, categoriaId);
             return "redirect:/worker/ofertas";
         } catch (IllegalArgumentException exception) {
@@ -250,6 +258,8 @@ public class ControladorTrabajador {
         @ModelAttribute Oferta oferta,
         @RequestParam(value = "productoIds", required = false) List<Long> productoIds,
         @RequestParam(value = "categoriaId", required = false) Long categoriaId,
+        @RequestParam(value = "imagenOferta", required = false) MultipartFile imagenOferta,
+        @RequestParam(value = "eliminarImagenOferta", required = false, defaultValue = "false") boolean eliminarImagenOferta,
         Authentication authentication,
         Model model
     ) {
@@ -265,6 +275,7 @@ public class ControladorTrabajador {
         existente.setTipoOferta(oferta.getTipoOferta());
         existente.setPorcentajeDescuento(oferta.getPorcentajeDescuento());
         try {
+            aplicarImagenOferta(existente, imagenOferta, eliminarImagenOferta);
             guardarOfertaDesdeFormulario(existente, productoIds, categoriaId);
             return "redirect:/worker/ofertas";
         } catch (IllegalArgumentException exception) {
@@ -286,6 +297,12 @@ public class ControladorTrabajador {
         return "redirect:/worker/ofertas";
     }
 
+    @PostMapping("/worker/ofertas/{id}/eliminar")
+    public String eliminarOferta(@PathVariable Long id) {
+        servicioOferta.eliminar(id);
+        return "redirect:/worker/ofertas";
+    }
+
     private void populateWorkerBase(Model model, Usuario currentUsuario, String activeSection) {
         model.addAttribute("currentUsuario", currentUsuario);
         model.addAttribute("activeWorkerSection", activeSection);
@@ -295,12 +312,15 @@ public class ControladorTrabajador {
 
     private void guardarOfertaDesdeFormulario(Oferta oferta, List<Long> productoIds, Long categoriaId) {
         if (oferta.getTipoOferta() == TipoOferta.PRODUCTO && productoIds != null && !productoIds.isEmpty()) {
-            oferta.setProducto(null);
+            servicioImagenOferta.eliminarSiEsLocal(oferta.getImagenUrl());
+            oferta.setImagenUrl(null);
             oferta.clearProductos();
-            productoIds.stream()
+            List<com.maxcopias.model.Producto> productosSeleccionados = productoIds.stream()
                 .distinct()
                 .map(servicioTienda::obtenerProductoPorId)
-                .forEach(oferta::addProducto);
+                .toList();
+            oferta.setProducto(productosSeleccionados.get(0));
+            productosSeleccionados.forEach(oferta::addProducto);
             oferta.setCategoria(null);
         } else if (oferta.getTipoOferta() == TipoOferta.CATEGORIA && categoriaId != null) {
             oferta.setCategoria(servicioTienda.obtenerCategoriaObligatoria(categoriaId));
@@ -313,6 +333,20 @@ public class ControladorTrabajador {
         }
 
         servicioOferta.guardar(oferta);
+    }
+
+    private void aplicarImagenOferta(Oferta oferta, MultipartFile imagenOferta, boolean eliminarImagenOferta) {
+        boolean nuevaImagen = imagenOferta != null && !imagenOferta.isEmpty();
+
+        if (eliminarImagenOferta) {
+            servicioImagenOferta.eliminarSiEsLocal(oferta.getImagenUrl());
+            oferta.setImagenUrl(null);
+        }
+
+        if (nuevaImagen) {
+            servicioImagenOferta.eliminarSiEsLocal(oferta.getImagenUrl());
+            oferta.setImagenUrl(servicioImagenOferta.guardar(imagenOferta, oferta.getTitulo()));
+        }
     }
 
     private void prepararModeloFormularioOferta(

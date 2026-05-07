@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,19 +37,22 @@ public class ServicioPedidosTienda {
     private final ServicioCatalogoTiendaVisual servicioCatalogoTiendaVisual;
     private final ServicioUsuario servicioUsuario;
     private final ServicioTienda servicioTienda;
+    private final GeneradorCodigoPedido generadorCodigoPedido;
 
     public ServicioPedidosTienda(
         RepositorioPedidoTienda repositorioPedidoTienda,
         ServicioCarrito servicioCarrito,
         ServicioCatalogoTiendaVisual servicioCatalogoTiendaVisual,
         ServicioUsuario servicioUsuario,
-        ServicioTienda servicioTienda
+        ServicioTienda servicioTienda,
+        GeneradorCodigoPedido generadorCodigoPedido
     ) {
         this.repositorioPedidoTienda = repositorioPedidoTienda;
         this.servicioCarrito = servicioCarrito;
         this.servicioCatalogoTiendaVisual = servicioCatalogoTiendaVisual;
         this.servicioUsuario = servicioUsuario;
         this.servicioTienda = servicioTienda;
+        this.generadorCodigoPedido = generadorCodigoPedido;
     }
 
     @Transactional
@@ -236,11 +238,7 @@ public class ServicioPedidosTienda {
     }
 
     private String generarCodigoPedidoUnico() {
-        String codigo;
-        do {
-            codigo = "MT-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10).toUpperCase(Locale.ROOT);
-        } while (repositorioPedidoTienda.existsByCodigoPedido(codigo));
-        return codigo;
+        return generadorCodigoPedido.generarCodigoTienda(repositorioPedidoTienda::existsByCodigoPedido);
     }
 
     private String normalizar(String valor) {

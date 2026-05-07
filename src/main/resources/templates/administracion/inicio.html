@@ -100,7 +100,8 @@
                                 <button class="button button-primary" type="button" data-tab="users" onclick="switchTab(this, 'users')">Usuarios</button>
                                 <button class="button button-primary" type="button" data-tab="products" onclick="switchTab(this, 'products')">Productos</button>
                                 <button class="button button-primary" type="button" data-tab="categories" onclick="switchTab(this, 'categories')">Categorías</button>
-                                <button class="button button-primary" type="button" data-tab="orders" onclick="switchTab(this, 'orders')">Pedidos</button>
+                                <button class="button button-primary" type="button" data-tab="orders-copy" onclick="switchTab(this, 'orders-copy')">Pedidos copisteria</button>
+                                <button class="button button-primary" type="button" data-tab="orders-store" onclick="switchTab(this, 'orders-store')">Pedidos tienda</button>
                                 <a th:href="@{/admin/finanzas}" class="button button-primary admin-panel-link">Finanzas</a>
                             </div>
                         </div>
@@ -182,6 +183,7 @@
                 </div>
             </section>
         </div>
+
     </main>
 
     <div th:replace="~{fragmentos/pie :: footer}"></div>

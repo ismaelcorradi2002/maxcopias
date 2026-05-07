@@ -581,6 +581,412 @@
     border-top: 1px solid #e7eff8;
 }
 
+.pedido-store-shell {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.pedido-store-hero {
+    display: grid;
+    gap: 1rem;
+    padding: 1.35rem;
+    border: 1px solid rgba(108, 198, 255, 0.22);
+    border-radius: 30px;
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.2), transparent 30%),
+        linear-gradient(145deg, rgba(236, 247, 255, 0.98), rgba(255, 255, 255, 0.98));
+    box-shadow: 0 26px 60px rgba(22, 68, 109, 0.1);
+}
+
+.pedido-store-hero-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.pedido-store-hero-head h2 {
+    margin: 0.2rem 0 0;
+    color: #152033;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(2rem, 3.4vw, 2.8rem);
+    letter-spacing: -0.05em;
+}
+
+.pedido-store-hero-head p {
+    max-width: 760px;
+    margin: 0.55rem 0 0;
+    color: #64748b;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.pedido-store-hero-badges,
+.pedido-store-kpis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.pedido-store-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(108, 198, 255, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    color: #125d9d;
+    font-weight: 900;
+}
+
+.pedido-store-pill.is-type {
+    color: #173554;
+}
+
+.pedido-store-pill.is-delivery {
+    background: linear-gradient(135deg, rgba(255, 238, 173, 0.38), rgba(93, 187, 255, 0.18));
+}
+
+.pedido-store-pill.is-pickup {
+    background: rgba(231, 248, 239, 0.92);
+    color: #087443;
+}
+
+.pedido-store-pill.is-paid {
+    background: rgba(231, 248, 239, 0.92);
+    border-color: rgba(8, 116, 67, 0.16);
+    color: #087443;
+}
+
+.pedido-store-pill.is-unpaid {
+    background: rgba(255, 244, 220, 0.92);
+    border-color: rgba(255, 146, 43, 0.2);
+    color: #a14b00;
+}
+
+.pedido-store-pill.is-state {
+    background: linear-gradient(135deg, rgba(85, 186, 255, 0.12), rgba(255, 255, 255, 0.95));
+}
+
+.pedido-store-kpi {
+    display: grid;
+    gap: 0.38rem;
+    flex: 1 1 180px;
+    min-width: 0;
+    padding: 1rem 1.05rem;
+    border: 1px solid rgba(108, 198, 255, 0.18);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.88);
+}
+
+.pedido-store-kpi span,
+.pedido-store-info-grid span,
+.pedido-store-price-list span,
+.pedido-store-product-meta span,
+.pedido-store-note-card span,
+.pedido-store-product-category {
+    color: #6d84a1;
+    font-size: 0.72rem;
+    font-weight: 950;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.pedido-store-kpi strong {
+    color: #152033;
+    font-size: 1.05rem;
+}
+
+.pedido-store-kpi small {
+    color: #64748b;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+.pedido-store-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.9fr);
+    gap: 1rem;
+}
+
+.pedido-store-main,
+.pedido-store-side,
+.pedido-store-actions,
+.pedido-store-form,
+.pedido-store-products,
+.pedido-store-product-copy,
+.pedido-store-note-card,
+.pedido-store-client-card,
+.pedido-store-info-card {
+    display: grid;
+    gap: 1rem;
+}
+
+.pedido-store-panel {
+    padding: 1.25rem;
+}
+
+.pedido-store-client-identity {
+    display: grid;
+    gap: 0.3rem;
+}
+
+.pedido-store-client-identity strong {
+    color: #152033;
+    font-size: 1.2rem;
+}
+
+.pedido-store-client-identity span {
+    color: #64748b;
+    font-weight: 800;
+}
+
+.pedido-store-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.pedido-store-info-grid article,
+.pedido-store-price-list article {
+    display: grid;
+    gap: 0.3rem;
+    padding: 0.9rem 0.95rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(108, 198, 255, 0.12);
+}
+
+.pedido-store-info-grid strong,
+.pedido-store-price-list strong {
+    color: #152033;
+    overflow-wrap: anywhere;
+}
+
+.pedido-store-delivery-card {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem;
+    border-radius: 22px;
+    border: 1px solid rgba(108, 198, 255, 0.16);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.14), transparent 36%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(241, 249, 255, 0.94));
+}
+
+.pedido-store-delivery-card.is-pickup {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(241, 252, 247, 0.96));
+}
+
+.pedido-store-delivery-top {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: center;
+}
+
+.pedido-store-delivery-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #0f6fe8, #6cc6ff 62%, #ffd965);
+    font-size: 1.2rem;
+}
+
+.pedido-store-delivery-top strong {
+    color: #152033;
+    display: block;
+}
+
+.pedido-store-delivery-top span,
+.pedido-store-address-lines small {
+    color: #64748b;
+    font-weight: 800;
+}
+
+.pedido-store-address-lines {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.pedido-store-address-lines strong {
+    color: #152033;
+    font-size: 1rem;
+}
+
+.pedido-store-delivery-card p,
+.pedido-store-note-card p {
+    margin: 0;
+    color: #24344d;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.pedido-store-note-card {
+    padding: 1rem 1.05rem;
+    border-radius: 22px;
+    background: rgba(248, 252, 255, 0.84);
+    border: 1px dashed rgba(108, 198, 255, 0.24);
+}
+
+.pedido-store-product-card {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 24px;
+    border: 1px solid rgba(108, 198, 255, 0.16);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.12), transparent 34%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(241, 249, 255, 0.94));
+}
+
+.pedido-store-product-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(145deg, rgba(236, 247, 255, 0.98), rgba(255, 251, 232, 0.94));
+}
+
+.pedido-store-product-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pedido-store-product-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 74px;
+    height: 74px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #0f6fe8, #6cc6ff);
+    color: #ffffff;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.65rem;
+    font-weight: 900;
+}
+
+.pedido-store-product-copy h3 {
+    margin: 0.35rem 0 0;
+    color: #152033;
+    font-size: 1.18rem;
+    letter-spacing: -0.03em;
+}
+
+.pedido-store-product-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.pedido-store-product-meta article {
+    display: grid;
+    gap: 0.28rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(108, 198, 255, 0.12);
+}
+
+.pedido-store-product-meta strong,
+.pedido-store-total-card strong {
+    color: #152033;
+}
+
+.pedido-store-action-links {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.pedido-store-action-links .button,
+.pedido-store-form .button {
+    justify-content: center;
+    min-height: 46px;
+    border-radius: 16px;
+}
+
+.pedido-store-timeline {
+    grid-template-columns: 1fr;
+}
+
+.pedido-store-price-panel {
+    gap: 0.9rem;
+}
+
+.pedido-store-price-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.pedido-store-total-card {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 1.05rem;
+    border-radius: 22px;
+    border: 1px solid rgba(58, 166, 255, 0.18);
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.22), transparent 42%),
+        linear-gradient(135deg, rgba(85, 186, 255, 0.12), rgba(255, 255, 255, 0.96));
+}
+
+.pedido-store-total-card span {
+    color: #0f6fe8;
+    font-size: 0.72rem;
+    font-weight: 950;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.pedido-store-total-card strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    letter-spacing: -0.04em;
+}
+
+@media (max-width: 1100px) {
+    .pedido-store-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-store-hero-head {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 760px) {
+    .pedido-store-kpi,
+    .pedido-store-info-grid,
+    .pedido-store-product-meta,
+    .pedido-store-product-card {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-store-product-card {
+        gap: 0.85rem;
+    }
+
+    .pedido-store-product-media {
+        min-height: 180px;
+    }
+
+    .pedido-store-hero,
+    .pedido-store-panel {
+        padding: 1rem;
+        border-radius: 24px;
+    }
+}
+
 .pedido-price-list article div {
     display: grid;
     gap: 0.2rem;
@@ -634,7 +1040,7 @@
 }
 
 .pedido-timeline {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1rem;
 }
 
 @media (max-width: 1180px) {
@@ -662,13 +1068,21 @@
 
     .pedido-worktop-actions,
     .pedido-file-actions,
-    .pedido-file-meta,
-    .pedido-timeline {
+    .pedido-file-meta {
         grid-template-columns: 1fr;
     }
 
     .pedido-panel-head {
         flex-direction: column;
+    }
+
+    .pedido-timeline {
+        gap: 0.8rem;
+        padding-bottom: 0.55rem;
+    }
+
+    .pedido-timeline .worker-timeline-step {
+        min-width: 136px;
     }
 }
 
@@ -693,6 +1107,21 @@
     .pedido-file-badge {
         width: 68px;
         height: 68px;
+    }
+
+    .pedido-timeline {
+        gap: 0.7rem;
+        margin-inline: -0.15rem;
+        padding-inline: 0.15rem;
+    }
+
+    .pedido-timeline .worker-timeline-step {
+        min-width: 124px;
+        padding: 1rem 0.8rem 0.95rem;
+    }
+
+    .pedido-timeline .worker-timeline-step strong {
+        font-size: 0.92rem;
     }
 
     .pedido-price-list article {

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Condiciones de compra', '/css/legal.css')}"></head>
+<body class="legal-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="legal-main">
+        <section class="container legal-shell">
+            <header class="legal-hero">
+                <span class="section-kicker">Informacion legal</span>
+                <h1>Condiciones de compra</h1>
+                <p>Resumen orientativo sobre el funcionamiento de los pedidos de copisteria y tienda en Maxcopias.</p>
+                <div class="legal-note">
+                    Este contenido es orientativo y debe revisarse legalmente antes de publicarse en produccion.
+                </div>
+            </header>
+
+            <section class="legal-content">
+                <article class="legal-card">
+                    <h2>Pedidos de copisteria</h2>
+                    <p>Los pedidos de copisteria podran incluir configuraciones de impresion, subida de archivos, extras y observaciones. La aceptacion del pedido dependera de la correcta recepcion del archivo y de la viabilidad del encargo.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Pedidos de tienda</h2>
+                    <p>Los pedidos de tienda estaran sujetos a disponibilidad de stock y a la validacion interna del pedido. El cliente podra consultar el estado de su compra desde su cuenta cuando proceda.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Entrega y recogida</h2>
+                    <ul>
+                        <li>Recogida en tienda: el cliente recibira o consultara el estado del pedido hasta que este listo para recoger.</li>
+                        <li>Entrega a domicilio: disponible solo en las zonas indicadas por Maxcopias cuando el servicio este habilitado para ese pedido.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Pagos</h2>
+                    <p>Actualmente pueden existir pagos en tienda y la web puede prepararse para futuros pagos online. En todo caso, el metodo disponible en cada pedido sera el que se muestre durante el proceso de compra.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Cancelaciones y productos personalizados</h2>
+                    <p>Los pedidos personalizados, impresiones ya producidas o encargos iniciados podran estar sujetos a limitaciones de cancelacion o devolucion. En productos de tienda y pedidos de copisteria, las condiciones concretas deberan revisarse conforme a la normativa aplicable y a la politica interna definitiva del negocio.</p>
+                </article>
+
+                <div class="legal-actions">
+                    <a class="button button-primary" th:href="@{/}">Volver al inicio</a>
+                    <a class="button button-secondary" th:href="@{/contacto}">Contactar</a>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

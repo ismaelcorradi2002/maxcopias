@@ -59,7 +59,7 @@
                                 <tr th:each="pedido : ${pedidosTienda}"
                                     th:data-status="${pedido.estado.name()}"
                                     th:data-date="${#temporals.format(pedido.fechaCreacion, 'yyyy-MM-dd')}"
-                                    th:classappend="${pedido.metodoEntrega != null && pedido.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' worker-order-row-priority worker-order-row-card' : ' worker-order-row-card'">
+                                    th:classappend="${pedido.metodoEntrega != null && pedido.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' worker-order-row-priority worker-order-row-card' : ' worker-order-row-standard worker-order-row-card'">
                                     <td data-label="Codigo">
                                         <div class="worker-order-code">
                                             <span class="worker-cell-title" th:text="${pedido.codigoPedido != null ? pedido.codigoPedido : 'Sin codigo'}">MT-000</span>

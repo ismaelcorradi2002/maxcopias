@@ -10,7 +10,7 @@
             <div class="container contacto-hero-grid">
                 <div class="contacto-hero-copy">
                     <span class="section-kicker">Contacto</span>
-                    <h1>La papeleria y copisteria de confianza en Madrid.</h1>
+                    <h1>Tu copisteria y papeleria de confianza en Torrejon de Ardoz.</h1>
                     <p>
                         Escribenos, llamanos o ven directamente a tienda. Te atendemos para pedidos de copisteria,
                         consultas de papeleria y encargos personalizados.
@@ -22,10 +22,57 @@
                 </div>
 
                 <aside class="contacto-highlight-card">
-                    <span class="contacto-card-icon">M</span>
-                    <h2>Maxcopias</h2>
-                    <p>C/ Soledad, Nº3<br>28850 TORREJON DE ARDOZ<br>MADRID</p>
-                    <a href="tel:+34916563555">+34 916 563 555</a>
+                    <div class="contacto-card-brand">
+                        <span class="contacto-card-icon">M</span>
+                        <div>
+                            <span class="contacto-card-kicker">Maxcopias</span>
+                            <h2>Contacto y ubicacion</h2>
+                        </div>
+                    </div>
+
+                    <div class="contacto-highlight-grid">
+                        <article class="contacto-highlight-item">
+                            <span class="contacto-highlight-item-icon">📍</span>
+                            <div>
+                                <strong>Direccion</strong>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Calle%20Soledad%203%2C%2028850%20Torrejon%20de%20Ardoz%2C%20Madrid%2C%20Espana" target="_blank" rel="noopener noreferrer">
+                                    C/ Soledad, Nº3<br>
+                                    28850 Torrejón de Ardoz, Madrid
+                                </a>
+                            </div>
+                        </article>
+
+                        <article class="contacto-highlight-item">
+                            <span class="contacto-highlight-item-icon">☎</span>
+                            <div>
+                                <strong>Telefono</strong>
+                                <a class="contacto-highlight-link-primary" href="tel:+34916563555">+34 916 563 555</a>
+                            </div>
+                        </article>
+
+                        <article class="contacto-highlight-item">
+                            <span class="contacto-highlight-item-icon">✉</span>
+                            <div>
+                                <strong>Email</strong>
+                                <a href="mailto:pedidos@maxcopias.es">pedidos@maxcopias.es</a>
+                            </div>
+                        </article>
+
+                        <article class="contacto-highlight-item contacto-highlight-item-hours">
+                            <span class="contacto-highlight-item-icon">🕘</span>
+                            <div>
+                                <strong>Horario</strong>
+                                <p>Lunes a viernes: 9:00-14:00 / 17:00-20:00</p>
+                                <p>Sabados: 10:00-13:00</p>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="contacto-highlight-actions">
+                        <a class="button button-primary" href="tel:+34916563555">Llamar ahora</a>
+                        <a class="button button-secondary" href="mailto:pedidos@maxcopias.es?subject=Consulta%20desde%20la%20web%20Maxcopias">Enviar email</a>
+                        <a class="button button-secondary-dark" href="https://www.google.com/maps/dir/?api=1&destination=Calle%20Soledad%203%2C%2028850%20Torrejon%20de%20Ardoz%2C%20Madrid%2C%20Espana" target="_blank" rel="noopener noreferrer">Como llegar</a>
+                    </div>
                 </aside>
             </div>
         </section>
@@ -49,7 +96,7 @@
                 <article class="contacto-info-card">
                     <span class="contacto-info-icon">03</span>
                     <h2>Direccion</h2>
-                    <p>C/ Soledad, Nº3<br>28850 TORREJON DE ARDOZ<br>MADRID</p>
+                    <p>C/ Soledad, Nº3<br>28850 Torrejón de Ardoz<br>Madrid</p>
                     <a href="https://www.google.com/maps/search/?api=1&query=Calle%20Soledad%203%2C%2028850%20Torrejon%20de%20Ardoz%2C%20Madrid%2C%20Espana" target="_blank" rel="noopener noreferrer">Ver en Google Maps</a>
                 </article>
 
@@ -58,7 +105,7 @@
                     <h2>Horario</h2>
                     <div class="contacto-hours">
                         <div>
-                            <strong>De Lunes a Viernes</strong>
+                            <strong>De lunes a viernes</strong>
                             <span>9:00-14:00h / 17:00-20:00h</span>
                         </div>
                         <div>
@@ -95,5 +142,6 @@
 
     <div th:replace="~{fragmentos/pie :: footer}"></div>
 </div>
+<script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>

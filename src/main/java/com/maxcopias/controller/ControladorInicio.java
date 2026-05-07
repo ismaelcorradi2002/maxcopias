@@ -8,6 +8,9 @@ import com.maxcopias.service.ServicioCatalogoTiendaVisual;
 import com.maxcopias.service.ServicioOferta;
 import com.maxcopias.service.ServicioTienda;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.springframework.util.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,6 +75,7 @@ public class ControladorInicio {
 
         model.addAttribute("ofertasDestacadas", ofertasDestacadas);
         model.addAttribute("ofertas", ofertasSecundarias);
+        model.addAttribute("ofertasImagenes", construirMapaImagenesOferta(ofertasActivas));
         model.addAttribute("hayOfertasActivas", !ofertasActivas.isEmpty());
         return "ofertas/ofertas";
     }
@@ -86,5 +90,38 @@ public class ControladorInicio {
         } catch (IllegalArgumentException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado.");
         }
+    }
+
+    private Map<Long, String> construirMapaImagenesOferta(List<Oferta> ofertas) {
+        Map<Long, String> imagenes = new LinkedHashMap<>();
+        for (Oferta oferta : ofertas) {
+            if (oferta.getId() != null) {
+                imagenes.put(oferta.getId(), resolverImagenOferta(oferta));
+            }
+        }
+        return imagenes;
+    }
+
+    private String resolverImagenOferta(Oferta oferta) {
+        if (oferta == null) {
+            return null;
+        }
+
+        if (StringUtils.hasText(oferta.getImagenUrl())) {
+            return oferta.getImagenUrl();
+        }
+
+        if (oferta.getProducto() != null) {
+            return servicioCatalogoTiendaVisual.resolverImagenProductoVisual(oferta.getProducto());
+        }
+
+        if (oferta.getProductos() != null) {
+            return oferta.getProductos().stream()
+                .findFirst()
+                .map(servicioCatalogoTiendaVisual::resolverImagenProductoVisual)
+                .orElse(null);
+        }
+
+        return null;
     }
 }

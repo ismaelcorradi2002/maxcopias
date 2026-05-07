@@ -1341,6 +1341,27 @@ body.nav-open .nav-toggle span:last-child {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.footer-trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0 0 22px;
+}
+
+.footer-trust-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(93, 187, 255, 0.14), rgba(255, 217, 101, 0.14));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.84rem;
+    font-weight: 800;
+}
+
 .footer-bottom p {
     margin: 0;
     font-size: 0.92rem;
@@ -1811,6 +1832,122 @@ body.nav-open .nav-toggle span:last-child {
     [data-reveal] {
         opacity: 1;
         transform: none;
+    }
+}
+
+@media (max-width: 1200px) {
+    :root {
+        --container: 1100px;
+    }
+}
+
+@media (max-width: 900px) {
+    :root {
+        --header-offset: 78px;
+    }
+
+    .container {
+        width: min(calc(100% - 28px), var(--container));
+    }
+
+    .section-heading h2,
+    .hero-copy h1,
+    .cta-box h2 {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px 18px;
+    }
+
+    .cta-box,
+    .location-box {
+        gap: 20px;
+        padding: 24px;
+    }
+
+    .cta-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cta-actions,
+    .location-actions {
+        justify-content: flex-start;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 600px) {
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    .container {
+        width: min(calc(100% - 22px), var(--container));
+    }
+
+    .site-header {
+        padding-top: 10px;
+    }
+
+    .site-header .header-shell {
+        padding: 10px 12px;
+        border-radius: 18px;
+    }
+
+    .site-header .brand-logo-navbar {
+        height: 40px;
+    }
+
+    .nav-panel-inner {
+        padding: 14px;
+        border-radius: 20px;
+    }
+
+    .nav-primary-links a,
+    .nav-mobile-actions .nav-user-menu-link,
+    .nav-mobile-actions .button {
+        min-height: 46px;
+        padding-inline: 14px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .footer-bottom {
+        text-align: center;
+    }
+
+    .footer-contact-list li {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .footer-contact-label {
+        min-width: 0;
+    }
+
+    .cta-box,
+    .location-box {
+        padding: 20px 18px;
+        border-radius: 24px;
+    }
+
+    .cta-actions,
+    .location-actions {
+        flex-direction: column;
+    }
+
+    .cta-actions .button,
+    .location-actions .button {
+        width: 100%;
     }
 }
 

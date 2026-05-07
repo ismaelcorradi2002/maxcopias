@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Aviso legal', '/css/legal.css')}"></head>
+<body class="legal-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="legal-main">
+        <section class="container legal-shell">
+            <header class="legal-hero">
+                <span class="section-kicker">Informacion legal</span>
+                <h1>Aviso legal</h1>
+                <p>Informacion general orientativa sobre la titularidad de la web y el uso de los servicios de Maxcopias.</p>
+                <div class="legal-note">
+                    Este contenido es orientativo y debe revisarse legalmente antes de publicarse en produccion.
+                </div>
+            </header>
+
+            <section class="legal-content">
+                <article class="legal-card">
+                    <h2>Datos identificativos</h2>
+                    <div class="legal-info-grid">
+                        <div class="legal-info-item">
+                            <span>Titular</span>
+                            <strong>Pendiente de completar</strong>
+                        </div>
+                        <div class="legal-info-item">
+                            <span>Actividad</span>
+                            <strong>Copisteria, papeleria y pedidos online</strong>
+                        </div>
+                        <div class="legal-info-item">
+                            <span>Direccion</span>
+                            <strong>C/ Soledad, Nº3, 28850 Torrejón de Ardoz, Madrid</strong>
+                        </div>
+                        <div class="legal-info-item">
+                            <span>Contacto</span>
+                            <strong>pedidos@maxcopias.es · +34 916 563 555</strong>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Objeto</h2>
+                    <p>Este sitio web ofrece informacion comercial sobre los servicios de copisteria, papeleria y gestion de pedidos de Maxcopias, asi como acceso a herramientas de encargo, compra y seguimiento para sus clientes.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Condiciones de uso</h2>
+                    <ul>
+                        <li>El usuario se compromete a utilizar la web de forma licita y respetuosa.</li>
+                        <li>No esta permitido usar el sitio para fines fraudulentos, ilicitos o que perjudiquen a terceros.</li>
+                        <li>Maxcopias podra actualizar contenidos, servicios o condiciones cuando resulte necesario.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Propiedad intelectual</h2>
+                    <p>Los textos, imagenes, logotipos, diseños y demas contenidos del sitio pertenecen a Maxcopias o a sus respectivos titulares, y no podran reutilizarse sin autorizacion previa cuando proceda.</p>
+                </article>
+
+                <div class="legal-actions">
+                    <a class="button button-primary" th:href="@{/}">Volver al inicio</a>
+                    <a class="button button-secondary" th:href="@{/contacto}">Contactar</a>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

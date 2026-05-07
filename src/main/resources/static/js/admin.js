@@ -1,4 +1,4 @@
-const ADMIN_PAGE_SIZE = 5;
+﻿const ADMIN_PAGE_SIZE = 5;
 
 function switchTab(button, tab) {
     document.querySelectorAll(".admin-buttons button").forEach(btn => btn.classList.remove("active"));
@@ -8,19 +8,26 @@ function switchTab(button, tab) {
     tableContainer.classList.toggle("is-users-tab", tab === "users");
     tableContainer.innerHTML = '<div class="admin-loading">Cargando datos...</div>';
 
-    const apiEndpoint = tab === "users" ? "/admin/api/users" : tab === "products" ? "/admin/api/products" : tab === "orders" ? "/admin/api/pedidos" : "/admin/api/categorias";
+    const isOrdersTab = tab === "orders" || tab === "orders-copy" || tab === "orders-store";
+    const apiEndpoint = tab === "users"
+        ? "/admin/api/users"
+        : tab === "products"
+            ? "/admin/api/products"
+            : isOrdersTab
+                ? "/admin/api/pedidos"
+                : "/admin/api/categorias";
 
     fetch(apiEndpoint)
         .then(response => response.json())
         .then(data => {
             if (!Array.isArray(data)) {
                 console.error("Respuesta inesperada de la API:", data);
-                tableContainer.innerHTML = '<p class="no-data">Error al cargar datos. Revisa la consola para más detalles.</p>';
+                tableContainer.innerHTML = '<p class="no-data">Error al cargar datos. Revisa la consola para mÃ¡s detalles.</p>';
                 return;
             }
 
             if (data.length === 0) {
-                tableContainer.innerHTML = `<p class="no-data">No hay ${tab === "users" ? "usuarios" : tab === "products" ? "productos" : tab === "orders" ? "pedidos" : "categorías"}.</p>`;
+                tableContainer.innerHTML = `<p class="no-data">No hay ${tab === "users" ? "usuarios" : tab === "products" ? "productos" : tab === "orders" ? "pedidos" : "categorÃ­as"}.</p>`;
                 return;
             }
 
@@ -32,8 +39,8 @@ function switchTab(button, tab) {
                 renderCategoriesTable(tableContainer, data);
                 return;
             }
-            if (tab === "orders") {
-                renderOrdersTableWorkerStyle(tableContainer, data);
+            if (isOrdersTab) {
+                renderOrdersTableWorkerStyle(tableContainer, data, tab);
                 return;
             }
             renderProductsTable(tableContainer, data);
@@ -90,17 +97,17 @@ function renderUsersTable(tableContainer, data) {
                     const isLastAdmin = totalAdmins === 1 && user.rol === "ROLE_ADMIN";
                     return `
                     <tr>
-                        <td class="admin-cell-id">${user.id}</td>
-                        <td class="admin-cell-name" title="${user.firstName || ""} ${user.lastName || ""}">
+                        <td class="admin-cell-id" data-label="ID">${user.id}</td>
+                        <td class="admin-cell-name" data-label="Nombre" title="${user.firstName || ""} ${user.lastName || ""}">
                             ${user.firstName || ""} ${user.lastName || ""}
                         </td>
-                        <td class="admin-cell-email" title="${user.email}">
+                        <td class="admin-cell-email" data-label="Email" title="${user.email}">
                             ${user.email}
                         </td>
-                        <td class="admin-cell-phone">${user.phone || ""}</td>
-                        <td class="admin-role-cell admin-col-role"><span class="admin-role-badge">${formatRoleName(user.rol)}</span></td>
-                        <td class="admin-date-cell">${formatAdminDate(user.createdAt)}</td>
-                        <td class="admin-action-cell">
+                        <td class="admin-cell-phone" data-label="Telefono">${user.phone || ""}</td>
+                        <td class="admin-role-cell admin-col-role" data-label="Rol"><span class="admin-role-badge">${formatRoleName(user.rol)}</span></td>
+                        <td class="admin-date-cell" data-label="Creado">${formatAdminDate(user.createdAt)}</td>
+                        <td class="admin-action-cell" data-label="Cambiar rol">
                             ${isLastAdmin ? `
                             <div class="admin-role-lock" title="Debe existir al menos un administrador activo">
                                 <span class="admin-role-badge">Admin</span>
@@ -137,7 +144,7 @@ function renderUsersTable(tableContainer, data) {
                             </form>
                             `}
                         </td>
-                        <td class="admin-action-cell">
+                        <td class="admin-action-cell" data-label="Eliminar">
                             <button class="button button-small button-outline admin-delete-btn" type="button" data-user-id="${user.id}" data-user-name="${user.firstName || ""} ${user.lastName || ""}" title="Eliminar usuario">
                                 Eliminar
                             </button>
@@ -209,10 +216,10 @@ function renderCategoriesTable(tableContainer, data) {
     tableContainer.innerHTML = `
         <div class="admin-product-toolbar">
             <button class="button button-primary admin-new-category-btn" type="button" onclick="window.location.href='/admin/crear-categoria'">
-                Crear nueva categoría
+                Crear nueva categorÃ­a
             </button>
             <label class="admin-product-search" for="admin-category-search">
-                <span>Buscar categoría</span>
+                <span>Buscar categorÃ­a</span>
                 <input id="admin-category-search" type="search" placeholder="Buscar por ID o nombre" autocomplete="off">
             </label>
         </div>
@@ -226,7 +233,7 @@ function renderCategoriesTable(tableContainer, data) {
         const visibleCategories = categories.slice(0, visibleCount);
 
         if (categories.length === 0) {
-            tableRegion.innerHTML = '<p class="no-data">No se han encontrado categorías con esa búsqueda.</p>';
+            tableRegion.innerHTML = '<p class="no-data">No se han encontrado categorÃ­as con esa bÃºsqueda.</p>';
             return;
         }
 
@@ -236,7 +243,7 @@ function renderCategoriesTable(tableContainer, data) {
                     <tr>
                         <th class="admin-col-id">ID</th>
                         <th class="admin-col-name">Nombre</th>
-                        <th class="admin-col-description">Descripción</th>
+                        <th class="admin-col-description">DescripciÃ³n</th>
                         <th class="admin-col-count"># Productos</th>
                         <th class="admin-col-actions">Eliminar</th>
                     </tr>
@@ -244,12 +251,12 @@ function renderCategoriesTable(tableContainer, data) {
                 <tbody>
                     ${visibleCategories.map(category => `
                         <tr>
-                            <td class="admin-col-id">${category.id}</td>
-                            <td class="admin-col-name">${category.nombre}</td>
-                            <td class="admin-category-description admin-col-description" title="${category.descripcion || ''}">${category.descripcion || '-'}</td>
-                            <td class="admin-col-count">${category.productos ? category.productos.length : 0}</td>
-                            <td class="admin-action-cell admin-col-actions">
-                                <button class="button button-small button-outline admin-delete-btn" type="button" data-category-id="${category.id}" data-category-name="${category.nombre}" title="Eliminar categoría">
+                            <td class="admin-col-id" data-label="ID">${category.id}</td>
+                            <td class="admin-col-name" data-label="Nombre">${category.nombre}</td>
+                            <td class="admin-category-description admin-col-description" data-label="Descripcion" title="${category.descripcion || ''}">${category.descripcion || '-'}</td>
+                            <td class="admin-col-count" data-label="Productos">${category.productos ? category.productos.length : 0}</td>
+                            <td class="admin-action-cell admin-col-actions" data-label="Eliminar">
+                                <button class="button button-small button-outline admin-delete-btn" type="button" data-category-id="${category.id}" data-category-name="${category.nombre}" title="Eliminar categorÃ­a">
                                     Eliminar
                                 </button>
                             </td>
@@ -344,17 +351,17 @@ function renderProductsTable(tableContainer, data) {
             <tbody>
                 ${visibleProducts.map(product => `
                     <tr>
-                        <td class="admin-col-id">${product.id}</td>
-                        <td class="admin-col-name">${product.nombre}</td>
-                        <td class="admin-col-price">${product.precio}</td>
-                        <td class="admin-col-count">${product.stock}</td>
-                        <td class="admin-product-categories admin-col-description">${product.categorias ? product.categorias.map(cat => cat.nombre).join(", ") : ""}</td>
-                        <td class="admin-action-cell admin-col-actions">
+                        <td class="admin-col-id" data-label="ID">${product.id}</td>
+                        <td class="admin-col-name" data-label="Nombre">${product.nombre}</td>
+                        <td class="admin-col-price" data-label="Precio">${product.precio}</td>
+                        <td class="admin-col-count" data-label="Stock">${product.stock}</td>
+                        <td class="admin-product-categories admin-col-description" data-label="Categorias">${product.categorias ? product.categorias.map(cat => cat.nombre).join(", ") : ""}</td>
+                        <td class="admin-action-cell admin-col-actions" data-label="Editar">
                             <button class="button button-small button-outline" type="button" onclick="window.location.href='/editarstock/${product.id}'">
                                 Editar
                             </button>
                         </td>
-                        <td class="admin-action-cell admin-col-actions">
+                        <td class="admin-action-cell admin-col-actions" data-label="Eliminar">
                             <button class="button button-small button-outline admin-delete-btn" type="button" data-product-id="${product.id}" title="Eliminar producto">
                                 Eliminar
                             </button>
@@ -443,7 +450,7 @@ function renderOrdersTable(tableContainer, data) {
                 <span>Filtrar tipo</span>
                 <select id="admin-order-type-filter" class="admin-form-select">
                     <option value="">Todos los tipos</option>
-                    <option value="copistería">Copistería</option>
+                    <option value="copisterÃ­a">CopisterÃ­a</option>
                     <option value="tienda">Tienda</option>
                 </select>
             </label>
@@ -460,7 +467,7 @@ function renderOrdersTable(tableContainer, data) {
         const visibleOrders = orders.slice(0, visibleCount);
 
         if (orders.length === 0) {
-            tableRegion.innerHTML = '<p class="no-data">No se han encontrado pedidos con esa búsqueda.</p>';
+            tableRegion.innerHTML = '<p class="no-data">No se han encontrado pedidos con esa bÃºsqueda.</p>';
             return;
         }
 
@@ -472,20 +479,20 @@ function renderOrdersTable(tableContainer, data) {
                     <th class="admin-col-short">Tipo</th>
                     <th class="admin-col-name">Cliente</th>
                     <th class="admin-col-email">Email</th>
-                    <th class="admin-col-phone">Teléfono</th>
+                    <th class="admin-col-phone">TelÃ©fono</th>
                     <th class="admin-col-status">Estado</th>
                     <th class="admin-col-date">Fecha</th>
                     <th class="admin-col-price">Total</th>
                     <th class="admin-col-job">Trabajo</th>
                     <th class="admin-col-count">Copias</th>
                     <th class="admin-col-short">Color</th>
-                    <th class="admin-col-short">Tamaño</th>
+                    <th class="admin-col-short">TamaÃ±o</th>
                     <th class="admin-col-short">Caras</th>
                     <th class="admin-col-short">Papel</th>
-                    <th class="admin-col-short">Encuadernación</th>
+                    <th class="admin-col-short">EncuadernaciÃ³n</th>
                     <th class="admin-col-description">Extras</th>
                     <th class="admin-col-file">Archivo</th>
-                    <th class="admin-col-code">Código recoger</th>
+                    <th class="admin-col-code">CÃ³digo recoger</th>
                     <th class="admin-col-summary">Resumen productos</th>
                     <th class="admin-col-name">Usuario</th>
                 </tr>
@@ -558,7 +565,7 @@ function renderOrdersTable(tableContainer, data) {
     typeFilter.addEventListener("change", applyOrderFilters);
 }
 
-function renderOrdersTableWorkerStyle(tableContainer, data) {
+function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
     const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
     const state = {
         copisteriaVisibleCount: ADMIN_PAGE_SIZE,
@@ -645,6 +652,76 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
 
     function isHomeDeliveryOrder(order) {
         return getOrderType(order) === "tienda" && order.metodoEntrega === "ENVIO_DOMICILIO";
+    }
+
+    function isStorePickupOrder(order) {
+        return getOrderType(order) === "tienda" && order.metodoEntrega === "RECOGIDA_TIENDA";
+    }
+
+    function formatCompactOrderTotal(order) {
+        return order.total != null ? `${order.total} EUR` : "-";
+    }
+
+    function renderOrderCodeCell(order) {
+        const isCopisteria = getOrderType(order) === "copisteria";
+        const code = def(order.codigoRecoger);
+        const badgeClass = isCopisteria
+            ? "worker-payment-badge is-neutral"
+            : order.pagado
+                ? "worker-payment-badge is-paid"
+                : "worker-payment-badge is-unpaid";
+        const badgeLabel = isCopisteria ? "Copisteria" : order.pagado ? "Pagado" : "No pagado";
+
+        return `
+            <div class="worker-order-code">
+                <span class="worker-cell-title">${code}</span>
+                <span class="${badgeClass}">${badgeLabel}</span>
+            </div>
+            <small>${formatAdminDate(order.fechaCreacion)}</small>
+        `;
+    }
+
+    function renderCustomerCell(order) {
+        return `
+            <div class="worker-customer-block">
+                <span class="worker-cell-title">${def(order.cliente)}</span>
+            </div>
+            <small>${def(order.telefono)}</small>
+            ${renderPriorityFlags(order)}
+        `;
+    }
+
+    function renderWorkCell(order) {
+        if (getOrderType(order) === "copisteria") {
+            return `
+                <span class="worker-cell-title">${def(order.trabajo)}</span>
+                <small>${order.copias != null ? order.copias : "-"} copia(s)${order.tamano ? ` Â· ${order.tamano}` : ""}</small>
+            `;
+        }
+
+        return `<span class="worker-order-summary">${def(order.resumenProductos)}</span>`;
+    }
+
+    function renderDeliveryCell(order) {
+        if (getOrderType(order) === "copisteria") {
+            return `
+                <div class="worker-order-flags">
+                    ${isHomeDeliveryCopyOrder(order)
+                        ? '<span class="worker-order-flag is-delivery">A domicilio</span>'
+                        : '<span class="worker-order-flag is-pickup">Recogida en tienda</span>'}
+                </div>
+            `;
+        }
+
+        return `
+            <div class="worker-order-flags">
+                ${isHomeDeliveryOrder(order)
+                    ? '<span class="worker-order-flag is-delivery">Envio a domicilio</span>'
+                    : isStorePickupOrder(order)
+                        ? '<span class="worker-order-flag is-pickup">Recogida en tienda</span>'
+                        : ""}
+            </div>
+        `;
     }
 
     function renderPriorityFlags(order) {
@@ -744,38 +821,15 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                         </select>
                     </label>
                 </div>
-                <div class="admin-bulk-toolbar" data-admin-bulk-toolbar="${type}">
-                    <label class="admin-bulk-checkbox-label">
-                        <input type="checkbox" data-admin-select-all="${type}">
-                        <span>Seleccionar todos</span>
-                    </label>
-                    <div class="admin-bulk-actions">
-                        <span data-admin-bulk-count="${type}">0 seleccionados</span>
-                        <select class="worker-select select-modern" data-admin-bulk-status="${type}">
-                            <option value="">Cambiar estado a...</option>
-                            ${getOrderStateOptions(type, "")}
-                        </select>
-                        <button type="button" class="button button-primary" data-admin-bulk-apply="${type}">Aplicar</button>
-                    </div>
-                </div>
                 <div class="worker-table-wrap">
-                    <table class="worker-table worker-table-compact admin-orders-split-table">
+                    <table class="worker-table worker-table-compact" data-worker-table="${type}">
                         <thead>
                             <tr>
-                                <th class="worker-col-checkbox">
-                                    <input type="checkbox" data-admin-select-all="${type}">
-                                </th>
+                                <th>Codigo</th>
                                 <th>Cliente</th>
-                                ${isCopisteria
-                                    ? `
-                                        <th class="worker-col-job">Trabajo</th>
-                                        <th class="worker-col-file">Archivo</th>
-                                        <th class="worker-col-code">Codigo</th>
-                                    `
-                                    : `
-                                        <th>Productos</th>
-                                        <th class="worker-col-price">Total</th>
-                                    `}
+                                <th class="worker-col-job">${isCopisteria ? "Trabajo" : "Productos"}</th>
+                                <th class="worker-col-short">Entrega</th>
+                                <th class="worker-col-price">Total</th>
                                 <th class="worker-col-status">Estado</th>
                                 <th class="worker-col-actions">Acciones</th>
                             </tr>
@@ -784,30 +838,27 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                             ${visibleOrders.map(order => `
                                 <tr class="${[
                                     order.eliminado ? "admin-order-row-deleted" : "",
-                                    isUrgentCopyOrder(order) || isHomeDeliveryCopyOrder(order) || isHomeDeliveryOrder(order) ? "worker-order-row-priority" : ""
+                                    isUrgentCopyOrder(order) || isHomeDeliveryCopyOrder(order) || isHomeDeliveryOrder(order)
+                                        ? "worker-order-row-priority"
+                                        : "worker-order-row-standard",
+                                    "worker-order-row-card"
                                 ].filter(Boolean).join(" ")}">
-                                    <td class="worker-col-checkbox">
-                                        <input type="checkbox" data-admin-order-checkbox="${type}" value="${order.id}" ${order.eliminado ? "disabled" : ""}>
+                                    <td data-label="Codigo">
+                                        ${renderOrderCodeCell(order)}
                                     </td>
-                                    <td>
-                                        <span class="worker-cell-title">${def(order.cliente)}</span>
-                                        <small>${def(order.telefono)}</small>
-                                        ${renderPriorityFlags(order)}
+                                    <td data-label="Cliente">
+                                        ${renderCustomerCell(order)}
                                     </td>
-                                    ${isCopisteria
-                                        ? `
-                                            <td class="worker-col-job">
-                                                <span class="worker-cell-title">${def(order.trabajo)}</span>
-                                                <small>${def(order.copias)} copia(s)${order.tamano ? ` · ${order.tamano}` : ""}</small>
-                                            </td>
-                                            <td class="worker-col-file">${renderOrderFileCell(order)}</td>
-                                            <td class="worker-col-code"><strong>${def(order.codigoRecoger)}</strong></td>
-                                        `
-                                        : `
-                                            <td>${def(order.resumenProductos)}</td>
-                                            <td class="worker-col-price">${order.total != null ? `${order.total} €` : "-"}</td>
-                                        `}
-                                    <td class="worker-col-status">
+                                    <td class="worker-col-job" data-label="${isCopisteria ? "Trabajo" : "Productos"}">
+                                        ${renderWorkCell(order)}
+                                    </td>
+                                    <td data-label="Entrega">
+                                        ${renderDeliveryCell(order)}
+                                    </td>
+                                    <td class="worker-col-price" data-label="Total">
+                                        <span class="worker-price-strong">${formatCompactOrderTotal(order)}</span>
+                                    </td>
+                                    <td class="worker-col-status" data-label="Estado">
                                         <div class="worker-status-stack">
                                             <form action="${isCopisteria ? `/admin/pedidos/copisteria/${order.id}/estado` : `/admin/pedidos/tienda/${order.id}/estado`}" method="post" class="worker-status-form">
                                                 <input type="hidden" name="_csrf" value="${csrfToken}">
@@ -817,28 +868,28 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
                                             </form>
                                         </div>
                                     </td>
-                                    <td class="worker-col-actions">
+                                    <td class="worker-col-actions" data-label="Acciones">
                                         <div class="worker-actions-cell order-actions">
-                                        <a class="order-action-btn order-action-view" href="/admin/pedidos/${order.id}?tipo=${type}" title="Ver detalle" aria-label="Ver detalle">
-                                            <span aria-hidden="true">👁</span>
-                                            <span class="worker-sr-only">Ver detalle</span>
-                                        </a>
-                                        ${order.eliminado
-                                            ? `<span class="admin-role-badge">Eliminado</span>`
-                                            : `
-                                                <button
-                                                    type="button"
-                                                    class="order-action-btn order-action-delete admin-delete-btn"
-                                                    title="Eliminar pedido"
-                                                    aria-label="Eliminar pedido"
-                                                    data-order-id="${order.id}"
-                                                    data-order-type="${type}"
-                                                    data-order-name="${isCopisteria ? `pedido de copisteria ${def(order.codigoRecoger)}` : `pedido de tienda #${def(order.id)}`}"
-                                                >
-                                                    <span aria-hidden="true">🗑</span>
-                                                    <span class="worker-sr-only">Eliminar</span>
-                                                </button>
-                                            `}
+                                            <a class="order-action-btn order-action-view" href="/admin/pedidos/${order.id}?tipo=${type}" title="Ver detalle" aria-label="Ver detalle">
+                                                <span aria-hidden="true">&#128065;</span>
+                                                <span class="worker-sr-only">Ver detalle</span>
+                                            </a>
+                                            ${order.eliminado
+                                                ? `<span class="admin-role-badge">Eliminado</span>`
+                                                : `
+                                                    <button
+                                                        type="button"
+                                                        class="order-action-btn order-action-delete admin-delete-btn"
+                                                        title="Eliminar pedido"
+                                                        aria-label="Eliminar pedido"
+                                                        data-order-id="${order.id}"
+                                                        data-order-type="${type}"
+                                                        data-order-name="${isCopisteria ? `pedido de copisteria ${def(order.codigoRecoger)}` : `pedido de tienda #${def(order.id)}`}"
+                                                    >
+                                                        <span aria-hidden="true">&#128465;</span>
+                                                        <span class="worker-sr-only">Eliminar</span>
+                                                    </button>
+                                                `}
                                         </div>
                                     </td>
                                 </tr>
@@ -887,20 +938,25 @@ function renderOrdersTableWorkerStyle(tableContainer, data) {
     }
 
     function paintOrders() {
-        board.innerHTML = `
-            ${buildPanel("copisteria")}
-            ${buildPanel("tienda")}
-        `;
+        const panels = activeOrdersTab === "orders-copy"
+            ? [buildPanel("copisteria")]
+            : activeOrdersTab === "orders-store"
+                ? [buildPanel("tienda")]
+                : [buildPanel("copisteria"), buildPanel("tienda")];
+
+        board.innerHTML = panels.join("");
 
         if (typeof initModernSelects === "function") {
             initModernSelects();
         }
 
-        bindPanelEvents("copisteria");
-        bindPanelEvents("tienda");
+        if (activeOrdersTab !== "orders-store") {
+            bindPanelEvents("copisteria");
+        }
+        if (activeOrdersTab !== "orders-copy") {
+            bindPanelEvents("tienda");
+        }
         initAdminOrderDeleteButtons();
-        initAdminBulkActions("copisteria");
-        initAdminBulkActions("tienda");
     }
 
     paintOrders();
@@ -940,7 +996,7 @@ function renderListPaginationControls(visibleCount, totalCount, itemLabel) {
             ` : ""}
             ${visibleCount < totalCount ? `
                 <button class="button button-outline admin-load-more-button" type="button" data-load-more>
-                    Ver más ${itemLabel}
+                    Ver mÃ¡s ${itemLabel}
                 </button>
             ` : ""}
             <span>${visibleCount} de ${totalCount}</span>
@@ -990,7 +1046,8 @@ function getProductCategories(products) {
 
 document.addEventListener("DOMContentLoaded", function() {
     const navContainer = document.querySelector(".admin-buttons.admin-panel-nav");
-    const activeTab = navContainer?.dataset.activeTab || "users";
+    const requestedTab = navContainer?.dataset.activeTab || "users";
+    const activeTab = requestedTab === "orders" ? "orders-copy" : requestedTab;
     const activeButton = navContainer?.querySelector(`[data-tab="${activeTab}"]`);
     if (activeButton) {
         activeButton.classList.add("active");
@@ -1368,10 +1425,10 @@ function openCatalogDeleteModal(type, id, name) {
     }
 
     const isProduct = type === "product";
-    const itemLabel = isProduct ? "producto" : "categoría";
-    title.textContent = isProduct ? "Eliminar producto" : "Eliminar categoría";
+    const itemLabel = isProduct ? "producto" : "categorÃ­a";
+    title.textContent = isProduct ? "Eliminar producto" : "Eliminar categorÃ­a";
     message.textContent = `Vas a eliminar ${itemLabel} "${name}". Esta accion no se puede deshacer.`;
-    acceptButton.textContent = isProduct ? "Eliminar producto" : "Eliminar categoría";
+    acceptButton.textContent = isProduct ? "Eliminar producto" : "Eliminar categorÃ­a";
     acceptButton.dataset.deleteType = type;
     acceptButton.dataset.deleteId = id;
 
@@ -1547,7 +1604,7 @@ function deleteCategoria(categoryId) {
         if (data.success === 'true') {
             const activeTabButton = document.querySelector('.admin-buttons .active');
             switchTab(activeTabButton, 'categories');
-            openAdminMessageModal("Categoría eliminada", data.message || "Categoría eliminada correctamente.");
+            openAdminMessageModal("CategorÃ­a eliminada", data.message || "CategorÃ­a eliminada correctamente.");
         } else {
             openAdminMessageModal("No se pudo eliminar", data.message || "Error desconocido", "error");
         }
@@ -1615,7 +1672,7 @@ function deleteOrder(orderType, orderId) {
         }
 
         const activeTabButton = document.querySelector(".admin-buttons .active");
-        switchTab(activeTabButton, "orders");
+        switchTab(activeTabButton, activeTabButton?.dataset.tab || "orders-copy");
     })
     .catch(error => {
         closeOrderDeleteModal();
@@ -1624,95 +1681,4 @@ function deleteOrder(orderType, orderId) {
     });
 }
 
-function initAdminBulkActions(type) {
-    const board = document.querySelector("[data-orders-board]");
-    if (!board) return;
 
-    const selectAllChecks = board.querySelectorAll(`[data-admin-select-all="${type}"]`);
-    const checkboxes = board.querySelectorAll(`[data-admin-order-checkbox="${type}"]`);
-    const bulkStatusSelect = board.querySelector(`[data-admin-bulk-status="${type}"]`);
-    const bulkApplyButton = board.querySelector(`[data-admin-bulk-apply="${type}"]`);
-    const bulkCountLabel = board.querySelector(`[data-admin-bulk-count="${type}"]`);
-    const toolbar = board.querySelector(`[data-admin-bulk-toolbar="${type}"]`);
-
-    if (!checkboxes.length || !bulkApplyButton) return;
-
-    function updateBulkCount() {
-        const selected = Array.from(checkboxes).filter(cb => cb.checked);
-        if (bulkCountLabel) {
-            bulkCountLabel.textContent = `${selected.length} seleccionado${selected.length !== 1 ? 's' : ''}`;
-        }
-        if (toolbar) {
-            toolbar.classList.toggle('has-selection', selected.length > 0);
-        }
-        selectAllChecks.forEach(sa => {
-            sa.checked = selected.length === checkboxes.length && checkboxes.length > 0;
-            sa.indeterminate = selected.length > 0 && selected.length < checkboxes.length;
-        });
-    }
-
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', updateBulkCount);
-    });
-
-    selectAllChecks.forEach(sa => {
-        sa.addEventListener('change', function () {
-            const checked = this.checked;
-            checkboxes.forEach(cb => {
-                if (!cb.disabled) cb.checked = checked;
-            });
-            updateBulkCount();
-        });
-    });
-
-    bulkApplyButton.addEventListener('click', function () {
-        const selectedIds = Array.from(checkboxes)
-            .filter(cb => cb.checked)
-            .map(cb => cb.value);
-
-        if (selectedIds.length === 0) {
-            openAdminMessageModal("Sin selección", "Selecciona al menos un pedido.", "error");
-            return;
-        }
-
-        const newStatus = bulkStatusSelect?.value;
-        if (!newStatus) {
-            openAdminMessageModal("Sin estado", "Selecciona un nuevo estado.", "error");
-            return;
-        }
-
-        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content") || "";
-        const endpoint = type === "copisteria"
-            ? "/admin/pedidos/copisteria/estado/bulk"
-            : "/admin/pedidos/tienda/estado/bulk";
-
-        const formData = new URLSearchParams();
-        selectedIds.forEach(id => formData.append("ids", id));
-        formData.append("estado", newStatus);
-
-        fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-CSRF-TOKEN": csrfToken
-            },
-            body: formData.toString()
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success === "true") {
-                const activeTabButton = document.querySelector(".admin-buttons .active");
-                switchTab(activeTabButton, "orders");
-                openAdminMessageModal("Estado actualizado", data.message || "Pedidos actualizados correctamente.");
-            } else {
-                openAdminMessageModal("Error", data.message || "No se pudo actualizar.", "error");
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            openAdminMessageModal("Error", "Error al actualizar pedidos.", "error");
-        });
-    });
-
-    updateBulkCount();
-}

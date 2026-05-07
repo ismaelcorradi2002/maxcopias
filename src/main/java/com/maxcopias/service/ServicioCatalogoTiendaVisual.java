@@ -92,6 +92,18 @@ public class ServicioCatalogoTiendaVisual {
         );
     }
 
+    public String resolverImagenProductoVisual(Producto producto) {
+        if (producto == null) {
+            return null;
+        }
+
+        MetadatosProductoTienda metadatos = catalogoVisual.getOrDefault(
+            producto.getNombre(),
+            MetadatosProductoTienda.porDefecto(producto.getNombre(), producto.getDescripcion())
+        );
+        return resolverImagenProducto(producto, metadatos);
+    }
+
     public String generarSlug(String valor) {
         if (valor == null) {
             return "";

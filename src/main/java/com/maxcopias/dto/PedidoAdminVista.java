@@ -30,6 +30,7 @@ public record PedidoAdminVista(
     String metodoEntrega,
     String codigoRecoger,
     String resumenProductos,
+    boolean pagado,
     String usuarioNombre,
     boolean eliminado,
     LocalDateTime fechaEliminacion,

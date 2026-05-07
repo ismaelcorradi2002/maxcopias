@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Politica de privacidad', '/css/legal.css')}"></head>
+<body class="legal-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="legal-main">
+        <section class="container legal-shell">
+            <header class="legal-hero">
+                <span class="section-kicker">Informacion legal</span>
+                <h1>Politica de privacidad</h1>
+                <p>Explicacion orientativa sobre que datos se recogen, para que se utilizan y que derechos tiene el usuario.</p>
+                <div class="legal-note">
+                    Este contenido es orientativo y debe revisarse legalmente antes de publicarse en produccion.
+                </div>
+            </header>
+
+            <section class="legal-content">
+                <article class="legal-card">
+                    <h2>Datos que se recogen</h2>
+                    <ul>
+                        <li>Datos de registro, como nombre, apellidos, email y telefono.</li>
+                        <li>Datos necesarios para gestionar pedidos de copisteria y tienda.</li>
+                        <li>Informacion enviada a traves de formularios de contacto o compra.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Finalidad del tratamiento</h2>
+                    <ul>
+                        <li>Gestionar el alta y acceso de usuarios registrados.</li>
+                        <li>Procesar pedidos, encargos, compras y seguimiento de servicios.</li>
+                        <li>Atender consultas y comunicaciones comerciales relacionadas con la actividad de Maxcopias.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Conservacion de la informacion</h2>
+                    <p>Los datos se conservaran durante el tiempo necesario para prestar el servicio, gestionar la relacion con el cliente y cumplir las obligaciones legales aplicables, o hasta que el usuario solicite su supresion cuando proceda.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Derechos del usuario</h2>
+                    <p>El usuario podra solicitar el acceso, rectificacion, supresion, oposicion, limitacion del tratamiento o portabilidad de sus datos, en los terminos previstos por la normativa aplicable, contactando con Maxcopias a traves de los canales habilitados.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Contacto para privacidad</h2>
+                    <div class="legal-info-grid">
+                        <div class="legal-info-item">
+                            <span>Email</span>
+                            <strong>pedidos@maxcopias.es</strong>
+                        </div>
+                        <div class="legal-info-item">
+                            <span>Telefono</span>
+                            <strong>+34 916 563 555</strong>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="legal-actions">
+                    <a class="button button-primary" th:href="@{/}">Volver al inicio</a>
+                    <a class="button button-secondary" th:href="@{/contacto}">Contactar</a>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

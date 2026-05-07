@@ -19,6 +19,8 @@ import jakarta.validation.constraints.Size;
 
 public class FormularioPedidoCopisteria {
 
+    public static final int MAX_COPIES = 300;
+
     @NotBlank(message = "Introduce tu nombre.")
     @Size(max = 80, message = "El nombre no puede superar los 80 caracteres.")
     private String customerName;
@@ -36,7 +38,7 @@ public class FormularioPedidoCopisteria {
     private TipoTrabajo jobType;
 
     @Min(value = 1, message = "El numero de copias debe ser al menos 1.")
-    @Max(value = 5000, message = "El numero de copias no puede superar 5000.")
+    @Max(value = MAX_COPIES, message = "El numero de copias no puede superar " + MAX_COPIES + ".")
     private Integer copies;
 
     private ModoColor colorMode;

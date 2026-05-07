@@ -23,6 +23,9 @@ public class PropiedadesMaxcopias {
     @NotBlank
     private String productImageUploadDir = "uploads/productos";
 
+    @NotBlank
+    private String offerImageUploadDir = "uploads/ofertas";
+
     @Min(1)
     private int maxFiles = 5;
 
@@ -49,6 +52,14 @@ public class PropiedadesMaxcopias {
 
     public void setProductImageUploadDir(String productImageUploadDir) {
         this.productImageUploadDir = productImageUploadDir;
+    }
+
+    public String getOfferImageUploadDir() {
+        return offerImageUploadDir;
+    }
+
+    public void setOfferImageUploadDir(String offerImageUploadDir) {
+        this.offerImageUploadDir = offerImageUploadDir;
     }
 
     public int getMaxFiles() {

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Politica de cookies', '/css/legal.css')}"></head>
+<body class="legal-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="legal-main">
+        <section class="container legal-shell">
+            <header class="legal-hero">
+                <span class="section-kicker">Informacion legal</span>
+                <h1>Politica de cookies</h1>
+                <p>Informacion orientativa sobre el uso de cookies tecnicas y otras tecnologias similares en la web.</p>
+                <div class="legal-note">
+                    Este contenido es orientativo y debe revisarse legalmente antes de publicarse en produccion.
+                </div>
+            </header>
+
+            <section class="legal-content">
+                <article class="legal-card">
+                    <h2>Que son las cookies</h2>
+                    <p>Las cookies son pequeños archivos que se almacenan en el navegador y permiten recordar informacion tecnica de la sesion o mejorar la experiencia de uso del sitio.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Cookies tecnicas</h2>
+                    <ul>
+                        <li>Cookies necesarias para el inicio de sesion y el mantenimiento de la sesion del usuario.</li>
+                        <li>Cookies tecnicas para el funcionamiento del carrito, formularios y seguridad del sitio.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Cookies analiticas</h2>
+                    <p>Actualmente, esta web puede incorporar en el futuro herramientas de analitica para medir el uso del sitio. Si se activan, deberan informarse y configurarse conforme a la normativa aplicable.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Como gestionarlas</h2>
+                    <p>El usuario puede permitir, bloquear o eliminar cookies desde la configuracion de su navegador. La desactivacion de ciertas cookies tecnicas podria afectar al funcionamiento correcto de algunas partes del sitio.</p>
+                </article>
+
+                <div class="legal-actions">
+                    <a class="button button-primary" th:href="@{/}">Volver al inicio</a>
+                    <a class="button button-secondary" th:href="@{/contacto}">Contactar</a>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

@@ -19,6 +19,7 @@ import com.maxcopias.model.Usuario;
 import com.maxcopias.model.DatosArchivoGuardado;
 import com.maxcopias.repository.RepositorioPedidoCopisteria;
 import com.maxcopias.service.ExcepcionAlmacenamientoArchivos;
+import com.maxcopias.service.GeneradorCodigoPedido;
 import com.maxcopias.service.ServicioAlmacenamientoArchivos;
 import com.maxcopias.service.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,6 @@ import java.nio.file.Path;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.UUID;
 import java.util.Map;
 import java.text.Normalizer;
 import java.util.Locale;
@@ -54,6 +54,9 @@ public class ControllerPedidos {
 
     @Autowired
     private ServicioUsuario userService;
+
+    @Autowired
+    private GeneradorCodigoPedido generadorCodigoPedido;
 
     @InitBinder("orderForm")
     public void initBinder(WebDataBinder binder) {
@@ -106,6 +109,7 @@ public class ControllerPedidos {
         // Static preview and config
         model.addAttribute("acceptedFormats", "PDF, DOC, DOCX, JPG, JPEG, PNG, WEBP");
         model.addAttribute("maxFileSizeLabel", "20 MB");
+        model.addAttribute("maxCopiesPerOrder", FormularioPedidoCopisteria.MAX_COPIES);
         
         // Empty price preview (will be populated by JS/service)
         model.addAttribute("pricePreview", new com.maxcopias.model.EstimacionPrecioCopisteria(
@@ -259,11 +263,7 @@ public class ControllerPedidos {
     }
 
     private String generarCodigoRecogerUnico() {
-        String codigo;
-        do {
-            codigo = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
-        } while (pedidoRepository.existsByCodigoRecoger(codigo));
-        return codigo;
+        return generadorCodigoPedido.generarCodigoCopisteria(pedidoRepository::existsByCodigoRecoger);
     }
 
     private String construirExtrasPedido(FormularioPedidoCopisteria orderForm) {
@@ -496,6 +496,7 @@ public class ControllerPedidos {
             TipoTrabajo jobType = TipoTrabajo.valueOf(request.getParameter("jobType"));
             ModoColor colorMode = request.getParameter("colorMode") != null ? ModoColor.valueOf(request.getParameter("colorMode")) : ModoColor.BLACK_AND_WHITE;
             int copies = Integer.parseInt(request.getParameter("copies") != null ? request.getParameter("copies") : "1");
+            copies = Math.max(1, Math.min(FormularioPedidoCopisteria.MAX_COPIES, copies));
             int fileCount = files != null ? files.length : 0;
             int pageCount = fileCount; // Simple preview
 

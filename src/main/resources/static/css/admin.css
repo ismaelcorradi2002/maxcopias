@@ -404,8 +404,9 @@
 .admin-bulk-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 12px;
+    flex-wrap: wrap;
     padding: 10px 12px;
     border-bottom: 1px solid rgba(93, 187, 255, 0.12);
     background: linear-gradient(135deg, rgba(247, 251, 255, 0.94), rgba(235, 247, 255, 0.94));
@@ -415,6 +416,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-content: center;
     color: #61728b;
     font-size: 0.86rem;
     font-weight: 800;
@@ -431,7 +433,9 @@
 .admin-bulk-actions {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .admin-bulk-actions span {
@@ -478,6 +482,28 @@
     text-align: center;
 }
 
+.admin-orders-split-table th,
+.admin-orders-split-table td,
+.admin-orders-split-table .worker-cell-title,
+.admin-orders-split-table td small {
+    text-align: center;
+}
+
+.admin-orders-split-table td small {
+    margin-inline: auto;
+}
+
+.admin-orders-split-table .worker-actions-cell,
+.admin-orders-split-table .worker-order-flags,
+.admin-orders-split-table .worker-status-stack {
+    justify-content: center;
+    justify-items: center;
+}
+
+.admin-orders-split-table .worker-status-form {
+    margin-inline: auto;
+}
+
 .worker-col-checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
@@ -491,6 +517,121 @@
 
 .admin-finance-section {
     margin-top: 0;
+}
+
+@media (max-width: 1024px) {
+    .admin-page .container.admin-layout {
+        width: min(calc(100% - 28px), 1420px);
+        max-width: min(calc(100% - 28px), 1420px);
+    }
+
+    .admin-dashboard-header,
+    .table-section-header {
+        grid-template-columns: 1fr;
+        display: grid;
+    }
+
+    .admin-summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-buttons {
+        width: 100%;
+        flex-wrap: wrap;
+        border-radius: 24px;
+    }
+
+    .admin-buttons button,
+    .admin-buttons .admin-panel-link {
+        flex: 1 1 180px;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 820px) {
+    .table-section,
+    .admin-page .dashboard-card.admin-card {
+        padding: 18px;
+        border-radius: 24px;
+    }
+
+    .admin-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-users-table thead,
+    .admin-products-table thead,
+    .admin-categories-table thead {
+        display: none;
+    }
+
+    .admin-users-table tbody,
+    .admin-products-table tbody,
+    .admin-categories-table tbody {
+        display: grid;
+        gap: 0.85rem;
+        padding: 0.9rem;
+    }
+
+    .admin-users-table tr,
+    .admin-products-table tr,
+    .admin-categories-table tr {
+        display: grid;
+        gap: 0.7rem;
+        padding: 1rem;
+        border: 1px solid rgba(93, 187, 255, 0.16);
+        border-radius: 22px;
+        background: linear-gradient(160deg, rgba(255, 255, 255, 0.98), rgba(245, 251, 255, 0.98));
+        box-shadow: 0 16px 34px rgba(92, 152, 214, 0.08);
+    }
+
+    .admin-users-table td,
+    .admin-products-table td,
+    .admin-categories-table td {
+        display: grid;
+        grid-template-columns: minmax(108px, 128px) minmax(0, 1fr);
+        gap: 0.8rem;
+        align-items: start;
+        padding: 0;
+        border: 0;
+        white-space: normal;
+    }
+
+    .admin-users-table td::before,
+    .admin-products-table td::before,
+    .admin-categories-table td::before {
+        content: attr(data-label);
+        color: #6b7c93;
+        font-size: 0.72rem;
+        font-weight: 950;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+}
+
+@media (max-width: 600px) {
+    .admin-page .container.admin-layout {
+        width: min(calc(100% - 22px), 1420px);
+        max-width: min(calc(100% - 22px), 1420px);
+    }
+
+    .admin-buttons {
+        gap: 0.45rem;
+        padding: 0.45rem;
+    }
+
+    .admin-buttons button,
+    .admin-buttons .admin-panel-link {
+        flex: 1 1 100%;
+        min-height: 44px;
+    }
+
+    .admin-users-table td,
+    .admin-products-table td,
+    .admin-categories-table td {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+    }
 }
 
 .admin-finance-filters {

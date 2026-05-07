@@ -10,17 +10,16 @@
             <div class="container ofertas-hero-layout">
                 <div class="ofertas-copy" data-reveal="up">
                     <span class="section-kicker">Promociones activas</span>
-                    <h1>Ofertas reales creadas desde Maxcopias, listas para aprovechar ahora.</h1>
+                    <h1>Las mejores ofertas de Maxcopias, activas para aprovechar ahora.</h1>
                     <p>
-                        Consulta descuentos activos en tienda y promociones disponibles en este momento.
-                        Solo mostramos ofertas vigentes.
+                        Descubre descuentos y promociones disponibles para aprovechar en tienda.
                     </p>
                 </div>
 
                 <div class="ofertas-hero-badge" data-reveal="left">
-                    <span class="ofertas-hero-badge-label">Activas ahora</span>
+                    <span class="ofertas-hero-badge-label">Disponibles</span>
                     <strong th:text="${hayOfertasActivas ? (#lists.size(ofertasDestacadas) + #lists.size(ofertas)) : 0}">0</strong>
-                    <small>promociones visibles</small>
+                    <small>ofertas activas</small>
                 </div>
             </div>
         </section>
@@ -33,11 +32,11 @@
                 </div>
 
                 <div class="ofertas-featured-grid" th:if="${!#lists.isEmpty(ofertasDestacadas)}">
-                    <article class="oferta-featured-card" th:each="oferta : ${ofertasDestacadas}">
-                        <div class="oferta-featured-media" th:if="${oferta.imagenUrl != null and !#strings.isEmpty(oferta.imagenUrl)}">
-                            <img th:src="${oferta.imagenUrl}" th:alt="${oferta.titulo}">
+                    <article class="oferta-featured-card" th:each="oferta : ${ofertasDestacadas}" th:with="imagenOferta=${ofertasImagenes[oferta.id]}">
+                        <div class="oferta-featured-media" th:if="${imagenOferta != null and !#strings.isEmpty(imagenOferta)}">
+                            <img th:src="${imagenOferta}" th:alt="${oferta.titulo}">
                         </div>
-                        <div class="oferta-featured-media oferta-featured-media-placeholder" th:if="${oferta.imagenUrl == null or #strings.isEmpty(oferta.imagenUrl)}">
+                        <div class="oferta-featured-media oferta-featured-media-placeholder" th:if="${imagenOferta == null or #strings.isEmpty(imagenOferta)}">
                             <span class="oferta-discount-chip" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</span>
                         </div>
 
@@ -70,11 +69,11 @@
                 </div>
 
                 <div class="ofertas-grid" th:if="${!#lists.isEmpty(ofertas)}">
-                    <article class="oferta-card" th:each="oferta : ${ofertas}">
-                        <div class="oferta-card-media" th:if="${oferta.imagenUrl != null and !#strings.isEmpty(oferta.imagenUrl)}">
-                            <img th:src="${oferta.imagenUrl}" th:alt="${oferta.titulo}">
+                    <article class="oferta-card" th:each="oferta : ${ofertas}" th:with="imagenOferta=${ofertasImagenes[oferta.id]}">
+                        <div class="oferta-card-media" th:if="${imagenOferta != null and !#strings.isEmpty(imagenOferta)}">
+                            <img th:src="${imagenOferta}" th:alt="${oferta.titulo}">
                         </div>
-                        <div class="oferta-card-media oferta-card-media-placeholder" th:if="${oferta.imagenUrl == null or #strings.isEmpty(oferta.imagenUrl)}">
+                        <div class="oferta-card-media oferta-card-media-placeholder" th:if="${imagenOferta == null or #strings.isEmpty(imagenOferta)}">
                             <span class="oferta-discount-chip" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</span>
                         </div>
 

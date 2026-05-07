@@ -142,6 +142,13 @@ public class ServicioOferta {
         repositorioOferta.save(oferta);
     }
 
+    @Transactional
+    public void eliminar(Long id) {
+        Oferta oferta = obtenerObligatoria(id);
+        oferta.clearProductos();
+        repositorioOferta.delete(oferta);
+    }
+
     public Oferta nuevaOfertaBase() {
         Oferta oferta = new Oferta();
         oferta.setActiva(true);
