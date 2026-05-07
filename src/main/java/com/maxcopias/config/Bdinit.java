@@ -5,8 +5,8 @@ import com.maxcopias.model.Usuario;
 import com.maxcopias.repository.RepositorioUsuario;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * Crea usuarios seed si no existen. Expansible para más usuarios.
  */
 @Component
-@Profile("dev")
+@ConditionalOnProperty(name = "app.seed.enabled", havingValue = "true")
 public class Bdinit implements CommandLineRunner {
 
     private final RepositorioUsuario userRepository;

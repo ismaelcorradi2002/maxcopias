@@ -7,12 +7,12 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("dev")
+@ConditionalOnProperty(name = "app.seed.enabled", havingValue = "true")
 public class InicializadorDatosTienda implements CommandLineRunner {
 
     private final ServicioTienda servicioTienda;
