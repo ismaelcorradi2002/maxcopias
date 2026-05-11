@@ -6,6 +6,7 @@ import com.maxcopias.dto.ResultadoOfertaProducto;
 import com.maxcopias.model.Categoria;
 import com.maxcopias.model.Producto;
 import java.math.BigDecimal;
+import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -78,7 +79,7 @@ public class ServicioCatalogoTiendaVisual {
             resultadoOferta.aplicable() ? formatearPrecio(resultadoOferta.precioFinal()) : formatearPrecio(producto),
             resolverImagenProducto(producto, metadatos),
             producto.tieneImagen() ? producto.getNombre() : metadatos.alt(),
-            categorias.isEmpty() ? "Sin categoria" : String.join(" · ", categorias),
+            categorias.isEmpty() ? "Sin categoria" : String.join(" | ", categorias),
             categoriasSlug,
             categorias,
             producto.getStock(),
@@ -109,14 +110,11 @@ public class ServicioCatalogoTiendaVisual {
             return "";
         }
 
-        return valor
+        String valorNormalizado = Normalizer.normalize(valor, Normalizer.Form.NFD)
+            .replaceAll("\\p{M}+", "");
+
+        return valorNormalizado
             .toLowerCase(LOCALE_ES)
-            .replace("á", "a")
-            .replace("é", "e")
-            .replace("í", "i")
-            .replace("ó", "o")
-            .replace("ú", "u")
-            .replace("ñ", "n")
             .replaceAll("[^a-z0-9]+", "-")
             .replaceAll("(^-|-$)", "");
     }
