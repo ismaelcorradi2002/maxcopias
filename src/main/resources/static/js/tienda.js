@@ -76,14 +76,29 @@ function initFiltrosTienda() {
     title.innerHTML = `<span class="section-kicker">${label}</span><h2>Productos ${label}</h2>`;
   }
 
+  function normalizeCategory(value) {
+    return (value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
+
   function applyFilter(category, label) {
+    const normalizedCategory = normalizeCategory(category);
+
     cards.forEach((card) => {
-      const categories = (card.dataset.categories || "").split(",").filter(Boolean);
-      const showCard = category === "todos" || categories.includes(category);
+      const categories = (card.dataset.categories || "")
+        .split(",")
+        .map((item) => normalizeCategory(item))
+        .filter(Boolean);
+      const showCard = normalizedCategory === "todos" || categories.includes(normalizedCategory);
       card.hidden = !showCard;
     });
 
-    updateTitle(category, label);
+    updateTitle(normalizedCategory, label);
   }
 
   tabs.forEach((tab) => {

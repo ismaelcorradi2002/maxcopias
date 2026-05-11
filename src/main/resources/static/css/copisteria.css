@@ -3816,4 +3816,214 @@
     }
 }
 
+/* Mobile responsive hardening */
+@media (max-width: 900px) {
+    .services-hero-grid,
+    .order-hero-grid,
+    .summary-hero-grid,
+    .order-layout,
+    .summary-layout,
+    .resumen-layout,
+    .builder-grid,
+    .builder-upload-stage,
+    .wizard-layout,
+    .wizard-main-grid,
+    .wizard-summary-grid,
+    .wizard-option-grid,
+    .wizard-options-grid-large,
+    .wizard-options-grid-2,
+    .wizard-options-grid-3,
+    .wizard-review-grid,
+    .design-studio,
+    .design-studio-panel-summary,
+    .design-editor-grid,
+    .design-template-grid,
+    .design-orientation-grid,
+    .design-position-grid,
+    .design-size-grid,
+    .wizard-address-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    .services-hero-copy,
+    .order-hero-copy,
+    .summary-hero-copy,
+    .wizard-header-copy,
+    .design-studio-block,
+    .design-preview-card,
+    .design-side-card,
+    .builder-panel,
+    .builder-stage-card,
+    .builder-topbar,
+    .order-form-card,
+    .summary-card,
+    .resumen-card,
+    .wizard-card,
+    .wizard-step,
+    .wizard-summary,
+    .summary-sidebar,
+    .resumen-sidebar,
+    .builder-sidebar,
+    .builder-summary {
+        min-width: 0;
+    }
+
+    .wizard-sidebar,
+    .wizard-summary,
+    .summary-sidebar,
+    .resumen-sidebar,
+    .builder-sidebar,
+    .builder-summary,
+    .order-sidebar-direct,
+    .design-preview-card {
+        position: static !important;
+        top: auto !important;
+    }
+
+    .services-hero-actions,
+    .order-hero-actions,
+    .services-final-actions,
+    .wizard-actions,
+    .wizard-step-actions,
+    .summary-actions,
+    .resumen-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.8rem;
+    }
+
+    .services-hero-actions .button,
+    .order-hero-actions .button,
+    .services-final-actions .button,
+    .wizard-actions .button,
+    .wizard-step-actions .button,
+    .summary-actions .button,
+    .resumen-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .services-main,
+    .order-main,
+    .summary-main {
+        padding-bottom: 36px;
+    }
+
+    .services-hero,
+    .order-hero,
+    .summary-hero {
+        padding: 4px 0 28px;
+    }
+
+    .services-hero-copy h1,
+    .order-hero-copy h1,
+    .summary-hero-copy h1,
+    .wizard-header-copy h1 {
+        max-width: 100%;
+        font-size: clamp(2rem, 10vw, 3rem);
+        line-height: 1;
+    }
+
+    .services-hero-panel,
+    .pickup-highlight,
+    .service-category-card,
+    .services-final-cta,
+    .order-form-card,
+    .summary-card,
+    .side-card,
+    .order-hero-card,
+    .summary-highlight,
+    .wizard-header,
+    .wizard-step,
+    .wizard-help-card,
+    .wizard-card,
+    .wizard-summary,
+    .summary-sidebar,
+    .resumen-sidebar,
+    .summary-card,
+    .resumen-card,
+    .wizard-address-card,
+    .design-studio-block,
+    .design-preview-card,
+    .design-side-card {
+        padding: 18px;
+        border-radius: 22px;
+    }
+
+    .hero-stat-grid,
+    .form-grid,
+    .summary-meta-grid,
+    .choice-grid-2,
+    .service-option-grid,
+    .order-context-row,
+    .builder-fields-grid,
+    .builder-size-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .selected-files li,
+    .uploaded-files-list li,
+    .wizard-address-head,
+    .design-image-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .wizard-stepper,
+    .wizard-progress,
+    .wizard-steps {
+        margin-inline: -4px;
+        padding-inline: 4px;
+        overflow-x: auto;
+    }
+
+    .wizard-quantity-picker {
+        grid-template-columns: 48px minmax(0, 1fr) 48px;
+        gap: 8px;
+    }
+
+    .wizard-option-ui {
+        padding: 18px;
+    }
+
+    .wizard-option-card-toggle .wizard-option-ui {
+        padding-left: 18px;
+    }
+
+    .wizard-option-card-toggle .wizard-option-ui strong {
+        padding-right: 34px;
+    }
+
+    .wizard-address-summary {
+        width: 100%;
+        border-radius: 16px;
+    }
+
+    .design-preview-mockup {
+        padding: 12px;
+    }
+
+    .design-canvas,
+    .design-canvas.is-horizontal,
+    .design-canvas.is-vertical {
+        width: 100%;
+        min-height: 280px;
+    }
+
+    .design-image-inline-preview {
+        width: 92px;
+        height: 92px;
+    }
+
+    .service-card-button,
+    .order-form-card .button,
+    .summary-card .button,
+    .resumen-card .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 

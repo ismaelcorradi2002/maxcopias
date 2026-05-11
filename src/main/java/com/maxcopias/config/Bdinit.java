@@ -4,77 +4,131 @@ import com.maxcopias.model.Rol;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.repository.RepositorioUsuario;
 import java.time.LocalDateTime;
-import java.util.List;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
- * Inicializador general de datos de usuarios (bdinit).
- * Crea usuarios seed si no existen. Expansible para más usuarios.
+ * Crea usuarios iniciales solo cuando las variables de entorno necesarias
+ * estan definidas. No sobrescribe usuarios ya existentes salvo reset temporal
+ * explicito de passwords internas.
  */
 @Component
 @ConditionalOnProperty(name = "app.seed.enabled", havingValue = "true")
 public class Bdinit implements CommandLineRunner {
 
-    private final RepositorioUsuario userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bdinit.class);
 
-    public Bdinit(RepositorioUsuario userRepository, PasswordEncoder passwordEncoder) {
+    private final RepositorioUsuario userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final String adminEmail;
+    private final String adminPassword;
+    private final String workerEmail;
+    private final String workerPassword;
+    private final boolean resetInternalUsersPasswords;
+
+    public Bdinit(
+        RepositorioUsuario userRepository,
+        BCryptPasswordEncoder passwordEncoder,
+        @Value("${maxcopias.bootstrap.admin-email:}") String adminEmail,
+        @Value("${maxcopias.bootstrap.admin-password:}") String adminPassword,
+        @Value("${maxcopias.bootstrap.worker-email:}") String workerEmail,
+        @Value("${maxcopias.bootstrap.worker-password:}") String workerPassword,
+        @Value("${maxcopias.bootstrap.reset-internal-users-passwords:false}") boolean resetInternalUsersPasswords
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminEmail = adminEmail;
+        this.adminPassword = adminPassword;
+        this.workerEmail = workerEmail;
+        this.workerPassword = workerPassword;
+        this.resetInternalUsersPasswords = resetInternalUsersPasswords;
     }
 
     @Override
     public void run(String... args) {
-        // Lista de usuarios seed - Añade más aquí en el futuro
-        List<UsuarioSeed> usuariosSeed = List.of(
-            new UsuarioSeed(
-"Admin", 
-                "Maxcopias", 
-                "admin@gmail.com", 
-                "600 000 000", 
-                "admin",
-                Rol.ROLE_ADMIN
-            ),
-            new UsuarioSeed(
-                "Carlos", 
-                "Usuario", 
-                "carlos@gmail.com", 
-                "600 000 001", 
-                "carlos",
-                Rol.ROLE_USER
-            ),
-            new UsuarioSeed(
-                "Trabajador", 
-                "Usuario", 
-                "worker@gmail.com", 
-                "600 000 001", 
-                "worker",
-                Rol.ROLE_WORKER
-            )
+        processSeed(new UsuarioSeed(
+            "Admin",
+            "Maxcopias",
+            adminEmail,
+            "600 000 000",
+            adminPassword,
+            Rol.ROLE_ADMIN,
+            "admin"
+        ));
+        processSeed(new UsuarioSeed(
+            "Trabajador",
+            "Usuario",
+            workerEmail,
+            "600 000 001",
+            workerPassword,
+            Rol.ROLE_WORKER,
+            "worker"
+        ));
+    }
+
+    private void processSeed(UsuarioSeed seed) {
+        if (!hasRequiredCredentials(seed)) {
+            LOGGER.warn(
+                "No se crea el usuario inicial de {} porque faltan variables de entorno requeridas.",
+                seed.etiqueta()
             );
+            return;
+        }
 
-        for (UsuarioSeed seed : usuariosSeed) {
-            if (!userRepository.existsByEmailIgnoreCase(seed.email)) {
-                Usuario usuario = new Usuario();
-                usuario.setFirstName(seed.firstName);
-                usuario.setLastName(seed.lastName);
-                usuario.setEmail(seed.email);
-                usuario.setPhone(seed.phone);
-                usuario.setPassword(passwordEncoder.encode(seed.password));
-                usuario.setRol(seed.rol);
-                usuario.setCreatedAt(LocalDateTime.now()); // Forzar fecha
+        String normalizedEmail = seed.email().trim();
+        String normalizedPassword = seed.password().trim();
 
-                userRepository.save(usuario);
-                System.out.println("✅ Creado usuario seed: " + seed.email);
-            } else {
-                System.out.println("ℹ️ Usuario seed ya existe: " + seed.email);
+        userRepository.findByEmailIgnoreCase(normalizedEmail).ifPresentOrElse(usuario -> {
+            if (!resetInternalUsersPasswords) {
+                LOGGER.info("Usuario seed ya existe: {}", normalizedEmail);
+                return;
             }
+
+            usuario.setPassword(passwordEncoder.encode(normalizedPassword));
+            userRepository.save(usuario);
+            logReset(seed.etiqueta());
+        }, () -> createUser(seed, normalizedEmail, normalizedPassword));
+    }
+
+    private boolean hasRequiredCredentials(UsuarioSeed seed) {
+        return StringUtils.hasText(seed.email()) && StringUtils.hasText(seed.password());
+    }
+
+    private void createUser(UsuarioSeed seed, String normalizedEmail, String normalizedPassword) {
+        Usuario usuario = new Usuario();
+        usuario.setFirstName(seed.firstName());
+        usuario.setLastName(seed.lastName());
+        usuario.setEmail(normalizedEmail);
+        usuario.setPhone(seed.phone());
+        usuario.setPassword(passwordEncoder.encode(normalizedPassword));
+        usuario.setRol(seed.rol());
+        usuario.setCreatedAt(LocalDateTime.now());
+
+        userRepository.save(usuario);
+        LOGGER.warn("Creado usuario seed inicial para rol {} con email {}", seed.rol().name(), normalizedEmail);
+    }
+
+    private void logReset(String etiqueta) {
+        if ("admin".equals(etiqueta)) {
+            LOGGER.warn("Password de admin actualizada por reset temporal");
+        } else if ("worker".equals(etiqueta)) {
+            LOGGER.warn("Password de worker actualizada por reset temporal");
         }
     }
 
-    // Record auxiliar para datos seed (Java 17+ compatible)
-    private record UsuarioSeed(String firstName, String lastName, String email, String phone, String password, Rol rol) {}
+    private record UsuarioSeed(
+        String firstName,
+        String lastName,
+        String email,
+        String phone,
+        String password,
+        Rol rol,
+        String etiqueta
+    ) {}
 }

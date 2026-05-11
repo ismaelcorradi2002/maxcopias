@@ -2621,3 +2621,140 @@
         width: 100%;
     }
 }
+
+/* Mobile responsive hardening */
+@media (max-width: 900px) {
+    .worker-layout,
+    .worker-card,
+    .worker-section,
+    .worker-table-wrap,
+    .worker-header,
+    .worker-section-header {
+        min-width: 0;
+    }
+
+    .worker-header,
+    .worker-section-header,
+    .worker-counter-group header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .worker-counter-groups,
+    .worker-dashboard-grid,
+    .worker-latest-grid,
+    .worker-detail-grid,
+    .worker-filters,
+    .worker-form-grid,
+    .offer-type-grid,
+    .offer-target-toolbar,
+    .offer-image-panel,
+    .offer-discount-control,
+    .worker-price-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .worker-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .worker-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-radius: 22px;
+    }
+
+    .worker-tabs a,
+    .worker-header .button,
+    .worker-section-header .button,
+    .worker-offers-cta {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        white-space: normal;
+    }
+
+    .worker-table,
+    .worker-table.worker-table-compact,
+    .worker-products-table,
+    .worker-offers-table {
+        min-width: 0 !important;
+    }
+
+    .worker-table-wrap {
+        overflow: visible;
+    }
+
+    .worker-status-form,
+    .worker-status-stack,
+    .worker-select,
+    .select-modern-dropdown,
+    .select-modern-trigger,
+    .worker-actions-cell,
+    .worker-actions-cell form {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .worker-main {
+        padding: 3.2rem 0 3rem;
+    }
+
+    .worker-card {
+        padding: 1rem;
+        border-radius: 22px;
+    }
+
+    .worker-header h1 {
+        max-width: 100%;
+        font-size: clamp(2rem, 10vw, 3rem);
+        line-height: 1;
+    }
+
+    .worker-summary-grid,
+    .worker-tabs {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .worker-summary-card strong {
+        font-size: 1.45rem;
+    }
+
+    .worker-module-card {
+        min-height: 0;
+    }
+
+    .worker-table.worker-table-compact[data-worker-table="tienda"] tbody,
+    .worker-table.worker-table-compact[data-worker-table="copisteria"] tbody,
+    .worker-products-table tbody,
+    .worker-offers-table tbody {
+        padding: 0.65rem;
+    }
+
+    .worker-table.worker-table-compact[data-worker-table="tienda"] tr,
+    .worker-table.worker-table-compact[data-worker-table="copisteria"] tr,
+    .worker-products-table tr,
+    .worker-offers-table tr {
+        padding: 0.9rem;
+        border-radius: 18px;
+    }
+
+    .worker-actions-cell,
+    .order-actions,
+    .worker-form-actions,
+    .product-image-upload-actions {
+        justify-content: stretch;
+    }
+
+    .worker-actions-cell .button,
+    .worker-actions-cell form,
+    .worker-form-actions .button,
+    .worker-offer-inline-btn {
+        width: 100%;
+    }
+
+    .order-action-btn {
+        min-width: 46px;
+    }
+}

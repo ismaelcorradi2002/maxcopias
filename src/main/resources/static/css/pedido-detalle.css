@@ -1128,3 +1128,84 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Mobile responsive hardening */
+@media (max-width: 900px) {
+    .pedido-worktop,
+    .pedido-workgrid,
+    .pedido-store-layout,
+    .pedido-worktop-actions,
+    .pedido-file-actions,
+    .pedido-file-meta,
+    .pedido-store-kpi,
+    .pedido-store-info-grid,
+    .pedido-store-product-meta,
+    .pedido-store-product-card {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pedido-worktop,
+    .pedido-panel,
+    .pedido-store-hero,
+    .pedido-store-panel,
+    .pedido-store-product-card {
+        min-width: 0;
+    }
+
+    .pedido-panel-head,
+    .pedido-store-hero-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pedido-workgrid-side,
+    .pedido-store-sidebar {
+        position: static;
+        top: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .pedido-worktop,
+    .pedido-panel,
+    .pedido-store-hero,
+    .pedido-store-panel {
+        padding: 1rem;
+        border-radius: 22px;
+    }
+
+    .pedido-worktop h2,
+    .pedido-panel h2 {
+        font-size: clamp(1.45rem, 8vw, 1.9rem);
+        line-height: 1.08;
+    }
+
+    .pedido-worktop-meta,
+    .pedido-spec-grid,
+    .pedido-store-product-meta,
+    .pedido-price-list article,
+    .pedido-store-price-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pedido-worktop-actions .button,
+    .pedido-file-actions .button,
+    .pedido-store-action-links .button,
+    .pedido-store-form .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .pedido-file-top {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pedido-store-product-media {
+        min-height: 160px;
+    }
+
+    .pedido-timeline {
+        overflow-x: auto;
+        padding-bottom: 0.65rem;
+    }
+}

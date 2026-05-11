@@ -295,3 +295,65 @@
         height: 44px;
     }
 }
+
+/* Mobile responsive hardening */
+@media (max-width: 860px) {
+    .contacto-hero-grid,
+    .contacto-map-layout,
+    .contacto-info-grid,
+    .contacto-highlight-actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .contacto-highlight-card,
+    .contacto-info-card,
+    .contacto-map-card,
+    .contacto-hero-copy {
+        min-width: 0;
+    }
+
+    .contacto-actions,
+    .contacto-highlight-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.75rem;
+    }
+
+    .contacto-actions .button,
+    .contacto-highlight-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 560px) {
+    .contacto-hero,
+    .contacto-info-section,
+    .contacto-map-section {
+        padding-block: 34px;
+    }
+
+    .contacto-highlight-card,
+    .contacto-info-card {
+        padding: 18px;
+        border-radius: 22px;
+    }
+
+    .contacto-card-brand {
+        align-items: flex-start;
+    }
+
+    .contacto-highlight-item {
+        padding: 16px;
+        border-radius: 18px;
+    }
+
+    .contacto-highlight-link-primary {
+        font-size: 1rem;
+    }
+
+    .contacto-map-card,
+    .contacto-map-card iframe {
+        min-height: 320px;
+    }
+}

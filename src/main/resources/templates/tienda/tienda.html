@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Tienda de papeleria', '/css/tienda.css')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Tienda de papeleria', '/css/tienda.css?v=20260511b')}"></head>
 <body class="tienda-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -12,9 +12,10 @@
                 <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido anadir el producto.</div>
 
                 <div class="section-tabs">
-                    <button class="section-tab active" data-category="todos">Todos</button>
+                    <button type="button" class="section-tab active" data-category="todos">Todos</button>
                     <button
                         th:each="categoria : ${categoriasTienda}"
+                        type="button"
                         class="section-tab"
                         th:attr="data-category=${categoria.slug()}"
                         th:text="${categoria.nombre()}">
@@ -73,7 +74,7 @@
     <div th:replace="~{fragmentos/pie :: footer}"></div>
 </div>
 
-<script th:src="@{/js/tienda.js}"></script>
+<script th:src="@{/js/tienda.js(v='20260511a')}"></script>
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>
