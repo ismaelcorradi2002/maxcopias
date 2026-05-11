@@ -147,3 +147,51 @@
         width: 100%;
     }
 }
+
+/* Mobile responsive hardening */
+@media (max-width: 700px) {
+    .legal-shell,
+    .legal-content,
+    .legal-info-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .legal-hero,
+    .legal-card,
+    .legal-info-item {
+        min-width: 0;
+    }
+
+    .legal-note,
+    .legal-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .legal-note {
+        align-items: start;
+    }
+
+    .legal-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 520px) {
+    .legal-main {
+        padding: 8px 0 34px;
+    }
+
+    .legal-hero,
+    .legal-card,
+    .legal-info-item {
+        padding: 1rem;
+        border-radius: 20px;
+    }
+
+    .legal-hero h1 {
+        font-size: clamp(2rem, 10vw, 2.8rem);
+        line-height: 1;
+    }
+}

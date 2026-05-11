@@ -1684,3 +1684,186 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Mobile responsive hardening */
+@media (max-width: 900px) {
+    .admin-page .container.admin-layout {
+        width: min(calc(100% - 22px), 1420px);
+        max-width: min(calc(100% - 22px), 1420px);
+    }
+
+    .admin-dashboard-header,
+    .table-section-header,
+    .admin-summary-grid,
+    .admin-finance-grid,
+    .admin-finance-filters,
+    .admin-product-toolbar {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-product-toolbar {
+        display: grid;
+        align-items: stretch;
+        position: static;
+    }
+
+    .admin-new-product-btn,
+    .admin-new-category-btn,
+    .admin-product-search,
+    .admin-product-filter,
+    .admin-product-toolbar input,
+    .admin-product-toolbar select,
+    .admin-product-toolbar .admin-form-select-dropdown,
+    .admin-finance-submit,
+    .admin-finance-submit .button {
+        width: 100%;
+    }
+
+    .admin-page .dashboard-card.admin-card,
+    .table-section,
+    .table-container,
+    .admin-products-table-region,
+    .admin-categories-table-region,
+    .admin-orders-table-region {
+        min-width: 0;
+    }
+
+    .admin-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-radius: 22px;
+    }
+
+    .admin-buttons button,
+    .admin-buttons .admin-panel-link {
+        width: 100%;
+        min-width: 0;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .admin-orders-table,
+    .admin-orders-table-region {
+        min-width: 0 !important;
+    }
+
+    .admin-orders-table thead {
+        display: none;
+    }
+
+    .admin-orders-table tbody {
+        display: grid;
+        gap: 0.85rem;
+        padding: 0.9rem;
+    }
+
+    .admin-orders-table tr {
+        display: grid;
+        gap: 0.7rem;
+        padding: 1rem;
+        border: 1px solid rgba(93, 187, 255, 0.16);
+        border-radius: 22px;
+        background: linear-gradient(160deg, rgba(255, 255, 255, 0.98), rgba(245, 251, 255, 0.98));
+        box-shadow: 0 16px 34px rgba(92, 152, 214, 0.08);
+    }
+
+    .admin-orders-table td {
+        display: grid;
+        grid-template-columns: minmax(108px, 128px) minmax(0, 1fr);
+        gap: 0.8rem;
+        align-items: start;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 0 !important;
+        border: 0;
+        white-space: normal;
+    }
+
+    .admin-orders-table td::before {
+        color: #6b7c93;
+        font-size: 0.72rem;
+        font-weight: 950;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .admin-orders-table td:nth-child(1)::before { content: "ID"; }
+    .admin-orders-table td:nth-child(2)::before { content: "Tipo"; }
+    .admin-orders-table td:nth-child(3)::before { content: "Cliente"; }
+    .admin-orders-table td:nth-child(4)::before { content: "Email"; }
+    .admin-orders-table td:nth-child(5)::before { content: "Telefono"; }
+    .admin-orders-table td:nth-child(6)::before { content: "Estado"; }
+    .admin-orders-table td:nth-child(7)::before { content: "Fecha"; }
+    .admin-orders-table td:nth-child(8)::before { content: "Total"; }
+    .admin-orders-table td:nth-child(9)::before { content: "Trabajo"; }
+    .admin-orders-table td:nth-child(10)::before { content: "Copias"; }
+    .admin-orders-table td:nth-child(11)::before { content: "Color"; }
+    .admin-orders-table td:nth-child(12)::before { content: "Tamano"; }
+    .admin-orders-table td:nth-child(13)::before { content: "Caras"; }
+    .admin-orders-table td:nth-child(14)::before { content: "Papel"; }
+    .admin-orders-table td:nth-child(15)::before { content: "Encuadernacion"; }
+    .admin-orders-table td:nth-child(16)::before { content: "Extras"; }
+    .admin-orders-table td:nth-child(17)::before { content: "Archivo"; }
+    .admin-orders-table td:nth-child(18)::before { content: "Codigo"; }
+    .admin-orders-table td:nth-child(19)::before { content: "Productos"; }
+    .admin-orders-table td:nth-child(20)::before { content: "Usuario"; }
+}
+
+@media (max-width: 640px) {
+    .admin-page .dashboard-card.admin-card,
+    .table-section,
+    .admin-confirm-dialog {
+        padding: 18px;
+        border-radius: 22px;
+    }
+
+    .admin-dashboard-header h1 {
+        font-size: clamp(2rem, 10vw, 3rem);
+        line-height: 1;
+    }
+
+    .admin-status-pill {
+        width: 100%;
+        justify-content: center;
+        white-space: normal;
+    }
+
+    .admin-buttons {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-users-table td,
+    .admin-products-table td,
+    .admin-categories-table td,
+    .admin-orders-table td {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.3rem;
+    }
+
+    .admin-actions,
+    .admin-confirm-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-actions .button,
+    .admin-actions .inline-form,
+    .admin-actions .inline-form .button,
+    .admin-confirm-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .admin-role-form,
+    .admin-role-dropdown,
+    .admin-role-trigger,
+    .admin-role-menu {
+        width: 100%;
+    }
+
+    .admin-role-menu {
+        right: auto;
+        left: 0;
+    }
+}

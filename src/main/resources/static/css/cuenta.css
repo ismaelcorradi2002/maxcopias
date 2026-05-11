@@ -961,3 +961,125 @@
     background: rgba(93, 187, 255, 0.14);
     color: #1f74bf;
 }
+
+/* Mobile responsive hardening */
+@media (max-width: 900px) {
+    .auth-layout,
+    .auth-layout-login,
+    .dashboard-layout,
+    .dashboard-grid,
+    .form-grid,
+    .info-grid,
+    .order-history-grid,
+    .order-history-grid-store {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .auth-copy,
+    .dashboard-copy,
+    .auth-card,
+    .dashboard-card,
+    .auth-copy-card,
+    .dashboard-profile-card,
+    .order-history-card,
+    .empty-state {
+        min-width: 0;
+    }
+
+    .dashboard-actions,
+    .form-actions,
+    .order-history-footer {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.8rem;
+    }
+
+    .dashboard-actions .button,
+    .dashboard-actions .inline-form,
+    .dashboard-actions .inline-form .button,
+    .form-actions .button,
+    .order-history-footer .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .password-field {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .password-field input {
+        padding-right: 18px;
+    }
+
+    .password-toggle {
+        position: static;
+        transform: none;
+        width: 100%;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .auth-main,
+    .dashboard-main,
+    .admin-main {
+        padding-bottom: 38px;
+    }
+
+    .auth-section,
+    .dashboard-hero,
+    .admin-section {
+        padding: 4px 0 34px;
+    }
+
+    .auth-copy,
+    .dashboard-copy {
+        padding-top: 24px;
+    }
+
+    .auth-copy h1,
+    .dashboard-copy h1,
+    .admin-card h1 {
+        max-width: 100%;
+        font-size: clamp(2rem, 10vw, 3rem);
+        line-height: 1;
+    }
+
+    .auth-card,
+    .dashboard-card,
+    .auth-copy-card,
+    .dashboard-profile-card,
+    .order-history-card,
+    .empty-state {
+        padding: 18px;
+        border-radius: 22px;
+    }
+
+    .auth-copy-card,
+    .dashboard-profile-card {
+        margin-top: 18px;
+    }
+
+    .field-group input,
+    .password-toggle,
+    .form-grid .button {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    .password-rules-list,
+    .password-strength-meta,
+    .order-history-meta,
+    .order-history-files {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .order-history-footer {
+        align-items: stretch;
+    }
+
+    .order-history-grid-store .order-history-files li {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

@@ -2967,3 +2967,143 @@ body.nav-open .nav-toggle span:nth-child(3) {
         height: 20px;
     }
 }
+
+/* Mobile responsive hardening */
+@media (max-width: 980px) {
+    html,
+    body,
+    .page-shell {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    .site-header .header-shell {
+        width: min(calc(100% - 18px), var(--container));
+    }
+
+    .brand,
+    .nav-panel,
+    .nav-panel-inner,
+    .nav-primary-links,
+    .nav-mobile-actions,
+    .nav-utility-bar {
+        min-width: 0;
+    }
+
+    .site-header .brand-logo-navbar {
+        max-width: min(220px, 58vw);
+        object-fit: contain;
+    }
+
+    .nav-panel a,
+    .nav-mobile-actions .button,
+    .nav-user-menu-link {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer-branding {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        --radius-xl: 26px;
+        --radius-lg: 22px;
+        --radius-md: 18px;
+        --header-offset: 74px;
+    }
+
+    .container {
+        width: min(calc(100% - 22px), var(--container));
+    }
+
+    h1,
+    h2,
+    h3,
+    p,
+    li,
+    a,
+    button,
+    span,
+    strong,
+    small {
+        overflow-wrap: anywhere;
+    }
+
+    .site-header {
+        padding-top: 8px;
+    }
+
+    .site-header .header-shell {
+        padding: 10px 12px;
+        border-radius: 18px;
+    }
+
+    .site-header .brand-logo-navbar {
+        height: 40px;
+        max-width: min(190px, 54vw);
+    }
+
+    body.nav-open .nav-panel {
+        max-height: calc(100svh - 86px);
+        overflow-y: auto;
+    }
+
+    .nav-panel-inner {
+        padding: 12px;
+        border-radius: 18px;
+    }
+
+    .nav-primary-links {
+        width: 100%;
+        overflow: visible;
+        border-radius: 0;
+    }
+
+    .nav-primary-links a,
+    .nav-mobile-actions .nav-user-menu-link,
+    .nav-mobile-actions .button {
+        width: 100%;
+        justify-content: flex-start;
+        min-height: 46px;
+        padding-inline: 12px;
+    }
+
+    .nav-primary-links a::after {
+        display: none;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .footer-branding {
+        grid-column: auto;
+    }
+
+    .footer-contact-list li {
+        display: grid;
+        gap: 0.25rem;
+    }
+
+    .footer-contact-label {
+        min-width: 0;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .footer-trust-strip {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .footer-trust-pill {
+        width: 100%;
+    }
+}

@@ -312,3 +312,78 @@
         width: 100%;
     }
 }
+
+/* Mobile responsive hardening */
+@media (max-width: 980px) {
+    .ofertas-hero-layout,
+    .oferta-featured-card {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ofertas-copy,
+    .oferta-featured-copy,
+    .oferta-card-body,
+    .ofertas-empty-card {
+        min-width: 0;
+    }
+
+    .ofertas-grid {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 720px) {
+    .ofertas-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .ofertas-main {
+        overflow-x: clip;
+    }
+
+    .ofertas-hero,
+    .ofertas-section,
+    .ofertas-empty {
+        padding-block: 34px;
+    }
+
+    .ofertas-copy h1 {
+        max-width: 100%;
+        font-size: clamp(2rem, 10vw, 3rem);
+        line-height: 1;
+    }
+
+    .ofertas-hero-badge,
+    .oferta-featured-card,
+    .oferta-card,
+    .ofertas-empty-card {
+        border-radius: 22px;
+    }
+
+    .oferta-featured-copy,
+    .oferta-card-body,
+    .ofertas-empty-card {
+        padding: 18px;
+    }
+
+    .oferta-featured-media,
+    .oferta-card-media {
+        min-height: 200px;
+    }
+
+    .oferta-data-row,
+    .oferta-actions,
+    .ofertas-empty-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: stretch;
+    }
+
+    .oferta-actions .button,
+    .ofertas-empty-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
+}
