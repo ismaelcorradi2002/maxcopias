@@ -4,19 +4,18 @@ import com.maxcopias.model.Rol;
 import com.maxcopias.model.Usuario;
 import com.maxcopias.repository.RepositorioUsuario;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
  * Crea usuarios iniciales solo cuando las variables de entorno necesarias
- * estan definidas. No sobrescribe usuarios ya existentes.
+ * estan definidas. No sobrescribe usuarios ya existentes salvo reset temporal
+ * explicito de passwords internas.
  */
 @Component
 public class Bdinit implements CommandLineRunner {
@@ -24,7 +23,7 @@ public class Bdinit implements CommandLineRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bdinit.class);
 
     private final RepositorioUsuario userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final String adminEmail;
     private final String adminPassword;
     private final String workerEmail;
@@ -33,7 +32,7 @@ public class Bdinit implements CommandLineRunner {
 
     public Bdinit(
         RepositorioUsuario userRepository,
-        PasswordEncoder passwordEncoder,
+        BCryptPasswordEncoder passwordEncoder,
         @Value("${maxcopias.bootstrap.admin-email:}") String adminEmail,
         @Value("${maxcopias.bootstrap.admin-password:}") String adminPassword,
         @Value("${maxcopias.bootstrap.worker-email:}") String workerEmail,
@@ -51,10 +50,7 @@ public class Bdinit implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        List<UsuarioSeed> usuariosSeed = new ArrayList<>();
-
-        addSeedIfConfigured(
-            usuariosSeed,
+        processSeed(new UsuarioSeed(
             "Admin",
             "Maxcopias",
             adminEmail,
@@ -62,9 +58,8 @@ public class Bdinit implements CommandLineRunner {
             adminPassword,
             Rol.ROLE_ADMIN,
             "admin"
-        );
-        addSeedIfConfigured(
-            usuariosSeed,
+        ));
+        processSeed(new UsuarioSeed(
             "Trabajador",
             "Usuario",
             workerEmail,
@@ -72,81 +67,57 @@ public class Bdinit implements CommandLineRunner {
             workerPassword,
             Rol.ROLE_WORKER,
             "worker"
-        );
-
-        if (resetInternalUsersPasswords) {
-            resetPasswordIfUserExists(adminEmail, adminPassword, Rol.ROLE_ADMIN, "admin");
-            resetPasswordIfUserExists(workerEmail, workerPassword, Rol.ROLE_WORKER, "worker");
-        }
-
-        for (UsuarioSeed seed : usuariosSeed) {
-            if (userRepository.existsByEmailIgnoreCase(seed.email())) {
-                LOGGER.info("Usuario seed ya existe: {}", seed.email());
-                continue;
-            }
-
-            Usuario usuario = new Usuario();
-            usuario.setFirstName(seed.firstName());
-            usuario.setLastName(seed.lastName());
-            usuario.setEmail(seed.email());
-            usuario.setPhone(seed.phone());
-            usuario.setPassword(passwordEncoder.encode(seed.password()));
-            usuario.setRol(seed.rol());
-            usuario.setCreatedAt(LocalDateTime.now());
-
-            userRepository.save(usuario);
-            LOGGER.warn("Creado usuario seed inicial para rol {} con email {}", seed.rol().name(), seed.email());
-        }
-    }
-
-    private void addSeedIfConfigured(
-        List<UsuarioSeed> usuariosSeed,
-        String firstName,
-        String lastName,
-        String email,
-        String phone,
-        String password,
-        Rol rol,
-        String etiqueta
-    ) {
-        if (!StringUtils.hasText(email) || !StringUtils.hasText(password)) {
-            LOGGER.warn(
-                "No se crea el usuario inicial de {} porque faltan variables de entorno requeridas.",
-                etiqueta
-            );
-            return;
-        }
-
-        usuariosSeed.add(new UsuarioSeed(
-            firstName,
-            lastName,
-            email.trim(),
-            phone,
-            password.trim(),
-            rol
         ));
     }
 
-    private void resetPasswordIfUserExists(String email, String password, Rol rol, String etiqueta) {
-        if (!StringUtils.hasText(email) || !StringUtils.hasText(password)) {
+    private void processSeed(UsuarioSeed seed) {
+        if (!hasRequiredCredentials(seed)) {
             LOGGER.warn(
-                "No se puede actualizar la password de {} porque faltan variables de entorno requeridas.",
-                etiqueta
+                "No se crea el usuario inicial de {} porque faltan variables de entorno requeridas.",
+                seed.etiqueta()
             );
             return;
         }
 
-        userRepository.findByEmailIgnoreCase(email.trim()).ifPresent(usuario -> {
-            usuario.setPassword(passwordEncoder.encode(password.trim()));
-            usuario.setRol(rol);
-            userRepository.save(usuario);
+        String normalizedEmail = seed.email().trim();
+        String normalizedPassword = seed.password().trim();
 
-            if (Rol.ROLE_ADMIN.equals(rol)) {
-                LOGGER.warn("Contraseña admin actualizada correctamente");
-            } else if (Rol.ROLE_WORKER.equals(rol)) {
-                LOGGER.warn("Contraseña worker actualizada correctamente");
+        userRepository.findByEmailIgnoreCase(normalizedEmail).ifPresentOrElse(usuario -> {
+            if (!resetInternalUsersPasswords) {
+                LOGGER.info("Usuario seed ya existe: {}", normalizedEmail);
+                return;
             }
-        });
+
+            usuario.setPassword(passwordEncoder.encode(normalizedPassword));
+            userRepository.save(usuario);
+            logReset(seed.etiqueta());
+        }, () -> createUser(seed, normalizedEmail, normalizedPassword));
+    }
+
+    private boolean hasRequiredCredentials(UsuarioSeed seed) {
+        return StringUtils.hasText(seed.email()) && StringUtils.hasText(seed.password());
+    }
+
+    private void createUser(UsuarioSeed seed, String normalizedEmail, String normalizedPassword) {
+        Usuario usuario = new Usuario();
+        usuario.setFirstName(seed.firstName());
+        usuario.setLastName(seed.lastName());
+        usuario.setEmail(normalizedEmail);
+        usuario.setPhone(seed.phone());
+        usuario.setPassword(passwordEncoder.encode(normalizedPassword));
+        usuario.setRol(seed.rol());
+        usuario.setCreatedAt(LocalDateTime.now());
+
+        userRepository.save(usuario);
+        LOGGER.warn("Creado usuario seed inicial para rol {} con email {}", seed.rol().name(), normalizedEmail);
+    }
+
+    private void logReset(String etiqueta) {
+        if ("admin".equals(etiqueta)) {
+            LOGGER.warn("Password de admin actualizada por reset temporal");
+        } else if ("worker".equals(etiqueta)) {
+            LOGGER.warn("Password de worker actualizada por reset temporal");
+        }
     }
 
     private record UsuarioSeed(
@@ -155,6 +126,7 @@ public class Bdinit implements CommandLineRunner {
         String email,
         String phone,
         String password,
-        Rol rol
+        Rol rol,
+        String etiqueta
     ) {}
 }
