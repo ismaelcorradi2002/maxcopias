@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Pedidos copisteria', '/css/cuenta.css')}"></th:block>
+    <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Pedidos copistería', '/css/cuenta.css')}"></th:block>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <link rel="stylesheet" th:href="@{/css/worker.css}">
 </head>
@@ -15,9 +15,9 @@
                 <article class="worker-card">
                     <header class="worker-header worker-module-header">
                         <div>
-                            <span class="section-kicker">Copisteria</span>
-                            <h1>Pedidos de copisteria</h1>
-                            <p>Revisa archivos, codigos de recogida y actualiza el estado de cada encargo.</p>
+                            <span class="section-kicker">Copistería</span>
+                            <h1>Pedidos de copistería</h1>
+                            <p>Revisa archivos, códigos de recogida y actualiza el estado de cada encargo.</p>
                         </div>
                     </header>
 
@@ -27,7 +27,7 @@
                         <div class="worker-filters">
                             <label>
                                 <span>Buscar pedido</span>
-                                <input type="search" data-worker-search="copisteria" placeholder="Cliente, email, codigo o ID">
+                                <input type="search" data-worker-search="copisteria" placeholder="Cliente, email, código o ID">
                             </label>
                             <label>
                                 <span>Estado</span>
@@ -62,7 +62,7 @@
                                     <td data-label="Codigo">
                                         <div class="worker-order-code">
                                             <span class="worker-cell-title" th:text="${pedido.codigoRecoger}">ABC123</span>
-                                            <span class="worker-payment-badge is-neutral">Copisteria</span>
+                                            <span class="worker-payment-badge is-neutral">Copistería</span>
                                         </div>
                                         <small th:text="${#temporals.format(pedido.fechaCreacion, 'dd/MM/yyyy HH:mm')}">06/05/2026 10:30</small>
                                     </td>
@@ -117,7 +117,7 @@
                                                     class="order-action-btn order-action-delete worker-delete-trigger"
                                                     data-worker-delete-trigger
                                                     title="Eliminar pedido"
-                                                    th:attr="data-worker-delete-target=@{/worker/copisteria/{id}/eliminar(id=${pedido.id})},data-worker-delete-label=${'el pedido de copisteria ' + pedido.codigoRecoger}">
+                                                    th:attr="data-worker-delete-target=@{/worker/copisteria/{id}/eliminar(id=${pedido.id})},data-worker-delete-label=${'el pedido de copistería ' + pedido.codigoRecoger}">
                                                 <span aria-hidden="true">🗑</span>
                                                 <span class="worker-sr-only">Eliminar</span>
                                             </button>
@@ -127,7 +127,7 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <p class="worker-empty" th:if="${#lists.isEmpty(pedidosCopisteria)}">Todavia no hay pedidos de copisteria.</p>
+                            <p class="worker-empty" th:if="${#lists.isEmpty(pedidosCopisteria)}">Todavía no hay pedidos de copistería.</p>
                         </div>
                     </section>
                 </article>

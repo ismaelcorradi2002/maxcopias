@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Iniciar sesion', '/css/cuenta.css')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Iniciar sesión', '/css/cuenta.css')}"></head>
 <body class="account-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -10,17 +10,17 @@
             <div class="container auth-layout auth-layout-login">
                 <div class="auth-copy" data-reveal="up">
                     <span class="eyebrow">Acceso seguro</span>
-                    <h1>Accede a tu cuenta para continuar con tus pedidos y tu area personal.</h1>
+                    <h1>Accede a tu cuenta para continuar con tus pedidos y tu área personal.</h1>
                     <p>
-                        Inicia sesion con tu email y tu contrasena para consultar tus pedidos,
+                        Inicia sesión con tu email y tu contraseña para consultar tus pedidos,
                         gestionar tu cuenta y seguir preparando tus encargos.
                     </p>
 
                     <div class="auth-copy-card">
-                        <strong>Desde tu cuenta podras</strong>
+                        <strong>Desde tu cuenta podrás</strong>
                         <ul>
                             <li>Consultar tus datos y pedidos</li>
-                            <li>Acceder rapidamente a copisteria y tienda</li>
+                            <li>Acceder rápidamente a copistería y tienda</li>
                             <li>Seguir tu actividad con acceso seguro</li>
                         </ul>
                     </div>
@@ -29,24 +29,24 @@
                 <article class="auth-card" data-reveal="left">
                     <div class="card-header">
                         <span class="section-kicker">Login</span>
-                        <h2>Iniciar sesion</h2>
+                        <h2>Iniciar sesión</h2>
                         <p>Introduce tus credenciales para acceder a tu cuenta.</p>
                     </div>
 
                     <div class="alert alert-error" th:if="${param.error}">
-                        <p>Email o contrasena incorrectos.</p>
+                        <p>Email o contraseña incorrectos.</p>
                     </div>
 
                     <div class="alert alert-success" th:if="${param.registered}">
-                        <p>Tu cuenta se ha creado correctamente. Ya puedes iniciar sesion.</p>
+                        <p>Tu cuenta se ha creado correctamente. Ya puedes iniciar sesión.</p>
                     </div>
 
                     <div class="alert alert-info" th:if="${param.copisteriaRequired}">
-                        <p>Para acceder a copisteria y preparar impresiones necesitas iniciar sesion o registrarte primero.</p>
+                        <p>Para acceder a copistería y preparar impresiones necesitas iniciar sesión o registrarte primero.</p>
                     </div>
 
                     <div class="alert alert-info" th:if="${param.logout}">
-                        <p>La sesion se ha cerrado correctamente.</p>
+                        <p>La sesión se ha cerrado correctamente.</p>
                     </div>
 
                     <form th:action="@{/login}" method="post" novalidate data-live-validation="login">
@@ -66,7 +66,7 @@
                             </div>
 
                             <div class="field-group span-2">
-                                <label for="password">Contrasena</label>
+                                <label for="password">Contraseña</label>
                                 <div class="password-field">
                                     <input
                                         id="password"
@@ -74,14 +74,14 @@
                                         type="password"
                                         autocomplete="current-password"
                                         data-live-validate="loginPassword"
-                                        placeholder="Tu contrasena"
+                                        placeholder="Tu contraseña"
                                         required>
                                     <button
                                         type="button"
                                         class="password-toggle"
                                         data-password-toggle
                                         data-password-target="password"
-                                        aria-label="Mostrar contrasena"
+                                        aria-label="Mostrar contraseña"
                                         aria-pressed="false">Mostrar</button>
                                 </div>
                                 <small class="field-feedback" data-live-feedback="loginPassword" aria-live="polite"></small>
@@ -93,9 +93,9 @@
                         </div>
 
                         <p class="form-helper">
-                            Aun no tienes cuenta?
-                            <a th:if="${param.copisteriaRequired}" th:href="@{/register(copisteriaRequired=true)}">Registrate aqui</a>
-                            <a th:unless="${param.copisteriaRequired}" th:href="@{/register}">Registrate aqui</a>
+                            ¿Aún no tienes cuenta?
+                            <a th:if="${param.copisteriaRequired}" th:href="@{/register(copisteriaRequired=true)}">Regístrate aquí</a>
+                            <a th:unless="${param.copisteriaRequired}" th:href="@{/register}">Regístrate aquí</a>
                         </p>
                     </form>
                 </article>
@@ -110,4 +110,3 @@
 <script th:src="@{/js/cuenta.js}"></script>
 </body>
 </html>
-

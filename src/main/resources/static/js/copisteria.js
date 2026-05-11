@@ -149,7 +149,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             ["postalCode", "Codigo postal"],
             ["city", "Ciudad"],
             ["province", "Provincia"],
-            ["contactPhone", "Telefono de contacto"],
+            ["contactPhone", "Teléfono de contacto"],
             ["instructions", "Indicaciones"]
         ];
 
@@ -178,7 +178,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
             "Codigo postal: " + (deliveryFields.postalCode?.value.trim() || ""),
             "Ciudad: " + (deliveryFields.city?.value.trim() || ""),
             "Provincia: " + (deliveryFields.province?.value.trim() || ""),
-            "Telefono de contacto: " + (deliveryFields.contactPhone?.value.trim() || ""),
+            "Teléfono de contacto: " + (deliveryFields.contactPhone?.value.trim() || ""),
             "Indicaciones: " + (deliveryFields.instructions?.value.trim() || "")
         ];
 
@@ -624,7 +624,7 @@ function createSummaryController(form, fileInput) {
 
     function deliveryMethodLabel() {
         return getCheckedValue(form, "deliveryMethod") === "HOME_DELIVERY"
-            ? "Envio a domicilio"
+            ? "Envío a domicilio"
             : "Recogida en tienda";
     }
 
@@ -694,7 +694,7 @@ function createPricePreviewController(form, priceEstimator, fileInput, fileList,
         requestId: 0,
         lines: [],
         breakdown: "Selecciona un servicio para ver el precio orientativo del pedido.",
-        note: "El importe se calcula automaticamente al combinar configuracion, archivos y extras.",
+        note: "El importe se calcula automáticamente al combinar configuración, archivos y extras.",
         formattedTotal: formatEuro(0)
     };
 
@@ -876,7 +876,7 @@ function calculateEstimate(input) {
         return {
             total: 0,
             breakdown: "Selecciona un servicio para ver el precio orientativo del pedido.",
-            note: "El importe se calcula automaticamente al combinar configuracion, archivos y extras.",
+            note: "El importe se calcula automáticamente al combinar configuración, archivos y extras.",
             lines: []
         };
     }
@@ -952,7 +952,7 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice) {
     return {
         total: total,
         breakdown: parts.join(" • "),
-        note: buildNote(input.fileCount, "impresion", input),
+        note: buildNote(input.fileCount, "impresión", input),
         lines: lines
     };
 }
@@ -1054,7 +1054,7 @@ function renderPriceLines(container, lines) {
     if (!lines || !lines.length) {
         const item = document.createElement("li");
         item.className = "price-line-empty";
-        item.textContent = "Completa la configuracion y sube el archivo para ver el desglose.";
+        item.textContent = "Completa la configuración y sube el archivo para ver el desglose.";
         container.appendChild(item);
         return;
     }
@@ -1179,7 +1179,7 @@ function buildNote(fileCount, label, input) {
         : "";
 
     if (fileCount > 0) {
-        return "Precio orientativo calculado con el servicio, las paginas detectadas y la configuracion elegida." + urgentCopy + " El importe final puede ajustarse al revisar acabados especiales.";
+        return "Precio orientativo calculado con el servicio, las páginas detectadas y la configuración elegida." + urgentCopy + " El importe final puede ajustarse al revisar acabados especiales.";
     }
 
     return "Configura el pedido y sube tus archivos para afinar mejor el importe orientativo de " + label + "." + urgentCopy;
@@ -1218,11 +1218,11 @@ function bindingLabel(bindingType) {
 }
 
 function deliveryLabel(deliveryMethod) {
-    return deliveryMethod === "HOME_DELIVERY" ? "Envio a domicilio" : "Recogida en tienda";
+    return deliveryMethod === "HOME_DELIVERY" ? "Envío a domicilio" : "Recogida en tienda";
 }
 
 function deliveryDetail(deliveryMethod) {
-    return deliveryMethod === "HOME_DELIVERY" ? "Suplemento de envio al domicilio" : "Sin suplemento de entrega";
+    return deliveryMethod === "HOME_DELIVERY" ? "Suplemento de envío al domicilio" : "Sin suplemento de entrega";
 }
 
 function urgentDetail(deliveryMethod) {

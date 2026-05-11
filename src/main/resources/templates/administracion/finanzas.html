@@ -25,7 +25,7 @@
                     <div class="admin-buttons admin-panel-nav" role="navigation" aria-label="Secciones del panel">
                         <a th:href="@{/admin}" class="button button-primary admin-panel-link">Usuarios</a>
                         <a th:href="@{/admin}" class="button button-primary admin-panel-link">Productos</a>
-                        <a th:href="@{/admin}" class="button button-primary admin-panel-link">Categorias</a>
+                        <a th:href="@{/admin}" class="button button-primary admin-panel-link">Categorías</a>
                         <a th:href="@{/admin}" class="button button-primary admin-panel-link">Pedidos</a>
                         <a th:href="@{/admin/finanzas}" class="button button-primary admin-panel-link active">Finanzas</a>
                     </div>
@@ -72,7 +72,7 @@
                                     <strong th:text="${#numbers.formatDecimal(resumenFinanciero.ingresosTotales, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
                                 </article>
                                 <article class="worker-summary-card">
-                                    <span>Copisteria</span>
+                                    <span>Copistería</span>
                                     <strong th:text="${#numbers.formatDecimal(resumenFinanciero.ingresosCopisteria, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
                                 </article>
                                 <article class="worker-summary-card">
@@ -125,11 +125,11 @@
                                 <strong th:text="${#numbers.formatDecimal(resumenFinanciero.diferenciaIngresos, 1, 'COMMA', 2, 'POINT')} + ' €'">0,00 €</strong>
                             </article>
                             <article class="admin-finance-card">
-                                <span>Servicio copisteria mas solicitado</span>
+                                <span>Servicio de copistería más solicitado</span>
                                 <strong th:text="${resumenFinanciero.servicioCopisteriaMasSolicitado}">No disponible</strong>
                             </article>
                             <article class="admin-finance-card">
-                                <span>Producto mas vendido</span>
+                                <span>Producto más vendido</span>
                                 <strong th:text="${resumenFinanciero.productoMasVendido}">No disponible</strong>
                             </article>
                         </div>

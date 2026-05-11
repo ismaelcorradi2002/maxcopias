@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Copisteria y tienda de papeleria', null)}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Copistería y tienda de papelería', null)}"></head>
 <body>
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -9,20 +9,20 @@
         <section class="welcome-hero" id="inicio">
             <div class="container hero-layout">
                 <div class="hero-copy" data-reveal="up">
-                    <span class="eyebrow">Impresion online y tienda local</span>
+                    <span class="eyebrow">Impresión online y tienda local</span>
                     <h1>
                         Sube tus archivos, prepara tu pedido y recoge en tienda o recíbelo en casa
                         <span class="hero-accent">con todo listo</span>
                     </h1>
                     <p class="hero-lead">
-                        En Maxcopias puedes enviar tus documentos online, prepararlos facilmente y elegir
-                        entre recogida en tienda o entrega rapida a domicilio.
+                        En Maxcopias puedes enviar tus documentos online, prepararlos fácilmente y elegir
+                        entre recogida en tienda o entrega rápida a domicilio.
                     </p>
                     <p class="hero-lead hero-lead-micro">Recogida en tienda o entrega en casa.</p>
 
                     <div class="hero-actions">
-                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Encargar impresion</a>
-                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Encargar impresion</a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Encargar impresión</a>
+                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Encargar impresión</a>
                         <a href="#servicios" class="button button-secondary">Ver servicios</a>
                     </div>
 
@@ -46,7 +46,7 @@
                                     <path d="M10 18v-4.5h4V18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
                                 </svg>
                             </span>
-                            <span>Recogida rapida en tienda</span>
+                            <span>Recogida rápida en tienda</span>
                         </li>
                         <li class="hero-highlight-item hero-highlight-delivery">
                             <span class="hero-highlight-icon" aria-hidden="true">
@@ -67,7 +67,7 @@
                                     <path d="M9.2 12h5.6M9.2 15h5.6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
                                 </svg>
                             </span>
-                            <span>Papeleria y oficina en un solo lugar</span>
+                            <span>Papelería y oficina en un solo lugar</span>
                         </li>
                     </ul>
                 </div>
@@ -77,17 +77,17 @@
                     <div class="hero-visual-arc hero-visual-arc-gold" aria-hidden="true"></div>
                     <div class="hero-visual-arc hero-visual-arc-blue" aria-hidden="true"></div>
                     <div class="hero-visual-stage">
-                        <img th:src="@{/images/maxcopias-welcome-hero-premium.png(v='20260506b')}" alt="Hero visual de Maxcopias con materiales de copisteria, papeleria y branding de la marca">
+                        <img th:src="@{/images/maxcopias-welcome-hero-premium.png(v='20260506b')}" alt="Hero visual de Maxcopias con materiales de copistería, papelería y branding de la marca">
                     </div>
 
                     <div class="hero-badge hero-badge-top">
-                        <strong>Copisteria</strong>
-                        <span>Impresion, encuadernacion, plastificado y mas.</span>
+                        <strong>Copistería</strong>
+                        <span>Impresión, encuadernación, plastificado y más.</span>
                     </div>
 
                     <div class="hero-badge hero-badge-bottom">
                         <strong>Tienda</strong>
-                        <span>Papeleria, material escolar y suministros de oficina.</span>
+                        <span>Papelería, material escolar y suministros de oficina.</span>
                     </div>
                 </div>
             </div>
@@ -119,7 +119,7 @@
                     <h2>Servicios pensados para estudiantes, profesionales y negocios locales.</h2>
                     <p>
                         Desde impresiones urgentes hasta material escolar y de oficina,
-                        reunimos en un mismo espacio los servicios mas utiles para tu dia a dia.
+                        reunimos en un mismo espacio los servicios más útiles para tu día a día.
                     </p>
                 </div>
 
@@ -130,26 +130,26 @@
                         id="copisteria"
                         data-reveal="up"
                         th:href="@{/copisteria}"
-                        aria-label="Ir a la zona privada de copisteria">
+                        aria-label="Ir a la zona privada de copistería">
                         <div class="service-media">
                             <img
                                 th:src="@{/images/copisteria-chica-apuntes.png(v='20260414d')}"
                                 class="service-image service-image-copisteria"
-                                alt="Cliente de copisteria con apuntes impresos en Maxcopias"
+                                alt="Cliente de copistería con apuntes impresos en Maxcopias"
                                 loading="lazy">
                         </div>
                         <div class="service-copy">
-                            <span class="card-tag">Copisteria</span>
-                            <h3>Tus documentos listos con calidad, rapidez y recogida facil.</h3>
+                            <span class="card-tag">Copistería</span>
+                            <h3>Tus documentos listos con calidad, rapidez y recogida fácil.</h3>
                             <p>
                                 Preparamos encargos para estudiantes, opositores, empresas y particulares
-                                que buscan un servicio agil, bien acabado y comodo de recoger.
+                                que buscan un servicio ágil, bien acabado y cómodo de recoger.
                             </p>
                             <ul class="service-list">
-                                <li>Impresion de documentos y apuntes</li>
+                                <li>Impresión de documentos y apuntes</li>
                                 <li>Fotocopias en varios formatos</li>
-                                <li>Encuadernacion y plastificado</li>
-                                <li>Preparacion de pedidos para recoger</li>
+                                <li>Encuadernación y plastificado</li>
+                                <li>Preparación de pedidos para recoger</li>
                             </ul>
                             <span class="service-panel-cta">Inicia pedido para imprimir</span>
                         </div>
@@ -161,26 +161,26 @@
                         id="copisteria"
                         data-reveal="up"
                         th:href="@{/login(copisteriaRequired=true)}"
-                        aria-label="Iniciar sesion para acceder a copisteria">
+                        aria-label="Iniciar sesión para acceder a copistería">
                         <div class="service-media">
                             <img
                                 th:src="@{/images/copisteria-chica-apuntes.png(v='20260414d')}"
                                 class="service-image service-image-copisteria"
-                                alt="Cliente de copisteria con apuntes impresos en Maxcopias"
+                                alt="Cliente de copistería con apuntes impresos en Maxcopias"
                                 loading="lazy">
                         </div>
                         <div class="service-copy">
-                            <span class="card-tag">Copisteria</span>
-                            <h3>Tus documentos listos con calidad, rapidez y recogida facil.</h3>
+                            <span class="card-tag">Copistería</span>
+                            <h3>Tus documentos listos con calidad, rapidez y recogida fácil.</h3>
                             <p>
                                 Preparamos encargos para estudiantes, opositores, empresas y particulares
-                                que buscan un servicio agil, bien acabado y comodo de recoger.
+                                que buscan un servicio ágil, bien acabado y cómodo de recoger.
                             </p>
                             <ul class="service-list">
-                                <li>Impresion de documentos y apuntes</li>
+                                <li>Impresión de documentos y apuntes</li>
                                 <li>Fotocopias en varios formatos</li>
-                                <li>Encuadernacion y plastificado</li>
-                                <li>Preparacion de pedidos para recoger</li>
+                                <li>Encuadernación y plastificado</li>
+                                <li>Preparación de pedidos para recoger</li>
                             </ul>
                             <span class="service-panel-cta">Inicia pedido para imprimir</span>
                         </div>
@@ -196,19 +196,19 @@
                             <img
                                 th:src="@{/images/tienda-lapices-colores.jpg(v='20260414c')}"
                                 class="service-image service-image-tienda"
-                                alt="Lapices de colores para representar la zona de tienda y papeleria de Maxcopias"
+                                alt="Lápices de colores para representar la zona de tienda y papelería de Maxcopias"
                                 loading="lazy">
                         </div>
                         <div class="service-copy">
                             <span class="card-tag">Tienda</span>
                             <h3>Todo el material que necesitas para clase, oficina o estudio.</h3>
                             <p>
-                                Encuentra productos practicos y de uso frecuente con una seleccion pensada
-                                para resolver compras rapidas y reposiciones habituales.
+                                Encuentra productos prácticos y de uso frecuente con una selección pensada
+                                para resolver compras rápidas y reposiciones habituales.
                             </p>
                             <ul class="service-list">
                                 <li>Cuadernos, carpetas y archivadores</li>
-                                <li>Boligrafos, rotuladores y consumibles</li>
+                                <li>Bolígrafos, rotuladores y consumibles</li>
                                 <li>Material escolar y universitario</li>
                                 <li>Suministros para oficina y despacho</li>
                             </ul>
@@ -220,31 +220,31 @@
                 <div class="mini-services-grid">
                     <article class="mini-service-card" data-reveal="up">
                         <span class="mini-service-index">01</span>
-                        <h3>Impresion</h3>
+                        <h3>Impresión</h3>
                         <p>Documentos, trabajos, apuntes y encargos profesionales.</p>
                     </article>
 
                     <article class="mini-service-card" data-reveal="up">
                         <span class="mini-service-index">02</span>
                         <h3>Fotocopias</h3>
-                        <p>Copias rapidas con buena legibilidad y acabado cuidado.</p>
+                        <p>Copias rápidas con buena legibilidad y acabado cuidado.</p>
                     </article>
 
                     <article class="mini-service-card" data-reveal="up">
                         <span class="mini-service-index">03</span>
-                        <h3>Encuadernacion</h3>
+                        <h3>Encuadernación</h3>
                         <p>Trabajos y dossiers listos para entregar con mejor presencia.</p>
                     </article>
 
                     <article class="mini-service-card" data-reveal="up">
                         <span class="mini-service-index">04</span>
                         <h3>Plastificado</h3>
-                        <p>Proteccion y durabilidad para documentos de uso frecuente.</p>
+                        <p>Protección y durabilidad para documentos de uso frecuente.</p>
                     </article>
 
                     <article class="mini-service-card" data-reveal="up">
                         <span class="mini-service-index">05</span>
-                        <h3>Papeleria</h3>
+                        <h3>Papelería</h3>
                         <p>Material escolar y de oficina disponible en la misma visita.</p>
                     </article>
                 </div>
@@ -254,10 +254,10 @@
         <section class="process-section" id="como-funciona">
             <div class="container">
                 <div class="section-heading" data-reveal="up">
-                    <span class="section-kicker">Como funciona</span>
-                    <h2>Haz tu pedido en pocos pasos y recogelo cuando te venga bien.</h2>
+                    <span class="section-kicker">Cómo funciona</span>
+                    <h2>Haz tu pedido en pocos pasos y recógelo cuando te venga bien.</h2>
                     <p>
-                        Te lo ponemos facil para que puedas enviar tus archivos, preparar tu encargo
+                        Te lo ponemos fácil para que puedas enviar tus archivos, preparar tu encargo
                         y pasar por tienda con todo listo.
                     </p>
                 </div>
@@ -266,22 +266,22 @@
                     <article class="step-card" data-reveal="up">
                         <span class="step-number">01</span>
                         <span class="step-icon" aria-hidden="true">↑</span>
-                        <h3>Envia tus archivos</h3>
-                        <p>Comparte documentos, apuntes o trabajos y dinos como quieres prepararlos.</p>
+                        <h3>Envía tus archivos</h3>
+                        <p>Comparte documentos, apuntes o trabajos y dinos cómo quieres prepararlos.</p>
                     </article>
 
                     <article class="step-card" data-reveal="up">
                         <span class="step-number">02</span>
                         <span class="step-icon" aria-hidden="true">✦</span>
                         <h3>Preparamos tu pedido</h3>
-                        <p>Nos encargamos de la impresion y de los acabados para que todo quede listo.</p>
+                        <p>Nos encargamos de la impresión y de los acabados para que todo quede listo.</p>
                     </article>
 
                     <article class="step-card" data-reveal="up">
                         <span class="step-number">03</span>
                         <span class="step-icon" aria-hidden="true">✓</span>
-                        <h3>Recogelo en tienda</h3>
-                        <p>Pasa a recoger tu encargo y aprovecha para llevarte material de papeleria si lo necesitas.</p>
+                        <h3>Recógelo en tienda</h3>
+                        <p>Pasa a recoger tu encargo y aprovecha para llevarte material de papelería si lo necesitas.</p>
                     </article>
                 </div>
             </div>
@@ -290,21 +290,21 @@
         <section class="trust-section" id="confianza">
             <div class="container">
                 <div class="section-heading trust-heading" data-reveal="up">
-                    <span class="section-kicker">Por que elegir Maxcopias</span>
-                    <h2>Una copisteria cercana, agil y preparada para resolver tu dia a dia.</h2>
+                    <span class="section-kicker">Por qué elegir Maxcopias</span>
+                    <h2>Una copistería cercana, ágil y preparada para resolver tu día a día.</h2>
                 </div>
 
                 <div class="trust-grid">
                     <article class="trust-card" data-reveal="up">
                         <strong>Recogida en tienda</strong>
-                        <p>Haz el pedido online y pasa solo cuando tu trabajo este listo.</p>
+                        <p>Haz el pedido online y pasa solo cuando tu trabajo esté listo.</p>
                     </article>
                     <article class="trust-card" data-reveal="up">
-                        <strong>Atencion cercana</strong>
+                        <strong>Atención cercana</strong>
                         <p>Te ayudamos a elegir acabados, formatos y opciones sin complicarte.</p>
                     </article>
                     <article class="trust-card" data-reveal="up">
-                        <strong>Servicio rapido</strong>
+                        <strong>Servicio rápido</strong>
                         <p>Ideal para apuntes, entregas, reposiciones de oficina y compras urgentes.</p>
                     </article>
                     <article class="trust-card" data-reveal="up">
@@ -313,7 +313,7 @@
                     </article>
                     <article class="trust-card" data-reveal="up">
                         <strong>Pago en tienda</strong>
-                        <p>Recoge y paga alli mismo, con un flujo claro y sencillo para el cliente.</p>
+                        <p>Recoge y paga allí mismo, con un flujo claro y sencillo para el cliente.</p>
                     </article>
                 </div>
             </div>
@@ -324,10 +324,10 @@
                 <div class="location-copy">
                     <span class="section-kicker">Estamos cerca</span>
                     <h2>Estamos en C/ Soledad, Nº3, Torrejón de Ardoz</h2>
-                    <p>Visitanos para recoger tus impresiones, resolver encargos urgentes o comprar material de papeleria en tienda.</p>
+                    <p>Visítanos para recoger tus impresiones, resolver encargos urgentes o comprar material de papelería en tienda.</p>
                 </div>
                 <div class="location-actions">
-                    <a href="https://maps.google.com/?q=Calle+Soledad+3+Torrejon+de+Ardoz" target="_blank" rel="noopener noreferrer" class="button button-primary">Como llegar</a>
+                    <a href="https://maps.google.com/?q=Calle+Soledad+3+Torrejon+de+Ardoz" target="_blank" rel="noopener noreferrer" class="button button-primary">Cómo llegar</a>
                     <a th:href="@{/contacto}" class="button button-secondary">Contactar</a>
                 </div>
             </div>
@@ -337,15 +337,15 @@
             <div class="container cta-box" data-reveal="up">
                 <div>
                     <span class="section-kicker">Haz tu pedido hoy</span>
-                    <h2>Prepara tus impresiones o cuentanos lo que necesitas.</h2>
+                    <h2>Prepara tus impresiones o cuéntanos lo que necesitas.</h2>
                     <p>
-                        Si buscas rapidez, atencion cercana y una copisteria con tienda especializada,
+                        Si buscas rapidez, atención cercana y una copistería con tienda especializada,
                         en Maxcopias te ayudamos a tenerlo todo listo.
                     </p>
                 </div>
                 <div class="cta-actions">
-                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Solicitar impresion</a>
-                    <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Solicitar impresion</a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Solicitar impresión</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Solicitar impresión</a>
                     <a th:href="@{/contacto}" class="button button-secondary">Contactar</a>
                 </div>
             </div>
@@ -358,4 +358,3 @@
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>
-

@@ -31,7 +31,7 @@ function initPasswordToggles() {
             const reveal = target.type === "password";
             target.type = reveal ? "text" : "password";
             toggle.textContent = reveal ? "Ocultar" : "Mostrar";
-            toggle.setAttribute("aria-label", reveal ? "Ocultar contrasena" : "Mostrar contrasena");
+            toggle.setAttribute("aria-label", reveal ? "Ocultar contraseña" : "Mostrar contraseña");
             toggle.setAttribute("aria-pressed", reveal ? "true" : "false");
         });
     });
@@ -87,7 +87,7 @@ function initRegisterValidation(form) {
                 return setFieldState(fields.phone, "El telefono debe tener exactamente 9 digitos.", "error");
             }
 
-            return setFieldState(fields.phone, "Telefono valido.", "success");
+            return setFieldState(fields.phone, "Teléfono válido.", "success");
         },
         password: function () {
             const value = fields.password.value;
@@ -97,11 +97,11 @@ function initRegisterValidation(form) {
             updatePasswordStrength(strengthNodes, strength);
 
             if (!value) {
-                return setFieldState(fields.password, "Introduce una contrasena.", "error");
+                return setFieldState(fields.password, "Introduce una contraseña.", "error");
             }
 
             if (value.length > 72) {
-                return setFieldState(fields.password, "La contrasena no puede superar 72 caracteres.", "error");
+                return setFieldState(fields.password, "La contraseña no puede superar 72 caracteres.", "error");
             }
 
             if (!allPasswordRulesSatisfied(strength.rules)) {
@@ -115,7 +115,7 @@ function initRegisterValidation(form) {
             const confirmValue = fields.confirmPassword.value;
 
             if (!confirmValue) {
-                return setFieldState(fields.confirmPassword, "Escribe la contrasena otra vez para confirmarla.", "error");
+                return setFieldState(fields.confirmPassword, "Escribe la contraseña otra vez para confirmarla.", "error");
             }
 
             if (confirmValue !== passwordValue) {
@@ -303,10 +303,10 @@ function initLoginValidation(form) {
         const value = passwordField.value;
 
         if (!value) {
-            return setFieldState(passwordField, "Introduce tu contrasena.", "error");
+            return setFieldState(passwordField, "Introduce tu contraseña.", "error");
         }
 
-        return setFieldState(passwordField, "Contrasena introducida.", "success");
+        return setFieldState(passwordField, "Contraseña introducida.", "success");
     }
 
     [emailField, passwordField].forEach(function (field) {

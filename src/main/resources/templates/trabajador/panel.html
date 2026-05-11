@@ -27,8 +27,8 @@
                     <div class="worker-counter-groups" aria-label="Resumen de pedidos por area">
                         <section class="worker-counter-group">
                             <header>
-                                <span>Copisteria</span>
-                                <strong>Pedidos de impresion</strong>
+                                <span>Copistería</span>
+                                <strong>Pedidos de impresión</strong>
                             </header>
                             <div class="worker-summary-grid">
                                 <article class="worker-summary-card">
@@ -79,12 +79,12 @@
                     <section class="worker-dashboard-grid" aria-label="Accesos rapidos">
                         <a class="worker-module-card" th:href="@{/worker/productos}">
                             <span>Productos</span>
-                            <strong>Gestion de stock</strong>
+                            <strong>Gestión de stock</strong>
                             <p>Crear productos, editar precios, revisar stock y activar o desactivar articulos.</p>
                         </a>
                         <a class="worker-module-card" th:href="@{/worker/pedidos-copisteria}">
-                            <span>Copisteria</span>
-                            <strong>Pedidos de impresion</strong>
+                            <span>Copistería</span>
+                            <strong>Pedidos de impresión</strong>
                             <p>Revisar encargos, archivos enviados y cambiar el estado de preparacion.</p>
                         </a>
                         <a class="worker-module-card" th:href="@{/worker/pedidos-tienda}">
@@ -103,12 +103,12 @@
                         <div class="worker-section-header">
                             <div>
                                 <h2>Actividad reciente</h2>
-                                <p>Ultimos pedidos disponibles para detectar trabajo pendiente sin entrar en cada modulo.</p>
+                                <p>Últimos pedidos disponibles para detectar trabajo pendiente sin entrar en cada módulo.</p>
                             </div>
                         </div>
                         <div class="worker-latest-grid">
                             <article>
-                                <h3>Copisteria</h3>
+                                <h3>Copistería</h3>
                                 <ul>
                                     <li th:each="pedido : ${pedidosCopisteria}">
                                         <strong th:text="${pedido.codigoRecoger}">ABC123</strong>

@@ -17,7 +17,7 @@
                         <div>
                             <span class="section-kicker">Ofertas</span>
                             <h1>Ofertas y promociones</h1>
-                            <p>Crea promociones, activa o desactiva ofertas y marca una como principal para que salga primero en la pagina de ofertas.</p>
+                            <p>Crea promociones, activa o desactiva ofertas y marca una como principal para que salga primero en la página de ofertas.</p>
                         </div>
                         <a class="button button-primary worker-offers-cta" th:href="@{/worker/ofertas/nueva}">Crear oferta</a>
                     </header>
@@ -54,7 +54,7 @@
                                     <td data-label="Oferta">
                                         <div class="worker-offer-title-cell">
                                             <span class="worker-cell-title" th:text="${oferta.titulo}">Oferta</span>
-                                            <small th:text="${oferta.descripcion}">Descripcion</small>
+                                            <small th:text="${oferta.descripcion}">Descripción</small>
                                         </div>
                                     </td>
                                     <td class="worker-col-short" data-label="Tipo">
@@ -64,7 +64,7 @@
                                         <div class="worker-offer-destination">
                                             <span th:if="${oferta.tipoOferta.name() == 'PRODUCTO' and oferta.productos != null and oferta.productos.size() > 0}" th:text="${oferta.productos.size() + ' productos'}">Productos</span>
                                             <span th:if="${oferta.tipoOferta.name() == 'PRODUCTO' and (oferta.productos == null or oferta.productos.size() == 0) and oferta.producto != null}" th:text="${oferta.producto.nombre}">Producto</span>
-                                            <span th:if="${oferta.tipoOferta.name() == 'CATEGORIA' and oferta.categoria != null}" th:text="${oferta.categoria.nombre}">Categoria</span>
+                                            <span th:if="${oferta.tipoOferta.name() == 'CATEGORIA' and oferta.categoria != null}" th:text="${oferta.categoria.nombre}">Categoría</span>
                                             <span th:if="${oferta.tipoOferta.name() == 'GLOBAL'}">Toda la tienda</span>
                                         </div>
                                     </td>
@@ -116,7 +116,7 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <p class="worker-empty" th:if="${#lists.isEmpty(ofertas)}">Todavia no hay ofertas creadas.</p>
+                            <p class="worker-empty" th:if="${#lists.isEmpty(ofertas)}">Todavía no hay ofertas creadas.</p>
                         </div>
                     </section>
                 </article>

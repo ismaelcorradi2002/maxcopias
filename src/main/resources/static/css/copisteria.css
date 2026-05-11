@@ -461,7 +461,7 @@
 }
 
 .service-link-text::after {
-    content: "â†’";
+    content: "\2192";
     font-size: 1rem;
 }
 
@@ -2386,7 +2386,7 @@
 }
 
 .wizard-option-card-toggle input:checked + .wizard-option-ui::after {
-    content: "âœ“";
+    content: "\2713";
     position: absolute;
     top: 16px;
     right: 16px;
@@ -2689,7 +2689,7 @@
 }
 
 .design-template-card input:checked + .design-template-ui::after {
-    content: "âœ“";
+    content: "\2713";
 }
 
 .design-position-grid {

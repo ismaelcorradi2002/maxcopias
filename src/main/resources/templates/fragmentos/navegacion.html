@@ -22,16 +22,16 @@
                         <span class="nav-offers-icon" aria-hidden="true">%</span>
                         <span class="nav-offers-link-text">Ofertas</span>
                     </a>
-                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" data-nav-link data-nav-match="/copisteria">Copisteria</a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" data-nav-link data-nav-match="/copisteria">Copistería</a>
                     <a th:href="@{/tienda}" data-nav-link data-nav-match="/tienda,/detalles-producto">Tienda</a>
                     <a th:href="@{/contacto}" data-nav-link data-nav-match="/contacto">Contacto</a>
                 </div>
 
                 <div class="nav-mobile-actions">
-                    <a th:href="@{/copisteria}" class="button button-primary nav-cta nav-cta-mobile">Encargar impresion</a>
+                    <a th:href="@{/copisteria}" class="button button-primary nav-cta nav-cta-mobile">Encargar impresión</a>
 
                     <th:block sec:authorize="isAnonymous()">
-                        <a th:href="@{/login}" class="nav-user-menu-link" data-nav-link data-nav-match="/login">Iniciar sesion</a>
+                        <a th:href="@{/login}" class="nav-user-menu-link" data-nav-link data-nav-match="/login">Iniciar sesión</a>
                         <a th:href="@{/register}" class="button button-outline-dark button-nav">Registrarse</a>
                     </th:block>
 
@@ -40,7 +40,7 @@
                         <a th:href="@{/mis-pedidos}" class="nav-user-menu-link" data-nav-link data-nav-match="/mis-pedidos">Mis pedidos</a>
                         <form th:action="@{/logout}" method="post" class="nav-logout-form nav-logout-form-mobile">
                             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <button type="submit" class="nav-user-menu-link nav-logout-button nav-logout-button-menu">Cerrar sesion</button>
+                            <button type="submit" class="nav-user-menu-link nav-logout-button nav-logout-button-menu">Cerrar sesión</button>
                         </form>
                     </th:block>
 
@@ -48,7 +48,7 @@
                         <a th:href="@{/worker}" class="nav-user-menu-link" data-nav-link data-nav-match="/worker">Panel trabajador</a>
                         <form th:action="@{/logout}" method="post" class="nav-logout-form nav-logout-form-mobile">
                             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <button type="submit" class="nav-user-menu-link nav-logout-button nav-logout-button-menu">Cerrar sesion</button>
+                            <button type="submit" class="nav-user-menu-link nav-logout-button nav-logout-button-menu">Cerrar sesión</button>
                         </form>
                     </th:block>
 
@@ -56,7 +56,7 @@
                         <a th:href="@{/admin}" class="nav-user-menu-link" data-nav-link data-nav-match="/admin">Panel administrador</a>
                         <form th:action="@{/logout}" method="post" class="nav-logout-form nav-logout-form-mobile">
                             <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <button type="submit" class="nav-user-menu-link nav-logout-button nav-logout-button-menu">Cerrar sesion</button>
+                            <button type="submit" class="nav-user-menu-link nav-logout-button nav-logout-button-menu">Cerrar sesión</button>
                         </form>
                     </th:block>
                 </div>
@@ -64,7 +64,7 @@
         </nav>
 
         <div class="nav-utility-bar">
-            <a th:href="@{/copisteria}" class="button button-primary nav-cta">Encargar impresion</a>
+            <a th:href="@{/copisteria}" class="button button-primary nav-cta">Encargar impresión</a>
 
             <a th:href="@{/carrito}"
                class="nav-icon-link nav-cart-link"
@@ -84,7 +84,7 @@
 
             <th:block sec:authorize="isAnonymous()">
                 <div class="nav-auth-actions">
-                    <a th:href="@{/login}" class="nav-secondary-link" data-nav-link data-nav-match="/login">Iniciar sesion</a>
+                    <a th:href="@{/login}" class="nav-secondary-link" data-nav-link data-nav-match="/login">Iniciar sesión</a>
                     <a th:href="@{/register}" class="button button-outline-dark button-nav" data-nav-link data-nav-match="/register">Registrarse</a>
                 </div>
             </th:block>
@@ -132,7 +132,7 @@
                         <div class="nav-user-dropdown-section">
                             <form th:action="@{/logout}" method="post" class="nav-logout-form">
                                 <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <button type="submit" class="nav-user-menu-link nav-logout-button nav-logout-button-menu" role="menuitem">Cerrar sesion</button>
+                                <button type="submit" class="nav-user-menu-link nav-logout-button nav-logout-button-menu" role="menuitem">Cerrar sesión</button>
                             </form>
                         </div>
                     </div>

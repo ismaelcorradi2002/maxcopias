@@ -46,7 +46,7 @@
                                 <span class="oferta-tag" th:text="${oferta.tipoOferta.label}">Global</span>
                             </div>
                             <h3 th:text="${oferta.titulo}">Oferta principal</h3>
-                            <p th:text="${oferta.descripcion}">Descripcion de la oferta.</p>
+                            <p th:text="${oferta.descripcion}">Descripción de la oferta.</p>
 
                             <div class="oferta-data-row">
                                 <strong class="oferta-discount" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</strong>
@@ -56,8 +56,8 @@
 
                             <div class="oferta-actions">
                                 <a class="button button-primary" th:href="@{/tienda}">Ver en tienda</a>
-                                <a class="button button-secondary" sec:authorize="isAuthenticated()" th:href="@{/copisteria}">Encargar impresion</a>
-                                <a class="button button-secondary" sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}">Encargar impresion</a>
+                                <a class="button button-secondary" sec:authorize="isAuthenticated()" th:href="@{/copisteria}">Encargar impresión</a>
+                                <a class="button button-secondary" sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}">Encargar impresión</a>
                             </div>
                         </div>
                     </article>
@@ -83,7 +83,7 @@
                                 <span class="oferta-tag" th:if="${oferta.principal}">Principal</span>
                             </div>
                             <h3 th:text="${oferta.titulo}">Oferta</h3>
-                            <p th:text="${oferta.descripcion}">Descripcion</p>
+                            <p th:text="${oferta.descripcion}">Descripción</p>
 
                             <div class="oferta-data-row oferta-data-row-stack">
                                 <strong class="oferta-discount" th:text="${oferta.porcentajeDescuento + '% OFF'}">20% OFF</strong>
@@ -110,8 +110,8 @@
                     </p>
                     <div class="oferta-actions ofertas-empty-actions">
                         <a class="button button-primary" th:href="@{/tienda}">Ir a tienda</a>
-                        <a class="button button-secondary" sec:authorize="isAuthenticated()" th:href="@{/copisteria}">Encargar impresion</a>
-                        <a class="button button-secondary" sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}">Encargar impresion</a>
+                        <a class="button button-secondary" sec:authorize="isAuthenticated()" th:href="@{/copisteria}">Encargar impresión</a>
+                        <a class="button button-secondary" sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}">Encargar impresión</a>
                     </div>
                 </article>
             </div>
