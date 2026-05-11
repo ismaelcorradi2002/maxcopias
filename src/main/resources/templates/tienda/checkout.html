@@ -36,7 +36,7 @@
                                     <small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</small>
                                 </label>
                                 <label class="is-wide">
-                                    <span>Telefono</span>
+                                    <span>Teléfono</span>
                                     <input th:field="*{telefono}" type="text" placeholder="600123123">
                                     <small class="field-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Error</small>
                                 </label>
@@ -57,7 +57,7 @@
                                 <label class="delivery-option" th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
                                     <input th:field="*{metodoEntrega}" type="radio" value="ENVIO_DOMICILIO">
                                     <span>
-                                        <strong>Envio a domicilio</strong>
+                                        <strong>Envío a domicilio</strong>
                                         <small>4,99 EUR. Reparto disponible solo en Torrejon de Ardoz.</small>
                                     </span>
                                 </label>
@@ -68,7 +68,7 @@
                                 <p class="checkout-delivery-note">Si eliges envio, indica una direccion de Torrejon de Ardoz.</p>
                                 <div class="checkout-field-grid">
                                     <label class="is-wide">
-                                        <span>Direccion de entrega</span>
+                                        <span>Dirección de entrega</span>
                                         <input th:field="*{direccionEntrega}" type="text" placeholder="Calle, numero, piso, puerta">
                                         <small class="field-error" th:if="${#fields.hasErrors('direccionEntrega')}" th:errors="*{direccionEntrega}">Error</small>
                                     </label>
@@ -100,7 +100,7 @@
                             </div>
                             <ul class="carrito-summary-list checkout-summary-list">
                                 <li><span>Subtotal</span><strong th:text="${carrito.subtotalFormateado()}">0,00 EUR</strong></li>
-                                <li><span>Envio</span><strong th:text="${carrito.gastosEnvioFormateado()}">0,00 EUR</strong></li>
+                                <li><span>Envío</span><strong th:text="${carrito.gastosEnvioFormateado()}">0,00 EUR</strong></li>
                                 <li class="is-total"><span>Total</span><strong th:text="${carrito.totalFormateado()}">0,00 EUR</strong></li>
                             </ul>
                         </section>
@@ -113,7 +113,7 @@
                         <h2>Pago simulado</h2>
                         <p>
                             Para recogida en tienda, el pedido se guarda con pago pendiente.
-                            Cuando el equipo marque el pedido como entregado, tambien podra marcarlo como pagado.
+                            Cuando el equipo marque el pedido como entregado, también podrá marcarlo como pagado.
                         </p>
                         <p>
                             Si eliges envio, el pedido se registra igualmente, pero el envio sigue siendo una simulacion.

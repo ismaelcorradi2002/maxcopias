@@ -17,7 +17,7 @@
                         <div>
                             <span class="section-kicker">Productos</span>
                             <h1>Productos y stock</h1>
-                            <p>Gestiona el catalogo operativo: precios, stock, categorias y productos activos.</p>
+                            <p>Gestiona el catálogo operativo: precios, stock, categorías y productos activos.</p>
                         </div>
                         <a class="button button-primary" th:href="@{/admin/crear-producto}">Crear producto</a>
                     </header>
@@ -28,12 +28,12 @@
                         <div class="worker-filters">
                             <label>
                                 <span>Buscar producto</span>
-                                <input type="search" data-worker-search="productos" placeholder="Nombre, categoria o ID">
+                                <input type="search" data-worker-search="productos" placeholder="Nombre, categoría o ID">
                             </label>
                             <label>
-                                <span>Filtrar categoria</span>
+                                <span>Filtrar categoría</span>
                                 <select data-worker-category="productos" class="worker-select select-modern">
-                                    <option value="">Todas las categorias</option>
+                                    <option value="">Todas las categorías</option>
                                     <option th:each="categoria : ${categorias}" th:value="${categoria.nombre}" th:text="${categoria.nombre}">Escolar</option>
                                 </select>
                             </label>
@@ -47,7 +47,7 @@
                                     <th>Producto</th>
                                     <th class="worker-col-price">Precio</th>
                                     <th class="worker-col-count">Stock</th>
-                                    <th class="worker-col-categories">Categorias</th>
+                                    <th class="worker-col-categories">Categorías</th>
                                     <th class="worker-col-status">Estado</th>
                                     <th class="worker-col-actions">Acciones</th>
                                 </tr>

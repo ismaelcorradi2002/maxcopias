@@ -16,9 +16,9 @@
                 <article class="dashboard-card admin-card" data-reveal="up">
                     <header class="admin-dashboard-header">
                         <div>
-                            <span class="section-kicker">Administracion</span>
+                            <span class="section-kicker">Administración</span>
                             <h1>Panel de administrador</h1>
-                            <p>Gestion rapida de usuarios registrados y productos de tienda desde una interfaz clara.</p>
+                            <p>Gestión rápida de usuarios registrados y productos de tienda desde una interfaz clara.</p>
                         </div>
                         <span class="admin-status-pill">Sesion admin activa</span>
                     </header>
@@ -41,8 +41,8 @@
                     <div class="worker-counter-groups admin-counter-groups" aria-label="Resumen de pedidos por area">
                         <section class="worker-counter-group">
                             <header>
-                                <span>Copisteria</span>
-                                <strong>Pedidos de impresion</strong>
+                                <span>Copistería</span>
+                                <strong>Pedidos de impresión</strong>
                             </header>
                             <div class="worker-summary-grid">
                                 <article class="worker-summary-card">
@@ -93,14 +93,14 @@
                     <section class="table-section" aria-labelledby="admin-table-title">
                         <div class="table-section-header">
                             <div>
-                                <h2 id="admin-table-title">Gestion del sistema</h2>
+                                <h2 id="admin-table-title">Gestión del sistema</h2>
                                 <p>Alterna entre usuarios y productos sin salir del panel.</p>
                             </div>
                             <div class="admin-buttons admin-panel-nav" role="navigation" aria-label="Secciones del panel" th:data-active-tab="${activeTab}">
                                 <button class="button button-primary" type="button" data-tab="users" onclick="switchTab(this, 'users')">Usuarios</button>
                                 <button class="button button-primary" type="button" data-tab="products" onclick="switchTab(this, 'products')">Productos</button>
                                 <button class="button button-primary" type="button" data-tab="categories" onclick="switchTab(this, 'categories')">Categorías</button>
-                                <button class="button button-primary" type="button" data-tab="orders-copy" onclick="switchTab(this, 'orders-copy')">Pedidos copisteria</button>
+                                <button class="button button-primary" type="button" data-tab="orders-copy" onclick="switchTab(this, 'orders-copy')">Pedidos copistería</button>
                                 <button class="button button-primary" type="button" data-tab="orders-store" onclick="switchTab(this, 'orders-store')">Pedidos tienda</button>
                                 <a th:href="@{/admin/finanzas}" class="button button-primary admin-panel-link">Finanzas</a>
                             </div>
@@ -118,7 +118,7 @@
                         <a th:href="@{/#inicio}" class="button button-secondary-dark">Volver al inicio</a>
                         <form th:action="@{/logout}" method="post" class="inline-form">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <button type="submit" class="button button-outline-dark">Cerrar sesion</button>
+                            <button type="submit" class="button button-outline-dark">Cerrar sesión</button>
                         </form>
                     </div>
                 </article>

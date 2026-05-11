@@ -15,9 +15,9 @@
                 </div>
 
                 <div class="producto-detail-copy">
-                    <span class="section-kicker" th:text="${productoTienda.categoriasTexto()}">Categoria</span>
+                    <span class="section-kicker" th:text="${productoTienda.categoriasTexto()}">Categoría</span>
                     <h1 th:text="${productoTienda.detalleTitulo()}">Producto</h1>
-                    <p class="producto-detail-description" th:text="${productoTienda.detalleDescripcion()}">Descripcion</p>
+                    <p class="producto-detail-description" th:text="${productoTienda.detalleDescripcion()}">Descripción</p>
 
                     <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Producto anadido al carrito.</div>
                     <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido anadir el producto.</div>
@@ -61,10 +61,10 @@
 
                 <div class="producto-info-grid">
                     <div>
-                        <p th:text="${productoTienda.descripcion()}">Descripcion corta</p>
+                        <p th:text="${productoTienda.descripcion()}">Descripción corta</p>
                     </div>
                     <ul class="producto-info-list">
-                        <li><strong>Categorias:</strong> <span th:text="${productoTienda.categoriasTexto()}">Categorias</span></li>
+                        <li><strong>Categorías:</strong> <span th:text="${productoTienda.categoriasTexto()}">Categorías</span></li>
                         <li><strong>Stock:</strong> <span th:text="${productoTienda.stock()}">0</span></li>
                         <li><strong>Precio:</strong> <span th:text="${productoTienda.precioFormateado()}">0,00 EUR</span></li>
                         <li><strong>Entrega:</strong> Recogida en tienda o envio simulado</li>

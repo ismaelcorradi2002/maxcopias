@@ -10,16 +10,16 @@
             <div class="container auth-layout">
                 <div class="auth-copy" data-reveal="up">
                     <span class="eyebrow">Crea tu cuenta</span>
-                    <h1>Crea tu cuenta para gestionar tus pedidos y comprar con mas comodidad.</h1>
+                    <h1>Crea tu cuenta para gestionar tus pedidos y comprar con más comodidad.</h1>
                     <p>
-                        Guarda tus datos, consulta tus pedidos y accede mas rapido a copisteria,
+                        Guarda tus datos, consulta tus pedidos y accede más rápido a copistería,
                         tienda y seguimiento de tus encargos.
                     </p>
 
                     <div class="auth-copy-card">
-                        <strong>Que incluye tu cuenta</strong>
+                        <strong>Qué incluye tu cuenta</strong>
                         <ul>
-                            <li>Acceso a tu area personal</li>
+                            <li>Acceso a tu área personal</li>
                             <li>Consulta y seguimiento de tus pedidos</li>
                             <li>Acceso seguro a tus datos y compras</li>
                         </ul>
@@ -88,7 +88,7 @@
                             </div>
 
                             <div class="field-group span-2">
-                                <label for="phone">Telefono</label>
+                                <label for="phone">Teléfono</label>
                                 <input
                                     id="phone"
                                     type="tel"
@@ -104,7 +104,7 @@
                             </div>
 
                             <div class="field-group span-2 field-group-password">
-                                <label for="password">Contrasena</label>
+                                <label for="password">Contraseña</label>
                                 <div class="password-field">
                                     <input
                                         id="password"
@@ -114,29 +114,29 @@
                                         autocomplete="new-password"
                                         maxlength="72"
                                         data-live-validate="password"
-                                        placeholder="Minimo 6 caracteres">
+                                        placeholder="Mínimo 6 caracteres">
                                     <button
                                         type="button"
                                         class="password-toggle"
                                         data-password-toggle
                                         data-password-target="password"
-                                        aria-label="Mostrar contrasena"
+                                        aria-label="Mostrar contraseña"
                                         aria-pressed="false">Mostrar</button>
                                 </div>
                                 <div class="password-hints">
-                                    <span>La contrasena debe cumplir estos requisitos</span>
+                                    <span>La contraseña debe cumplir estos requisitos</span>
                                     <ul class="password-rules-list" data-password-rules>
-                                        <li class="password-rule-item" data-password-rule="lowercase" data-ok-text="Tiene minusculas" data-missing-text="Falta minuscula">
+                                        <li class="password-rule-item" data-password-rule="lowercase" data-ok-text="Tiene minúsculas" data-missing-text="Falta minúscula">
                                             <span class="password-rule-icon" data-password-rule-icon>!</span>
-                                            <span class="password-rule-text" data-password-rule-text>Falta minuscula</span>
+                                            <span class="password-rule-text" data-password-rule-text>Falta minúscula</span>
                                         </li>
-                                        <li class="password-rule-item" data-password-rule="uppercase" data-ok-text="Tiene mayuscula" data-missing-text="Falta mayuscula">
+                                        <li class="password-rule-item" data-password-rule="uppercase" data-ok-text="Tiene mayúscula" data-missing-text="Falta mayúscula">
                                             <span class="password-rule-icon" data-password-rule-icon>!</span>
-                                            <span class="password-rule-text" data-password-rule-text>Falta mayuscula</span>
+                                            <span class="password-rule-text" data-password-rule-text>Falta mayúscula</span>
                                         </li>
-                                        <li class="password-rule-item" data-password-rule="numberOrSymbol" data-ok-text="Tiene numero o simbolo" data-missing-text="Falta numero o simbolo">
+                                        <li class="password-rule-item" data-password-rule="numberOrSymbol" data-ok-text="Tiene número o símbolo" data-missing-text="Falta número o símbolo">
                                             <span class="password-rule-icon" data-password-rule-icon>!</span>
-                                            <span class="password-rule-text" data-password-rule-text>Falta numero o simbolo</span>
+                                            <span class="password-rule-text" data-password-rule-text>Falta número o símbolo</span>
                                         </li>
                                         <li class="password-rule-item" data-password-rule="minLength" data-ok-text="Tiene al menos 6 caracteres" data-missing-text="Menos de 6 caracteres">
                                             <span class="password-rule-icon" data-password-rule-icon>!</span>
@@ -149,8 +149,8 @@
                                         <span class="password-strength-bar" data-password-strength-bar></span>
                                     </div>
                                     <div class="password-strength-meta">
-                                        <span>Seguridad de la contrasena</span>
-                                        <strong data-password-strength-text>Debil</strong>
+                                        <span>Seguridad de la contraseña</span>
+                                        <strong data-password-strength-text>Débil</strong>
                                     </div>
                                 </div>
                                 <small class="field-feedback" data-live-feedback="password" aria-live="polite"></small>
@@ -158,7 +158,7 @@
                             </div>
 
                             <div class="field-group span-2 field-group-password">
-                                <label for="confirmPassword">Confirmar contrasena</label>
+                                <label for="confirmPassword">Confirmar contraseña</label>
                                 <div class="password-field">
                                     <input
                                         id="confirmPassword"
@@ -168,13 +168,13 @@
                                         autocomplete="new-password"
                                         maxlength="72"
                                         data-live-validate="confirmPassword"
-                                        placeholder="Repite la contrasena">
+                                        placeholder="Repite la contraseña">
                                     <button
                                         type="button"
                                         class="password-toggle"
                                         data-password-toggle
                                         data-password-target="confirmPassword"
-                                        aria-label="Mostrar contrasena"
+                                        aria-label="Mostrar contraseña"
                                         aria-pressed="false">Mostrar</button>
                                 </div>
                                 <small class="field-feedback" data-live-feedback="confirmPassword" aria-live="polite"></small>
@@ -187,9 +187,9 @@
                         </div>
 
                         <p class="form-helper">
-                            Ya tienes una cuenta?
-                            <a th:if="${copisteriaRequired}" th:href="@{/login(copisteriaRequired=true)}">Inicia sesion aqui</a>
-                            <a th:unless="${copisteriaRequired}" th:href="@{/login}">Inicia sesion aqui</a>
+                            ¿Ya tienes una cuenta?
+                            <a th:if="${copisteriaRequired}" th:href="@{/login(copisteriaRequired=true)}">Inicia sesión aquí</a>
+                            <a th:unless="${copisteriaRequired}" th:href="@{/login}">Inicia sesión aquí</a>
                         </p>
                     </form>
                 </article>
@@ -204,4 +204,3 @@
 <script th:src="@{/js/cuenta.js}"></script>
 </body>
 </html>
-

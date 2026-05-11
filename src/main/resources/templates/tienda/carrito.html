@@ -22,7 +22,7 @@
 
                 <div class="carrito-empty" th:if="${carrito.vacio}">
                     <strong>Tu carrito esta vacio.</strong>
-                    <p>Aun no has anadido productos. Explora la tienda y monta tu pedido cuando quieras.</p>
+                    <p>Aún no has añadido productos. Explora la tienda y monta tu pedido cuando quieras.</p>
                     <a class="button button-primary" th:href="@{/tienda}">Volver a la tienda</a>
                 </div>
 
@@ -32,7 +32,7 @@
                             <img th:src="${item.imagenUrl()}" th:alt="${item.nombre()}">
                             <div class="carrito-item-copy">
                                 <h2 th:text="${item.nombre()}">Producto</h2>
-                                <p th:text="${item.descripcion()}">Descripcion</p>
+                                <p th:text="${item.descripcion()}">Descripción</p>
                                 <span class="carrito-price-unit" th:text="${'Precio unitario: ' + item.precioUnitarioFormateado()}">Precio unitario</span>
                             </div>
                             <form class="carrito-item-qty" th:action="@{/carrito/actualizar}" method="post">
@@ -72,21 +72,21 @@
                             <label class="delivery-option" th:classappend="${carrito.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
                                 <input type="radio" name="metodoEntrega" value="ENVIO_DOMICILIO" onchange="this.form.submit()" th:checked="${carrito.metodoEntrega.name() == 'ENVIO_DOMICILIO'}">
                                 <span>
-                                    <strong>Envio a domicilio</strong>
-                                    <small>4,99 EUR. Envio simulado, funcionalidad en desarrollo.</small>
+                                    <strong>Envío a domicilio</strong>
+                                    <small>4,99 EUR. Envío simulado, funcionalidad en desarrollo.</small>
                                 </span>
                             </label>
                         </form>
 
                         <ul class="carrito-summary-list">
                             <li><span>Subtotal</span><strong th:text="${carrito.subtotalFormateado()}">0,00 EUR</strong></li>
-                            <li><span>Gastos de envio</span><strong th:text="${carrito.gastosEnvioFormateado()}">0,00 EUR</strong></li>
+                            <li><span>Gastos de envío</span><strong th:text="${carrito.gastosEnvioFormateado()}">0,00 EUR</strong></li>
                             <li class="is-total"><span>Total final</span><strong th:text="${carrito.totalFormateado()}">0,00 EUR</strong></li>
                         </ul>
 
                         <a class="button button-primary" th:href="@{/checkout}">Ir al checkout</a>
                         <p class="carrito-login-note" th:if="${carrito.requiereLoginParaConfirmar}">
-                            Necesitaras iniciar sesion antes de confirmar el pedido.
+                            Necesitarás iniciar sesión antes de confirmar el pedido.
                         </p>
                     </aside>
                 </div>
