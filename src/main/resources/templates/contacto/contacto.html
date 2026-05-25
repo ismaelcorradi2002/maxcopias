@@ -128,12 +128,27 @@
                     <a class="button button-primary" href="https://www.google.com/maps/dir/?api=1&destination=Calle%20Soledad%203%2C%2028850%20Torrejon%20de%20Ardoz%2C%20Madrid%2C%20Espana" target="_blank" rel="noopener noreferrer">Cómo llegar</a>
                 </div>
 
-                <div class="contacto-map-card">
+                <div class="contacto-map-card contacto-map-card-consent">
+                    <div class="contacto-map-placeholder" data-cookie-placeholder="externalMedia">
+                        <span class="contacto-card-kicker">Contenido externo</span>
+                        <h3>El mapa esta bloqueado hasta que aceptes cookies opcionales.</h3>
+                        <p>
+                            Puedes abrir Google Maps directamente o permitir contenido externo desde las preferencias
+                            de cookies.
+                        </p>
+                        <div class="contacto-map-placeholder-actions">
+                            <a class="button button-primary" href="https://www.google.com/maps/dir/?api=1&destination=Calle%20Soledad%203%2C%2028850%20Torrejon%20de%20Ardoz%2C%20Madrid%2C%20Espana" target="_blank" rel="noopener noreferrer">Abrir Google Maps</a>
+                            <button type="button" class="button button-secondary-dark" data-cookie-open>Permitir mapa</button>
+                        </div>
+                    </div>
+
                     <iframe
                         title="Mapa de Maxcopias"
-                        src="https://maps.google.com/maps?q=Calle%20Soledad%203%2C%2028850%20Torrejon%20de%20Ardoz%2C%20Madrid%2C%20Espana&t=&z=17&ie=UTF8&iwloc=near&output=embed"
+                        data-cookie-category="external-media"
+                        data-cookie-src="https://maps.google.com/maps?q=Calle%20Soledad%203%2C%2028850%20Torrejon%20de%20Ardoz%2C%20Madrid%2C%20Espana&t=&z=17&ie=UTF8&iwloc=near&output=embed"
                         loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade">
+                        referrerpolicy="no-referrer-when-downgrade"
+                        hidden>
                     </iframe>
                 </div>
             </div>

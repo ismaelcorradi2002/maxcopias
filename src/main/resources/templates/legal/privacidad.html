@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Política de privacidad', '/css/legal.css')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Politica de privacidad', '/css/legal.css')}"></head>
 <body class="legal-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -8,55 +8,92 @@
     <main class="legal-main">
         <section class="container legal-shell">
             <header class="legal-hero">
-                <span class="section-kicker">Información legal</span>
-                <h1>Política de privacidad</h1>
-                <p>Explicación orientativa sobre qué datos se recogen, para qué se utilizan y qué derechos tiene el usuario.</p>
-                <div class="legal-note">
-                    Este contenido es orientativo y debe revisarse legalmente antes de publicarse en producción.
-                </div>
+                <span class="section-kicker">Informacion legal</span>
+                <h1>Politica de privacidad</h1>
+                <p>Informacion sobre el tratamiento de datos personales realizado a traves de la web de Maxcopias.</p>
             </header>
 
             <section class="legal-content">
                 <article class="legal-card">
-                    <h2>Datos que se recogen</h2>
-                    <ul>
-                        <li>Datos de registro, como nombre, apellidos, email y teléfono.</li>
-                        <li>Datos necesarios para gestionar pedidos de copistería y tienda.</li>
-                        <li>Información enviada a través de formularios de contacto o compra.</li>
-                    </ul>
-                </article>
-
-                <article class="legal-card">
-                    <h2>Finalidad del tratamiento</h2>
-                    <ul>
-                        <li>Gestionar el alta y acceso de usuarios registrados.</li>
-                        <li>Procesar pedidos, encargos, compras y seguimiento de servicios.</li>
-                        <li>Atender consultas y comunicaciones comerciales relacionadas con la actividad de Maxcopias.</li>
-                    </ul>
-                </article>
-
-                <article class="legal-card">
-                    <h2>Conservación de la información</h2>
-                    <p>Los datos se conservarán durante el tiempo necesario para prestar el servicio, gestionar la relación con el cliente y cumplir las obligaciones legales aplicables, o hasta que el usuario solicite su supresión cuando proceda.</p>
-                </article>
-
-                <article class="legal-card">
-                    <h2>Derechos del usuario</h2>
-                    <p>El usuario podrá solicitar el acceso, rectificación, supresión, oposición, limitación del tratamiento o portabilidad de sus datos, en los términos previstos por la normativa aplicable, contactando con Maxcopias a través de los canales habilitados.</p>
-                </article>
-
-                <article class="legal-card">
-                    <h2>Contacto para privacidad</h2>
+                    <h2>Responsable del tratamiento</h2>
                     <div class="legal-info-grid">
+                        <div class="legal-info-item">
+                            <span>Nombre comercial</span>
+                            <strong>Maxcopias</strong>
+                        </div>
+                        <div class="legal-info-item">
+                            <span>Direccion</span>
+                            <strong>C/ Soledad, N 3, 28850 Torrejon de Ardoz, Madrid</strong>
+                        </div>
                         <div class="legal-info-item">
                             <span>Email</span>
                             <strong>pedidos@maxcopias.es</strong>
                         </div>
                         <div class="legal-info-item">
-                            <span>Teléfono</span>
+                            <span>Telefono</span>
                             <strong>+34 916 563 555</strong>
                         </div>
                     </div>
+                    <p>Si el titular juridico definitivo, NIF o datos registrales fueran distintos, esta informacion debera actualizarse antes de publicarse en produccion.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Que datos tratamos</h2>
+                    <ul>
+                        <li>Datos identificativos y de contacto facilitados en el registro, como nombre, apellidos, email y telefono.</li>
+                        <li>Datos necesarios para tramitar pedidos de tienda, como productos solicitados, direccion de entrega, codigo postal y ciudad.</li>
+                        <li>Datos necesarios para tramitar pedidos de copisteria, incluyendo configuraciones del pedido, observaciones y archivos subidos por el usuario.</li>
+                        <li>Datos tecnicos imprescindibles para el funcionamiento de la cuenta, la sesion, el carrito y la seguridad de la web.</li>
+                        <li>Preferencias sobre carga de contenido externo, como la decision del usuario respecto al mapa embebido de Google Maps.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Finalidades del tratamiento</h2>
+                    <ul>
+                        <li>Gestionar el alta de usuarios y el acceso al area personal.</li>
+                        <li>Tramitar pedidos de copisteria y tienda, incluyendo su seguimiento, preparacion, entrega y comunicacion con el cliente.</li>
+                        <li>Gestionar consultas, incidencias y comunicaciones relacionadas con pedidos o con el uso de la web.</li>
+                        <li>Cumplir obligaciones administrativas, contables, fiscales y legales derivadas de la actividad comercial.</li>
+                        <li>Garantizar la seguridad de la plataforma y prevenir usos indebidos o fraudulentos.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Base juridica</h2>
+                    <ul>
+                        <li>La ejecucion de la relacion contractual o la aplicacion de medidas precontractuales para el registro de cuenta y la gestion de pedidos.</li>
+                        <li>El cumplimiento de obligaciones legales aplicables al negocio, especialmente en materia fiscal, contable y de defensa de consumidores.</li>
+                        <li>El consentimiento del usuario para decisiones opcionales, como la carga de contenido externo sujeto a preferencias de cookies.</li>
+                        <li>El interes legitimo del responsable para proteger la seguridad de la web y gestionar incidencias operativas, cuando proceda.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Plazos de conservacion</h2>
+                    <ul>
+                        <li>Los datos de cuenta se conservaran mientras el usuario mantenga su registro activo y durante los plazos necesarios para atender posibles responsabilidades legales.</li>
+                        <li>Los datos de pedidos se conservaran durante el tiempo necesario para su gestion, seguimiento y cumplimiento de obligaciones legales y fiscales.</li>
+                        <li>Los archivos subidos para copisteria se conservaran durante el tiempo imprescindible para preparar, revisar y entregar el pedido, y despues se eliminaran salvo que exista una obligacion legal o incidencia que justifique su conservacion temporal.</li>
+                        <li>Las preferencias de cookies o contenido externo se conservan en el navegador del usuario hasta que este las cambie o elimine.</li>
+                    </ul>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Destinatarios y proveedores</h2>
+                    <p>Los datos podran ser tratados por proveedores tecnologicos necesarios para el funcionamiento de la web, alojamiento, correo, almacenamiento o mantenimiento tecnico, siempre bajo las correspondientes obligaciones de confidencialidad y tratamiento de datos.</p>
+                    <p>Cuando el usuario activa contenido externo, como Google Maps, podran intervenir terceros ajenos a Maxcopias conforme a sus propias politicas de privacidad y cookies.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Derechos del usuario</h2>
+                    <p>El usuario puede solicitar el acceso, rectificacion, supresion, oposicion, limitacion del tratamiento y portabilidad de sus datos, cuando proceda, escribiendo a pedidos@maxcopias.es o contactando con Maxcopias en los canales publicados en esta web.</p>
+                    <p>Si considera que sus derechos no han sido atendidos correctamente, puede presentar una reclamacion ante la Agencia Espanola de Proteccion de Datos.</p>
+                </article>
+
+                <article class="legal-card">
+                    <h2>Informacion adicional sobre archivos de copisteria</h2>
+                    <p>Los archivos que el usuario sube para pedidos de copisteria se utilizan exclusivamente para revisar, preparar, presupuestar y ejecutar el encargo solicitado. Maxcopias recomienda no incluir datos especialmente sensibles salvo que sea estrictamente necesario para el trabajo encargado.</p>
                 </article>
 
                 <div class="legal-actions">

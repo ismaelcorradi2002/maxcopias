@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initModernSelects();
     initActiveNavState();
     initCartBadgeAnimation();
+    initCookieConsent();
 
     if ("IntersectionObserver" in window) {
         const observer = new IntersectionObserver(function (entries, currentObserver) {
@@ -252,3 +253,156 @@ document.addEventListener("click", function (event) {
         closeOtherModernSelectDropdowns(null);
     }
 });
+
+function initCookieConsent() {
+    const storageKey = "maxcopias.cookieConsent.v1";
+    const banner = document.querySelector("[data-cookie-banner]");
+    const panel = document.querySelector("[data-cookie-panel]");
+    const externalToggle = document.querySelector("[data-cookie-toggle='externalMedia']");
+
+    if (!banner || !panel) {
+        applyCookiePreferences(loadCookiePreferences(storageKey));
+        return;
+    }
+
+    const savedPreferences = loadCookiePreferences(storageKey);
+
+    if (externalToggle) {
+        externalToggle.checked = Boolean(savedPreferences && savedPreferences.externalMedia);
+    }
+
+    applyCookiePreferences(savedPreferences);
+    toggleCookieBanner(banner, !savedPreferences);
+    toggleCookiePanel(panel, false);
+
+    document.querySelectorAll("[data-cookie-open]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            if (externalToggle) {
+                const currentPreferences = loadCookiePreferences(storageKey);
+                externalToggle.checked = Boolean(currentPreferences && currentPreferences.externalMedia);
+            }
+            toggleCookiePanel(panel, true);
+        });
+    });
+
+    document.querySelectorAll("[data-cookie-close]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            toggleCookiePanel(panel, false);
+        });
+    });
+
+    document.querySelectorAll("[data-cookie-accept-all]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const preferences = {
+                necessary: true,
+                externalMedia: true
+            };
+            persistCookiePreferences(storageKey, preferences);
+            if (externalToggle) {
+                externalToggle.checked = true;
+            }
+            applyCookiePreferences(preferences);
+            toggleCookieBanner(banner, false);
+            toggleCookiePanel(panel, false);
+        });
+    });
+
+    document.querySelectorAll("[data-cookie-reject]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const preferences = {
+                necessary: true,
+                externalMedia: false
+            };
+            persistCookiePreferences(storageKey, preferences);
+            if (externalToggle) {
+                externalToggle.checked = false;
+            }
+            applyCookiePreferences(preferences);
+            toggleCookieBanner(banner, false);
+            toggleCookiePanel(panel, false);
+        });
+    });
+
+    document.querySelectorAll("[data-cookie-save]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const preferences = {
+                necessary: true,
+                externalMedia: Boolean(externalToggle && externalToggle.checked)
+            };
+            persistCookiePreferences(storageKey, preferences);
+            applyCookiePreferences(preferences);
+            toggleCookieBanner(banner, false);
+            toggleCookiePanel(panel, false);
+        });
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            toggleCookiePanel(panel, false);
+        }
+    });
+}
+
+function loadCookiePreferences(storageKey) {
+    try {
+        const rawValue = window.localStorage.getItem(storageKey);
+        if (!rawValue) {
+            return null;
+        }
+        return JSON.parse(rawValue);
+    } catch (error) {
+        return null;
+    }
+}
+
+function persistCookiePreferences(storageKey, preferences) {
+    try {
+        window.localStorage.setItem(storageKey, JSON.stringify(preferences));
+    } catch (error) {
+        // Ignore storage errors and keep runtime behavior.
+    }
+}
+
+function toggleCookieBanner(banner, shouldShow) {
+    if (!banner) {
+        return;
+    }
+    banner.hidden = !shouldShow;
+}
+
+function toggleCookiePanel(panel, shouldShow) {
+    if (!panel) {
+        return;
+    }
+    panel.hidden = !shouldShow;
+    document.body.classList.toggle("cookie-panel-open", shouldShow);
+}
+
+function applyCookiePreferences(preferences) {
+    const allowExternalMedia = Boolean(preferences && preferences.externalMedia);
+
+    document.documentElement.dataset.cookieExternalMedia = String(allowExternalMedia);
+
+    document.querySelectorAll("[data-cookie-category='external-media']").forEach(function (embed) {
+        const targetSrc = embed.dataset.cookieSrc;
+        if (!targetSrc) {
+            return;
+        }
+
+        if (allowExternalMedia) {
+            if (embed.getAttribute("src") !== targetSrc) {
+                embed.setAttribute("src", targetSrc);
+            }
+            embed.hidden = false;
+        } else {
+            if (embed.hasAttribute("src")) {
+                embed.removeAttribute("src");
+            }
+            embed.hidden = true;
+        }
+    });
+
+    document.querySelectorAll("[data-cookie-placeholder='externalMedia']").forEach(function (placeholder) {
+        placeholder.hidden = allowExternalMedia;
+    });
+}

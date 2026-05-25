@@ -74,6 +74,74 @@
     <div class="container footer-bottom">
         <p>&copy; 2026 Maxcopias. Copistería y papelería para estudiantes, profesionales y empresas.</p>
     </div>
+    <button
+        type="button"
+        class="cookie-manage-button"
+        data-cookie-open
+        aria-haspopup="dialog"
+        aria-controls="cookie-preferences-panel">
+        Gestionar cookies
+    </button>
+
+    <section class="cookie-banner" data-cookie-banner hidden aria-label="Aviso de cookies">
+        <div class="cookie-banner-card">
+            <div class="cookie-banner-copy">
+                <span class="cookie-banner-kicker">Cookies</span>
+                <h3>Usamos cookies tecnicas y contenido externo opcional.</h3>
+                <p>
+                    Las cookies necesarias permiten que la web funcione correctamente. El contenido externo,
+                    como Google Maps, solo se cargara si lo aceptas.
+                    <a th:href="@{/cookies}">Mas informacion</a>
+                </p>
+            </div>
+
+            <div class="cookie-banner-actions">
+                <button type="button" class="button button-secondary-dark" data-cookie-reject>Rechazar opcionales</button>
+                <button type="button" class="button button-outline-dark" data-cookie-open>Configurar</button>
+                <button type="button" class="button button-primary" data-cookie-accept-all>Aceptar</button>
+            </div>
+        </div>
+    </section>
+
+    <section
+        class="cookie-preferences-panel"
+        id="cookie-preferences-panel"
+        data-cookie-panel
+        hidden
+        aria-label="Preferencias de cookies">
+        <div class="cookie-preferences-card">
+            <div class="cookie-preferences-head">
+                <div>
+                    <span class="cookie-banner-kicker">Preferencias</span>
+                    <h3>Configura tus cookies</h3>
+                </div>
+                <button type="button" class="cookie-panel-close" data-cookie-close aria-label="Cerrar panel">Cerrar</button>
+            </div>
+
+            <div class="cookie-preferences-list">
+                <label class="cookie-preference-item">
+                    <span>
+                        <strong>Cookies necesarias</strong>
+                        <small>Imprescindibles para la navegacion, seguridad, sesion y formularios.</small>
+                    </span>
+                    <input type="checkbox" checked disabled>
+                </label>
+
+                <label class="cookie-preference-item">
+                    <span>
+                        <strong>Contenido externo</strong>
+                        <small>Permite cargar servicios de terceros incrustados, como el mapa de Google.</small>
+                    </span>
+                    <input type="checkbox" data-cookie-toggle="externalMedia">
+                </label>
+            </div>
+
+            <div class="cookie-banner-actions cookie-panel-actions">
+                <button type="button" class="button button-secondary-dark" data-cookie-reject>Rechazar opcionales</button>
+                <button type="button" class="button button-primary" data-cookie-save>Guardar seleccion</button>
+            </div>
+        </div>
+    </section>
 </footer>
 </body>
 </html>

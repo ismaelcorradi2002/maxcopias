@@ -253,6 +253,41 @@
     border: 0;
 }
 
+.contacto-map-card-consent {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: clamp(24px, 4vw, 34px);
+}
+
+.contacto-map-placeholder {
+    width: min(100%, 440px);
+    padding: 1.5rem;
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(93, 187, 255, 0.14);
+    text-align: left;
+}
+
+.contacto-map-placeholder h3 {
+    margin: 0 0 0.8rem;
+    color: #13233f;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
+    letter-spacing: -0.04em;
+}
+
+.contacto-map-placeholder p {
+    margin: 0;
+}
+
+.contacto-map-placeholder-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
 @media (max-width: 1100px) {
     .contacto-info-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -355,5 +390,15 @@
     .contacto-map-card,
     .contacto-map-card iframe {
         min-height: 320px;
+    }
+
+    .contacto-map-placeholder-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .contacto-map-placeholder-actions .button {
+        width: 100%;
+        justify-content: center;
     }
 }
