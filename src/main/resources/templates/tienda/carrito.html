@@ -12,18 +12,18 @@
                     <div>
                         <span class="section-kicker">Tu cesta</span>
                         <h1>Carrito de compra</h1>
-                        <p>Gestiona cantidades, revisa el total y prepara una compra simulada con flujo profesional.</p>
+                        <p>Revisa cantidades, comprueba el total y deja listo tu pedido antes de confirmarlo.</p>
                     </div>
-                    <a class="button button-outline-dark" th:href="@{/tienda}">Volver a la tienda</a>
+                    <a class="button button-outline-dark" th:href="@{/tienda}">Seguir comprando</a>
                 </div>
 
-                <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Carrito actualizado.</div>
-                <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido actualizar el carrito.</div>
+                <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Tu carrito se ha actualizado correctamente.</div>
+                <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No hemos podido actualizar el carrito. Inténtalo de nuevo.</div>
 
                 <div class="carrito-empty" th:if="${carrito.vacio}">
-                    <strong>Tu carrito esta vacio.</strong>
-                    <p>Aún no has añadido productos. Explora la tienda y monta tu pedido cuando quieras.</p>
-                    <a class="button button-primary" th:href="@{/tienda}">Volver a la tienda</a>
+                    <strong>Tu carrito está vacío.</strong>
+                    <p>Aún no has añadido productos. Entra en la tienda y prepara tu pedido cuando quieras.</p>
+                    <a class="button button-primary" th:href="@{/tienda}">Ir a la tienda</a>
                 </div>
 
                 <div class="carrito-layout" th:if="${!carrito.vacio}">
@@ -50,7 +50,7 @@
                                 <form th:action="@{/carrito/eliminar}" method="post">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                                     <input type="hidden" name="productoId" th:value="${item.productoId()}">
-                                    <button type="submit" class="button button-outline">Eliminar</button>
+                                    <button type="submit" class="button button-outline">Quitar</button>
                                 </form>
                             </div>
                         </article>
@@ -58,7 +58,7 @@
 
                     <aside class="carrito-summary-card">
                         <span class="section-kicker">Resumen</span>
-                        <h2>Checkout rapido</h2>
+                        <h2>Antes de confirmar</h2>
 
                         <form th:action="@{/carrito/entrega}" method="post" class="carrito-delivery-form">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -66,14 +66,14 @@
                                 <input type="radio" name="metodoEntrega" value="RECOGIDA_TIENDA" onchange="this.form.submit()" th:checked="${carrito.metodoEntrega.name() == 'RECOGIDA_TIENDA'}">
                                 <span>
                                     <strong>Recogida en tienda</strong>
-                                    <small>Gratis. Pagaras en tienda cuando recojas el pedido.</small>
+                                    <small>Gratis. Pagarás cuando recojas el pedido.</small>
                                 </span>
                             </label>
                             <label class="delivery-option" th:classappend="${carrito.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
                                 <input type="radio" name="metodoEntrega" value="ENVIO_DOMICILIO" onchange="this.form.submit()" th:checked="${carrito.metodoEntrega.name() == 'ENVIO_DOMICILIO'}">
                                 <span>
                                     <strong>Envío a domicilio</strong>
-                                    <small>4,99 EUR. Envío simulado, funcionalidad en desarrollo.</small>
+                                    <small>4,99 EUR. Disponible como flujo simulado en esta fase.</small>
                                 </span>
                             </label>
                         </form>
@@ -86,7 +86,7 @@
 
                         <a class="button button-primary" th:href="@{/checkout}">Ir al checkout</a>
                         <p class="carrito-login-note" th:if="${carrito.requiereLoginParaConfirmar}">
-                            Necesitarás iniciar sesión antes de confirmar el pedido.
+                            Tendrás que iniciar sesión antes de confirmar el pedido.
                         </p>
                     </aside>
                 </div>

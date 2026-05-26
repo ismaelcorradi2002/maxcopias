@@ -64,8 +64,8 @@ function initOfferForm() {
 
         if (imageHelp) {
             imageHelp.textContent = isProductOffer
-                ? "En ofertas de producto se usara automaticamente la imagen del producto seleccionado."
-                : "Sube una imagen para ofertas globales o de categoria.";
+                ? "En ofertas de producto se usará automáticamente la imagen del producto seleccionado."
+                : "Sube una imagen para ofertas globales o de categoría.";
         }
     }
 
@@ -275,7 +275,7 @@ function updateOfferPreview() {
         priceBox.hidden = true;
     } else if (type === "CATEGORIA" && selectedCategory?.value) {
         title.textContent = `${discount}% en ${categoryText}`;
-        description.textContent = `Se aplicara un ${discount}% de descuento a todos los productos de la categoria ${categoryText}.`;
+        description.textContent = `Se aplicará un ${discount}% de descuento a todos los productos de la categoría ${categoryText}.`;
         priceBox.hidden = true;
     } else if (type === "GLOBAL") {
         title.textContent = `${discount}% en toda la tienda`;

@@ -15,10 +15,10 @@
                 <article class="dashboard-card admin-card" data-reveal="up">
                     <header class="admin-dashboard-header">
                         <div>
-                            <span class="section-kicker">Administracion</span>
+                            <span class="section-kicker">Administración</span>
                             <h1>Editar producto</h1>
                             <p>
-                                Actualiza el stock, precio, categorias, datos principales e imagen del producto
+                                Actualiza el stock, precio, categorías, datos principales e imagen del producto
                                 <strong th:text="${producto.nombre ?: 'seleccionado'}">seleccionado</strong>.
                             </p>
                         </div>
@@ -53,7 +53,7 @@
                                 </div>
 
                                 <div class="admin-form-group admin-form-group-full">
-                                    <label for="descripcion">Descripcion</label>
+                                    <label for="descripcion">Descripción</label>
                                     <textarea th:field="*{descripcion}" id="descripcion" rows="4" required maxlength="1000"></textarea>
                                 </div>
 
@@ -63,7 +63,7 @@
                                 </div>
 
                                 <div class="admin-form-group">
-                                    <label for="categoriaId">Categoria principal <span class="required">*</span></label>
+                                    <label for="categoriaId">Categoría principal <span class="required">*</span></label>
                                     <select th:field="*{categoriaId}" id="categoriaId" class="admin-form-select select-modern" required>
                                         <option value="">Seleccionar (obligatorio)</option>
                                         <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
@@ -71,7 +71,7 @@
                                 </div>
 
                                 <div class="admin-form-group">
-                                    <label for="categoriaOpcionalId">Categoria opcional</label>
+                                    <label for="categoriaOpcionalId">Categoría opcional</label>
                                     <select th:field="*{categoriaOpcionalId}" id="categoriaOpcionalId" class="admin-form-select select-modern">
                                         <option value="">Ninguna</option>
                                         <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
@@ -92,11 +92,11 @@
                                 </div>
                                 <div class="product-image-upload-copy">
                                     <strong>Imagen del producto</strong>
-                                    <p>Recomendado: imagen cuadrada 800x800 px. Formatos admitidos: JPG, PNG y WEBP. Tamano maximo: 5 MB.</p>
+                                    <p>Recomendado: imagen cuadrada 800x800 px. Formatos admitidos: JPG, PNG y WEBP. Tamaño máximo: 5 MB.</p>
                                     <label class="product-image-upload-dropzone" for="imagenProducto">
                                         <input type="file" id="imagenProducto" name="imagenProducto" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-product-image-input>
                                         <span class="product-image-upload-title">Subir o cambiar imagen</span>
-                                        <small>Arrastra la imagen aqui o pulsa para seleccionarla</small>
+                                        <small>Arrastra la imagen aquí o pulsa para seleccionarla</small>
                                     </label>
                                     <div class="product-image-upload-actions">
                                         <button type="button" class="button button-secondary-dark" data-product-image-change>Cambiar imagen</button>

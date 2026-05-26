@@ -27,7 +27,7 @@
                         <div class="worker-filters">
                             <label>
                                 <span>Buscar pedido</span>
-                                <input type="search" data-worker-search="tienda" placeholder="Cliente, codigo, email o producto">
+                                <input type="search" data-worker-search="tienda" placeholder="Cliente, código, email o producto">
                             </label>
                             <label>
                                 <span>Estado</span>
@@ -46,7 +46,7 @@
                             <table class="worker-table worker-table-compact" data-worker-table="tienda" data-worker-paginated="true">
                                 <thead>
                                 <tr>
-                                    <th>Codigo</th>
+                                    <th>Código</th>
                                     <th>Cliente</th>
                                     <th>Productos</th>
                                     <th>Entrega</th>
@@ -60,9 +60,9 @@
                                     th:data-status="${pedido.estado.name()}"
                                     th:data-date="${#temporals.format(pedido.fechaCreacion, 'yyyy-MM-dd')}"
                                     th:classappend="${pedido.metodoEntrega != null && pedido.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' worker-order-row-priority worker-order-row-card' : ' worker-order-row-standard worker-order-row-card'">
-                                    <td data-label="Codigo">
+                                    <td data-label="Código">
                                         <div class="worker-order-code">
-                                            <span class="worker-cell-title" th:text="${pedido.codigoPedido != null ? pedido.codigoPedido : 'Sin codigo'}">MT-000</span>
+                                            <span class="worker-cell-title" th:text="${pedido.codigoPedido != null ? pedido.codigoPedido : 'Sin código'}">MT-000</span>
                                             <span class="worker-payment-badge"
                                                   th:classappend="${pedido.pagado} ? ' is-paid' : ' is-unpaid'"
                                                   th:text="${pedido.pagado ? 'Pagado' : 'No pagado'}">No pagado</span>
@@ -73,7 +73,7 @@
                                         <div class="worker-customer-block">
                                             <span class="worker-cell-title" th:text="${pedido.clienteNombre}">Cliente</span>
                                         </div>
-                                        <small th:text="${pedido.telefono}">telefono</small>
+                                        <small th:text="${pedido.telefono}">teléfono</small>
                                     </td>
                                     <td data-label="Productos">
                                         <span class="worker-order-summary" th:text="${pedido.resumenProductos}">Productos</span>
@@ -103,23 +103,23 @@
                                     </td>
                                     <td class="worker-col-actions" data-label="Acciones">
                                         <div class="worker-actions-cell order-actions">
-                                        <a class="order-action-btn order-action-view"
-                                           th:href="@{/worker/pedidos/{id}(id=${pedido.id},tipo='tienda')}"
-                                           title="Ver detalle">
-                                            <span aria-hidden="true">👁</span>
-                                            <span class="worker-sr-only">Ver detalle</span>
-                                        </a>
-                                        <form th:action="@{/worker/tienda/{id}/eliminar(id=${pedido.id})}" method="post" class="worker-delete-form">
-                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                            <button type="button"
-                                                    class="order-action-btn order-action-delete worker-delete-trigger"
-                                                    data-worker-delete-trigger
-                                                    title="Eliminar pedido"
-                                                    th:attr="data-worker-delete-target=@{/worker/tienda/{id}/eliminar(id=${pedido.id})},data-worker-delete-label=${'el pedido de tienda ' + (pedido.codigoPedido != null ? pedido.codigoPedido : '#' + pedido.id)}">
-                                                <span aria-hidden="true">🗑</span>
-                                                <span class="worker-sr-only">Eliminar</span>
-                                            </button>
-                                        </form>
+                                            <a class="order-action-btn order-action-view"
+                                               th:href="@{/worker/pedidos/{id}(id=${pedido.id},tipo='tienda')}"
+                                               title="Ver detalle">
+                                                <span aria-hidden="true">Ver</span>
+                                                <span class="worker-sr-only">Ver detalle</span>
+                                            </a>
+                                            <form th:action="@{/worker/tienda/{id}/eliminar(id=${pedido.id})}" method="post" class="worker-delete-form">
+                                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                                <button type="button"
+                                                        class="order-action-btn order-action-delete worker-delete-trigger"
+                                                        data-worker-delete-trigger
+                                                        title="Eliminar pedido"
+                                                        th:attr="data-worker-delete-target=@{/worker/tienda/{id}/eliminar(id=${pedido.id})},data-worker-delete-label=${'el pedido de tienda ' + (pedido.codigoPedido != null ? pedido.codigoPedido : '#' + pedido.id)}">
+                                                    <span aria-hidden="true">Eliminar</span>
+                                                    <span class="worker-sr-only">Eliminar</span>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

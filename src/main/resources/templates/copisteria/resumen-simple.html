@@ -10,7 +10,7 @@
             <div class="container summary-hero-grid">
                 <div class="summary-hero-copy" data-reveal="up">
                     <span class="eyebrow">Pedido preparado</span>
-                    <h1>Tu pedido ya esta guardado y ya tiene su referencia de seguimiento.</h1>
+                    <h1>Tu pedido ya está guardado y ya tiene su referencia de seguimiento.</h1>
                     <p>
                         Hemos registrado tu encargo dentro de tu cuenta para que puedas consultarlo,
                         descargar el archivo y seguir su estado desde la web.
@@ -20,7 +20,7 @@
                 <aside class="summary-highlight" data-reveal="left">
                     <span class="card-chip">Referencia del pedido</span>
                     <strong th:text="${pickupCode}">ABC12345</strong>
-                    <p>Guarda esta referencia para identificar el pedido rapidamente.</p>
+                    <p>Guarda esta referencia para identificar el pedido rápidamente.</p>
                     <div class="summary-highlight-price">
                         <span>Precio estimado</span>
                         <strong th:text="${formattedEstimatedPrice}">0,00 EUR</strong>
@@ -32,17 +32,17 @@
         <section class="summary-section">
             <div class="container summary-layout">
                 <article class="summary-card summary-card-primary" data-reveal="up">
-                    <span class="section-kicker">Confirmacion</span>
+                    <span class="section-kicker">Confirmación</span>
                     <h2>Pedido registrado correctamente</h2>
                     <p>
-                        El pedido ha quedado asociado a tu cuenta y esta listo para gestionarse en tienda.
-                        Puedes conservar este resumen como referencia rapida del encargo.
+                        El pedido ha quedado asociado a tu cuenta y está listo para gestionarse en tienda.
+                        Puedes conservar este resumen como referencia rápida del encargo.
                     </p>
 
                     <div class="summary-price-box">
                         <span>Precio orientativo del pedido</span>
                         <strong th:text="${formattedEstimatedPrice}">0,00 EUR</strong>
-                        <p th:text="${priceBreakdown}">Impresion • Color • A4 • 3 copia(s)</p>
+                        <p th:text="${priceBreakdown}">Impresión · Color · A4 · 3 copia(s)</p>
                     </div>
 
                     <div class="summary-meta-grid">
@@ -60,15 +60,15 @@
                         </div>
                         <div class="summary-meta-item">
                             <span>Tipo de trabajo</span>
-                            <strong th:text="${trabajoLabel}">Impresion</strong>
+                            <strong th:text="${trabajoLabel}">Impresión</strong>
                         </div>
                         <div class="summary-meta-item">
                             <span>Archivos subidos</span>
                             <strong th:text="${fileCount} + ' archivo(s)'">1 archivo(s)</strong>
                         </div>
                         <div class="summary-meta-item">
-                            <span>Paginas detectadas</span>
-                            <strong th:text="${totalPageCount} + ' pagina(s)'">0 pagina(s)</strong>
+                            <span>Páginas detectadas</span>
+                            <strong th:text="${totalPageCount} + ' página(s)'">0 página(s)</strong>
                         </div>
                     </div>
 
@@ -82,7 +82,7 @@
                     </div>
 
                     <p class="summary-note">
-                        Podras identificar este encargo con la referencia
+                        Podrás identificar este encargo con la referencia
                         <strong th:text="${pickupCode}">ABC12345</strong>.
                     </p>
                 </article>
@@ -96,7 +96,7 @@
                                 <dd th:text="${customerName}">Cliente</dd>
                             </div>
                             <div>
-                                <dt>Telefono</dt>
+                                <dt>Teléfono</dt>
                                 <dd th:text="${phone}">600000000</dd>
                             </div>
                             <div>
@@ -111,18 +111,18 @@
                         <dl class="summary-list">
                             <div>
                                 <dt>Tipo de trabajo</dt>
-                                <dd th:text="${trabajoLabel}">Impresion</dd>
+                                <dd th:text="${trabajoLabel}">Impresión</dd>
                             </div>
                             <div th:if="${colorLabel != null}">
                                 <dt>Color</dt>
                                 <dd th:text="${colorLabel}">Color</dd>
                             </div>
                             <div th:if="${paperSizeLabel != null}">
-                                <dt>Tamano</dt>
+                                <dt>Tamaño</dt>
                                 <dd th:text="${paperSizeLabel}">A4</dd>
                             </div>
                             <div th:if="${copies != null}">
-                                <dt>Numero de copias</dt>
+                                <dt>Número de copias</dt>
                                 <dd th:text="${copies}">3</dd>
                             </div>
                             <div th:if="${printSideLabel != null}">
@@ -134,7 +134,7 @@
                                 <dd th:text="${paperTypeLabel}">Normal</dd>
                             </div>
                             <div th:if="${bindingLabel != null}">
-                                <dt>Encuadernacion</dt>
+                                <dt>Encuadernación</dt>
                                 <dd th:text="${bindingLabel}">Espiral</dd>
                             </div>
                             <div>
@@ -146,7 +146,7 @@
                                 <dd th:text="${deliveryMethodLabel}">Recogida en tienda</dd>
                             </div>
                             <div th:if="${deliveryAddress != null}">
-                                <dt>Direccion</dt>
+                                <dt>Dirección</dt>
                                 <dd th:text="${deliveryAddress}">Calle de ejemplo 12</dd>
                             </div>
                             <div th:if="${deliveryEtaLabel != null}">
@@ -166,14 +166,14 @@
                 <article class="summary-card files-card" data-reveal="up">
                     <h3>Archivos subidos</h3>
                     <p class="summary-note" th:if="${fileCount > 1}">
-                        Todos estos archivos se han guardado con la misma configuracion de impresion.
+                        Todos estos archivos se han guardado con la misma configuración de impresión.
                         Si necesitas ajustes distintos por archivo, crea pedidos separados.
                     </p>
                     <div th:if="${archivosPedido != null and !archivosPedido.isEmpty()}">
                         <div class="uploaded-file-main" th:each="archivo : ${archivosPedido}">
                             <div>
                                 <strong th:text="${archivo.nombre}">archivo.pdf</strong>
-                                <span th:text="${archivo.tamano != null ? archivo.tamano : 'Tamano no disponible'}">1.2 MB</span>
+                                <span th:text="${archivo.tamano != null ? archivo.tamano : 'Tamaño no disponible'}">1.2 MB</span>
                                 <small th:text="${archivo.ruta}">uploads/copisteria/archivo.pdf</small>
                             </div>
                             <div class="summary-actions">
@@ -186,7 +186,7 @@
                             </div>
                         </div>
                     </div>
-                    <p th:if="${archivosPedido == null or archivosPedido.isEmpty()}">Sin archivo</p>
+                    <p th:if="${archivosPedido == null or archivosPedido.isEmpty()}">No hay archivos adjuntos en este pedido.</p>
                 </article>
             </div>
         </section>

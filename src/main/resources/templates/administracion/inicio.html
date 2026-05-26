@@ -4,7 +4,6 @@
     <th:block th:replace="~{fragmentos/encabezado :: head('Maxcopias | Panel administrador', '/css/cuenta.css')}"></th:block>
     <link rel="stylesheet" th:href="@{/css/admin.css}">
     <link rel="stylesheet" th:href="@{/css/worker.css}">
-
 </head>
 <body class="account-page admin-page">
 <div class="page-shell">
@@ -18,9 +17,9 @@
                         <div>
                             <span class="section-kicker">Administración</span>
                             <h1>Panel de administrador</h1>
-                            <p>Gestión rápida de usuarios registrados y productos de tienda desde una interfaz clara.</p>
+                            <p>Gestiona usuarios, catálogo y pedidos desde una vista clara y operativa.</p>
                         </div>
-                        <span class="admin-status-pill">Sesion admin activa</span>
+                        <span class="admin-status-pill">Sesión de administración activa</span>
                     </header>
 
                     <div class="admin-summary-grid">
@@ -38,7 +37,7 @@
                         </div>
                     </div>
 
-                    <div class="worker-counter-groups admin-counter-groups" aria-label="Resumen de pedidos por area">
+                    <div class="worker-counter-groups admin-counter-groups" aria-label="Resumen de pedidos por área">
                         <section class="worker-counter-group">
                             <header>
                                 <span>Copistería</span>
@@ -94,7 +93,7 @@
                         <div class="table-section-header">
                             <div>
                                 <h2 id="admin-table-title">Gestión del sistema</h2>
-                                <p>Alterna entre usuarios y productos sin salir del panel.</p>
+                                <p>Cambia entre usuarios, productos, categorías y pedidos sin salir del panel.</p>
                             </div>
                             <div class="admin-buttons admin-panel-nav" role="navigation" aria-label="Secciones del panel" th:data-active-tab="${activeTab}">
                                 <button class="button button-primary" type="button" data-tab="users" onclick="switchTab(this, 'users')">Usuarios</button>
@@ -106,11 +105,11 @@
                             </div>
                         </div>
 
-                        <div th:if="${roleUpdated}" class="admin-alert">Rol actualizado correctamente.</div>
-                        <div th:if="${roleProtected}" class="admin-alert admin-alert-error">No puedes cambiar el rol del unico administrador activo.</div>
+                        <div th:if="${roleUpdated}" class="admin-alert">El rol se ha actualizado correctamente.</div>
+                        <div th:if="${roleProtected}" class="admin-alert admin-alert-error">No puedes cambiar el rol del único administrador activo.</div>
 
                         <div class="table-container">
-                            <div class="admin-loading">Cargando datos...</div>
+                            <div class="admin-loading">Cargando datos del panel...</div>
                         </div>
                     </section>
 
@@ -131,7 +130,7 @@
                 <span class="admin-confirm-icon">!</span>
                 <h2 id="role-confirm-title">Confirmar cambio de rol</h2>
                 <p data-role-confirm-message>
-                    Vas a cambiar el rol de este usuario. Revisa la accion antes de continuar.
+                    Vas a cambiar el rol de este usuario. Revisa la acción antes de continuar.
                 </p>
                 <div class="admin-confirm-actions">
                     <button type="button" class="button button-secondary-dark" data-role-confirm-cancel>Cancelar</button>
@@ -146,7 +145,7 @@
                 <span class="admin-confirm-icon admin-confirm-icon-danger">!</span>
                 <h2 id="user-delete-title">Eliminar usuario</h2>
                 <p data-user-delete-message>
-                    Vas a eliminar este usuario. Revisa la accion antes de continuar.
+                    Vas a eliminar este usuario. Esta acción no se puede deshacer.
                 </p>
                 <div class="admin-confirm-actions">
                     <button type="button" class="button button-secondary-dark" data-user-delete-cancel>Cancelar</button>
@@ -161,7 +160,7 @@
                 <span class="admin-confirm-icon admin-confirm-icon-danger">!</span>
                 <h2 id="catalog-delete-title" data-catalog-delete-title>Eliminar elemento</h2>
                 <p data-catalog-delete-message>
-                    Vas a eliminar este elemento. Revisa la accion antes de continuar.
+                    Vas a eliminar este elemento. Esta acción no se puede deshacer.
                 </p>
                 <div class="admin-confirm-actions">
                     <button type="button" class="button button-secondary-dark" data-catalog-delete-cancel>Cancelar</button>
@@ -176,14 +175,13 @@
                 <span class="admin-confirm-icon" data-admin-message-icon>i</span>
                 <h2 id="admin-message-title" data-admin-message-title>Aviso</h2>
                 <p data-admin-message-text>
-                    Operacion procesada.
+                    La operación se ha procesado correctamente.
                 </p>
                 <div class="admin-confirm-actions">
                     <button type="button" class="button button-primary" data-admin-message-close>Aceptar</button>
                 </div>
             </section>
         </div>
-
     </main>
 
     <div th:replace="~{fragmentos/pie :: footer}"></div>

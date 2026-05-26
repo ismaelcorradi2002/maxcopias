@@ -458,11 +458,11 @@ public class ControladorAreaPersonal {
                 return Map.of("success", "false", "message", "No se puede eliminar. Categoría tiene productos asociados: " + productosIds);
             }
             repositorioCategoria.deleteById(id);
-            return Map.of("success", "true", "message", "Categoría eliminada correctamente.");
+            return Map.of("success", "true", "message", "La categoría se ha eliminado correctamente.");
         } catch (IllegalArgumentException e) {
             return Map.of("success", "false", "message", e.getMessage());
         } catch (Exception e) {
-            return Map.of("success", "false", "message", "Error al eliminar categoría: " + e.getMessage());
+            return Map.of("success", "false", "message", "No hemos podido eliminar la categoría. " + e.getMessage());
         }
     }
 
@@ -473,9 +473,9 @@ public class ControladorAreaPersonal {
     public @ResponseBody Map<String, String> deleteProducto(@PathVariable Long id, Authentication authentication) {
         try {
             servicioTienda.eliminarProductoPorId(id);
-            return Map.of("success", "true", "message", "Producto eliminado correctamente.");
+            return Map.of("success", "true", "message", "El producto se ha eliminado correctamente.");
         } catch (Exception e) {
-            return Map.of("success", "false", "message", "Error al eliminar producto: " + e.getMessage());
+            return Map.of("success", "false", "message", "No hemos podido eliminar el producto. " + e.getMessage());
         }
     }
 
@@ -493,7 +493,7 @@ public class ControladorAreaPersonal {
             }
 
             userRepository.deleteById(id);
-            return Map.of("success", "true", "message", "Usuario eliminado correctamente.");
+            return Map.of("success", "true", "message", "El usuario se ha eliminado correctamente.");
         } catch (Exception e) {
             return Map.of("success", "false", "message", "No se ha podido eliminar el usuario. Revisa si tiene pedidos asociados.");
         }
@@ -552,7 +552,7 @@ public class ControladorAreaPersonal {
     public java.util.Map<String, String> cambiarEstadoCopisteriaBulkAdmin(@RequestParam List<Long> ids, @RequestParam com.maxcopias.model.EstadoPedidoCopisteria estado) {
         try {
             servicioPedidosOperativos.cambiarEstadoCopisteriaBulk(ids, estado);
-            return java.util.Map.of("success", "true", "message", "Estado actualizado correctamente.");
+            return java.util.Map.of("success", "true", "message", "El estado se ha actualizado correctamente.");
         } catch (Exception e) {
             return java.util.Map.of("success", "false", "message", e.getMessage());
         }
@@ -563,7 +563,7 @@ public class ControladorAreaPersonal {
     public java.util.Map<String, String> cambiarEstadoTiendaBulkAdmin(@RequestParam List<Long> ids, @RequestParam com.maxcopias.model.EstadoPedidoTienda estado) {
         try {
             servicioPedidosOperativos.cambiarEstadoTiendaBulk(ids, estado);
-            return java.util.Map.of("success", "true", "message", "Estado actualizado correctamente.");
+            return java.util.Map.of("success", "true", "message", "El estado se ha actualizado correctamente.");
         } catch (Exception e) {
             return java.util.Map.of("success", "false", "message", e.getMessage());
         }

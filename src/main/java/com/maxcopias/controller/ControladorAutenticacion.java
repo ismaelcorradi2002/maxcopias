@@ -69,7 +69,7 @@ public class ControladorAutenticacion {
         Model model
     ) {
         if (!registerForm.getPassword().equals(registerForm.getConfirmPassword())) {
-            bindingResult.rejectValue("confirmPassword", "password.mismatch", "Las contrasenas no coinciden.");
+            bindingResult.rejectValue("confirmPassword", "password.mismatch", "Las contraseñas no coinciden.");
         }
 
         if (userService.emailExists(registerForm.getEmail())) {
@@ -121,7 +121,7 @@ public class ControladorAutenticacion {
                     ? "Introduce un email para comprobarlo."
                     : (validFormat
                         ? "Ya existe una cuenta con este email."
-                        : "Introduce un email valido."))
+                        : "Introduce un email válido."))
         );
     }
 

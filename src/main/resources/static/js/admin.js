@@ -6,7 +6,7 @@ function switchTab(button, tab) {
 
     const tableContainer = document.querySelector(".table-container");
     tableContainer.classList.toggle("is-users-tab", tab === "users");
-    tableContainer.innerHTML = '<div class="admin-loading">Cargando datos...</div>';
+    tableContainer.innerHTML = '<div class="admin-loading">Cargando información del panel...</div>';
 
     const isOrdersTab = tab === "orders" || tab === "orders-copy" || tab === "orders-store";
     const apiEndpoint = tab === "users"
@@ -22,12 +22,12 @@ function switchTab(button, tab) {
         .then(data => {
             if (!Array.isArray(data)) {
                 console.error("Respuesta inesperada de la API:", data);
-                tableContainer.innerHTML = '<p class="no-data">Error al cargar datos. Revisa la consola para más detalles.</p>';
+                tableContainer.innerHTML = '<p class="no-data">No hemos podido cargar esta sección. Inténtalo de nuevo en unos segundos.</p>';
                 return;
             }
 
             if (data.length === 0) {
-                tableContainer.innerHTML = `<p class="no-data">No hay ${tab === "users" ? "usuarios" : tab === "products" ? "productos" : tab === "orders" ? "pedidos" : "categorías"}.</p>`;
+                tableContainer.innerHTML = `<p class="no-data">${tab === "users" ? "Todavía no hay usuarios registrados." : tab === "products" ? "Todavía no hay productos creados." : tab === "orders" ? "Todavía no hay pedidos registrados." : "Todavía no hay categorías creadas."}</p>`;
                 return;
             }
 
@@ -309,12 +309,12 @@ function renderProductsTable(tableContainer, data) {
             </button>
             <label class="admin-product-search" for="admin-product-search">
                 <span>Buscar producto</span>
-                <input id="admin-product-search" type="search" placeholder="Buscar por ID, nombre o categoria" autocomplete="off">
+                <input id="admin-product-search" type="search" placeholder="Buscar por ID, nombre o categoría" autocomplete="off">
             </label>
             <label class="admin-product-filter" for="admin-category-filter">
-                <span>Filtrar categoria</span>
+                <span>Filtrar categoría</span>
                 <select id="admin-category-filter" class="admin-form-select">
-                    <option value="">Todas las categorias</option>
+                    <option value="">Todas las categorías</option>
                     ${getProductCategories(data).map(category => `<option value="${category}">${category}</option>`).join("")}
                 </select>
             </label>
@@ -343,8 +343,8 @@ function renderProductsTable(tableContainer, data) {
                     <th class="admin-col-name">Nombre</th>
                     <th class="admin-col-price">Precio</th>
                     <th class="admin-col-count">Stock</th>
-                    <th class="admin-col-description">Categorias</th>
-                    <th class="admin-col-actions">Accion</th>
+                    <th class="admin-col-description">Categorías</th>
+                    <th class="admin-col-actions">Acción</th>
                     <th class="admin-col-actions">Eliminar</th>
                 </tr>
             </thead>
@@ -355,7 +355,7 @@ function renderProductsTable(tableContainer, data) {
                         <td class="admin-col-name" data-label="Nombre">${product.nombre}</td>
                         <td class="admin-col-price" data-label="Precio">${product.precio}</td>
                         <td class="admin-col-count" data-label="Stock">${product.stock}</td>
-                        <td class="admin-product-categories admin-col-description" data-label="Categorias">${product.categorias ? product.categorias.map(cat => cat.nombre).join(", ") : ""}</td>
+                        <td class="admin-product-categories admin-col-description" data-label="Categorías">${product.categorias ? product.categorias.map(cat => cat.nombre).join(", ") : ""}</td>
                         <td class="admin-action-cell admin-col-actions" data-label="Editar">
                             <button class="button button-small button-outline" type="button" onclick="window.location.href='/editarstock/${product.id}'">
                                 Editar
@@ -580,7 +580,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
     function stateLabel(value) {
         const labels = {
             PENDIENTE: "Pendiente",
-            EN_PREPARACION: "En preparacion",
+            EN_PREPARACION: "En preparación",
             LISTO_PARA_RECOGER: "Listo para recoger",
             ENTREGADO: "Entregado",
             CANCELADO: "Cancelado"
@@ -598,7 +598,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
     function formatOrderStatus(status) {
         const labels = {
             PENDIENTE: "Pendiente",
-            EN_PREPARACION: "En preparacion",
+            EN_PREPARACION: "En preparación",
             LISTO_PARA_RECOGER: "Listo para recoger",
             ENTREGADO: "Entregado",
             CANCELADO: "Cancelado"
@@ -793,7 +793,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
                     <div>
                         <h2>${isCopisteria ? "Pedidos de copistería" : "Pedidos de papelería"}</h2>
                         <p>${isCopisteria
-                            ? "Revisa archivos, codigos de recogida y actualiza el estado de cada encargo."
+                            ? "Revisa archivos, códigos de recogida y actualiza el estado de cada encargo."
                             : "Consulta pedidos de productos y controla su avance hasta la entrega."}</p>
                     </div>
                 </div>
@@ -1189,7 +1189,7 @@ function initRoleChangeConfirmation() {
         pendingSelect = select;
         pendingForm = form;
         previousValue = select.dataset.previousValue || form.dataset.currentRole;
-        message.textContent = `Vas a cambiar el rol de ${userName} a ${newRoleText}. Esta accion modificara sus permisos de acceso.`;
+        message.textContent = `Vas a cambiar el rol de ${userName} a ${newRoleText}. Esta acción modificará sus permisos de acceso.`;
         modal.hidden = false;
         document.body.classList.add("admin-modal-open");
         acceptButton.focus();
@@ -1382,7 +1382,7 @@ function openUserDeleteModal(userId, userName) {
         return;
     }
 
-    message.textContent = `Vas a eliminar a ${userName}. Esta accion no se puede deshacer.`;
+    message.textContent = `Vas a eliminar a ${userName}. Esta acción no se puede deshacer.`;
     acceptButton.dataset.userId = userId;
     modal.hidden = false;
     document.body.classList.add("admin-modal-open");
@@ -1428,7 +1428,7 @@ function openCatalogDeleteModal(type, id, name) {
     const isProduct = type === "product";
     const itemLabel = isProduct ? "producto" : "categoría";
     title.textContent = isProduct ? "Eliminar producto" : "Eliminar categoría";
-    message.textContent = `Vas a eliminar ${itemLabel} "${name}". Esta accion no se puede deshacer.`;
+    message.textContent = `Vas a eliminar ${itemLabel} "${name}". Esta acción no se puede deshacer.`;
     acceptButton.textContent = isProduct ? "Eliminar producto" : "Eliminar categoría";
     acceptButton.dataset.deleteType = type;
     acceptButton.dataset.deleteId = id;
@@ -1481,7 +1481,7 @@ function openOrderDeleteModal(type, id, name) {
     }
 
     title.textContent = "Eliminar pedido";
-    message.textContent = `Seguro que quieres eliminar ${name}? Podras conservarlo en el historial interno.`;
+    message.textContent = `Vas a eliminar ${name}. Esta acción no se puede deshacer y dejará de estar disponible en el panel.`;
     acceptButton.textContent = "Eliminar pedido";
     acceptButton.dataset.orderDeleteType = type;
     acceptButton.dataset.orderDeleteId = id;
@@ -1573,12 +1573,12 @@ function deleteUser(userId) {
             return;
         }
 
-        openAdminMessageModal("No se pudo eliminar", data.message || "No se ha podido eliminar el usuario.", "error");
+        openAdminMessageModal("No se pudo completar la eliminación", data.message || "No hemos podido eliminar el usuario.", "error");
     })
     .catch(error => {
         closeUserDeleteModal();
         console.error('Error:', error);
-        openAdminMessageModal("Error al eliminar", "Error al eliminar usuario.", "error");
+        openAdminMessageModal("Error al eliminar", "No hemos podido eliminar el usuario.", "error");
     });
 }
 
@@ -1605,15 +1605,15 @@ function deleteCategoria(categoryId) {
         if (data.success === 'true') {
             const activeTabButton = document.querySelector('.admin-buttons .active');
             switchTab(activeTabButton, 'categories');
-            openAdminMessageModal("Categoría eliminada", data.message || "Categoría eliminada correctamente.");
+            openAdminMessageModal("Categoría eliminada", data.message || "La categoría se ha eliminado correctamente.");
         } else {
-            openAdminMessageModal("No se pudo eliminar", data.message || "Error desconocido", "error");
+            openAdminMessageModal("No se pudo completar la eliminación", data.message || "No hemos podido eliminar este elemento.", "error");
         }
     })
     .catch(error => {
         closeCatalogDeleteModal();
         console.error('Error:', error);
-        openAdminMessageModal("Error al eliminar", "Error al eliminar: " + error.message, "error");
+        openAdminMessageModal("Error al eliminar", "No hemos podido completar la eliminación. " + error.message, "error");
     });
 }
 
@@ -1641,15 +1641,15 @@ function deleteProduct(productId) {
             const activeTabButton = document.querySelector('.admin-buttons .active');
             const tabName = activeTabButton ? activeTabButton.dataset.tab || 'products' : 'products';
             if (activeTabButton) switchTab(activeTabButton, tabName);
-            openAdminMessageModal("Producto eliminado", data.message || "Producto eliminado correctamente.");
+            openAdminMessageModal("Producto eliminado", data.message || "El producto se ha eliminado correctamente.");
         } else {
-            openAdminMessageModal("No se pudo eliminar", data.message || "Error desconocido", "error");
+            openAdminMessageModal("No se pudo completar la eliminación", data.message || "No hemos podido eliminar el producto.", "error");
         }
     })
     .catch(error => {
         closeCatalogDeleteModal();
         console.error('Error:', error);
-        openAdminMessageModal("Error al eliminar", "Error al eliminar: " + error.message, "error");
+        openAdminMessageModal("Error al eliminar", "No hemos podido eliminar el producto. " + error.message, "error");
     });
 }
 
@@ -1669,7 +1669,7 @@ function deleteOrder(orderType, orderId) {
         closeOrderDeleteModal();
 
         if (!response.ok) {
-            throw new Error("No se ha podido eliminar el pedido.");
+            throw new Error("No hemos podido eliminar el pedido.");
         }
 
         const activeTabButton = document.querySelector(".admin-buttons .active");

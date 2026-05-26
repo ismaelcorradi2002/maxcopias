@@ -19,13 +19,13 @@
                     <h1 th:text="${productoTienda.detalleTitulo()}">Producto</h1>
                     <p class="producto-detail-description" th:text="${productoTienda.detalleDescripcion()}">Descripción</p>
 
-                    <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Producto anadido al carrito.</div>
-                    <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido anadir el producto.</div>
+                    <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">El producto se ha añadido al carrito.</div>
+                    <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No hemos podido añadir el producto al carrito.</div>
 
                     <div class="producto-buy-card">
                         <div class="producto-price-row">
                             <span class="producto-price" th:text="${productoTienda.precioFormateado()}">0,00 EUR</span>
-                            <span class="producto-stock" th:text="${productoTienda.stock() > 0 ? 'Stock disponible: ' + productoTienda.stock() : 'Sin stock disponible'}">Stock disponible</span>
+                            <span class="producto-stock" th:text="${productoTienda.stock() > 0 ? 'Stock disponible: ' + productoTienda.stock() : 'Ahora mismo no hay stock disponible'}">Stock disponible</span>
                         </div>
 
                         <ul class="producto-points">
@@ -40,12 +40,12 @@
                                 <span>Cantidad</span>
                                 <input type="number" name="cantidad" value="1" min="1" th:attr="max=${productoTienda.stock()}">
                             </label>
-                            <button type="submit" class="button button-primary">Anadir al carrito</button>
+                            <button type="submit" class="button button-primary">Añadir al carrito</button>
                         </form>
 
                         <div class="producto-detail-actions">
                             <a class="button button-secondary-dark" th:href="@{/carrito}">Ver carrito</a>
-                            <a class="button button-outline-dark" th:href="@{/tienda}">Volver a tienda</a>
+                            <a class="button button-outline-dark" th:href="@{/tienda}">Volver a la tienda</a>
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
             <div class="container producto-info-card">
                 <div>
                     <span class="section-kicker">Detalles del producto</span>
-                    <h2>Compra simulada con recogida o envio</h2>
+                    <h2>Compra con recogida o envío</h2>
                 </div>
 
                 <div class="producto-info-grid">
@@ -67,7 +67,7 @@
                         <li><strong>Categorías:</strong> <span th:text="${productoTienda.categoriasTexto()}">Categorías</span></li>
                         <li><strong>Stock:</strong> <span th:text="${productoTienda.stock()}">0</span></li>
                         <li><strong>Precio:</strong> <span th:text="${productoTienda.precioFormateado()}">0,00 EUR</span></li>
-                        <li><strong>Entrega:</strong> Recogida en tienda o envio simulado</li>
+                        <li><strong>Entrega:</strong> Recogida en tienda o envío simulado</li>
                     </ul>
                 </div>
             </div>

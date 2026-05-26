@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Papeleria online en Torrejon de Ardoz | Maxcopias', '/css/tienda.css?v=20260511b')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Papelería online en Torrejón de Ardoz | Maxcopias', '/css/tienda.css?v=20260511b')}"></head>
 <body class="tienda-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -8,8 +8,8 @@
     <main class="tienda-main">
         <section id="productos">
             <div class="container">
-                <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Producto anadido al carrito.</div>
-                <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido anadir el producto.</div>
+                <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Producto añadido al carrito.</div>
+                <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido añadir el producto.</div>
 
                 <div class="section-tabs">
                     <button type="button" class="section-tab active" data-category="todos">Todos</button>
@@ -24,9 +24,9 @@
                 </div>
 
                 <div class="section-heading" id="productos-title">
-                    <span class="section-kicker">Papeleria en Torrejon de Ardoz</span>
-                    <h1>Catalogo de papeleria online y material escolar</h1>
-                    <p>Compra cuadernos, carpetas, boligrafos y suministros de oficina con recogida en tienda o envio local en Torrejon de Ardoz.</p>
+                    <span class="section-kicker">Papelería en Torrejón de Ardoz</span>
+                    <h1>Catálogo de papelería online y material escolar</h1>
+                    <p>Compra cuadernos, carpetas, bolígrafos y suministros de oficina con recogida en tienda o envío local en Torrejón de Ardoz.</p>
                 </div>
 
                 <div class="productos-grid" id="productos-container">
@@ -41,7 +41,7 @@
                             <div>
                                 <span class="tienda-producto-categorias" th:text="${producto.categoriasTexto()}">Escolar</span>
                                 <h3 th:text="${producto.nombre()}">Producto</h3>
-                                <p th:text="${producto.descripcion()}">Descripcion</p>
+                                <p th:text="${producto.descripcion()}">Descripción</p>
                                 <span class="tienda-offer-badge" th:if="${producto.tieneOferta()}" th:text="${producto.etiquetaOferta()}">20% OFF</span>
                                 <span class="precio-tag precio-tag-offer" th:if="${producto.tieneOferta()}">
                                     <del th:text="${producto.precioOriginalFormateado()}">10,00 EUR</del>
@@ -57,7 +57,7 @@
                                 <input type="hidden" name="productoId" th:value="${producto.id()}">
                                 <input type="hidden" name="cantidad" value="1">
                                 <input type="hidden" name="redirectTo" value="/tienda">
-                                <button type="submit" class="button button-primary tienda-add-button">Anadir al carrito</button>
+                                <button type="submit" class="button button-primary tienda-add-button">Añadir al carrito</button>
                             </form>
                         </div>
                     </article>
@@ -67,7 +67,7 @@
 
         <section class="contact-section">
             <div class="container">
-                <p><strong>Consulta disponibilidad y precios en tienda.</strong> Visitanos en C/ Soledad, N 3, 28850 Torrejon de Ardoz, Madrid.</p>
+                <p><strong>Consulta disponibilidad y precios en tienda.</strong> Visítanos en C/ Soledad, N 3, 28850 Torrejón de Ardoz, Madrid.</p>
             </div>
         </section>
     </main>

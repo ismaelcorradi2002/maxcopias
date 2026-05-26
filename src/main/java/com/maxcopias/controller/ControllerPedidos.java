@@ -124,7 +124,7 @@ public class ControllerPedidos {
         model.addAttribute("pricePreview", new com.maxcopias.model.EstimacionPrecioCopisteria(
             java.math.BigDecimal.ZERO, 
             "Selecciona un servicio para ver el precio orientativo del pedido.", 
-            "El importe se calcula automaticamente segun la configuracion y los archivos.", 
+            "El importe se calcula automáticamente según la configuración y los archivos.", 
             0, 0
         ));
         model.addAttribute("submissionToken", ensureSubmissionToken(session));
@@ -536,16 +536,16 @@ public class ControllerPedidos {
 
     private boolean validarDireccionEntrega(FormularioPedidoCopisteria orderForm, BindingResult result) {
         if (orderForm.getDeliveryAddress() == null || orderForm.getDeliveryAddress().isBlank()) {
-            result.rejectValue("deliveryAddress", "deliveryAddress.required", "Debes indicar la direccion si eliges envio a domicilio.");
+            result.rejectValue("deliveryAddress", "deliveryAddress.required", "Debes indicar la dirección si eliges envío a domicilio.");
             return false;
         }
 
         String street = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Calle:");
-        String number = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Numero:");
-        String postalCode = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Codigo postal:");
+        String number = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Número:");
+        String postalCode = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Código postal:");
         String city = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Ciudad:");
         String province = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Provincia:");
-        String contactPhone = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Telefono de contacto:");
+        String contactPhone = extraerLineaDireccion(orderForm.getDeliveryAddress(), "Teléfono de contacto:");
 
         boolean valid = true;
 
@@ -554,11 +554,11 @@ public class ControllerPedidos {
             valid = false;
         }
         if (number.isBlank()) {
-            result.rejectValue("deliveryAddress", "deliveryNumber.required", "Introduce el numero de la direccion.");
+            result.rejectValue("deliveryAddress", "deliveryNumber.required", "Introduce el número de la dirección.");
             valid = false;
         }
         if (!postalCode.matches("\\d{5}")) {
-            result.rejectValue("deliveryAddress", "deliveryPostalCode.invalid", "Introduce un codigo postal valido de 5 digitos.");
+            result.rejectValue("deliveryAddress", "deliveryPostalCode.invalid", "Introduce un código postal válido de 5 dígitos.");
             valid = false;
         }
         if (city.isBlank()) {
@@ -567,7 +567,7 @@ public class ControllerPedidos {
         } else {
             String normalizedCity = normalizeCity(city);
             if (!"torrejon de ardoz".equals(normalizedCity) && !"torrejon".equals(normalizedCity)) {
-                result.rejectValue("deliveryAddress", "deliveryCity.unsupported", "Solo repartimos en Torrejon de Ardoz.");
+                result.rejectValue("deliveryAddress", "deliveryCity.unsupported", "Solo repartimos en Torrejón de Ardoz.");
                 valid = false;
             }
         }
@@ -576,7 +576,7 @@ public class ControllerPedidos {
             valid = false;
         }
         if (!contactPhone.matches("\\d{9}")) {
-            result.rejectValue("deliveryAddress", "deliveryContactPhone.invalid", "Introduce un telefono de contacto valido de 9 digitos.");
+            result.rejectValue("deliveryAddress", "deliveryContactPhone.invalid", "Introduce un teléfono de contacto válido de 9 dígitos.");
             valid = false;
         }
 
@@ -629,13 +629,13 @@ public class ControllerPedidos {
             List<LineaPrecioCopisteria> lines = List.of(
                 new LineaPrecioCopisteria(
                     jobType.name() + " " + colorMode.name(), 
-                    pageCount + " paginas x " + copies + " copias", 
+                    pageCount + " páginas x " + copies + " copias", 
                     total
                 )
             );
 
-            String note = "Precio orientativo calculado. Sube archivos para paginas exactas.";
-            String breakdown = jobType.name() + " • " + colorMode + " • " + copies + " copias";
+            String note = "Precio orientativo calculado. Sube archivos para páginas exactas.";
+            String breakdown = jobType.name() + " · " + colorMode + " · " + copies + " copias";
 
             EstimacionPrecioCopisteria estimate = new EstimacionPrecioCopisteria(
                 total, breakdown, note, fileCount, pageCount, lines
@@ -646,7 +646,7 @@ public class ControllerPedidos {
         } catch (Exception e) {
             // Fallback empty
             return new RespuestaVistaPreviaPrecioCopisteria(
-                "0,00 EUR", "Error en config", "Completa el formulario", 0, 0, "0 paginas", List.of()
+                "0,00 EUR", "Error en configuración", "Completa el formulario", 0, 0, "0 páginas", List.of()
             );
         }
     }

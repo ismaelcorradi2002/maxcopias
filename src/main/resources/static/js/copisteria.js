@@ -144,9 +144,9 @@ function createWizardController(form, fileInput, fileHint, filesError) {
 
         const mappings = [
             ["street", "Calle"],
-            ["number", "Numero"],
+            ["number", "Número"],
             ["unit", "Piso / puerta / bloque"],
-            ["postalCode", "Codigo postal"],
+            ["postalCode", "Código postal"],
             ["city", "Ciudad"],
             ["province", "Provincia"],
             ["contactPhone", "Teléfono de contacto"],
@@ -173,9 +173,9 @@ function createWizardController(form, fileInput, fileHint, filesError) {
 
         const lines = [
             "Calle: " + (deliveryFields.street?.value.trim() || ""),
-            "Numero: " + (deliveryFields.number?.value.trim() || ""),
+            "Número: " + (deliveryFields.number?.value.trim() || ""),
             "Piso / puerta / bloque: " + (deliveryFields.unit?.value.trim() || ""),
-            "Codigo postal: " + (deliveryFields.postalCode?.value.trim() || ""),
+            "Código postal: " + (deliveryFields.postalCode?.value.trim() || ""),
             "Ciudad: " + (deliveryFields.city?.value.trim() || ""),
             "Provincia: " + (deliveryFields.province?.value.trim() || ""),
             "Teléfono de contacto: " + (deliveryFields.contactPhone?.value.trim() || ""),
@@ -205,7 +205,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
         }
         if (showAddress) {
             if (deliveryFields.city && !deliveryFields.city.value.trim()) {
-                deliveryFields.city.value = "Torrejon de Ardoz";
+                deliveryFields.city.value = "Torrejón de Ardoz";
             }
             if (deliveryFields.province && !deliveryFields.province.value.trim()) {
                 deliveryFields.province.value = "Madrid";
@@ -915,20 +915,20 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice) {
 
     const lines = [
         {
-            concept: "Impresion " + colorLabel(colorMode),
-            detail: pages + " pagina(s) x " + copies + " copia(s)",
+            concept: "Impresión " + colorLabel(colorMode),
+            detail: pages + " página(s) x " + copies + " copia(s)",
             amount: basePrint
         }
     ];
 
-    addLineIfPositive(lines, "Formato " + paperSize, "Ajuste por tamano del papel", sizeExtra);
-    addLineIfPositive(lines, printSideLabel(printSide), "Configuracion de caras del pedido", sideExtra);
+    addLineIfPositive(lines, "Formato " + paperSize, "Ajuste por tamaño del papel", sizeExtra);
+    addLineIfPositive(lines, printSideLabel(printSide), "Configuración de caras del pedido", sideExtra);
     addLineIfPositive(lines, "Papel " + paperTypeLabel(paperType), "Acabado seleccionado", paperExtra);
-    addLineIfPositive(lines, "Encuadernacion " + bindingLabel(bindingType), "Acabado adicional", bindingExtra);
+    addLineIfPositive(lines, "Encuadernación " + bindingLabel(bindingType), "Acabado adicional", bindingExtra);
     addLineIfPositive(lines, "Entrega " + deliveryLabel(deliveryMethod), deliveryDetail(deliveryMethod), deliveryExtra);
-    addLineIfPositive(lines, "Plastificado", "Proteccion del documento", plastificadoExtra);
+    addLineIfPositive(lines, "Plastificado", "Protección del documento", plastificadoExtra);
     addLineIfPositive(lines, "Servicio urgente", urgentDetail(deliveryMethod), urgenteExtra);
-    addLineIfPositive(lines, "Escaneado", pages + " pagina(s) a digitalizar", escaneadoExtra);
+    addLineIfPositive(lines, "Escaneado", pages + " página(s) a digitalizar", escaneadoExtra);
 
     const total = roundPrice(lines.reduce(function (accumulator, line) {
         return accumulator + line.amount;
@@ -951,7 +951,7 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice) {
 
     return {
         total: total,
-        breakdown: parts.join(" • "),
+        breakdown: parts.join(" · "),
         note: buildNote(input.fileCount, "impresión", input),
         lines: lines
     };
@@ -975,9 +975,9 @@ function calculateQuoteStyleEstimate(input, basePrice, label) {
 
     addLineIfPositive(lines, "Archivos adicionales", Math.max(input.fileCount - 1, 0) + " archivo(s)", additionalFiles);
     addLineIfPositive(lines, "Entrega " + deliveryLabel(deliveryMethod), deliveryDetail(deliveryMethod), deliveryExtra);
-    addLineIfPositive(lines, "Plastificado", "Proteccion del documento", plastificadoExtra);
+    addLineIfPositive(lines, "Plastificado", "Protección del documento", plastificadoExtra);
     addLineIfPositive(lines, "Servicio urgente", urgentDetail(deliveryMethod), urgenteExtra);
-    addLineIfPositive(lines, "Escaneado", Math.max(input.pageCount, 1) + " pagina(s) a digitalizar", escaneadoExtra);
+    addLineIfPositive(lines, "Escaneado", Math.max(input.pageCount, 1) + " página(s) a digitalizar", escaneadoExtra);
 
     const total = roundPrice(lines.reduce(function (accumulator, line) {
         return accumulator + line.amount;
@@ -993,7 +993,7 @@ function calculateQuoteStyleEstimate(input, basePrice, label) {
 
     return {
         total: total,
-        breakdown: parts.join(" • "),
+        breakdown: parts.join(" · "),
         note: buildNote(input.fileCount, label, input),
         lines: lines
     };
@@ -1016,11 +1016,11 @@ function renderSelectedFiles(fileInput, fileList, fileHint) {
     if (invalidFiles.length) {
         fileInput.value = "";
         fileHint.classList.add("is-error");
-        fileHint.textContent = "Formato no valido. Sube PDF, DOC, DOCX, JPG, PNG o WEBP.";
+        fileHint.textContent = "Formato no válido. Sube PDF, DOC, DOCX, JPG, PNG o WEBP.";
         return {
             valid: false,
             fileCount: 0,
-            message: "Formato no valido. Sube PDF, DOC, DOCX, JPG, PNG o WEBP."
+            message: "Formato no válido. Sube PDF, DOC, DOCX, JPG, PNG o WEBP."
         };
     }
 
@@ -1154,11 +1154,11 @@ function appendExtras(parts, input) {
 function pageReference(pageCount, fileCount) {
     if (pageCount > 0) {
         return pageCount === 1
-            ? "1 pagina detectada en " + Math.max(fileCount, 1) + " archivo"
-            : pageCount + " paginas detectadas en " + Math.max(fileCount, 1) + " archivo(s)";
+            ? "1 página detectada en " + Math.max(fileCount, 1) + " archivo"
+            : pageCount + " páginas detectadas en " + Math.max(fileCount, 1) + " archivo(s)";
     }
 
-    return "1 pagina estimada base";
+    return "1 página estimada base";
 }
 
 function fileReference(fileCount) {
@@ -1167,10 +1167,10 @@ function fileReference(fileCount) {
 
 function pageCountLabel(pageCount) {
     if (pageCount === 0) {
-        return "0 paginas detectadas";
+        return "0 páginas detectadas";
     }
 
-    return pageCount === 1 ? "1 pagina detectada" : pageCount + " paginas detectadas";
+    return pageCount === 1 ? "1 página detectada" : pageCount + " páginas detectadas";
 }
 
 function buildNote(fileCount, label, input) {
@@ -1213,7 +1213,7 @@ function bindingLabel(bindingType) {
         case "GRAPADO":
             return "Grapado";
         default:
-            return "Sin encuadernacion";
+        return "Sin encuadernación";
     }
 }
 
@@ -1227,8 +1227,8 @@ function deliveryDetail(deliveryMethod) {
 
 function urgentDetail(deliveryMethod) {
     return deliveryMethod === "HOME_DELIVERY"
-        ? "Preparacion prioritaria con entrega estimada en 20 minutos"
-        : "Preparacion prioritaria con recogida estimada en 10 minutos";
+        ? "Preparación prioritaria con entrega estimada en 20 minutos"
+        : "Preparación prioritaria con recogida estimada en 10 minutos";
 }
 
 function urgentEta(deliveryMethod) {
@@ -1260,20 +1260,20 @@ function buildDetectedFileHint(files, pageCount) {
     }, 0) / (1024 * 1024);
 
     if (!safeFiles.length) {
-        return "Formatos permitidos: PDF, DOC, DOCX, JPG, PNG | Maximo 20 MB por archivo.";
+        return "Formatos permitidos: PDF, DOC, DOCX, JPG, PNG | Máximo 20 MB por archivo.";
     }
 
     if (pageCount > 0) {
         return safeFiles.length
             + " archivo(s) seleccionado(s) | "
             + pageCountLabel(pageCount)
-            + " | Tamano total aproximado: "
+            + " | Tamaño total aproximado: "
             + totalSizeInMb.toFixed(2)
             + " MB";
     }
 
     return safeFiles.length
-        + " archivo(s) seleccionado(s) | Tamano total aproximado: "
+        + " archivo(s) seleccionado(s) | Tamaño total aproximado: "
         + totalSizeInMb.toFixed(2)
         + " MB";
 }

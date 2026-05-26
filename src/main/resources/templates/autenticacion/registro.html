@@ -52,7 +52,7 @@
                                     autocomplete="given-name"
                                     maxlength="80"
                                     data-live-validate="firstName"
-                                    placeholder="Tu nombre">
+                                    placeholder="Escribe tu nombre">
                                 <small class="field-feedback" data-live-feedback="firstName" aria-live="polite"></small>
                                 <small class="field-error" data-server-error="firstName" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></small>
                             </div>
@@ -67,7 +67,7 @@
                                     autocomplete="family-name"
                                     maxlength="120"
                                     data-live-validate="lastName"
-                                    placeholder="Tus apellidos">
+                                    placeholder="Escribe tus apellidos">
                                 <small class="field-feedback" data-live-feedback="lastName" aria-live="polite"></small>
                                 <small class="field-error" data-server-error="lastName" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></small>
                             </div>
@@ -82,7 +82,7 @@
                                     autocomplete="email"
                                     maxlength="120"
                                     data-live-validate="email"
-                                    placeholder="correo@maxcopias.es">
+                                    placeholder="tuemail@ejemplo.com">
                                 <small class="field-feedback" data-live-feedback="email" aria-live="polite"></small>
                                 <small class="field-error" data-server-error="email" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
                             </div>
@@ -98,7 +98,7 @@
                                     inputmode="numeric"
                                     maxlength="9"
                                     data-live-validate="phone"
-                                    placeholder="600123456">
+                                    placeholder="Ej. 612345678">
                                 <small class="field-feedback" data-live-feedback="phone" aria-live="polite"></small>
                                 <small class="field-error" data-server-error="phone" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
                             </div>
@@ -114,7 +114,7 @@
                                         autocomplete="new-password"
                                         maxlength="72"
                                         data-live-validate="password"
-                                        placeholder="Mínimo 6 caracteres">
+                                        placeholder="Crea una contraseña segura">
                                     <button
                                         type="button"
                                         class="password-toggle"
@@ -126,21 +126,21 @@
                                 <div class="password-hints">
                                     <span>La contraseña debe cumplir estos requisitos</span>
                                     <ul class="password-rules-list" data-password-rules>
-                                        <li class="password-rule-item" data-password-rule="lowercase" data-ok-text="Tiene minúsculas" data-missing-text="Falta minúscula">
+                                        <li class="password-rule-item" data-password-rule="lowercase" data-ok-text="Incluye minúsculas" data-missing-text="Añade una minúscula">
                                             <span class="password-rule-icon" data-password-rule-icon>!</span>
-                                            <span class="password-rule-text" data-password-rule-text>Falta minúscula</span>
+                                            <span class="password-rule-text" data-password-rule-text>Añade una minúscula</span>
                                         </li>
-                                        <li class="password-rule-item" data-password-rule="uppercase" data-ok-text="Tiene mayúscula" data-missing-text="Falta mayúscula">
+                                        <li class="password-rule-item" data-password-rule="uppercase" data-ok-text="Incluye mayúsculas" data-missing-text="Añade una mayúscula">
                                             <span class="password-rule-icon" data-password-rule-icon>!</span>
-                                            <span class="password-rule-text" data-password-rule-text>Falta mayúscula</span>
+                                            <span class="password-rule-text" data-password-rule-text>Añade una mayúscula</span>
                                         </li>
-                                        <li class="password-rule-item" data-password-rule="numberOrSymbol" data-ok-text="Tiene número o símbolo" data-missing-text="Falta número o símbolo">
+                                        <li class="password-rule-item" data-password-rule="numberOrSymbol" data-ok-text="Incluye un número o símbolo" data-missing-text="Añade un número o símbolo">
                                             <span class="password-rule-icon" data-password-rule-icon>!</span>
-                                            <span class="password-rule-text" data-password-rule-text>Falta número o símbolo</span>
+                                            <span class="password-rule-text" data-password-rule-text>Añade un número o símbolo</span>
                                         </li>
-                                        <li class="password-rule-item" data-password-rule="minLength" data-ok-text="Tiene al menos 6 caracteres" data-missing-text="Menos de 6 caracteres">
+                                        <li class="password-rule-item" data-password-rule="minLength" data-ok-text="Tiene al menos 6 caracteres" data-missing-text="Necesita al menos 6 caracteres">
                                             <span class="password-rule-icon" data-password-rule-icon>!</span>
-                                            <span class="password-rule-text" data-password-rule-text>Menos de 6 caracteres</span>
+                                            <span class="password-rule-text" data-password-rule-text>Necesita al menos 6 caracteres</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -183,12 +183,12 @@
                         </div>
 
                         <div class="privacy-inline-notice">
-                            <strong>Informacion basica sobre privacidad</strong>
+                            <strong>Información básica sobre privacidad</strong>
                             <p>
-                                Responsable: Maxcopias. Finalidad: crear tu cuenta y gestionar pedidos y acceso al area personal.
-                                Base juridica: ejecucion de la relacion precontractual o contractual.
-                                Derechos: acceso, rectificacion, supresion y demas derechos en
-                                <a th:href="@{/privacidad}">la politica de privacidad</a>.
+                                Responsable: Maxcopias. Finalidad: crear tu cuenta y gestionar pedidos y acceso al área personal.
+                                Base jurídica: ejecución de la relación precontractual o contractual.
+                                Derechos: acceso, rectificación, supresión y demás derechos en
+                                <a th:href="@{/privacidad}">la política de privacidad</a>.
                             </p>
                         </div>
 

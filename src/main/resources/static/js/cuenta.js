@@ -80,11 +80,11 @@ function initRegisterValidation(form) {
             const value = fields.phone.value.trim();
 
             if (!value) {
-                return setFieldState(fields.phone, "Introduce tu telefono.", "error");
+                return setFieldState(fields.phone, "Introduce tu teléfono.", "error");
             }
 
             if (!/^\d{9}$/.test(value)) {
-                return setFieldState(fields.phone, "El telefono debe tener exactamente 9 digitos.", "error");
+                return setFieldState(fields.phone, "El teléfono debe tener exactamente 9 dígitos.", "error");
             }
 
             return setFieldState(fields.phone, "Teléfono válido.", "success");
@@ -115,7 +115,7 @@ function initRegisterValidation(form) {
             const confirmValue = fields.confirmPassword.value;
 
             if (!confirmValue) {
-                return setFieldState(fields.confirmPassword, "Escribe la contraseña otra vez para confirmarla.", "error");
+                return setFieldState(fields.confirmPassword, "Vuelve a escribir la contraseña para confirmarla.", "error");
             }
 
             if (confirmValue !== passwordValue) {
@@ -216,18 +216,18 @@ function initRegisterValidation(form) {
             emailRequestId++;
             lastCheckedEmail = "";
             lastCheckedResult = null;
-            return setFieldState(field, "Introduce un email valido.", "error");
+            return setFieldState(field, "Introduce un email válido.", "error");
         }
 
         if (!url) {
-            return setFieldState(field, "Email valido.", "success");
+            return setFieldState(field, "Email válido.", "success");
         }
 
         if (lastCheckedEmail === normalizedValue && lastCheckedResult !== null && (currentState === "success" || currentState === "error")) {
             return { valid: lastCheckedResult };
         }
 
-        setFieldState(field, "Comprobando si el email esta disponible...", "pending");
+        setFieldState(field, "Comprobando si el email está disponible...", "pending");
         const requestId = ++emailRequestId;
 
         const runCheck = function () {
@@ -293,7 +293,7 @@ function initLoginValidation(form) {
         }
 
         if (!isValidEmail(value)) {
-            return setFieldState(emailField, "Introduce un email valido.", "error");
+            return setFieldState(emailField, "Introduce un email válido.", "error");
         }
 
         return setFieldState(emailField, "Email correcto.", "success");

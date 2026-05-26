@@ -12,8 +12,8 @@
                     <span class="eyebrow">Mis pedidos</span>
                     <h1>Consulta los encargos que ya has enviado a Maxcopias.</h1>
                     <p>
-                        Aqui puedes ver tus pedidos de copisteria y tambien los pedidos de tienda,
-                        con su estado, metodo de entrega y resumen economico.
+                        Aquí puedes ver tus pedidos de copistería y también los pedidos de tienda,
+                        con su estado, método de entrega y resumen económico.
                     </p>
                 </div>
 
@@ -26,7 +26,7 @@
                             <strong th:text="${currentUsuario.email}">correo@maxcopias.es</strong>
                         </li>
                         <li>
-                            <span>Telefono</span>
+                            <span>Teléfono</span>
                             <strong th:text="${currentUsuario.phone}">600123456</strong>
                         </li>
                         <li>
@@ -41,16 +41,16 @@
         <section class="dashboard-section">
             <div class="container">
                 <div class="dashboard-actions dashboard-orders-actions">
-                    <a th:href="@{/copisteria}" class="button button-secondary-dark">Ver copisteria</a>
+                    <a th:href="@{/copisteria}" class="button button-secondary-dark">Ver copistería</a>
                     <a th:href="@{/tienda}" class="button button-outline-dark">Ir a la tienda</a>
                     <a th:href="@{/copisteria}" class="button button-primary">Hacer nuevo pedido</a>
                 </div>
 
                 <div class="empty-state dashboard-empty-state" th:if="${#lists.isEmpty(orders) and #lists.isEmpty(storeOrders)}" data-reveal="up">
-                    <strong>Aun no has realizado ningun pedido.</strong>
+                    <strong>Aún no has realizado ningún pedido.</strong>
                     <p>
-                        Cuando completes tu primer encargo de copisteria o tu primera compra en tienda,
-                        aparecera aqui con su estado y el resumen del pedido.
+                        Cuando completes tu primer encargo de copistería o tu primera compra en tienda,
+                        aparecerá aquí con su estado y el resumen del pedido.
                     </p>
                     <a th:href="@{/copisteria}" class="button button-primary">Crear mi primer pedido</a>
                 </div>
@@ -87,7 +87,7 @@
                                 <strong>Resumen del pedido</strong>
                                 <ul class="order-history-meta">
                                     <li><span>Subtotal</span><strong th:text="${order.subtotalFormateado()}">0,00 EUR</strong></li>
-                                    <li><span>Envio</span><strong th:text="${order.gastosEnvioFormateado()}">0,00 EUR</strong></li>
+                                    <li><span>Envío</span><strong th:text="${order.gastosEnvioFormateado()}">0,00 EUR</strong></li>
                                     <li><span>Total</span><strong th:text="${order.totalFormateado()}">0,00 EUR</strong></li>
                                     <li><span>Pago</span><strong th:text="${order.pagado()} ? 'Pagado' : 'Pendiente de pago'">Pendiente</strong></li>
                                     <li><span>Estado cliente</span><strong th:text="${order.mensajeEstado()}">Pedido recibido</strong></li>
@@ -102,7 +102,7 @@
                         <div class="order-history-head">
                             <div>
                                 <span class="section-kicker">Pedido</span>
-                                <h2 th:text="${order.jobType.label}">Impresion</h2>
+                                <h2 th:text="${order.jobType.label}">Impresión</h2>
                                 <p th:text="${order.formattedCreatedAt}">09/04/2026 18:10</p>
                             </div>
                             <div class="order-history-badges">
@@ -128,7 +128,7 @@
                                         <strong th:text="${order.colorMode.label}">Color</strong>
                                     </li>
                                     <li th:if="${order.paperSize != null}">
-                                        <span>Tamano</span>
+                                        <span>Tamaño</span>
                                         <strong th:text="${order.paperSize.label}">A4</strong>
                                     </li>
                                     <li th:if="${order.paperType != null}">
@@ -136,7 +136,7 @@
                                         <strong th:text="${order.paperType.label}">Normal</strong>
                                     </li>
                                     <li th:if="${order.bindingType != null && !order.bindingType.none}">
-                                        <span>Encuadernacion</span>
+                                        <span>Encuadernación</span>
                                         <strong th:text="${order.bindingType.label}">Espiral</strong>
                                     </li>
                                     <li>
@@ -148,8 +148,8 @@
                                         <strong th:text="${order.formattedEstimatedPrice}">4,32 EUR</strong>
                                     </li>
                                     <li>
-                                        <span>Paginas detectadas</span>
-                                        <strong th:text="${order.totalPageCount} + ' pagina(s)'">0 pagina(s)</strong>
+                                        <span>Páginas detectadas</span>
+                                        <strong th:text="${order.totalPageCount} + ' página(s)'">0 página(s)</strong>
                                     </li>
                                 </ul>
                             </div>
@@ -160,7 +160,7 @@
                                     <li>
                                         <div>
                                             <strong th:text="${order.nombreArchivo}">documento.pdf</strong>
-                                            <span th:text="${order.tamanoArchivoFormateado != null ? order.tamanoArchivoFormateado : 'Tamano no disponible'}">1.2 MB</span>
+                                            <span th:text="${order.tamanoArchivoFormateado != null ? order.tamanoArchivoFormateado : 'Tamaño no disponible'}">1.2 MB</span>
                                         </div>
                                     </li>
                                 </ul>

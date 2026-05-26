@@ -26,18 +26,18 @@
                             <h2>Datos del cliente</h2>
                             <div class="checkout-field-grid">
                                 <label>
-                                    <span>Nombre</span>
-                                    <input th:field="*{nombre}" type="text" placeholder="Nombre y apellidos">
+                                    <span>Nombre y apellidos</span>
+                                    <input th:field="*{nombre}" type="text" placeholder="Ej. María García López">
                                     <small class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error</small>
                                 </label>
                                 <label>
                                     <span>Email</span>
-                                    <input th:field="*{email}" type="email" placeholder="correo@ejemplo.com">
+                                    <input th:field="*{email}" type="email" placeholder="tuemail@ejemplo.com">
                                     <small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</small>
                                 </label>
                                 <label class="is-wide">
                                     <span>Teléfono</span>
-                                    <input th:field="*{telefono}" type="text" placeholder="600123123">
+                                    <input th:field="*{telefono}" type="text" placeholder="Ej. 612345678">
                                     <small class="field-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}">Error</small>
                                 </label>
                             </div>
@@ -45,41 +45,41 @@
 
                         <section class="checkout-step-card">
                             <span class="checkout-step-index">Paso 2</span>
-                            <h2>Metodo de entrega</h2>
+                            <h2>Método de entrega</h2>
                             <div class="checkout-delivery-options">
                                 <label class="delivery-option" th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'RECOGIDA_TIENDA'} ? ' is-active' : ''">
                                     <input th:field="*{metodoEntrega}" type="radio" value="RECOGIDA_TIENDA">
                                     <span>
                                         <strong>Recogida en tienda</strong>
-                                        <small>Gratis. Pago en tienda cuando el pedido se entregue.</small>
+                                        <small>Gratis. Pagarás en tienda cuando recojas el pedido.</small>
                                     </span>
                                 </label>
                                 <label class="delivery-option" th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
                                     <input th:field="*{metodoEntrega}" type="radio" value="ENVIO_DOMICILIO">
                                     <span>
                                         <strong>Envío a domicilio</strong>
-                                        <small>4,99 EUR. Reparto disponible solo en Torrejon de Ardoz.</small>
+                                        <small>4,99 EUR. Disponible solo en Torrejón de Ardoz.</small>
                                     </span>
                                 </label>
                             </div>
                             <div class="checkout-delivery-address"
                                  data-checkout-delivery-address
                                  th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-visible' : ''">
-                                <p class="checkout-delivery-note">Si eliges envio, indica una direccion de Torrejon de Ardoz.</p>
+                                <p class="checkout-delivery-note">Si eliges envío, indica una dirección válida de Torrejón de Ardoz.</p>
                                 <div class="checkout-field-grid">
                                     <label class="is-wide">
                                         <span>Dirección de entrega</span>
-                                        <input th:field="*{direccionEntrega}" type="text" placeholder="Calle, numero, piso, puerta">
+                                        <input th:field="*{direccionEntrega}" type="text" placeholder="Calle, número, piso o puerta">
                                         <small class="field-error" th:if="${#fields.hasErrors('direccionEntrega')}" th:errors="*{direccionEntrega}">Error</small>
                                     </label>
                                     <label>
-                                        <span>Codigo postal</span>
+                                        <span>Código postal</span>
                                         <input th:field="*{codigoPostalEntrega}" type="text" inputmode="numeric" placeholder="28850">
                                         <small class="field-error" th:if="${#fields.hasErrors('codigoPostalEntrega')}" th:errors="*{codigoPostalEntrega}">Error</small>
                                     </label>
                                     <label>
                                         <span>Ciudad</span>
-                                        <input th:field="*{ciudadEntrega}" type="text" placeholder="Torrejon de Ardoz">
+                                        <input th:field="*{ciudadEntrega}" type="text" placeholder="Torrejón de Ardoz">
                                         <small class="field-error" th:if="${#fields.hasErrors('ciudadEntrega')}" th:errors="*{ciudadEntrega}">Error</small>
                                     </label>
                                 </div>
@@ -106,12 +106,12 @@
                         </section>
 
                         <div class="privacy-inline-notice">
-                            <strong>Informacion basica sobre privacidad</strong>
+                            <strong>Información básica sobre privacidad</strong>
                             <p>
                                 Responsable: Maxcopias. Finalidad: tramitar tu pedido, entrega, seguimiento y gestiones asociadas.
-                                Base juridica: ejecucion del contrato y cumplimiento de obligaciones legales.
-                                Derechos: acceso, rectificacion, supresion y demas derechos en
-                                <a th:href="@{/privacidad}">la politica de privacidad</a>.
+                                Base jurídica: ejecución del contrato y cumplimiento de obligaciones legales.
+                                Derechos: acceso, rectificación, supresión y demás derechos en
+                                <a th:href="@{/privacidad}">la política de privacidad</a>.
                             </p>
                         </div>
 
@@ -119,14 +119,15 @@
                     </form>
 
                     <aside class="carrito-summary-card checkout-sidebar-card">
-                        <span class="section-kicker">Nota</span>
-                        <h2>Pago simulado</h2>
+                        <span class="section-kicker">Importante</span>
+                        <h2>Cómo se registra el pago</h2>
                         <p>
-                            Para recogida en tienda, el pedido se guarda con pago pendiente.
-                            Cuando el equipo marque el pedido como entregado, también podrá marcarlo como pagado.
+                            Si eliges recogida en tienda, el pedido se guardará como pendiente de pago
+                            hasta que el equipo lo entregue y confirme el cobro.
                         </p>
                         <p>
-                            Si eliges envio, el pedido se registra igualmente, pero el envio sigue siendo una simulacion.
+                            Si eliges envío, el pedido también se registrará correctamente, pero el flujo
+                            de reparto sigue siendo una simulación dentro de esta fase del proyecto.
                         </p>
                     </aside>
                 </div>

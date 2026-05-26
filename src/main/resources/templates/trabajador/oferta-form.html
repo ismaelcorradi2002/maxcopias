@@ -17,7 +17,7 @@
                         <div>
                             <span class="section-kicker">Ofertas</span>
                             <h1 th:text="${oferta.id == null ? 'Crear oferta' : 'Editar oferta'}">Crear oferta</h1>
-                            <p>Define si la promocion afecta a productos concretos, una categoria o toda la tienda.</p>
+                            <p>Define si la promoción afecta a productos concretos, una categoría o toda la tienda.</p>
                         </div>
                     </header>
 
@@ -36,15 +36,15 @@
                         </div>
 
                         <section class="offer-form-block">
-                            <h2>Informacion principal</h2>
+                            <h2>Información principal</h2>
                             <label>
-                                <span>Titulo</span>
+                                <span>Título</span>
                                 <input type="text" th:field="*{titulo}" required maxlength="140" placeholder="Ej. 20% en cuadernos A4">
                             </label>
 
                             <label>
-                                <span>Descripcion</span>
-                                <textarea th:field="*{descripcion}" required maxlength="700" rows="4" placeholder="Explica la promocion de forma clara"></textarea>
+                                <span>Descripción</span>
+                                <textarea th:field="*{descripcion}" required maxlength="700" rows="4" placeholder="Explica la promoción de forma clara"></textarea>
                             </label>
                         </section>
 
@@ -54,9 +54,9 @@
                                 <label class="offer-type-card" th:each="tipo : ${tiposOferta}">
                                     <input type="radio" th:field="*{tipoOferta}" th:value="${tipo.name()}" data-offer-type>
                                     <span th:text="${tipo.label}">Global</span>
-                                    <small th:if="${tipo.name() == 'PRODUCTO'}">Uno o varios productos concretos, usando su imagen automaticamente</small>
-                                    <small th:if="${tipo.name() == 'CATEGORIA'}">Todos los productos de una categoria con imagen propia de campana</small>
-                                    <small th:if="${tipo.name() == 'GLOBAL'}">Toda la tienda con una imagen principal de promocion</small>
+                                    <small th:if="${tipo.name() == 'PRODUCTO'}">Uno o varios productos concretos, usando su imagen automáticamente</small>
+                                    <small th:if="${tipo.name() == 'CATEGORIA'}">Todos los productos de una categoría con imagen propia de campaña</small>
+                                    <small th:if="${tipo.name() == 'GLOBAL'}">Toda la tienda con una imagen principal de promoción</small>
                                 </label>
                             </div>
                         </section>
@@ -66,12 +66,12 @@
                             <div class="offer-target-toolbar">
                                 <label>
                                     <span>Buscar producto</span>
-                                    <input type="search" data-product-offer-search placeholder="Buscar por nombre, categoria o ID">
+                                    <input type="search" data-product-offer-search placeholder="Buscar por nombre, categoría o ID">
                                 </label>
                                 <label>
-                                    <span>Filtrar categoria</span>
+                                    <span>Filtrar categoría</span>
                                     <select class="worker-select select-modern" data-product-offer-category>
-                                        <option value="">Todas las categorias</option>
+                                        <option value="">Todas las categorías</option>
                                         <option th:each="categoria : ${categorias}" th:value="${categoria.nombre}" th:text="${categoria.nombre}">Escolar</option>
                                     </select>
                                 </label>
@@ -87,7 +87,7 @@
                                             <span th:text="${producto.precio} + ' EUR'">10 EUR</span>
                                             <span> · </span>
                                             <span th:each="categoria, iter : ${producto.categorias}"
-                                                  th:text="${categoria.nombre + (!iter.last ? ', ' : '')}">Categoria</span>
+                                                  th:text="${categoria.nombre + (!iter.last ? ', ' : '')}">Categoría</span>
                                         </small>
                                     </span>
                                 </label>
@@ -96,16 +96,16 @@
                         </section>
 
                         <section class="offer-form-block" data-category-target>
-                            <h2>Categoria asociada</h2>
+                            <h2>Categoría asociada</h2>
                             <label>
-                                <span>Categoria</span>
+                                <span>Categoría</span>
                                 <select name="categoriaId" class="worker-select select-modern" data-category-offer-select>
-                                    <option value="">Seleccionar categoria</option>
+                                    <option value="">Seleccionar categoría</option>
                                     <option th:each="categoria : ${categorias}"
                                             th:value="${categoria.id}"
                                             th:text="${categoria.nombre}"
                                             th:selected="${oferta.categoria != null and oferta.categoria.id == categoria.id}">
-                                        Categoria
+                                        Categoría
                                     </option>
                                 </select>
                             </label>
@@ -139,8 +139,8 @@
                             <div class="offer-image-panel" data-offer-image-panel>
                                 <div class="offer-image-copy">
                                     <strong>Imagen de la oferta</strong>
-                                    <p data-offer-image-help>Sube una imagen para ofertas globales o de categoria. En ofertas de producto se usara automaticamente la imagen del producto.</p>
-                                    <small>Recomendado: 1200x900 px o mayor, manteniendo proporcion 4:3. La imagen se recortara automaticamente para que todas las ofertas se vean iguales.</small>
+                                    <p data-offer-image-help>Sube una imagen para ofertas globales o de categoría. En ofertas de producto se usará automáticamente la imagen del producto.</p>
+                                    <small>Recomendado: 1200x900 px o mayor, manteniendo proporción 4:3. La imagen se recortará automáticamente para que todas las ofertas se vean iguales.</small>
                                 </div>
 
                                 <div class="offer-image-upload" data-offer-image-upload>
@@ -187,7 +187,7 @@
                                 </label>
                                 <label class="worker-check">
                                     <input type="checkbox" th:field="*{principal}">
-                                    <span>Mostrar como oferta principal en la pagina de ofertas</span>
+                                    <span>Mostrar como oferta principal en la página de ofertas</span>
                                 </label>
                             </div>
                         </section>

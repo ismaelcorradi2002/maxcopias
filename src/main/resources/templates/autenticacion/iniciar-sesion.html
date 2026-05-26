@@ -19,8 +19,8 @@
                     <div class="auth-copy-card">
                         <strong>Desde tu cuenta podrás</strong>
                         <ul>
-                            <li>Consultar tus datos y pedidos</li>
-                            <li>Acceder rápidamente a copistería y tienda</li>
+                            <li>Consultar tus datos y tus pedidos</li>
+                            <li>Acceder más rápido a copistería y tienda</li>
                             <li>Seguir tu actividad con acceso seguro</li>
                         </ul>
                     </div>
@@ -28,21 +28,21 @@
 
                 <article class="auth-card" data-reveal="left">
                     <div class="card-header">
-                        <span class="section-kicker">Login</span>
+                        <span class="section-kicker">Acceso</span>
                         <h2>Iniciar sesión</h2>
-                        <p>Introduce tus credenciales para acceder a tu cuenta.</p>
+                        <p>Introduce tus datos para entrar en tu cuenta.</p>
                     </div>
 
                     <div class="alert alert-error" th:if="${param.error}">
-                        <p>Email o contraseña incorrectos.</p>
+                        <p>No hemos podido iniciar sesión con esos datos. Revisa el email y la contraseña.</p>
                     </div>
 
                     <div class="alert alert-success" th:if="${param.registered}">
-                        <p>Tu cuenta se ha creado correctamente. Ya puedes iniciar sesión.</p>
+                        <p>Tu cuenta ya está creada. Ya puedes iniciar sesión.</p>
                     </div>
 
                     <div class="alert alert-info" th:if="${param.copisteriaRequired}">
-                        <p>Para acceder a copistería y preparar impresiones necesitas iniciar sesión o registrarte primero.</p>
+                        <p>Para usar copistería y preparar un pedido necesitas iniciar sesión o registrarte primero.</p>
                     </div>
 
                     <div class="alert alert-info" th:if="${param.logout}">
@@ -60,7 +60,7 @@
                                     type="email"
                                     autocomplete="email"
                                     data-live-validate="loginEmail"
-                                    placeholder="correo@maxcopias.es"
+                                    placeholder="tuemail@ejemplo.com"
                                     required>
                                 <small class="field-feedback" data-live-feedback="loginEmail" aria-live="polite"></small>
                             </div>
@@ -74,7 +74,7 @@
                                         type="password"
                                         autocomplete="current-password"
                                         data-live-validate="loginPassword"
-                                        placeholder="Tu contraseña"
+                                        placeholder="Introduce tu contraseña"
                                         required>
                                     <button
                                         type="button"

@@ -9,13 +9,13 @@
         <section class="dashboard-hero">
             <div class="container dashboard-layout">
                 <div class="dashboard-copy" data-reveal="up">
-                    <span class="eyebrow">Tu area personal</span>
+                    <span class="eyebrow">Tu área personal</span>
                     <h1 th:text="|Bienvenido de nuevo, ${currentUsuario.firstName}.|">
                         Bienvenido de nuevo.
                     </h1>
                     <p>
-                        Desde aqui puedes consultar tu cuenta, revisar tus pedidos
-                        y acceder rapidamente a los servicios de Maxcopias.
+                        Desde aquí puedes consultar tu cuenta, revisar tus pedidos
+                        y acceder rápidamente a los servicios de Maxcopias.
                     </p>
                 </div>
 
@@ -28,7 +28,7 @@
                             <strong th:text="${currentUsuario.email}">correo@maxcopias.es</strong>
                         </li>
                         <li>
-                            <span>Telefono</span>
+                            <span>Teléfono</span>
                             <strong th:text="${currentUsuario.phone}">+34 600 123 456</strong>
                         </li>
                         <li>
@@ -43,16 +43,16 @@
         <section class="dashboard-section">
             <div class="container dashboard-grid">
                 <article class="dashboard-card" data-reveal="up">
-                    <span class="section-kicker">Accesos rapidos</span>
+                    <span class="section-kicker">Accesos rápidos</span>
                     <h2>Acciones disponibles</h2>
-                    <p>Desde aqui puedes continuar con las partes privadas ya preparadas en esta fase.</p>
+                    <p>Desde aquí puedes continuar con las partes privadas ya preparadas en esta fase.</p>
 
                     <div class="dashboard-actions">
                         <a th:href="@{/pedido}" class="button button-primary">Hacer pedido</a>
                         <a th:href="@{/mis-pedidos}" class="button button-secondary-dark">Mis pedidos</a>
                         <form th:action="@{/logout}" method="post" class="inline-form">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <button type="submit" class="button button-outline-dark">Cerrar sesion</button>
+                            <button type="submit" class="button button-outline-dark">Cerrar sesión</button>
                         </form>
                     </div>
                 </article>
@@ -75,7 +75,7 @@
                             <strong th:text="${currentUsuario.email}">correo@maxcopias.es</strong>
                         </div>
                         <div class="info-item">
-                            <span>Telefono</span>
+                            <span>Teléfono</span>
                             <strong th:text="${currentUsuario.phone}">+34 600 123 456</strong>
                         </div>
                     </div>
@@ -83,9 +83,9 @@
 
                 <article class="dashboard-card dashboard-card-wide" data-reveal="up">
                     <span class="section-kicker">Editar datos</span>
-                    <h2>Actualiza tu informacion personal</h2>
+                    <h2>Actualiza tu información personal</h2>
                     <p>
-                        Desde aqui puedes modificar los datos basicos de tu cuenta.
+                        Desde aquí puedes modificar los datos básicos de tu cuenta.
                         El email de acceso se mantiene fijo y no puede cambiarse desde esta zona.
                     </p>
 
@@ -130,11 +130,11 @@
                                     autocomplete="off"
                                     readonly
                                     class="is-readonly">
-                                <small class="field-feedback">Este email no puede modificarse desde tu area personal.</small>
+                                <small class="field-feedback">Este email no puede modificarse desde tu área personal.</small>
                             </div>
 
                             <div class="field-group">
-                                <label for="phone">Telefono</label>
+                                <label for="phone">Teléfono</label>
                                 <input
                                     id="phone"
                                     type="tel"
@@ -163,4 +163,3 @@
 <script th:src="@{/js/inicio.js}"></script>
 </body>
 </html>
-

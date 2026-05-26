@@ -10,11 +10,11 @@
             <div class="container">
                 <article class="confirmacion-card">
                     <span class="section-kicker">Pedido confirmado</span>
-                    <h1>Tu pedido de tienda ya esta registrado</h1>
-                    <p th:text="${confirmacion.mensajePrincipal()}">Pedido recibido.</p>
+                    <h1>Tu pedido de tienda ya está registrado</h1>
+                    <p th:text="${confirmacion.mensajePrincipal()}">Hemos recibido tu pedido correctamente.</p>
 
                     <div class="confirmacion-meta-grid">
-                        <div><span>Codigo</span><strong th:text="${confirmacion.pedido().codigoPedido()}">MT-000</strong></div>
+                        <div><span>Código</span><strong th:text="${confirmacion.pedido().codigoPedido()}">MT-000</strong></div>
                         <div><span>Estado inicial</span><strong th:text="${confirmacion.pedido().estadoLabel()}">Pendiente</strong></div>
                         <div><span>Entrega</span><strong th:text="${confirmacion.pedido().metodoEntregaLabel()}">Recogida en tienda</strong></div>
                         <div><span>Total</span><strong th:text="${confirmacion.pedido().totalFormateado()}">0,00 EUR</strong></div>

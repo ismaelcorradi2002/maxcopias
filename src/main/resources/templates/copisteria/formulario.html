@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Configurador de copisteria', '/css/copisteria.css')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Configurador de copistería', '/css/copisteria.css')}"></head>
 <body class="copisteria-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -11,7 +11,7 @@
                 <div class="wizard-header" data-reveal="up">
                     <div class="wizard-header-copy">
                         <span class="eyebrow">Configurador de pedido</span>
-                        <h1>Configura tu pedido de copisteria paso a paso.</h1>
+                        <h1>Configura tu pedido de copistería paso a paso.</h1>
                         <p>
                             Ajusta el servicio, sube el archivo antes del resumen y revisa un desglose claro
                             del precio orientativo antes de guardar el pedido.
@@ -20,7 +20,7 @@
                     <div class="wizard-header-tags">
                         <span>Recogida en tienda</span>
                         <span>Precio desglosado</span>
-                        <span>PDF contado por paginas</span>
+                        <span>PDF contado por páginas</span>
                     </div>
                 </div>
 
@@ -35,7 +35,7 @@
                     </button>
                     <button class="wizard-progress-item" type="button" data-progress-step="paperSize">
                         <span>3</span>
-                        <strong>Tamano</strong>
+                        <strong>Tamaño</strong>
                     </button>
                     <button class="wizard-progress-item" type="button" data-progress-step="copies">
                         <span>4</span>
@@ -51,7 +51,7 @@
                     </button>
                     <button class="wizard-progress-item" type="button" data-progress-step="bindingType">
                         <span>7</span>
-                        <strong>Encuadernacion</strong>
+                        <strong>Encuadernación</strong>
                     </button>
                     <button class="wizard-progress-item" type="button" data-progress-step="extras">
                         <span>8</span>
@@ -97,7 +97,7 @@
                         <article class="wizard-step is-active" data-step-id="jobType">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 1</span>
-                                <h2>Que tipo de trabajo quieres pedir</h2>
+                                <h2>Qué tipo de trabajo quieres pedir</h2>
                                 <p>Selecciona el servicio principal. Hemos simplificado las opciones para que encuentres antes el flujo adecuado para tu pedido.</p>
                             </div>
 
@@ -113,8 +113,8 @@
                                         data-step-choice>
                                     <span class="wizard-option-ui">
                                         <span class="wizard-option-icon" th:text="${jobType.shortCode}">IM</span>
-                                        <strong th:text="${jobType.label}">Impresion</strong>
-                                        <small th:if="${jobType.name() == 'IMPRESION'}">Imprime documentos, apuntes y trabajos con opciones de color, copias, encuadernado, plastificado y mas.</small>
+                                        <strong th:text="${jobType.label}">Impresión</strong>
+                                        <small th:if="${jobType.name() == 'IMPRESION'}">Imprime documentos, apuntes y trabajos con opciones de color, copias, encuadernado, plastificado y más.</small>
                                         <em th:text="${jobType.priceHint}">Desde 0,06 EUR</em>
                                     </span>
                                 </label>
@@ -129,7 +129,7 @@
                         <article class="wizard-step" data-step-id="colorMode">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 2</span>
-                                <h2>Elige el tipo de impresion</h2>
+                                <h2>Elige el tipo de impresión</h2>
                                 <p>Selecciona si quieres el trabajo en blanco y negro o a color.</p>
                             </div>
 
@@ -153,7 +153,7 @@
                         <article class="wizard-step" data-step-id="paperSize">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 3</span>
-                                <h2>Selecciona el tamano</h2>
+                                <h2>Selecciona el tamaño</h2>
                                 <p>Elige el formato para ajustar precio y acabado del pedido.</p>
                             </div>
 
@@ -177,12 +177,12 @@
                         <article class="wizard-step" data-step-id="copies">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 4</span>
-                                <h2>Cuantas copias necesitas</h2>
-                                <p>Indica el numero de copias para calcular el importe orientativo.</p>
+                                <h2>Cuántas copias necesitas</h2>
+                                <p>Indica el número de copias para calcular el importe orientativo.</p>
                             </div>
 
                             <div class="wizard-number-card">
-                                <label for="copies">Numero de copias</label>
+                                <label for="copies">Número de copias</label>
                                 <div class="wizard-quantity-picker" data-quantity-picker>
                                     <button type="button" class="wizard-quantity-button" data-quantity-action="decrease" aria-label="Restar una copia">-</button>
                                     <input
@@ -208,8 +208,8 @@
                         <article class="wizard-step" data-step-id="printSide">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 5</span>
-                                <h2>Quieres una cara o doble cara</h2>
-                                <p>Selecciona la configuracion de caras para el documento.</p>
+                                <h2>¿Quieres una cara o doble cara?</h2>
+                                <p>Selecciona la configuración de caras para el documento.</p>
                             </div>
 
                             <div class="wizard-options-grid wizard-options-grid-2">
@@ -233,7 +233,7 @@
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 6</span>
                                 <h2>Elige el tipo de papel</h2>
-                                <p>Selecciona el acabado del papel segun el uso del documento.</p>
+                                <p>Selecciona el acabado del papel según el uso del documento.</p>
                             </div>
 
                             <div class="wizard-options-grid wizard-options-grid-3">
@@ -256,7 +256,7 @@
                         <article class="wizard-step" data-step-id="bindingType">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 7</span>
-                                <h2>Quieres encuadernacion</h2>
+                                <h2>¿Quieres encuadernación?</h2>
                                 <p>Selecciona el acabado final si tu pedido lo necesita.</p>
                             </div>
 
@@ -280,8 +280,8 @@
                         <article class="wizard-step" data-step-id="extras">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 8</span>
-                                <h2>Anade extras al pedido</h2>
-                                <p>Puedes marcar varios extras a la vez. Se reflejaran por separado en el precio final.</p>
+                                <h2>Añade extras al pedido</h2>
+                                <p>Puedes marcar varios extras a la vez. Se reflejarán por separado en el precio final.</p>
                             </div>
 
                             <div class="wizard-options-grid wizard-options-grid-3">
@@ -297,7 +297,7 @@
                                     <input type="checkbox" th:field="*{urgente}">
                                     <span class="wizard-option-ui">
                                         <strong>Urgente</strong>
-                                        <small>Prioridad de preparacion para recoger cuanto antes.</small>
+                                        <small>Prioridad de preparación para recoger cuanto antes.</small>
                                     </span>
                                 </label>
 
@@ -305,7 +305,7 @@
                                     <input type="checkbox" th:field="*{escaneado}">
                                     <span class="wizard-option-ui">
                                         <strong>Escaneado</strong>
-                                        <small>Digitalizacion complementaria del material.</small>
+                                        <small>Digitalización complementaria del material.</small>
                                     </span>
                                 </label>
                             </div>
@@ -319,8 +319,8 @@
                         <article class="wizard-step" data-step-id="delivery">
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 9</span>
-                                <h2>Como quieres recibir el pedido</h2>
-                                <p>La recogida en tienda no tiene suplemento. El envio a domicilio anade gastos de entrega.</p>
+                                <h2>Cómo quieres recibir el pedido</h2>
+                                <p>La recogida en tienda no tiene suplemento. El envío a domicilio añade gastos de entrega.</p>
                             </div>
 
                             <div class="wizard-options-grid wizard-options-grid-2">
@@ -328,15 +328,15 @@
                                     <input type="radio" th:field="*{deliveryMethod}" value="STORE_PICKUP" data-step-choice>
                                     <span class="wizard-option-ui">
                                         <strong>Recogida en tienda</strong>
-                                        <small>Sin suplemento. Si marcas urgente, estara listo en unos 10 minutos.</small>
+                                        <small>Sin suplemento. Si marcas urgente, estará listo en unos 10 minutos.</small>
                                     </span>
                                 </label>
 
                                 <label class="wizard-option-card wizard-option-card-compact">
                                     <input type="radio" th:field="*{deliveryMethod}" value="HOME_DELIVERY" data-step-choice>
                                     <span class="wizard-option-ui">
-                                        <strong>Envio a domicilio</strong>
-                                        <small>Con suplemento de envio. Si marcas urgente, entrega estimada en unos 20 minutos.</small>
+                                        <strong>Envío a domicilio</strong>
+                                        <small>Con suplemento de envío. Si marcas urgente, la entrega estimada es de unos 20 minutos.</small>
                                     </span>
                                 </label>
                             </div>
@@ -346,8 +346,8 @@
 
                                 <div class="wizard-address-head">
                                     <div>
-                                        <label class="wizard-address-title" for="deliveryStreet">Direccion de entrega</label>
-                                        <p>Usaremos esta direccion solo para este pedido.</p>
+                                        <label class="wizard-address-title" for="deliveryStreet">Dirección de entrega</label>
+                                        <p>Usaremos esta dirección solo para este pedido.</p>
                                     </div>
                                     <div class="wizard-address-summary" data-delivery-summary>
                                         Entrega simulada · coste estimado 0,00 €
@@ -366,13 +366,13 @@
                                     </div>
 
                                     <div class="field-group wizard-inline-field">
-                                        <label for="deliveryNumber">Numero</label>
+                                        <label for="deliveryNumber">Número</label>
                                         <input
                                             id="deliveryNumber"
                                             type="text"
                                             maxlength="20"
                                             placeholder="Ej. 24">
-                                        <small class="field-error" data-delivery-field-error="number" hidden>Introduce el numero.</small>
+                                        <small class="field-error" data-delivery-field-error="number" hidden>Introduce el número.</small>
                                     </div>
 
                                     <div class="field-group wizard-inline-field">
@@ -385,14 +385,14 @@
                                     </div>
 
                                     <div class="field-group wizard-inline-field">
-                                        <label for="deliveryPostalCode">Codigo postal</label>
+                                        <label for="deliveryPostalCode">Código postal</label>
                                         <input
                                             id="deliveryPostalCode"
                                             type="text"
                                             inputmode="numeric"
                                             maxlength="5"
                                             placeholder="28850">
-                                        <small class="field-error" data-delivery-field-error="postalCode" hidden>Introduce un codigo postal de 5 digitos.</small>
+                                        <small class="field-error" data-delivery-field-error="postalCode" hidden>Introduce un código postal de 5 dígitos.</small>
                                     </div>
 
                                     <div class="field-group wizard-inline-field">
@@ -401,9 +401,9 @@
                                             id="deliveryCity"
                                             type="text"
                                             maxlength="80"
-                                            value="Torrejon de Ardoz"
-                                            placeholder="Torrejon de Ardoz">
-                                        <small class="field-error" data-delivery-field-error="city" hidden>Solo repartimos en Torrejon de Ardoz.</small>
+                                            value="Torrejón de Ardoz"
+                                            placeholder="Torrejón de Ardoz">
+                                        <small class="field-error" data-delivery-field-error="city" hidden>Solo repartimos en Torrejón de Ardoz.</small>
                                     </div>
 
                                     <div class="field-group wizard-inline-field">
@@ -418,14 +418,14 @@
                                     </div>
 
                                     <div class="field-group wizard-inline-field">
-                                        <label for="deliveryContactPhone">Telefono de contacto</label>
+                                        <label for="deliveryContactPhone">Teléfono de contacto</label>
                                         <input
                                             id="deliveryContactPhone"
                                             type="tel"
                                             inputmode="numeric"
                                             maxlength="9"
                                             placeholder="612345678">
-                                        <small class="field-error" data-delivery-field-error="contactPhone" hidden>Introduce un telefono de 9 digitos.</small>
+                                        <small class="field-error" data-delivery-field-error="contactPhone" hidden>Introduce un teléfono de 9 dígitos.</small>
                                     </div>
 
                                     <div class="field-group wizard-inline-field wizard-inline-field-full">
@@ -434,7 +434,7 @@
                                             id="deliveryInstructions"
                                             rows="4"
                                             maxlength="240"
-                                            placeholder="Portal, referencia del edificio, horario o cualquier indicacion util."></textarea>
+                                            placeholder="Portal, referencia del edificio, horario o cualquier indicación útil."></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -473,13 +473,13 @@
                                 <p
                                     class="file-hint"
                                     data-file-hint
-                                    th:text="'Formatos permitidos: ' + ${acceptedFormats} + ' | Maximo ' + ${maxFileSizeLabel} + ' por archivo. Para documentos, sube PDF para calcular bien las paginas.'">
-                                    Formatos permitidos: PDF, JPG, PNG | Maximo 15 MB por archivo.
+                                    th:text="'Formatos permitidos: ' + ${acceptedFormats} + ' | Máximo ' + ${maxFileSizeLabel} + ' por archivo. Para documentos, sube PDF para calcular bien las páginas.'">
+                                    Formatos permitidos: PDF, JPG, PNG | Máximo 15 MB por archivo.
                                 </p>
                                 <small class="field-error" data-files-error hidden>Adjunta al menos un archivo antes de pasar al resumen.</small>
                                 <small class="field-error" th:if="${#fields.hasGlobalErrors()}" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></small>
                                 <p class="wizard-multi-file-note">
-                                    Si subes varios archivos, todos se imprimiran con las mismas opciones elegidas.
+                                    Si subes varios archivos, todos se imprimirán con las mismas opciones elegidas.
                                     Si necesitas configuraciones distintas, crea pedidos separados.
                                 </p>
                                 <ul class="selected-files" data-file-list></ul>
@@ -492,7 +492,7 @@
                                     rows="6"
                                     th:field="*{observations}"
                                     th:classappend="${#fields.hasErrors('observations')} ? 'is-invalid'"
-                                    placeholder="Indica cualquier detalle importante del pedido: portada, orden de paginas, acabado o aclaraciones para tienda."></textarea>
+                                    placeholder="Indica cualquier detalle importante del pedido: portada, orden de páginas, acabado o aclaraciones para tienda."></textarea>
                                 <small class="field-error" th:if="${#fields.hasErrors('observations')}" th:errors="*{observations}"></small>
                             </div>
 
@@ -506,7 +506,7 @@
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso final</span>
                                 <h2>Revisa el pedido antes de guardarlo</h2>
-                                <p>Comprueba configuracion, archivos y desglose de precios antes de confirmar el encargo.</p>
+                                <p>Revisa la configuración, los archivos y el desglose antes de guardar el encargo.</p>
                             </div>
 
                             <div class="wizard-review-grid">
@@ -518,7 +518,7 @@
                                             <strong data-review-customer-name th:text="${orderForm.customerName}">Nombre Apellidos</strong>
                                         </li>
                                         <li>
-                                            <span>Telefono</span>
+                                            <span>Teléfono</span>
                                             <strong data-review-phone th:text="${orderForm.phone}">600123456</strong>
                                         </li>
                                         <li>
@@ -529,18 +529,18 @@
                                 </div>
 
                                 <div class="wizard-review-card">
-                                    <strong>Resumen de configuracion</strong>
+                                    <strong>Resumen de configuración</strong>
                                     <ul class="wizard-review-list">
                                         <li>
                                             <span>Trabajo</span>
                                             <strong data-summary-job-type>Sin seleccionar</strong>
                                         </li>
                                         <li>
-                                            <span>Impresion</span>
+                                            <span>Impresión</span>
                                             <strong data-summary-color-mode>No aplica</strong>
                                         </li>
                                         <li>
-                                            <span>Tamano</span>
+                                            <span>Tamaño</span>
                                             <strong data-summary-paper-size>No aplica</strong>
                                         </li>
                                         <li>
@@ -556,7 +556,7 @@
                                             <strong data-summary-paper-type>No aplica</strong>
                                         </li>
                                         <li>
-                                            <span>Encuadernacion</span>
+                                            <span>Encuadernación</span>
                                             <strong data-summary-binding-type>No aplica</strong>
                                         </li>
                                         <li>
@@ -568,7 +568,7 @@
                                             <strong data-summary-delivery-method>Recogida en tienda</strong>
                                         </li>
                                         <li>
-                                            <span>Direccion</span>
+                                            <span>Dirección</span>
                                             <strong data-summary-delivery-address>No aplica</strong>
                                         </li>
                                         <li>
@@ -576,8 +576,8 @@
                                             <strong data-summary-files>Sin archivo</strong>
                                         </li>
                                         <li>
-                                            <span>Paginas detectadas</span>
-                                            <strong data-summary-pages>0 paginas detectadas</strong>
+                                            <span>Páginas detectadas</span>
+                                            <strong data-summary-pages>0 páginas detectadas</strong>
                                         </li>
                                     </ul>
                                 </div>
@@ -588,8 +588,8 @@
                                 <ul class="wizard-price-lines" data-summary-price-lines>
                                     <li th:each="line : ${pricePreview.lines}">
                                         <div>
-                                            <strong th:text="${line.concept}">Impresion color</strong>
-                                            <small th:text="${line.detail}">1 pagina x 1 copia</small>
+                                            <strong th:text="${line.concept}">Impresión color</strong>
+                                            <small th:text="${line.detail}">1 página x 1 copia</small>
                                         </div>
                                         <span th:text="${line.formattedAmount}">0,45 EUR</span>
                                     </li>
@@ -599,24 +599,24 @@
                                     <strong data-summary-total th:text="${pricePreview.formattedTotal}">0,06 EUR</strong>
                                 </div>
                                 <p class="wizard-price-note" data-summary-note th:text="${pricePreview.note}">
-                                    El importe se calcula automaticamente segun la configuracion y los archivos.
+                                    El importe se calcula automáticamente según la configuración y los archivos.
                                 </p>
                             </div>
 
                             <div class="privacy-inline-notice">
-                                <strong>Informacion basica sobre privacidad</strong>
+                                <strong>Información básica sobre privacidad</strong>
                                 <p>
-                                    Responsable: Maxcopias. Finalidad: gestionar tu pedido de copisteria, incluidos los archivos
-                                    que subes, la preparacion del trabajo y el seguimiento del encargo.
-                                    Base juridica: ejecucion de la relacion contractual o precontractual.
-                                    Derechos: acceso, rectificacion, supresion y demas derechos en
-                                    <a th:href="@{/privacidad}">la politica de privacidad</a>.
+                                    Responsable: Maxcopias. Finalidad: gestionar tu pedido de copistería, incluidos los archivos
+                                    que subes, la preparación del trabajo y el seguimiento del encargo.
+                                    Base jurídica: ejecución de la relación contractual o precontractual.
+                                    Derechos: acceso, rectificación, supresión y demás derechos en
+                                    <a th:href="@{/privacidad}">la política de privacidad</a>.
                                 </p>
                             </div>
 
                             <div class="wizard-step-actions wizard-step-actions-review">
                                 <button type="button" class="button button-secondary-dark" data-step-prev>Volver</button>
-                                <button type="submit" class="button button-primary">Guardar pedido y ver resumen</button>
+                                <button type="submit" class="button button-primary">Guardar pedido</button>
                             </div>
                         </article>
                     </section>
@@ -624,18 +624,18 @@
     <aside class="wizard-summary" data-reveal="left">
                         <article class="side-card price-preview-card" data-price-estimator data-preview-url="/copisteria/precio-orientativo" style="opacity: 0.5;">
                         <!-- Preview disabled for re-do - JS calculates static -->
-                            <span class="side-card-kicker">Estimacion</span>
+                            <span class="side-card-kicker">Estimación</span>
                             <h3>Precio orientativo del pedido</h3>
                             <strong class="price-preview-total" data-price-total th:text="${pricePreview.formattedTotal}">0,06 EUR</strong>
                             <div class="price-preview-pages">
-                                <span>Paginas detectadas</span>
-                                <strong data-price-pages th:text="${pricePreview.pageCountLabel}">0 paginas detectadas</strong>
+                                <span>Páginas detectadas</span>
+                                <strong data-price-pages th:text="${pricePreview.pageCountLabel}">0 páginas detectadas</strong>
                             </div>
                             <ul class="price-preview-lines" data-price-lines>
                                 <li th:each="line : ${pricePreview.lines}">
                                     <div>
-                                        <strong th:text="${line.concept}">Impresion color</strong>
-                                        <small th:text="${line.detail}">1 pagina x 1 copia</small>
+                                        <strong th:text="${line.concept}">Impresión color</strong>
+                                        <small th:text="${line.detail}">1 página x 1 copia</small>
                                     </div>
                                     <span th:text="${line.formattedAmount}">0,45 EUR</span>
                                 </li>
@@ -644,17 +644,17 @@
                                 Selecciona un servicio para ver el precio orientativo del pedido.
                             </p>
                             <p class="price-preview-note" data-price-note th:text="${pricePreview.note}">
-                                El importe se calcula automaticamente segun la configuracion y los archivos.
+                                El importe se calcula automáticamente según la configuración y los archivos.
                             </p>
                         </article>
 
                         <article class="side-card wizard-help-card">
                             <span class="side-card-kicker">Pedido</span>
-                            <h3>Como se guarda</h3>
+                            <h3>Cómo se guarda</h3>
                             <ul class="side-check-list">
                                 <li>Se guarda dentro de tu cuenta.</li>
-                                <li>Genera una referencia unica del pedido.</li>
-                                <li>Lo veras despues en Mis pedidos.</li>
+                                <li>Genera una referencia única del pedido.</li>
+                                <li>Lo verás después en Mis pedidos.</li>
                             </ul>
                         </article>
                     </aside>

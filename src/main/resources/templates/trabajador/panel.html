@@ -19,12 +19,12 @@
                             <h1>Panel trabajador</h1>
                             <p>Resumen general de pedidos, productos y promociones activas del negocio.</p>
                         </div>
-                        <span class="admin-status-pill">Sesion trabajador activa</span>
+                        <span class="admin-status-pill">Sesión trabajador activa</span>
                     </header>
 
                     <div th:replace="~{trabajador/fragmentos :: workerNav(${activeWorkerSection})}"></div>
 
-                    <div class="worker-counter-groups" aria-label="Resumen de pedidos por area">
+                    <div class="worker-counter-groups" aria-label="Resumen de pedidos por área">
                         <section class="worker-counter-group">
                             <header>
                                 <span>Copistería</span>
@@ -76,16 +76,16 @@
                         </section>
                     </div>
 
-                    <section class="worker-dashboard-grid" aria-label="Accesos rapidos">
+                    <section class="worker-dashboard-grid" aria-label="Accesos rápidos">
                         <a class="worker-module-card" th:href="@{/worker/productos}">
                             <span>Productos</span>
                             <strong>Gestión de stock</strong>
-                            <p>Crear productos, editar precios, revisar stock y activar o desactivar articulos.</p>
+                            <p>Crear productos, editar precios, revisar stock y activar o desactivar artículos.</p>
                         </a>
                         <a class="worker-module-card" th:href="@{/worker/pedidos-copisteria}">
                             <span>Copistería</span>
                             <strong>Pedidos de impresión</strong>
-                            <p>Revisar encargos, archivos enviados y cambiar el estado de preparacion.</p>
+                            <p>Revisar encargos, archivos enviados y cambiar el estado de preparación.</p>
                         </a>
                         <a class="worker-module-card" th:href="@{/worker/pedidos-tienda}">
                             <span>Tienda</span>
@@ -95,7 +95,7 @@
                         <a class="worker-module-card" th:href="@{/worker/ofertas}">
                             <span>Ofertas</span>
                             <strong>Promociones</strong>
-                            <p>Crear ofertas, activar promociones y elegir cual aparece primero en la pagina de ofertas.</p>
+                            <p>Crear ofertas, activar promociones y elegir cuál aparece primero en la página de ofertas.</p>
                         </a>
                     </section>
 

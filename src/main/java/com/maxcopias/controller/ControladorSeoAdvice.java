@@ -12,48 +12,48 @@ public class ControladorSeoAdvice {
 
     private static final Map<String, SeoPage> SEO_PAGES = Map.of(
         "/", new SeoPage(
-            "Maxcopias | Copisteria y papeleria en Torrejon de Ardoz",
-            "Copisteria y papeleria en Torrejon de Ardoz. Imprime documentos online, compra papeleria y elige recogida o envio local.",
+            "Maxcopias | Copistería y papelería en Torrejón de Ardoz",
+            "Copistería y papelería en Torrejón de Ardoz. Imprime documentos online, compra papelería y elige recogida o envío local.",
             "website"
         ),
         "/copisteria", new SeoPage(
-            "Copisteria online en Torrejon de Ardoz | Imprime documentos en Maxcopias",
-            "Imprime documentos en Torrejon de Ardoz con recogida en tienda. Fotocopias, encuadernacion y copisteria online en Maxcopias.",
+            "Copistería online en Torrejón de Ardoz | Imprime documentos en Maxcopias",
+            "Imprime documentos en Torrejón de Ardoz con recogida en tienda. Fotocopias, encuadernación y copistería online en Maxcopias.",
             "website"
         ),
         "/tienda", new SeoPage(
-            "Papeleria online en Torrejon de Ardoz | Maxcopias",
-            "Compra papeleria online en Torrejon de Ardoz con recogida en tienda o envio local. Material escolar y de oficina en Maxcopias.",
+            "Papelería online en Torrejón de Ardoz | Maxcopias",
+            "Compra papelería online en Torrejón de Ardoz con recogida en tienda o envío local. Material escolar y de oficina en Maxcopias.",
             "website"
         ),
         "/ofertas", new SeoPage(
-            "Ofertas de copisteria y papeleria | Maxcopias Torrejon de Ardoz",
-            "Consulta ofertas de copisteria y papeleria en Torrejon de Ardoz. Promociones locales para imprimir y comprar en Maxcopias.",
+            "Ofertas de copistería y papelería | Maxcopias Torrejón de Ardoz",
+            "Consulta ofertas de copistería y papelería en Torrejón de Ardoz. Promociones locales para imprimir y comprar en Maxcopias.",
             "website"
         ),
         "/contacto", new SeoPage(
-            "Contacto y ubicacion | Maxcopias Torrejon de Ardoz",
-            "Contacta con Maxcopias en C/ Soledad, N 3, 28850 Torrejon de Ardoz, Madrid. Telefono, email, horario y ubicacion.",
+            "Contacto y ubicación | Maxcopias Torrejón de Ardoz",
+            "Contacta con Maxcopias en C/ Soledad, N 3, 28850 Torrejón de Ardoz, Madrid. Teléfono, email, horario y ubicación.",
             "website"
         ),
         "/aviso-legal", new SeoPage(
             "Aviso legal | Maxcopias",
-            "Consulta el aviso legal de Maxcopias y la informacion general sobre el uso de la web y sus servicios.",
+            "Consulta el aviso legal de Maxcopias y la información general sobre el uso de la web y sus servicios.",
             "website"
         ),
         "/privacidad", new SeoPage(
-            "Politica de privacidad | Maxcopias",
-            "Consulta como trata Maxcopias los datos personales de clientes, pedidos, cuentas y archivos subidos desde la web.",
+            "Política de privacidad | Maxcopias",
+            "Consulta cómo trata Maxcopias los datos personales de clientes, pedidos, cuentas y archivos subidos desde la web.",
             "website"
         ),
         "/cookies", new SeoPage(
-            "Politica de cookies | Maxcopias",
-            "Informacion sobre cookies tecnicas, contenido externo y gestion del consentimiento en la web de Maxcopias.",
+            "Política de cookies | Maxcopias",
+            "Información sobre cookies técnicas, contenido externo y gestión del consentimiento en la web de Maxcopias.",
             "website"
         ),
         "/condiciones-compra", new SeoPage(
             "Condiciones de compra | Maxcopias",
-            "Consulta las condiciones de compra de copisteria y papeleria online de Maxcopias, con recogida en tienda y envio local.",
+            "Consulta las condiciones de compra de copistería y papelería online de Maxcopias, con recogida en tienda y envío local.",
             "website"
         )
     );
@@ -139,13 +139,13 @@ public class ControladorSeoAdvice {
                 "@type": "PostalAddress",
                 "streetAddress": "C/ Soledad, N 3",
                 "postalCode": "28850",
-                "addressLocality": "Torrejon de Ardoz",
+                "addressLocality": "Torrejón de Ardoz",
                 "addressRegion": "Madrid",
                 "addressCountry": "ES"
               },
               "areaServed": {
                 "@type": "City",
-                "name": "Torrejon de Ardoz"
+                "name": "Torrejón de Ardoz"
               }
             }
             """.formatted(canonicalUrl, imageUrl);

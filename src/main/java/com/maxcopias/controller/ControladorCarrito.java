@@ -76,7 +76,7 @@ public class ControladorCarrito {
     ) {
         try {
             servicioCarrito.actualizarCantidad(productoId, cantidad, authentication, session);
-            redirectAttributes.addFlashAttribute("cartFeedback", "Carrito actualizado.");
+            redirectAttributes.addFlashAttribute("cartFeedback", "Tu carrito se ha actualizado correctamente.");
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("cartError", exception.getMessage());
         }
@@ -91,7 +91,7 @@ public class ControladorCarrito {
         RedirectAttributes redirectAttributes
     ) {
         servicioCarrito.eliminarProducto(productoId, authentication, session);
-        redirectAttributes.addFlashAttribute("cartFeedback", "Producto eliminado del carrito.");
+        redirectAttributes.addFlashAttribute("cartFeedback", "El producto se ha quitado del carrito.");
         return "redirect:/carrito";
     }
 
@@ -192,11 +192,11 @@ public class ControladorCarrito {
         }
 
         if (formulario.getDireccionEntrega() == null || formulario.getDireccionEntrega().isBlank()) {
-            bindingResult.rejectValue("direccionEntrega", "deliveryAddress.required", "Introduce la direccion de entrega.");
+            bindingResult.rejectValue("direccionEntrega", "deliveryAddress.required", "Introduce la dirección de entrega.");
         }
 
         if (formulario.getCodigoPostalEntrega() == null || formulario.getCodigoPostalEntrega().isBlank()) {
-            bindingResult.rejectValue("codigoPostalEntrega", "deliveryPostalCode.required", "Introduce el codigo postal.");
+            bindingResult.rejectValue("codigoPostalEntrega", "deliveryPostalCode.required", "Introduce el código postal.");
         }
 
         if (formulario.getCiudadEntrega() == null || formulario.getCiudadEntrega().isBlank()) {
@@ -206,7 +206,7 @@ public class ControladorCarrito {
 
         String ciudadNormalizada = normalizeCity(formulario.getCiudadEntrega());
         if (!"torrejon de ardoz".equals(ciudadNormalizada) && !"torrejon".equals(ciudadNormalizada)) {
-            bindingResult.rejectValue("ciudadEntrega", "deliveryCity.unsupported", "Solo repartimos en Torrejon de Ardoz.");
+            bindingResult.rejectValue("ciudadEntrega", "deliveryCity.unsupported", "Solo repartimos en Torrejón de Ardoz.");
         }
     }
 
