@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Tienda de papelería', '/css/tienda.css?v=20260511b')}"></head>
+<head th:replace="~{fragmentos/encabezado :: head('Papeleria online en Torrejon de Ardoz | Maxcopias', '/css/tienda.css?v=20260511b')}"></head>
 <body class="tienda-page">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
@@ -24,8 +24,9 @@
                 </div>
 
                 <div class="section-heading" id="productos-title">
-                    <span class="section-kicker">Todos</span>
-                    <h2>Catalogo completo</h2>
+                    <span class="section-kicker">Papeleria en Torrejon de Ardoz</span>
+                    <h1>Catalogo de papeleria online y material escolar</h1>
+                    <p>Compra cuadernos, carpetas, boligrafos y suministros de oficina con recogida en tienda o envio local en Torrejon de Ardoz.</p>
                 </div>
 
                 <div class="productos-grid" id="productos-container">
@@ -35,16 +36,16 @@
                         th:attr="data-categories=${producto.categoriasSlug()},data-product-name=${producto.nombre()},data-product-price=${producto.precioFormateado()}">
                         <a class="tienda-producto-link" th:href="@{/detalles-producto/{id}(id=${producto.id()})}">
                             <div class="tienda-producto-media">
-                                <img th:src="${producto.imagenUrl()}" th:alt="${producto.alt()}">
+                                <img th:src="${producto.imagenUrl()}" th:alt="${producto.alt()}" loading="lazy">
                             </div>
                             <div>
                                 <span class="tienda-producto-categorias" th:text="${producto.categoriasTexto()}">Escolar</span>
                                 <h3 th:text="${producto.nombre()}">Producto</h3>
-                                <p th:text="${producto.descripcion()}">Descripción</p>
+                                <p th:text="${producto.descripcion()}">Descripcion</p>
                                 <span class="tienda-offer-badge" th:if="${producto.tieneOferta()}" th:text="${producto.etiquetaOferta()}">20% OFF</span>
                                 <span class="precio-tag precio-tag-offer" th:if="${producto.tieneOferta()}">
-                                    <del th:text="${producto.precioOriginalFormateado()}">10,00 €</del>
-                                    <strong th:text="${producto.precioOfertaFormateado()}">8,00 €</strong>
+                                    <del th:text="${producto.precioOriginalFormateado()}">10,00 EUR</del>
+                                    <strong th:text="${producto.precioOfertaFormateado()}">8,00 EUR</strong>
                                 </span>
                                 <span class="precio-tag" th:if="${!producto.tieneOferta()}" th:text="${producto.precioFormateado()}">0,00 EUR</span>
                             </div>
@@ -66,7 +67,7 @@
 
         <section class="contact-section">
             <div class="container">
-                <p><strong>Consulta disponibilidad y precios en tienda.</strong> Pase directamente por Calle Mayor 24.</p>
+                <p><strong>Consulta disponibilidad y precios en tienda.</strong> Visitanos en C/ Soledad, N 3, 28850 Torrejon de Ardoz, Madrid.</p>
             </div>
         </section>
     </main>
