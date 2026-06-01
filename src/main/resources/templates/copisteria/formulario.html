@@ -73,7 +73,7 @@
 
 <form
                     method="post"
-                    th:action="@{/copisteria}"
+                    th:action="@{/copisteria/pedido}"
                     th:object="${orderForm}"
                     enctype="multipart/form-data"
                     novalidate
@@ -622,7 +622,7 @@
                     </section>
 
     <aside class="wizard-summary" data-reveal="left">
-                        <article class="side-card price-preview-card" data-price-estimator data-preview-url="/copisteria/precio-orientativo" style="opacity: 0.5;">
+                        <article class="side-card price-preview-card" data-price-estimator data-preview-url="/copisteria/pedido/precio-orientativo" style="opacity: 0.5;">
                         <!-- Preview disabled for re-do - JS calculates static -->
                             <span class="side-card-kicker">Estimación</span>
                             <h3>Precio orientativo del pedido</h3>

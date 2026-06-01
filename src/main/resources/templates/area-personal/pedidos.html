@@ -43,7 +43,7 @@
                 <div class="dashboard-actions dashboard-orders-actions">
                     <a th:href="@{/copisteria}" class="button button-secondary-dark">Ver copistería</a>
                     <a th:href="@{/tienda}" class="button button-outline-dark">Ir a la tienda</a>
-                    <a th:href="@{/copisteria}" class="button button-primary">Hacer nuevo pedido</a>
+                    <a th:href="@{/copisteria/pedido}" class="button button-primary">Hacer nuevo pedido</a>
                 </div>
 
                 <div class="empty-state dashboard-empty-state" th:if="${#lists.isEmpty(orders) and #lists.isEmpty(storeOrders)}" data-reveal="up">
@@ -52,7 +52,7 @@
                         Cuando completes tu primer encargo de copistería o tu primera compra en tienda,
                         aparecerá aquí con su estado y el resumen del pedido.
                     </p>
-                    <a th:href="@{/copisteria}" class="button button-primary">Crear mi primer pedido</a>
+                    <a th:href="@{/copisteria/pedido}" class="button button-primary">Crear mi primer pedido</a>
                 </div>
 
                 <div class="orders-list" th:if="${!#lists.isEmpty(storeOrders)}">
@@ -176,7 +176,7 @@
                             <p class="order-history-price-note" th:text="${order.priceBreakdownOrDefault}">
                                 Blanco y negro • A4 • Una cara
                             </p>
-                            <a th:href="@{/copisteria/resumen(id=${order.id})}" class="button button-outline-dark">
+                            <a th:href="@{/copisteria/pedido/resumen(id=${order.id})}" class="button button-outline-dark">
                                 Ver detalle del pedido
                             </a>
                         </div>

@@ -2285,7 +2285,7 @@ body {
 /* Navbar refresh */
 .site-header .header-shell {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: max-content minmax(0, 1fr) max-content;
     align-items: center;
     gap: 20px;
     padding: 14px 18px;
@@ -2299,6 +2299,8 @@ body {
 .site-header .brand {
     position: relative;
     z-index: 4;
+    flex: none;
+    min-width: max-content;
 }
 
 .site-header .brand-logo-navbar {
@@ -2308,6 +2310,7 @@ body {
 
 .nav-panel {
     justify-self: center;
+    min-width: 0;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -2318,6 +2321,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 22px;
+    min-width: 0;
     width: 100%;
 }
 
@@ -2326,6 +2330,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    min-width: 0;
+    max-width: 100%;
     padding: 7px;
     border-radius: 999px;
     background: rgba(239, 247, 255, 0.88);
@@ -2392,6 +2398,7 @@ body {
     align-items: center;
     justify-content: flex-end;
     gap: 12px;
+    flex: none;
     position: relative;
     z-index: 4;
 }
@@ -2687,6 +2694,74 @@ body.nav-open .nav-toggle span:nth-child(2) {
 
 body.nav-open .nav-toggle span:nth-child(3) {
     transform: rotate(-45deg) translateY(-1px);
+}
+
+@media (max-width: 1560px) {
+    .site-header .header-shell {
+        grid-template-columns: max-content minmax(0, 1fr) max-content;
+        gap: 14px;
+        padding: 12px 14px;
+    }
+
+    .site-header .brand-logo-navbar {
+        height: 44px;
+    }
+
+    .nav-panel-inner {
+        gap: 14px;
+    }
+
+    .nav-primary-links {
+        gap: 6px;
+        padding: 5px;
+    }
+
+    .nav-primary-links a,
+    .nav-user-menu-link,
+    .nav-auth-actions > a {
+        min-height: 40px;
+        padding: 0 12px;
+        font-size: 0.9rem;
+    }
+
+    .nav-offers-link {
+        gap: 10px;
+        min-height: 40px;
+        padding: 0 14px 0 12px;
+    }
+
+    .nav-utility-bar {
+        gap: 10px;
+    }
+
+    .nav-cta {
+        min-height: 42px;
+        padding: 0 14px;
+        font-size: 0.88rem;
+    }
+
+    .nav-icon-link {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+    }
+
+    .nav-user-trigger {
+        min-height: 44px;
+        gap: 9px;
+        padding: 5px 8px 5px 6px;
+        border-radius: 16px;
+    }
+
+    .nav-user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .nav-user-copy strong {
+        max-width: 112px;
+        font-size: 0.86rem;
+    }
 }
 
 @media (max-width: 1420px) {

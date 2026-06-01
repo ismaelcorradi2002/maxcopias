@@ -13,6 +13,7 @@ public class ControladorSeoTecnico {
 
     private static final List<String> SITEMAP_PATHS = List.of(
         "/",
+        "/copisteria",
         "/tienda",
         "/ofertas",
         "/contacto",

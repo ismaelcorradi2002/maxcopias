@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Controller
-@RequestMapping("/copisteria")
+@RequestMapping("/copisteria/pedido")
 public class ControllerPedidos {
 
     private static final String ORDER_SUBMISSION_TOKEN_ATTR = "copisteriaOrderSubmissionToken";
@@ -72,7 +72,7 @@ public class ControllerPedidos {
         binder.setDisallowedFields("files"); // Prevent binding issues with file uploads
     }
 
-@GetMapping({"", "/pedido", "/formulario"})
+@GetMapping({"", "/", "/formulario"})
     public String formulario(@ModelAttribute("orderForm") FormularioPedidoCopisteria orderForm, Model model, HttpSession session) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
@@ -152,7 +152,7 @@ public class ControllerPedidos {
         Long existingOrderId = findOrderIdBySubmissionToken(session, submissionToken);
         if (existingOrderId != null) {
             LOGGER.warn("POST duplicado de copisteria detectado. token={}, pedidoExistente={}", submissionToken, existingOrderId);
-            return "redirect:/copisteria/resumen?id=" + existingOrderId;
+            return "redirect:/copisteria/pedido/resumen?id=" + existingOrderId;
         }
 
         if (result.hasErrors()) {
@@ -272,7 +272,7 @@ public class ControllerPedidos {
             return "copisteria/formulario";
         }
 
-        return "redirect:/copisteria/resumen?id=" + savedPedido.getId();
+        return "redirect:/copisteria/pedido/resumen?id=" + savedPedido.getId();
     }
 
     @GetMapping("/resumen")

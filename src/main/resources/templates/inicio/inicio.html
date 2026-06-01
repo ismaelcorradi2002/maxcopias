@@ -9,19 +9,19 @@
         <section class="welcome-hero" id="inicio">
             <div class="container hero-layout">
                 <div class="hero-copy" data-reveal="up">
-                    <span class="eyebrow">Impresión online y tienda local</span>
+                    <span class="eyebrow">Copistería y papelería en Torrejón de Ardoz</span>
                     <h1>
-                        Sube tus archivos, prepara tu pedido y recoge en tienda o recíbelo en casa
-                        <span class="hero-accent">con todo listo</span>
+                        Copistería en Torrejón de Ardoz para imprimir documentos, fotocopias y más
+                        <span class="hero-accent">con recogida o envío</span>
                     </h1>
                     <p class="hero-lead">
-                        En Maxcopias puedes enviar tus documentos online, prepararlos fácilmente y elegir
-                        entre recogida en tienda o entrega rápida a domicilio.
+                        En Maxcopias puedes pedir impresión online de documentos, apuntes y trabajos,
+                        encargar fotocopias y encuadernaciones, y elegir entre recogida en tienda o envío a domicilio.
                     </p>
-                    <p class="hero-lead hero-lead-micro">Recogida en tienda o entrega en casa.</p>
+                    <p class="hero-lead hero-lead-micro">Estamos en C/ Soledad Nº3, Torrejón de Ardoz, Madrid.</p>
 
                     <div class="hero-actions">
-                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Encargar impresión</a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary">Encargar impresión</a>
                         <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Encargar impresión</a>
                         <a href="#servicios" class="button button-secondary">Ver servicios</a>
                     </div>
@@ -116,10 +116,10 @@
             <div class="container">
                 <div class="section-heading" data-reveal="up">
                     <span class="section-kicker">Servicios</span>
-                    <h2>Servicios pensados para estudiantes, profesionales y negocios locales.</h2>
+                    <h2>Servicios de copistería y papelería en Torrejón de Ardoz para el día a día.</h2>
                     <p>
-                        Desde impresiones urgentes hasta material escolar y de oficina,
-                        reunimos en un mismo espacio los servicios más útiles para tu día a día.
+                        Reunimos impresión de documentos, fotocopias, encuadernaciones y material de papelería
+                        en un mismo espacio para estudiantes, profesionales y negocios de Torrejón de Ardoz.
                     </p>
                 </div>
 
@@ -130,7 +130,7 @@
                         id="copisteria"
                         data-reveal="up"
                         th:href="@{/copisteria}"
-                        aria-label="Ir a la zona privada de copistería">
+                        aria-label="Ver servicios de copistería en Maxcopias">
                         <div class="service-media">
                             <img
                                 th:src="@{/images/copisteria-chica-apuntes.png(v='20260414d')}"
@@ -140,18 +140,18 @@
                         </div>
                         <div class="service-copy">
                             <span class="card-tag">Copistería</span>
-                            <h3>Tus documentos listos con calidad, rapidez y recogida fácil.</h3>
+                            <h3>Impresión online, fotocopias y encuadernaciones con recogida fácil.</h3>
                             <p>
-                                Preparamos encargos para estudiantes, opositores, empresas y particulares
-                                que buscan un servicio ágil, bien acabado y cómodo de recoger.
+                                Preparamos pedidos de copistería para estudiantes, opositores, empresas y particulares
+                                que necesitan imprimir documentos en Torrejón de Ardoz con un servicio rápido y bien acabado.
                             </p>
                             <ul class="service-list">
                                 <li>Impresión de documentos y apuntes</li>
                                 <li>Fotocopias en varios formatos</li>
                                 <li>Encuadernación y plastificado</li>
-                                <li>Preparación de pedidos para recoger</li>
+                                <li>Recogida en tienda o envío a domicilio</li>
                             </ul>
-                            <span class="service-panel-cta">Inicia pedido para imprimir</span>
+                            <span class="service-panel-cta">Ver servicios de copistería</span>
                         </div>
                     </a>
 
@@ -160,8 +160,8 @@
                         class="service-panel service-panel-light service-panel-link"
                         id="copisteria"
                         data-reveal="up"
-                        th:href="@{/login(copisteriaRequired=true)}"
-                        aria-label="Iniciar sesión para acceder a copistería">
+                        th:href="@{/copisteria}"
+                        aria-label="Ver servicios de copistería en Maxcopias">
                         <div class="service-media">
                             <img
                                 th:src="@{/images/copisteria-chica-apuntes.png(v='20260414d')}"
@@ -171,18 +171,18 @@
                         </div>
                         <div class="service-copy">
                             <span class="card-tag">Copistería</span>
-                            <h3>Tus documentos listos con calidad, rapidez y recogida fácil.</h3>
+                            <h3>Impresión online, fotocopias y encuadernaciones con recogida fácil.</h3>
                             <p>
-                                Preparamos encargos para estudiantes, opositores, empresas y particulares
-                                que buscan un servicio ágil, bien acabado y cómodo de recoger.
+                                Preparamos pedidos de copistería para estudiantes, opositores, empresas y particulares
+                                que necesitan imprimir documentos en Torrejón de Ardoz con un servicio rápido y bien acabado.
                             </p>
                             <ul class="service-list">
                                 <li>Impresión de documentos y apuntes</li>
                                 <li>Fotocopias en varios formatos</li>
                                 <li>Encuadernación y plastificado</li>
-                                <li>Preparación de pedidos para recoger</li>
+                                <li>Recogida en tienda o envío a domicilio</li>
                             </ul>
-                            <span class="service-panel-cta">Inicia pedido para imprimir</span>
+                            <span class="service-panel-cta">Ver servicios de copistería</span>
                         </div>
                     </a>
 
@@ -201,10 +201,10 @@
                         </div>
                         <div class="service-copy">
                             <span class="card-tag">Tienda</span>
-                            <h3>Todo el material que necesitas para clase, oficina o estudio.</h3>
+                            <h3>Papelería en Torrejón de Ardoz con material para clase, oficina y estudio.</h3>
                             <p>
-                                Encuentra productos prácticos y de uso frecuente con una selección pensada
-                                para resolver compras rápidas y reposiciones habituales.
+                                Encuentra productos prácticos de papelería y oficina con una selección pensada
+                                para compras rápidas, reposiciones habituales y apoyo a tus impresiones y trabajos.
                             </p>
                             <ul class="service-list">
                                 <li>Cuadernos, carpetas y archivadores</li>
@@ -255,10 +255,10 @@
             <div class="container">
                 <div class="section-heading" data-reveal="up">
                     <span class="section-kicker">Cómo funciona</span>
-                    <h2>Haz tu pedido en pocos pasos y recógelo cuando te venga bien.</h2>
+                    <h2>Pide tu impresión online y recoge en tienda cuando te venga bien.</h2>
                     <p>
-                        Te lo ponemos fácil para que puedas enviar tus archivos, preparar tu encargo
-                        y pasar por tienda con todo listo.
+                        Te lo ponemos fácil para subir archivos, preparar tu pedido de copistería
+                        y recogerlo en nuestra tienda de Torrejón de Ardoz o recibirlo en casa.
                     </p>
                 </div>
 
@@ -267,21 +267,21 @@
                         <span class="step-number">01</span>
                         <span class="step-icon" aria-hidden="true">1</span>
                         <h3>Envía tus archivos</h3>
-                        <p>Comparte documentos, apuntes o trabajos y dinos cómo quieres prepararlos.</p>
+                        <p>Sube documentos, apuntes o trabajos y dinos cómo quieres imprimirlos o encuadernarlos.</p>
                     </article>
 
                     <article class="step-card" data-reveal="up">
                         <span class="step-number">02</span>
                         <span class="step-icon" aria-hidden="true">2</span>
                         <h3>Preparamos tu pedido</h3>
-                        <p>Nos encargamos de la impresión y de los acabados para que todo quede listo.</p>
+                        <p>Nos encargamos de la impresión de documentos, las fotocopias y los acabados para que todo quede listo.</p>
                     </article>
 
                     <article class="step-card" data-reveal="up">
                         <span class="step-number">03</span>
                         <span class="step-icon" aria-hidden="true">3</span>
                         <h3>Recógelo en tienda</h3>
-                        <p>Pasa a recoger tu encargo y aprovecha para llevarte material de papelería si lo necesitas.</p>
+                        <p>Pasa a recoger tu encargo en tienda o elige envío a domicilio si prefieres recibirlo fuera.</p>
                     </article>
                 </div>
             </div>
@@ -291,13 +291,13 @@
             <div class="container">
                 <div class="section-heading trust-heading" data-reveal="up">
                     <span class="section-kicker">Por qué elegir Maxcopias</span>
-                    <h2>Una copistería cercana, ágil y preparada para resolver tu día a día.</h2>
+                    <h2>Una copistería y papelería en Torrejón de Ardoz preparada para tu día a día.</h2>
                 </div>
 
                 <div class="trust-grid">
                     <article class="trust-card" data-reveal="up">
                         <strong>Recogida en tienda</strong>
-                        <p>Haz el pedido online y pasa solo cuando tu trabajo esté listo.</p>
+                        <p>Haz tu pedido de impresión online y pasa solo cuando tu trabajo esté listo.</p>
                     </article>
                     <article class="trust-card" data-reveal="up">
                         <strong>Atención cercana</strong>
@@ -305,7 +305,7 @@
                     </article>
                     <article class="trust-card" data-reveal="up">
                         <strong>Servicio rápido</strong>
-                        <p>Ideal para apuntes, entregas, reposiciones de oficina y compras urgentes.</p>
+                        <p>Ideal para apuntes, impresión de documentos, entregas, reposiciones de oficina y compras urgentes.</p>
                     </article>
                     <article class="trust-card" data-reveal="up">
                         <strong>Para estudiantes y empresas</strong>
@@ -322,9 +322,9 @@
         <section class="location-section" id="ubicacion">
             <div class="container location-box" data-reveal="up">
                 <div class="location-copy">
-                    <span class="section-kicker">Estamos cerca</span>
-                    <h2>Estamos en C/ Soledad, N 3, Torrejón de Ardoz</h2>
-                    <p>Visítanos para recoger tus impresiones, resolver encargos urgentes o comprar material de papelería en tienda.</p>
+                    <span class="section-kicker">Tienda física en Torrejón</span>
+                    <h2>Encuéntranos en C/ Soledad Nº3, Torrejón de Ardoz, Madrid</h2>
+                    <p>Visítanos para recoger impresiones, resolver encargos de copistería o comprar material de papelería y oficina en tienda.</p>
                 </div>
                 <div class="location-actions">
                     <a href="https://maps.google.com/?q=Calle+Soledad+3+Torrejon+de+Ardoz" target="_blank" rel="noopener noreferrer" class="button button-primary">Cómo llegar</a>
@@ -337,15 +337,15 @@
             <div class="container cta-box" data-reveal="up">
                 <div>
                     <span class="section-kicker">Haz tu pedido hoy</span>
-                    <h2>Prepara tus impresiones o cuéntanos lo que necesitas.</h2>
+                    <h2>Prepara tus impresiones y trabajos con una copistería local de confianza.</h2>
                     <p>
-                        Si buscas rapidez, atención cercana y una copistería con tienda especializada,
-                        en Maxcopias te ayudamos a tenerlo todo listo.
+                        Si buscas una copistería en Torrejón de Ardoz para imprimir documentos, hacer fotocopias
+                        o completar tus trabajos con encuadernación y papelería, en Maxcopias te ayudamos a dejarlo listo.
                     </p>
                 </div>
                 <div class="cta-actions">
-                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" class="button button-primary">Solicitar impresión</a>
-                    <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Solicitar impresión</a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary">Hacer pedido de impresión</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Hacer pedido de impresión</a>
                     <a th:href="@{/contacto}" class="button button-secondary">Contactar</a>
                 </div>
             </div>

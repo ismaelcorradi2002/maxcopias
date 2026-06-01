@@ -139,7 +139,7 @@ public class ControladorAutenticacion {
             return "redirect:/admin";
         }
 
-        return copisteriaRequired ? "redirect:/copisteria" : "redirect:/";
+        return copisteriaRequired ? "redirect:/copisteria/pedido" : "redirect:/";
     }
 }
 

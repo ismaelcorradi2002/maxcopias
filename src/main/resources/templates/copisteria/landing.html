@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragmentos/encabezado :: head('Copistería online en Torrejón de Ardoz | Maxcopias', '/css/copisteria.css')}"></head>
+<body class="copisteria-page">
+<div class="page-shell">
+    <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
+
+    <main class="services-main">
+        <section class="services-hero">
+            <div class="container services-hero-grid">
+                <div class="services-hero-copy" data-reveal="up">
+                    <span class="eyebrow">Copistería en Torrejón de Ardoz</span>
+                    <h1>Imprime documentos, apuntes y trabajos con una copistería local pensada para ir al grano.</h1>
+                    <p>
+                        En Maxcopias preparamos impresión de documentos, fotocopias, encuadernaciones y
+                        apuntes con recogida en tienda en C/ Soledad Nº3, Torrejón de Ardoz, Madrid,
+                        y opción de envío a domicilio dentro del flujo disponible.
+                    </p>
+
+                    <div class="services-hero-actions">
+                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary">Hacer pedido de impresión</a>
+                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Subir archivo</a>
+                        <a th:href="@{/contacto}" class="button button-secondary">Contactar</a>
+                    </div>
+
+                    <ul class="services-hero-points">
+                        <li>Impresión online de documentos y apuntes en Torrejón de Ardoz.</li>
+                        <li>Fotocopias y encuadernaciones para estudiantes, opositores y negocios.</li>
+                        <li>Recogida en tienda en Maxcopias o envío cuando aplique.</li>
+                    </ul>
+                </div>
+
+                <aside class="services-hero-panel" data-reveal="left">
+                    <span class="card-chip">Maxcopias</span>
+                    <h2>Copistería local con pedido online y recogida rápida.</h2>
+                    <p>
+                        Si ya sabes lo que necesitas, entra en el configurador y sube tu archivo.
+                        Si todavía estás comparando opciones, aquí tienes los servicios principales y cómo trabajamos.
+                    </p>
+                    <div class="hero-stat-grid">
+                        <article class="hero-stat-card">
+                            <strong>Dirección</strong>
+                            <span>C/ Soledad Nº3, 28850 Torrejón de Ardoz, Madrid</span>
+                        </article>
+                        <article class="hero-stat-card">
+                            <strong>Pedido online</strong>
+                            <span>Sube tus archivos y prepara el encargo antes de pasar por tienda.</span>
+                        </article>
+                        <article class="hero-stat-card">
+                            <strong>Acabados</strong>
+                            <span>Encuadernación, plastificado, impresión a color o en blanco y negro.</span>
+                        </article>
+                        <article class="hero-stat-card">
+                            <strong>Recogida o envío</strong>
+                            <span>Elige el flujo que mejor encaje con tu pedido.</span>
+                        </article>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="services-categories-section">
+            <div class="container">
+                <div class="section-heading" data-reveal="up">
+                    <span class="section-kicker">Servicios de copistería</span>
+                    <h2>Qué puedes pedir en Maxcopias</h2>
+                    <p>
+                        Hemos preparado una landing clara para que Google y tus clientes entiendan rápido
+                        qué hace Maxcopias y por qué puede resolver pedidos de impresión en Torrejón de Ardoz.
+                    </p>
+                </div>
+
+                <div class="service-category-grid">
+                    <article class="service-category-card service-category-card-accent" data-reveal="up">
+                        <div class="service-category-head">
+                            <span class="service-icon">IMP</span>
+                            <div>
+                                <h3>Impresión de documentos</h3>
+                                <p>Imprime trabajos, apuntes, PDFs, documentos de oficina y entregas académicas.</p>
+                            </div>
+                        </div>
+                        <ul>
+                            <li>Impresión en blanco y negro o color</li>
+                            <li>Formatos habituales como A4 y A3</li>
+                            <li>Pedido online con subida de archivo</li>
+                        </ul>
+                        <div class="service-card-footer">
+                            <span class="price-pill">Desde copias sueltas hasta pedidos completos</span>
+                        </div>
+                    </article>
+
+                    <article class="service-category-card" data-reveal="up">
+                        <div class="service-category-head">
+                            <span class="service-icon">FOT</span>
+                            <div>
+                                <h3>Fotocopias y apuntes</h3>
+                                <p>Solución rápida para estudiantes, academias y clientes que necesitan volumen.</p>
+                            </div>
+                        </div>
+                        <ul>
+                            <li>Fotocopias de apuntes y documentación</li>
+                            <li>Copias para oposiciones, clases y despachos</li>
+                            <li>Preparación ágil para recoger en tienda</li>
+                        </ul>
+                        <div class="service-card-footer">
+                            <span class="price-pill">Ideal para pedidos frecuentes</span>
+                        </div>
+                    </article>
+
+                    <article class="service-category-card" data-reveal="up">
+                        <div class="service-category-head">
+                            <span class="service-icon">ENC</span>
+                            <div>
+                                <h3>Encuadernaciones y acabados</h3>
+                                <p>Mejora la presentación de trabajos, memorias, dossieres y documentación final.</p>
+                            </div>
+                        </div>
+                        <ul>
+                            <li>Encuadernación para trabajos y entregas</li>
+                            <li>Plastificados si el encargo lo necesita</li>
+                            <li>Acabados pensados para uso académico y profesional</li>
+                        </ul>
+                        <div class="service-card-footer">
+                            <span class="price-pill">Más presencia para tus documentos</span>
+                        </div>
+                    </article>
+
+                    <article class="service-category-card" data-reveal="up">
+                        <div class="service-category-head">
+                            <span class="service-icon">REC</span>
+                            <div>
+                                <h3>Recogida en tienda y envío</h3>
+                                <p>Elige si prefieres pasar por la copistería o usar el flujo de envío disponible.</p>
+                            </div>
+                        </div>
+                        <ul>
+                            <li>Recogida en tienda en C/ Soledad Nº3</li>
+                            <li>Pedido preparado con referencia de seguimiento</li>
+                            <li>Entrega a domicilio dentro del flujo actual</li>
+                        </ul>
+                        <div class="service-card-footer">
+                            <span class="price-pill">Torrejón de Ardoz, Madrid</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="pickup-highlight-section">
+            <div class="container">
+                <article class="pickup-highlight" data-reveal="up">
+                    <div>
+                        <span class="section-kicker">Cómo funciona</span>
+                        <h2>Subes el archivo, configuras el pedido y lo recoges cuando esté listo.</h2>
+                        <p>
+                            La landing pública capta tráfico desde Google. El pedido real se hace desde el configurador
+                            protegido para mantener tu flujo actual de usuario, archivos y seguimiento sin romper nada.
+                        </p>
+                    </div>
+                    <div class="pickup-highlight-tags">
+                        <span>Subida de archivo</span>
+                        <span>Configurador de impresión</span>
+                        <span>Recogida en tienda</span>
+                        <span>Envío a domicilio</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="services-final-cta-section">
+            <div class="container">
+                <article class="services-final-cta" data-reveal="up">
+                    <div>
+                        <span class="section-kicker">Haz tu pedido</span>
+                        <h2>Si ya tienes el archivo listo, entra ahora al configurador de copistería.</h2>
+                        <p>
+                            Puedes subir el archivo, elegir impresión, copias, papel, encuadernación y dejar listo
+                            el pedido online antes de pasar por Maxcopias.
+                        </p>
+                    </div>
+                    <div class="services-final-actions">
+                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary">Hacer pedido de impresión</a>
+                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Subir archivo</a>
+                        <a th:href="@{/contacto}" class="button button-secondary">Contactar</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragmentos/pie :: footer}"></div>
+</div>
+
+<script th:src="@{/js/inicio.js}"></script>
+</body>
+</html>

@@ -22,13 +22,14 @@
                         <span class="nav-offers-icon" aria-hidden="true">%</span>
                         <span class="nav-offers-link-text">Ofertas</span>
                     </a>
-                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria}" data-nav-link data-nav-match="/copisteria">Copistería</a>
+                    <a th:href="@{/copisteria}" data-nav-link data-nav-match="/copisteria">Copistería</a>
                     <a th:href="@{/tienda}" data-nav-link data-nav-match="/tienda,/detalles-producto">Tienda</a>
                     <a th:href="@{/contacto}" data-nav-link data-nav-match="/contacto">Contacto</a>
                 </div>
 
                 <div class="nav-mobile-actions">
-                    <a th:href="@{/copisteria}" class="button button-primary nav-cta nav-cta-mobile">Encargar impresión</a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary nav-cta nav-cta-mobile">Encargar impresión</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary nav-cta nav-cta-mobile">Encargar impresión</a>
 
                     <th:block sec:authorize="isAnonymous()">
                         <a th:href="@{/login}" class="nav-user-menu-link" data-nav-link data-nav-match="/login">Iniciar sesión</a>
@@ -64,7 +65,8 @@
         </nav>
 
         <div class="nav-utility-bar">
-            <a th:href="@{/copisteria}" class="button button-primary nav-cta">Encargar impresión</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary nav-cta">Encargar impresión</a>
+            <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary nav-cta">Encargar impresión</a>
 
             <a th:href="@{/carrito}"
                class="nav-icon-link nav-cart-link"

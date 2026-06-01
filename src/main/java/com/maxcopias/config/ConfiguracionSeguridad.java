@@ -33,7 +33,7 @@ public class ConfiguracionSeguridad {
         http
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/contacto", "/tienda", "/ofertas", "/detalles-producto/**", "/api/tienda/**", "/carrito", "/carrito/**", "/login", "/register", "/register/check-email", "/error", "/aviso-legal", "/privacidad", "/cookies", "/condiciones-compra", "/robots.txt", "/sitemap.xml", "/css/**", "/js/**", "/images/**", "/media/productos/**", "/media/ofertas/**").permitAll()
+                .requestMatchers("/", "/contacto", "/tienda", "/ofertas", "/copisteria", "/detalles-producto/**", "/api/tienda/**", "/carrito", "/carrito/**", "/login", "/register", "/register/check-email", "/error", "/aviso-legal", "/privacidad", "/cookies", "/condiciones-compra", "/robots.txt", "/sitemap.xml", "/css/**", "/js/**", "/images/**", "/media/productos/**", "/media/ofertas/**").permitAll()
                 .requestMatchers(
                     "/admin/api/products",
                     "/admin/api/categorias",
@@ -44,7 +44,7 @@ public class ConfiguracionSeguridad {
                 ).hasAnyRole("ADMIN", "WORKER")
                 .requestMatchers("/worker/**").hasAnyRole("WORKER", "ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria", "/copisteria/**", "/pedidos/copisteria/**", "/checkout", "/pedido-confirmado/**").hasAnyRole("USER", "ADMIN", "WORKER")
+                .requestMatchers("/dashboard", "/area-personal", "/mis-pedidos", "/pedido", "/copisteria/pedido", "/copisteria/pedido/**", "/pedidos/copisteria/**", "/checkout", "/pedido-confirmado/**").hasAnyRole("USER", "ADMIN", "WORKER")
                 .anyRequest().authenticated()
             )
             // Configura login y logout
@@ -104,7 +104,7 @@ public class ConfiguracionSeguridad {
             }
 
             if (wantsCopisteria) {
-                response.sendRedirect("/copisteria");
+                response.sendRedirect("/copisteria/pedido");
                 return;
             }
 

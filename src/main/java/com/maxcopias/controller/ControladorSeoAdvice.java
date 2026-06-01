@@ -17,8 +17,13 @@ public class ControladorSeoAdvice {
             "website"
         ),
         "/copisteria", new SeoPage(
-            "Copistería online en Torrejón de Ardoz | Imprime documentos en Maxcopias",
-            "Imprime documentos en Torrejón de Ardoz con recogida en tienda. Fotocopias, encuadernación y copistería online en Maxcopias.",
+            "Copistería online en Torrejón de Ardoz | Maxcopias",
+            "Imprime documentos, apuntes y trabajos en Maxcopias. Copistería en Torrejón de Ardoz con recogida en tienda y envío a domicilio.",
+            "website"
+        ),
+        "/copisteria/pedido", new SeoPage(
+            "Maxcopias | Configurador de copistería",
+            "Prepara tu pedido de impresión online en Maxcopias y sube tus archivos para recogida en tienda o envío local.",
             "website"
         ),
         "/tienda", new SeoPage(
@@ -33,7 +38,7 @@ public class ControladorSeoAdvice {
         ),
         "/contacto", new SeoPage(
             "Contacto y ubicación | Maxcopias Torrejón de Ardoz",
-            "Contacta con Maxcopias en C/ Soledad, N 3, 28850 Torrejón de Ardoz, Madrid. Teléfono, email, horario y ubicación.",
+            "Contacta con Maxcopias en C/ Soledad, Nº3, 28850 Torrejón de Ardoz, Madrid. Teléfono, email, horario y ubicación.",
             "website"
         ),
         "/aviso-legal", new SeoPage(
@@ -60,38 +65,37 @@ public class ControladorSeoAdvice {
 
     @ModelAttribute("seoTitle")
     public String seoTitle(HttpServletRequest request) {
-        SeoPage seoPage = SEO_PAGES.get(normalizePath(request));
+        SeoPage seoPage = resolveSeoPage(request);
         return seoPage != null ? seoPage.title() : null;
     }
 
     @ModelAttribute("seoDescription")
     public String seoDescription(HttpServletRequest request) {
-        SeoPage seoPage = SEO_PAGES.get(normalizePath(request));
+        SeoPage seoPage = resolveSeoPage(request);
         return seoPage != null ? seoPage.description() : null;
     }
 
     @ModelAttribute("seoOgTitle")
     public String seoOgTitle(HttpServletRequest request) {
-        SeoPage seoPage = SEO_PAGES.get(normalizePath(request));
+        SeoPage seoPage = resolveSeoPage(request);
         return seoPage != null ? seoPage.title() : null;
     }
 
     @ModelAttribute("seoOgDescription")
     public String seoOgDescription(HttpServletRequest request) {
-        SeoPage seoPage = SEO_PAGES.get(normalizePath(request));
+        SeoPage seoPage = resolveSeoPage(request);
         return seoPage != null ? seoPage.description() : null;
     }
 
     @ModelAttribute("seoOgType")
     public String seoOgType(HttpServletRequest request) {
-        SeoPage seoPage = SEO_PAGES.get(normalizePath(request));
+        SeoPage seoPage = resolveSeoPage(request);
         return seoPage != null ? seoPage.ogType() : "website";
     }
 
     @ModelAttribute("seoCanonicalUrl")
     public String seoCanonicalUrl(HttpServletRequest request) {
-        String path = normalizePath(request);
-        return buildBaseUrl(request) + path;
+        return buildBaseUrl(request) + normalizePath(request);
     }
 
     @ModelAttribute("seoOgImageUrl")
@@ -109,7 +113,8 @@ public class ControladorSeoAdvice {
             || path.startsWith("/checkout")
             || path.startsWith("/carrito")
             || path.startsWith("/login")
-            || path.startsWith("/register")) {
+            || path.startsWith("/register")
+            || path.startsWith("/copisteria/pedido")) {
             return "noindex,nofollow";
         }
         return "index,follow";
@@ -118,7 +123,7 @@ public class ControladorSeoAdvice {
     @ModelAttribute("seoStructuredDataJson")
     public String seoStructuredDataJson(HttpServletRequest request) {
         String path = normalizePath(request);
-        if (!"/".equals(path) && !"/contacto".equals(path)) {
+        if (!"/".equals(path) && !"/contacto".equals(path) && !"/copisteria".equals(path)) {
             return null;
         }
 
@@ -137,7 +142,7 @@ public class ControladorSeoAdvice {
               "email": "pedidos@maxcopias.es",
               "address": {
                 "@type": "PostalAddress",
-                "streetAddress": "C/ Soledad, N 3",
+                "streetAddress": "C/ Soledad, Nº3",
                 "postalCode": "28850",
                 "addressLocality": "Torrejón de Ardoz",
                 "addressRegion": "Madrid",
@@ -149,6 +154,18 @@ public class ControladorSeoAdvice {
               }
             }
             """.formatted(canonicalUrl, imageUrl);
+    }
+
+    private SeoPage resolveSeoPage(HttpServletRequest request) {
+        String path = normalizePath(request);
+        SeoPage exact = SEO_PAGES.get(path);
+        if (exact != null) {
+            return exact;
+        }
+        if (path.startsWith("/copisteria/pedido")) {
+            return SEO_PAGES.get("/copisteria/pedido");
+        }
+        return null;
     }
 
     private String normalizePath(HttpServletRequest request) {
