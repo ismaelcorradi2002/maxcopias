@@ -67,9 +67,7 @@ public class ServicioPedidosTienda {
             throw new IllegalArgumentException("El carrito esta vacio.");
         }
 
-        MetodoEntregaPedidoTienda metodoEntrega = formulario.getMetodoEntrega() == null
-            ? MetodoEntregaPedidoTienda.RECOGIDA_TIENDA
-            : formulario.getMetodoEntrega();
+        MetodoEntregaPedidoTienda metodoEntrega = MetodoEntregaPedidoTienda.ENVIO_DOMICILIO;
         CarritoVista carritoVista = servicioCarrito.obtenerVista(authentication, session, metodoEntrega);
 
         PedidoTienda pedido = new PedidoTienda();
@@ -83,9 +81,7 @@ public class ServicioPedidosTienda {
         pedido.setCodigoPostalEntrega(normalizar(formulario.getCodigoPostalEntrega()));
         pedido.setCiudadEntrega(normalizar(formulario.getCiudadEntrega()));
         pedido.setEstado(EstadoPedidoTienda.PENDIENTE);
-        pedido.setMetodoPago(metodoEntrega == MetodoEntregaPedidoTienda.RECOGIDA_TIENDA
-            ? MetodoPagoPedidoTienda.PAGO_EN_TIENDA
-            : MetodoPagoPedidoTienda.ENVIO_SIMULADO);
+        pedido.setMetodoPago(MetodoPagoPedidoTienda.ENVIO_SIMULADO);
         pedido.setPagado(false);
         pedido.setSubtotal(carritoVista.subtotal());
         pedido.setGastosEnvio(carritoVista.gastosEnvio());
@@ -112,7 +108,7 @@ public class ServicioPedidosTienda {
         pedido.setResumenProductos(String.join(", ", resumen));
         PedidoTienda guardado = repositorioPedidoTienda.save(pedido);
         servicioCarrito.limpiarCarrito(carrito);
-        servicioCarrito.actualizarMetodoEntregaSeleccionado(session, MetodoEntregaPedidoTienda.RECOGIDA_TIENDA);
+        servicioCarrito.actualizarMetodoEntregaSeleccionado(session, MetodoEntregaPedidoTienda.ENVIO_DOMICILIO);
         return guardado;
     }
 
@@ -175,19 +171,14 @@ public class ServicioPedidosTienda {
         return switch (pedido.getEstado()) {
             case PENDIENTE -> "Pedido recibido";
             case EN_PREPARACION -> "Pedido en preparacion";
-            case LISTO_PARA_RECOGER -> pedido.getMetodoEntrega() == MetodoEntregaPedidoTienda.RECOGIDA_TIENDA
-                ? "Tu pedido esta listo para recoger en tienda"
-                : "Pedido preparado";
+            case LISTO_PARA_RECOGER -> "Pedido preparado para envio";
             case ENTREGADO -> "Pedido entregado";
             case CANCELADO -> "Pedido cancelado";
         };
     }
 
     public String resolverMensajeConfirmacion(PedidoTienda pedido) {
-        if (pedido.getMetodoEntrega() == MetodoEntregaPedidoTienda.ENVIO_DOMICILIO) {
-            return "Pedido recibido. El envio es una simulacion de momento.";
-        }
-        return "Pedido recibido. Lo prepararemos y te avisaremos cuando este listo para recoger.";
+        return "Pedido recibido. Prepararemos el envio y podras seguir el estado desde tu cuenta.";
     }
 
     @Transactional
@@ -195,11 +186,6 @@ public class ServicioPedidosTienda {
         PedidoTienda pedido = repositorioPedidoTienda.findByIdAndEliminadoFalse(pedidoId)
             .orElseThrow(() -> new IllegalArgumentException("No existe el pedido de tienda indicado."));
         EstadoPedidoTienda estadoAnterior = pedido.getEstado();
-
-        if (pedido.getMetodoEntrega() == MetodoEntregaPedidoTienda.ENVIO_DOMICILIO
-            && nuevoEstado == EstadoPedidoTienda.LISTO_PARA_RECOGER) {
-            throw new IllegalArgumentException("El envio a domicilio no puede pasar a listo para recoger.");
-        }
 
         pedido.setEstado(nuevoEstado);
         if (nuevoEstado == EstadoPedidoTienda.CANCELADO && estadoAnterior != EstadoPedidoTienda.CANCELADO) {

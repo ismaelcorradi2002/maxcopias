@@ -57,7 +57,7 @@ public class FormularioPedidoCopisteria {
 
     private Boolean escaneado = Boolean.FALSE;
 
-    private String deliveryMethod = "STORE_PICKUP";
+    private String deliveryMethod = "HOME_DELIVERY";
 
     @Size(max = 240, message = "La direccion no puede superar los 240 caracteres.")
     private String deliveryAddress;

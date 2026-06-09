@@ -111,7 +111,7 @@
                                 <h3>Copistería</h3>
                                 <ul>
                                     <li th:each="pedido : ${pedidosCopisteria}">
-                                        <strong th:text="${pedido.codigoRecoger}">ABC123</strong>
+                                        <strong th:text="${'#C-' + pedido.id}">#C-1</strong>
                                         <span th:text="${pedido.customerName + ' · ' + pedido.estado.label}">Cliente · Pendiente</span>
                                     </li>
                                     <li th:if="${#lists.isEmpty(pedidosCopisteria)}">Sin pedidos recientes.</li>

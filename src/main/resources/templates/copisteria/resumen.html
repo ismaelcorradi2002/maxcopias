@@ -10,17 +10,17 @@
             <div class="container summary-hero-grid">
                 <div class="summary-hero-copy" data-reveal="up">
                     <span class="eyebrow">Pedido preparado</span>
-                    <h1>Tu pedido ya está guardado y tiene un código único de recogida.</h1>
+                    <h1>Tu pedido ya está guardado y tiene una referencia única.</h1>
                     <p>
                         Hemos guardado el encargo, los archivos subidos y la configuración elegida dentro de tu cuenta.
-                        Cuando el pedido esté listo, podrás identificarlo fácilmente con tu código de recogida.
+                        Cuando avancemos con la preparación y el envío, podrás identificarlo fácilmente con esta referencia.
                     </p>
                 </div>
 
                 <aside class="summary-highlight" data-reveal="left">
-                    <span class="card-chip">Código de recogida</span>
+                    <span class="card-chip">Referencia del pedido</span>
                     <strong th:text="${order.pickupCode}">MC-7Q4P9R</strong>
-                    <p>Guarda este código para recoger el pedido en tienda con rapidez.</p>
+                    <p>Guarda esta referencia para consultar el estado del pedido y cualquier gestión de soporte.</p>
                     <div class="summary-highlight-price">
                         <span>Precio estimado</span>
                         <strong th:text="${order.formattedEstimatedPrice}">4,32 EUR</strong>

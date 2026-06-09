@@ -18,7 +18,7 @@
                         </p>
                     </div>
                     <div class="wizard-header-tags">
-                        <span>Recogida en tienda</span>
+                        <span>Envío a domicilio</span>
                         <span>Precio desglosado</span>
                         <span>PDF contado por páginas</span>
                     </div>
@@ -297,7 +297,7 @@
                                     <input type="checkbox" th:field="*{urgente}">
                                     <span class="wizard-option-ui">
                                         <strong>Urgente</strong>
-                                        <small>Prioridad de preparación para recoger cuanto antes.</small>
+                                        <small>Prioridad de preparación para acelerar el envío cuanto antes.</small>
                                     </span>
                                 </label>
 
@@ -320,23 +320,15 @@
                             <div class="wizard-step-head">
                                 <span class="section-kicker">Paso 9</span>
                                 <h2>Cómo quieres recibir el pedido</h2>
-                                <p>La recogida en tienda no tiene suplemento. El envío a domicilio añade gastos de entrega.</p>
+                                <p>El pedido se tramita online y se entrega a domicilio. El envío añade gastos de entrega.</p>
                             </div>
 
                             <div class="wizard-options-grid wizard-options-grid-2">
                                 <label class="wizard-option-card wizard-option-card-compact">
-                                    <input type="radio" th:field="*{deliveryMethod}" value="STORE_PICKUP" data-step-choice>
-                                    <span class="wizard-option-ui">
-                                        <strong>Recogida en tienda</strong>
-                                        <small>Sin suplemento. Si marcas urgente, estará listo en unos 10 minutos.</small>
-                                    </span>
-                                </label>
-
-                                <label class="wizard-option-card wizard-option-card-compact">
                                     <input type="radio" th:field="*{deliveryMethod}" value="HOME_DELIVERY" data-step-choice>
                                     <span class="wizard-option-ui">
                                         <strong>Envío a domicilio</strong>
-                                        <small>Con suplemento de envío. Si marcas urgente, la entrega estimada es de unos 20 minutos.</small>
+                                        <small>Con suplemento de envío. Si marcas urgente, aceleramos la preparación del pedido.</small>
                                     </span>
                                 </label>
                             </div>
@@ -401,9 +393,8 @@
                                             id="deliveryCity"
                                             type="text"
                                             maxlength="80"
-                                            value="Torrejón de Ardoz"
-                                            placeholder="Torrejón de Ardoz">
-                                        <small class="field-error" data-delivery-field-error="city" hidden>Solo repartimos en Torrejón de Ardoz.</small>
+                                            placeholder="Madrid">
+                                        <small class="field-error" data-delivery-field-error="city" hidden>Introduce la ciudad de entrega.</small>
                                     </div>
 
                                     <div class="field-group wizard-inline-field">
@@ -565,7 +556,7 @@
                                         </li>
                                         <li>
                                             <span>Entrega</span>
-                                            <strong data-summary-delivery-method>Recogida en tienda</strong>
+                                            <strong data-summary-delivery-method>Envío a domicilio</strong>
                                         </li>
                                         <li>
                                             <span>Dirección</span>

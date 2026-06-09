@@ -581,7 +581,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
         const labels = {
             PENDIENTE: "Pendiente",
             EN_PREPARACION: "En preparación",
-            LISTO_PARA_RECOGER: "Listo para recoger",
+            LISTO_PARA_RECOGER: "Preparado para envío",
             ENTREGADO: "Entregado",
             CANCELADO: "Cancelado"
         };
@@ -599,7 +599,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
         const labels = {
             PENDIENTE: "Pendiente",
             EN_PREPARACION: "En preparación",
-            LISTO_PARA_RECOGER: "Listo para recoger",
+            LISTO_PARA_RECOGER: "Preparado para envío",
             ENTREGADO: "Entregado",
             CANCELADO: "Cancelado"
         };
@@ -709,7 +709,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
                 <div class="worker-order-flags">
                     ${isHomeDeliveryCopyOrder(order)
                         ? '<span class="worker-order-flag is-delivery">A domicilio</span>'
-                        : '<span class="worker-order-flag is-pickup">Recogida en tienda</span>'}
+                        : '<span class="worker-order-flag is-delivery">Envío a domicilio</span>'}
                 </div>
             `;
         }
@@ -719,7 +719,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
                 ${isHomeDeliveryOrder(order)
                     ? '<span class="worker-order-flag is-delivery">Envío a domicilio</span>'
                     : isStorePickupOrder(order)
-                        ? '<span class="worker-order-flag is-pickup">Recogida en tienda</span>'
+                        ? '<span class="worker-order-flag is-delivery">Envío a domicilio</span>'
                         : ""}
             </div>
         `;
@@ -737,7 +737,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
         }
 
         if (isStorePickupCopyOrder(order)) {
-            flags.push('<span class="worker-order-flag is-pickup">Recogida</span>');
+            flags.push('<span class="worker-order-flag is-delivery">Legacy</span>');
         }
 
         if (isHomeDeliveryOrder(order)) {
@@ -793,7 +793,7 @@ function renderOrdersTableWorkerStyle(tableContainer, data, activeOrdersTab) {
                     <div>
                         <h2>${isCopisteria ? "Pedidos de copistería" : "Pedidos de papelería"}</h2>
                         <p>${isCopisteria
-                            ? "Revisa archivos, códigos de recogida y actualiza el estado de cada encargo."
+                            ? "Revisa archivos, datos de envío y actualiza el estado de cada encargo."
                             : "Consulta pedidos de productos y controla su avance hasta la entrega."}</p>
                     </div>
                 </div>

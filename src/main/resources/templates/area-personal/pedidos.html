@@ -64,7 +64,7 @@
                                 <p th:text="${#temporals.format(order.fechaCreacion(), 'dd/MM/yyyy HH:mm')}">09/04/2026 18:10</p>
                             </div>
                             <div class="order-history-badges">
-                                <span class="pickup-code-pill" th:text="${order.metodoEntregaLabel()}">Recogida en tienda</span>
+                                <span class="pickup-code-pill" th:text="${order.metodoEntregaLabel()}">Envío a domicilio</span>
                                 <span class="status-pill" th:text="${order.estadoLabel()}">Pendiente</span>
                             </div>
                         </div>

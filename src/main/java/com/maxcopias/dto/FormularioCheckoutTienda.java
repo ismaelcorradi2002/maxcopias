@@ -23,7 +23,7 @@ public class FormularioCheckoutTienda {
     private String telefono;
 
     @NotNull(message = "Selecciona un metodo de entrega.")
-    private MetodoEntregaPedidoTienda metodoEntrega = MetodoEntregaPedidoTienda.RECOGIDA_TIENDA;
+    private MetodoEntregaPedidoTienda metodoEntrega = MetodoEntregaPedidoTienda.ENVIO_DOMICILIO;
 
     @Size(max = 240, message = "La direccion no puede superar 240 caracteres.")
     private String direccionEntrega;

@@ -82,7 +82,7 @@
                                         <div class="worker-order-flags" th:if="${pedido.metodoEntrega != null}">
                                             <span class="worker-order-flag"
                                                   th:classappend="${pedido.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-delivery' : ' is-pickup'"
-                                                  th:text="${pedido.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? 'Envío a domicilio' : 'Recogida en tienda'">Recogida en tienda</span>
+                                                  th:text="${pedido.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? 'Envío a domicilio' : 'Legacy'">Legacy</span>
                                         </div>
                                     </td>
                                     <td class="worker-col-price" data-label="Total">

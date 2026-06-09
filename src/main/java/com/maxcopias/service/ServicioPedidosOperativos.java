@@ -941,7 +941,7 @@ public class ServicioPedidosOperativos {
 
     private String resolverMetodoEntregaCopisteria(PedidoCopisteria pedido) {
         String value = extraValue(pedido.getExtras(), "deliveryMethod");
-        return "HOME_DELIVERY".equalsIgnoreCase(value) ? "Envio a domicilio" : "Recogida en tienda";
+        return "HOME_DELIVERY".equalsIgnoreCase(value) ? "Envio a domicilio" : "Envio pendiente de confirmar";
     }
 
     private String resolverDireccionEntregaCopisteria(PedidoCopisteria pedido) {

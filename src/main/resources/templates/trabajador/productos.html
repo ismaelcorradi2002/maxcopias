@@ -24,56 +24,60 @@
 
                     <div th:replace="~{trabajador/fragmentos :: workerNav(${activeWorkerSection})}"></div>
 
-                    <section class="worker-section">
-                        <div class="worker-filters">
-                            <label>
+                    <section class="worker-section table-section worker-products-admin-section">
+                        <div class="admin-product-toolbar worker-products-admin-toolbar">
+                            <label class="admin-product-search">
                                 <span>Buscar producto</span>
-                                <input type="search" data-worker-search="productos" placeholder="Nombre, categoría o ID">
+                                <input id="worker-product-search" data-worker-search="productos" type="search" placeholder="Nombre, categoría o ID">
                             </label>
-                            <label>
+                            <label class="admin-product-filter">
                                 <span>Filtrar categoría</span>
-                                <select data-worker-category="productos" class="worker-select select-modern">
+                                <select id="worker-product-category" data-worker-category="productos" class="admin-form-select">
                                     <option value="">Todas las categorías</option>
                                     <option th:each="categoria : ${categorias}" th:value="${categoria.nombre}" th:text="${categoria.nombre}">Escolar</option>
                                 </select>
                             </label>
                         </div>
 
-                        <div class="worker-table-wrap">
-                            <table class="worker-table worker-products-table" data-worker-table="productos" data-worker-paginated="true">
+                        <div class="admin-products-table-region worker-table-wrap">
+                            <table id="worker-products-table" data-worker-table="productos" data-worker-paginated="true" class="admin-table admin-products-table">
                                 <thead>
                                 <tr>
-                                    <th class="worker-col-id">ID</th>
-                                    <th>Producto</th>
-                                    <th class="worker-col-price">Precio</th>
-                                    <th class="worker-col-count">Stock</th>
-                                    <th class="worker-col-categories">Categorías</th>
-                                    <th class="worker-col-status">Estado</th>
-                                    <th class="worker-col-actions">Acciones</th>
+                                    <th class="admin-col-id">ID</th>
+                                    <th class="admin-col-name">Nombre</th>
+                                    <th class="admin-col-price">Precio</th>
+                                    <th class="admin-col-count">Stock</th>
+                                    <th class="admin-col-description">Categorías</th>
+                                    <th class="admin-col-actions">Estado</th>
+                                    <th class="admin-col-actions">Acción</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="producto : ${productos}" th:data-categories="${#strings.listJoin(producto.categorias.![nombre], ' ')}">
-                                    <td class="worker-col-id" th:text="${producto.id}">1</td>
-                                    <td th:text="${producto.nombre}">Cuaderno A4</td>
-                                    <td class="worker-col-price" th:text="${producto.precio} + ' €'">2.50 €</td>
-                                    <td class="worker-col-count" th:text="${producto.stock}">10</td>
-                                    <td class="worker-col-categories">
+                                <tr th:each="producto : ${productos}"
+                                    th:data-categories="${#strings.listJoin(producto.categorias.![nombre], ' ')}"
+                                    th:data-status="${producto.activo} ? 'activo' : 'inactivo'">
+                                    <td data-label="ID" class="admin-col-id" th:text="${producto.id}">1</td>
+                                    <td data-label="Nombre" class="admin-col-name" th:text="${producto.nombre}">Cuaderno A4</td>
+                                    <td data-label="Precio" class="admin-col-price" th:text="${producto.precio}">12.99</td>
+                                    <td data-label="Stock" class="admin-col-count" th:text="${producto.stock}">10</td>
+                                    <td data-label="Categorías" class="admin-product-categories admin-col-description">
                                         <span th:each="categoria, iter : ${producto.categorias}"
                                               th:text="${categoria.nombre + (!iter.last ? ', ' : '')}">Escolar</span>
                                     </td>
-                                    <td class="worker-col-status">
+                                    <td data-label="Estado" class="admin-action-cell admin-col-actions">
                                         <span class="worker-status-pill" th:classappend="${producto.activo} ? ' is-active' : ' is-inactive'"
                                               th:text="${producto.activo} ? 'Activo' : 'Inactivo'}">Activo</span>
                                     </td>
-                                    <td class="worker-actions-cell worker-col-actions">
-                                        <a class="button button-small button-outline" th:href="@{/editarstock/{id}(id=${producto.id})}">Editar</a>
-                                        <form th:action="@{/worker/productos/{id}/activo(id=${producto.id})}" method="post" class="inline-form">
-                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                            <input type="hidden" name="activo" th:value="${!producto.activo}">
-                                            <button class="button button-small button-outline" type="submit"
-                                                    th:text="${producto.activo} ? 'Desactivar' : 'Activar'}">Desactivar</button>
-                                        </form>
+                                    <td data-label="Acción" class="admin-action-cell admin-col-actions">
+                                        <div class="worker-actions-cell worker-actions-cell-stack worker-products-admin-actions">
+                                            <a class="button button-small button-outline" th:href="@{/editarstock/{id}(id=${producto.id})}">Editar</a>
+                                            <form th:action="@{/worker/productos/{id}/activo(id=${producto.id})}" method="post" class="inline-form">
+                                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                                <input type="hidden" name="activo" th:value="${!producto.activo}">
+                                                <button class="button button-small button-outline" type="submit"
+                                                        th:text="${producto.activo} ? 'Desactivar' : 'Activar'}">Desactivar</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>

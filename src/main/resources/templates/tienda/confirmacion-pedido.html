@@ -16,7 +16,7 @@
                     <div class="confirmacion-meta-grid">
                         <div><span>Código</span><strong th:text="${confirmacion.pedido().codigoPedido()}">MT-000</strong></div>
                         <div><span>Estado inicial</span><strong th:text="${confirmacion.pedido().estadoLabel()}">Pendiente</strong></div>
-                        <div><span>Entrega</span><strong th:text="${confirmacion.pedido().metodoEntregaLabel()}">Recogida en tienda</strong></div>
+                        <div><span>Entrega</span><strong th:text="${confirmacion.pedido().metodoEntregaLabel()}">Envío a domicilio</strong></div>
                         <div><span>Total</span><strong th:text="${confirmacion.pedido().totalFormateado()}">0,00 EUR</strong></div>
                     </div>
 

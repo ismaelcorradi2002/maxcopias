@@ -17,7 +17,7 @@
                         <div>
                             <span class="section-kicker">Copistería</span>
                             <h1>Pedidos de copistería</h1>
-                            <p>Revisa archivos, códigos de recogida y actualiza el estado de cada encargo.</p>
+                            <p>Revisa archivos, datos de entrega y actualiza el estado de cada encargo.</p>
                         </div>
                     </header>
 
@@ -74,7 +74,7 @@
                                         <div class="worker-order-flags" th:if="${pedido.extras != null && (pedido.extras.contains('urgente=true') || pedido.extras.contains('HOME_DELIVERY') || pedido.extras.contains('STORE_PICKUP'))}">
                                             <span class="worker-order-flag is-urgent" th:if="${pedido.extras.contains('urgente=true')}">Urgente</span>
                                             <span class="worker-order-flag is-delivery" th:if="${pedido.extras.contains('HOME_DELIVERY')}">A domicilio</span>
-                                            <span class="worker-order-flag is-pickup" th:if="${pedido.extras.contains('STORE_PICKUP')}">Recogida</span>
+                                            <span class="worker-order-flag is-delivery" th:if="${pedido.extras.contains('STORE_PICKUP')}">Legacy</span>
                                         </div>
                                     </td>
                                     <td class="worker-col-job" data-label="Trabajo">
@@ -84,7 +84,7 @@
                                     <td data-label="Entrega">
                                         <div class="worker-order-flags">
                                             <span class="worker-order-flag is-delivery" th:if="${pedido.extras != null && pedido.extras.contains('HOME_DELIVERY')}">A domicilio</span>
-                                            <span class="worker-order-flag is-pickup" th:if="${pedido.extras == null || pedido.extras.contains('STORE_PICKUP') || !pedido.extras.contains('HOME_DELIVERY')}">Recogida en tienda</span>
+                                            <span class="worker-order-flag is-delivery" th:if="${pedido.extras == null || pedido.extras.contains('STORE_PICKUP') || !pedido.extras.contains('HOME_DELIVERY')}">Envío pendiente de confirmar</span>
                                         </div>
                                     </td>
                                     <td class="worker-col-price" data-label="Total">

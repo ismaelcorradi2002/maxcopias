@@ -105,7 +105,7 @@ public class ControllerPedidos {
             orderForm.setCopies(1);
         }
         if (orderForm.getDeliveryMethod() == null || orderForm.getDeliveryMethod().isBlank()) {
-            orderForm.setDeliveryMethod("STORE_PICKUP");
+            orderForm.setDeliveryMethod("HOME_DELIVERY");
         }
         // Populate enum lists for template dropdowns
         model.addAttribute("primaryJobTypes", TipoTrabajo.values());
@@ -473,7 +473,7 @@ public class ControllerPedidos {
 
     private String resolverMetodoEntrega(PedidoCopisteria pedido) {
         String value = extraValue(pedido.getExtras(), "deliveryMethod");
-        return "HOME_DELIVERY".equalsIgnoreCase(value) ? "Envio a domicilio" : "Recogida en tienda";
+        return "Envio a domicilio";
     }
 
     private String resolverDireccionEntrega(PedidoCopisteria pedido) {
@@ -486,9 +486,7 @@ public class ControllerPedidos {
         if (!urgente) {
             return null;
         }
-        return "HOME_DELIVERY".equalsIgnoreCase(extraValue(pedido.getExtras(), "deliveryMethod"))
-            ? "Entrega urgente estimada en 20 minutos"
-            : "Recogida urgente estimada en 10 minutos";
+        return "Preparacion prioritaria con entrega urgente estimada.";
     }
 
     private String extraValue(String extras, String key) {
@@ -564,12 +562,6 @@ public class ControllerPedidos {
         if (city.isBlank()) {
             result.rejectValue("deliveryAddress", "deliveryCity.required", "Introduce la ciudad de entrega.");
             valid = false;
-        } else {
-            String normalizedCity = normalizeCity(city);
-            if (!"torrejon de ardoz".equals(normalizedCity) && !"torrejon".equals(normalizedCity)) {
-                result.rejectValue("deliveryAddress", "deliveryCity.unsupported", "Solo repartimos en Torrejón de Ardoz.");
-                valid = false;
-            }
         }
         if (province.isBlank()) {
             result.rejectValue("deliveryAddress", "deliveryProvince.required", "Introduce la provincia.");

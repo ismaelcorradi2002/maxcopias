@@ -12,33 +12,33 @@ public class ControladorSeoAdvice {
 
     private static final Map<String, SeoPage> SEO_PAGES = Map.of(
         "/", new SeoPage(
-            "Maxcopias | Copistería y papelería en Torrejón de Ardoz",
-            "Copistería y papelería en Torrejón de Ardoz. Imprime documentos online, compra papelería y elige recogida o envío local.",
+            "Maxcopias | Copistería y papelería online con envío a domicilio",
+            "Haz pedidos de impresión, copistería y papelería online. Envíos a domicilio en Madrid y toda España.",
             "website"
         ),
         "/copisteria", new SeoPage(
-            "Copistería online en Torrejón de Ardoz | Maxcopias",
-            "Imprime documentos, apuntes y trabajos en Maxcopias. Copistería en Torrejón de Ardoz con recogida en tienda y envío a domicilio.",
+            "Copistería online | Imprime documentos y recíbelos en casa",
+            "Sube tus documentos, configura tu impresión online y recibe tus copias en casa. Servicio de copistería online con envío a domicilio.",
             "website"
         ),
         "/copisteria/pedido", new SeoPage(
             "Maxcopias | Configurador de copistería",
-            "Prepara tu pedido de impresión online en Maxcopias y sube tus archivos para recogida en tienda o envío local.",
+            "Prepara tu pedido de impresión online, sube tus archivos y solicita envío a domicilio.",
             "website"
         ),
         "/tienda", new SeoPage(
-            "Papelería online en Torrejón de Ardoz | Maxcopias",
-            "Compra papelería online en Torrejón de Ardoz con recogida en tienda o envío local. Material escolar y de oficina en Maxcopias.",
+            "Papelería online | Material de oficina y productos escolares a domicilio",
+            "Compra productos de papelería y material de oficina online. Envíos a Madrid y toda España.",
             "website"
         ),
         "/ofertas", new SeoPage(
-            "Ofertas de copistería y papelería | Maxcopias Torrejón de Ardoz",
-            "Consulta ofertas de copistería y papelería en Torrejón de Ardoz. Promociones locales para imprimir y comprar en Maxcopias.",
+            "Ofertas de copistería y papelería online | Maxcopias",
+            "Consulta promociones activas de copistería online y papelería con envío a domicilio.",
             "website"
         ),
         "/contacto", new SeoPage(
-            "Contacto y ubicación | Maxcopias Torrejón de Ardoz",
-            "Contacta con Maxcopias en C/ Soledad, Nº3, 28850 Torrejón de Ardoz, Madrid. Teléfono, email, horario y ubicación.",
+            "Contacto | Maxcopias online",
+            "Contacta con Maxcopias para resolver dudas sobre pedidos online, impresión, productos o envíos.",
             "website"
         ),
         "/aviso-legal", new SeoPage(
@@ -58,7 +58,7 @@ public class ControladorSeoAdvice {
         ),
         "/condiciones-compra", new SeoPage(
             "Condiciones de compra | Maxcopias",
-            "Consulta las condiciones de compra de copistería y papelería online de Maxcopias, con recogida en tienda y envío local.",
+            "Consulta las condiciones de compra de copistería y papelería online de Maxcopias con envío a domicilio.",
             "website"
         )
     );
@@ -134,12 +134,13 @@ public class ControladorSeoAdvice {
         return """
             {
               "@context": "https://schema.org",
-              "@type": ["Store", "OfficeEquipmentStore"],
+              "@type": ["Organization", "OnlineStore"],
               "name": "Maxcopias",
               "url": "%s",
               "image": "%s",
               "telephone": "+34 916 563 555",
               "email": "pedidos@maxcopias.es",
+              "description": "Copisteria y papeleria online con envio a domicilio en Madrid y toda Espana.",
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "C/ Soledad, Nº3",
@@ -148,10 +149,7 @@ public class ControladorSeoAdvice {
                 "addressRegion": "Madrid",
                 "addressCountry": "ES"
               },
-              "areaServed": {
-                "@type": "City",
-                "name": "Torrejón de Ardoz"
-              }
+              "areaServed": ["ES", "Madrid"]
             }
             """.formatted(canonicalUrl, imageUrl);
     }

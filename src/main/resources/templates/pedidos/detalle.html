@@ -46,7 +46,7 @@
                                 <h2>Preparación del encargo</h2>
                                 <div class="pedido-worktop-meta">
                                     <span class="pedido-worktop-chip pedido-worktop-chip-code">
-                                        <span>Código de recogida</span>
+                                        <span>Referencia interna</span>
                                         <strong th:text="${detallePedido.codigoRecogida != null ? detallePedido.codigoRecogida : 'Pendiente'}">ABC123</strong>
                                     </span>
                                     <span class="pedido-worktop-chip">
@@ -223,12 +223,12 @@
 
                                     <div class="pedido-status-list">
                                         <article>
-                                            <span>Recogida</span>
+                                            <span>Referencia</span>
                                             <strong th:text="${detallePedido.codigoRecogida != null ? detallePedido.codigoRecogida : 'No disponible'}">ABC123</strong>
                                         </article>
                                         <article th:if="${detallePedido.metodoEntrega != null}">
                                             <span>Entrega</span>
-                                            <strong th:text="${detallePedido.metodoEntrega}">Recogida en tienda</strong>
+                                            <strong th:text="${detallePedido.metodoEntrega}">Envío a domicilio</strong>
                                         </article>
                                         <article th:if="${detallePedido.direccionEntrega != null}"
                                                  class="pedido-delivery-article"
@@ -248,7 +248,7 @@
                                             <div class="pedido-delivery-card">
                                                 <div class="pedido-delivery-copy">
                                                     <strong th:text="${linePrimary}">Calle Extremadura 1A, Piso 4</strong>
-                                                    <small th:text="${lineSecondary}">28850 · Torrejón de Ardoz · Madrid</small>
+                                                    <small th:text="${lineSecondary}">Madrid · España</small>
                                                 </div>
                                                 <div class="pedido-delivery-meta" th:if="${contactPhone != ''}">
                                                     <span>Contacto reparto</span>
@@ -359,7 +359,7 @@
                                         <span class="pedido-store-pill is-type">Tienda</span>
                                         <span class="pedido-store-pill"
                                               th:classappend="${detallePedido.metodoEntrega != null && #strings.containsIgnoreCase(detallePedido.metodoEntrega, 'domicilio') ? ' is-delivery' : ' is-pickup'}"
-                                              th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Recogida en tienda'}">Recogida en tienda</span>
+                                              th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Envío a domicilio'}">Envío a domicilio</span>
                                         <span class="pedido-store-pill"
                                               th:classappend="${detallePedido.pagado ? ' is-paid' : ' is-unpaid'}"
                                               th:text="${detallePedido.pagado ? 'Pagado' : 'No pagado'}">No pagado</span>
@@ -380,7 +380,7 @@
                                     </article>
                                     <article class="pedido-store-kpi">
                                         <span>Entrega</span>
-                                        <strong th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Recogida en tienda'}">Recogida en tienda</strong>
+                                        <strong th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Envío a domicilio'}">Envío a domicilio</strong>
                                         <small th:text="${detallePedido.direccionEntrega != null ? detallePedido.direccionEntrega : 'No hay una dirección asociada a este pedido.'}">No hay una dirección asociada a este pedido.</small>
                                     </article>
                                     <article class="pedido-store-kpi">
@@ -446,7 +446,7 @@
                                             </div>
                                             <div class="pedido-store-address-lines">
                                                 <strong th:text="${detallePedido.direccionEntregaLineaPrincipal != null ? detallePedido.direccionEntregaLineaPrincipal : detallePedido.direccionEntrega}">Calle Mayor 1</strong>
-                                                <small th:text="${detallePedido.direccionEntregaLineaSecundaria != null ? detallePedido.direccionEntregaLineaSecundaria : 'Dirección pendiente de completar'}">28850 · Torrejón de Ardoz</small>
+                                                <small th:text="${detallePedido.direccionEntregaLineaSecundaria != null ? detallePedido.direccionEntregaLineaSecundaria : 'Dirección pendiente de completar'}">Madrid · España</small>
                                             </div>
                                         </div>
 
@@ -454,11 +454,11 @@
                                             <div class="pedido-store-delivery-top">
                                                 <span class="pedido-store-delivery-icon">🏬</span>
                                                 <div>
-                                                    <strong>Recogida en tienda</strong>
-                                                    <span th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Recogida en tienda'}">Recogida en tienda</span>
+                                                    <strong>Envío a domicilio</strong>
+                                                    <span th:text="${detallePedido.metodoEntrega != null ? detallePedido.metodoEntrega : 'Envío a domicilio'}">Envío a domicilio</span>
                                                 </div>
                                             </div>
-                                            <p>El pedido se entregará en tienda cuando el estado pase a listo para recoger.</p>
+                                            <p>Completa la dirección de envío para gestionar correctamente este pedido online.</p>
                                         </div>
 
                                         <div class="pedido-store-note-card">

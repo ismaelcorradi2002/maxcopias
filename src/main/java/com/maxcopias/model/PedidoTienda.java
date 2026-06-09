@@ -65,7 +65,7 @@ public class PedidoTienda {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "metodo_entrega", length = 30)
-    private MetodoEntregaPedidoTienda metodoEntrega = MetodoEntregaPedidoTienda.RECOGIDA_TIENDA;
+    private MetodoEntregaPedidoTienda metodoEntrega = MetodoEntregaPedidoTienda.ENVIO_DOMICILIO;
 
     @Column(name = "direccion_entrega", length = 240)
     private String direccionEntrega;
@@ -116,7 +116,7 @@ public class PedidoTienda {
             gastosEnvio = BigDecimal.ZERO;
         }
         if (metodoEntrega == null) {
-            metodoEntrega = MetodoEntregaPedidoTienda.RECOGIDA_TIENDA;
+            metodoEntrega = MetodoEntregaPedidoTienda.ENVIO_DOMICILIO;
         }
     }
 

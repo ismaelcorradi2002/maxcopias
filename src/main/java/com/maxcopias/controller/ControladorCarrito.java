@@ -205,8 +205,8 @@ public class ControladorCarrito {
         }
 
         String ciudadNormalizada = normalizeCity(formulario.getCiudadEntrega());
-        if (!"torrejon de ardoz".equals(ciudadNormalizada) && !"torrejon".equals(ciudadNormalizada)) {
-            bindingResult.rejectValue("ciudadEntrega", "deliveryCity.unsupported", "Solo repartimos en Torrejón de Ardoz.");
+        if (ciudadNormalizada.isBlank()) {
+            bindingResult.rejectValue("ciudadEntrega", "deliveryCity.required", "Introduce la ciudad.");
         }
     }
 

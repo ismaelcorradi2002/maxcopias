@@ -532,6 +532,30 @@
     gap: 0.42rem;
 }
 
+.worker-actions-cell-stack {
+    width: 100%;
+}
+
+.worker-products-admin-section {
+    padding: 0;
+    background:
+        radial-gradient(circle at top right, rgba(255, 217, 101, 0.08), transparent 28%),
+        rgba(255, 255, 255, 0.64);
+}
+
+.worker-products-admin-toolbar {
+    margin: 0;
+}
+
+.worker-products-admin-actions {
+    justify-content: center;
+}
+
+.worker-products-admin-actions .button,
+.worker-products-admin-actions form {
+    width: 100%;
+}
+
 .worker-products-table .worker-col-actions .button,
 .worker-products-table .worker-col-actions form {
     width: 100%;

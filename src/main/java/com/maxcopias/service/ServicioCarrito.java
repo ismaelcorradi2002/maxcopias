@@ -128,7 +128,7 @@ public class ServicioCarrito {
 
     @Transactional
     public void actualizarMetodoEntregaSeleccionado(HttpSession session, MetodoEntregaPedidoTienda metodoEntrega) {
-        session.setAttribute(SESSION_DELIVERY_KEY, metodoEntrega == null ? MetodoEntregaPedidoTienda.RECOGIDA_TIENDA.name() : metodoEntrega.name());
+        session.setAttribute(SESSION_DELIVERY_KEY, metodoEntrega == null ? MetodoEntregaPedidoTienda.ENVIO_DOMICILIO.name() : metodoEntrega.name());
     }
 
     public MetodoEntregaPedidoTienda obtenerMetodoEntregaSeleccionado(HttpSession session) {
@@ -137,10 +137,10 @@ public class ServicioCarrito {
             try {
                 return MetodoEntregaPedidoTienda.valueOf(value);
             } catch (IllegalArgumentException ignored) {
-                return MetodoEntregaPedidoTienda.RECOGIDA_TIENDA;
+                return MetodoEntregaPedidoTienda.ENVIO_DOMICILIO;
             }
         }
-        return MetodoEntregaPedidoTienda.RECOGIDA_TIENDA;
+        return MetodoEntregaPedidoTienda.ENVIO_DOMICILIO;
     }
 
     @Transactional

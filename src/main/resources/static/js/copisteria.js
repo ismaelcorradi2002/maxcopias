@@ -123,7 +123,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
     }
 
     function selectedDeliveryMethod() {
-        return getSelectedValue("deliveryMethod") || "STORE_PICKUP";
+        return getSelectedValue("deliveryMethod") || "HOME_DELIVERY";
     }
 
     function deliveryCost() {
@@ -205,7 +205,7 @@ function createWizardController(form, fileInput, fileHint, filesError) {
         }
         if (showAddress) {
             if (deliveryFields.city && !deliveryFields.city.value.trim()) {
-                deliveryFields.city.value = "Torrejón de Ardoz";
+                deliveryFields.city.value = "";
             }
             if (deliveryFields.province && !deliveryFields.province.value.trim()) {
                 deliveryFields.province.value = "Madrid";
@@ -625,7 +625,7 @@ function createSummaryController(form, fileInput) {
     function deliveryMethodLabel() {
         return getCheckedValue(form, "deliveryMethod") === "HOME_DELIVERY"
             ? "Envío a domicilio"
-            : "Recogida en tienda";
+            : "Envío pendiente de confirmar";
     }
 
     function deliveryAddressLabel() {
@@ -819,7 +819,7 @@ function createPricePreviewController(form, priceEstimator, fileInput, fileList,
             printSide: getCheckedValue(form, "printSide"),
             paperType: getCheckedValue(form, "paperType"),
             bindingType: getCheckedValue(form, "bindingType"),
-            deliveryMethod: getCheckedValue(form, "deliveryMethod") || "STORE_PICKUP",
+            deliveryMethod: getCheckedValue(form, "deliveryMethod") || "HOME_DELIVERY",
             plastificado: Boolean(form.querySelector("input[name='plastificado']")?.checked),
             urgente: Boolean(form.querySelector("input[name='urgente']")?.checked),
             escaneado: Boolean(form.querySelector("input[name='escaneado']")?.checked),
@@ -899,7 +899,7 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice) {
     const printSide = input.printSide || "ONE_SIDED";
     const paperType = input.paperType || "NORMAL";
     const bindingType = input.bindingType || "SIN_ENCUADERNACION";
-    const deliveryMethod = input.deliveryMethod || "STORE_PICKUP";
+    const deliveryMethod = input.deliveryMethod || "HOME_DELIVERY";
     const baseUnit = colorMode === "COLOR" ? colorUnitPrice : bwUnitPrice;
     const basePrint = roundPrice(baseUnit * pages * copies);
     const sizeExtra = roundPrice(basePrint * (sizeMultiplier(paperSize) - 1));
@@ -959,7 +959,7 @@ function calculatePrintLikeEstimate(input, bwUnitPrice, colorUnitPrice) {
 
 function calculateQuoteStyleEstimate(input, basePrice, label) {
     const additionalFiles = roundPrice((Math.max(input.fileCount, 1) - 1) * 2.5);
-    const deliveryMethod = input.deliveryMethod || "STORE_PICKUP";
+    const deliveryMethod = input.deliveryMethod || "HOME_DELIVERY";
     const deliveryExtra = deliveryMethod === "HOME_DELIVERY" ? 4.95 : 0;
     const plastificadoExtra = input.plastificado ? roundPrice(1.8 * Math.max(input.fileCount, 1)) : 0;
     const urgenteExtra = input.urgente ? (deliveryMethod === "HOME_DELIVERY" ? 4 : 2) : 0;
@@ -1175,7 +1175,7 @@ function pageCountLabel(pageCount) {
 
 function buildNote(fileCount, label, input) {
     const urgentCopy = input && input.urgente
-        ? " Con urgente, la entrega estimada es de " + urgentEta(input.deliveryMethod || "STORE_PICKUP") + "."
+        ? " Con urgente, la entrega estimada es de " + urgentEta(input.deliveryMethod || "HOME_DELIVERY") + "."
         : "";
 
     if (fileCount > 0) {
@@ -1218,7 +1218,7 @@ function bindingLabel(bindingType) {
 }
 
 function deliveryLabel(deliveryMethod) {
-    return deliveryMethod === "HOME_DELIVERY" ? "Envío a domicilio" : "Recogida en tienda";
+    return deliveryMethod === "HOME_DELIVERY" ? "Envío a domicilio" : "Envío pendiente de confirmar";
 }
 
 function deliveryDetail(deliveryMethod) {
@@ -1228,7 +1228,7 @@ function deliveryDetail(deliveryMethod) {
 function urgentDetail(deliveryMethod) {
     return deliveryMethod === "HOME_DELIVERY"
         ? "Preparación prioritaria con entrega estimada en 20 minutos"
-        : "Preparación prioritaria con recogida estimada en 10 minutos";
+        : "Preparación prioritaria para envío a domicilio";
 }
 
 function urgentEta(deliveryMethod) {

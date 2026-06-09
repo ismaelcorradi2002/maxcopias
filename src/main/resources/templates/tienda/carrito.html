@@ -62,18 +62,12 @@
 
                         <form th:action="@{/carrito/entrega}" method="post" class="carrito-delivery-form">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                            <label class="delivery-option" th:classappend="${carrito.metodoEntrega.name() == 'RECOGIDA_TIENDA'} ? ' is-active' : ''">
-                                <input type="radio" name="metodoEntrega" value="RECOGIDA_TIENDA" onchange="this.form.submit()" th:checked="${carrito.metodoEntrega.name() == 'RECOGIDA_TIENDA'}">
-                                <span>
-                                    <strong>Recogida en tienda</strong>
-                                    <small>Gratis. Pagarás cuando recojas el pedido.</small>
-                                </span>
-                            </label>
-                            <label class="delivery-option" th:classappend="${carrito.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
-                                <input type="radio" name="metodoEntrega" value="ENVIO_DOMICILIO" onchange="this.form.submit()" th:checked="${carrito.metodoEntrega.name() == 'ENVIO_DOMICILIO'}">
+                            <input type="hidden" name="metodoEntrega" value="ENVIO_DOMICILIO">
+                            <label class="delivery-option is-active">
+                                <input type="radio" checked disabled>
                                 <span>
                                     <strong>Envío a domicilio</strong>
-                                    <small>4,99 EUR. Disponible como flujo simulado en esta fase.</small>
+                                    <small>El pedido se enviará a domicilio. Los gastos de envío se calcularán durante el proceso de compra.</small>
                                 </span>
                             </label>
                         </form>
@@ -85,6 +79,7 @@
                         </ul>
 
                         <a class="button button-primary" th:href="@{/checkout}">Ir al checkout</a>
+                        <p class="carrito-login-note">Completarás la dirección de entrega durante la compra.</p>
                         <p class="carrito-login-note" th:if="${carrito.requiereLoginParaConfirmar}">
                             Tendrás que iniciar sesión antes de confirmar el pedido.
                         </p>

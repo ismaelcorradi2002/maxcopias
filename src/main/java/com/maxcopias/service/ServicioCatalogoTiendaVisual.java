@@ -143,7 +143,7 @@ public class ServicioCatalogoTiendaVisual {
                 "Capacidad 25L con multiples compartimentos",
                 "Material resistente al agua",
                 "Asas ergonomicas acolchadas",
-                "Disponible para recogida en tienda"
+                "Disponible para envio a domicilio"
             )
         ));
         datos.put("Estuche doble", new MetadatosProductoTienda(
@@ -263,7 +263,7 @@ public class ServicioCatalogoTiendaVisual {
                 nombre,
                 descripcion,
                 List.of(
-                    "Disponible para recogida en tienda",
+                    "Disponible para envio a domicilio",
                     "Consulta stock y precio actualizado en Maxcopias"
                 )
             );

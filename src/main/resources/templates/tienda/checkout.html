@@ -47,25 +47,18 @@
                             <span class="checkout-step-index">Paso 2</span>
                             <h2>Método de entrega</h2>
                             <div class="checkout-delivery-options">
-                                <label class="delivery-option" th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'RECOGIDA_TIENDA'} ? ' is-active' : ''">
-                                    <input th:field="*{metodoEntrega}" type="radio" value="RECOGIDA_TIENDA">
-                                    <span>
-                                        <strong>Recogida en tienda</strong>
-                                        <small>Gratis. Pagarás en tienda cuando recojas el pedido.</small>
-                                    </span>
-                                </label>
-                                <label class="delivery-option" th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-active' : ''">
-                                    <input th:field="*{metodoEntrega}" type="radio" value="ENVIO_DOMICILIO">
+                                <label class="delivery-option is-active">
+                                    <input th:field="*{metodoEntrega}" type="radio" value="ENVIO_DOMICILIO" checked>
                                     <span>
                                         <strong>Envío a domicilio</strong>
-                                        <small>4,99 EUR. Disponible solo en Torrejón de Ardoz.</small>
+                                        <small>Completa tu dirección y recibe el pedido en casa. Envíos a Madrid y toda España.</small>
                                     </span>
                                 </label>
                             </div>
                             <div class="checkout-delivery-address"
                                  data-checkout-delivery-address
                                  th:classappend="${checkoutForm.metodoEntrega != null and checkoutForm.metodoEntrega.name() == 'ENVIO_DOMICILIO'} ? ' is-visible' : ''">
-                                <p class="checkout-delivery-note">Si eliges envío, indica una dirección válida de Torrejón de Ardoz.</p>
+                                <p class="checkout-delivery-note">Indica una dirección completa de entrega para preparar el envío.</p>
                                 <div class="checkout-field-grid">
                                     <label class="is-wide">
                                         <span>Dirección de entrega</span>
@@ -79,7 +72,7 @@
                                     </label>
                                     <label>
                                         <span>Ciudad</span>
-                                        <input th:field="*{ciudadEntrega}" type="text" placeholder="Torrejón de Ardoz">
+                                        <input th:field="*{ciudadEntrega}" type="text" placeholder="Madrid">
                                         <small class="field-error" th:if="${#fields.hasErrors('ciudadEntrega')}" th:errors="*{ciudadEntrega}">Error</small>
                                     </label>
                                 </div>
@@ -122,12 +115,12 @@
                         <span class="section-kicker">Importante</span>
                         <h2>Cómo se registra el pago</h2>
                         <p>
-                            Si eliges recogida en tienda, el pedido se guardará como pendiente de pago
-                            hasta que el equipo lo entregue y confirme el cobro.
+                            El pedido se registrará con envío a domicilio y el equipo podrá preparar,
+                            expedir y seguir su estado desde administración.
                         </p>
                         <p>
-                            Si eliges envío, el pedido también se registrará correctamente, pero el flujo
-                            de reparto sigue siendo una simulación dentro de esta fase del proyecto.
+                            Si todavía no hay integración logística o pago online definitivo, el flujo
+                            seguirá funcionando en modo interno mientras el equipo gestiona la expedición.
                         </p>
                     </aside>
                 </div>

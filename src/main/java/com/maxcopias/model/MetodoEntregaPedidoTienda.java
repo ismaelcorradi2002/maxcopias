@@ -1,7 +1,7 @@
 package com.maxcopias.model;
 
 public enum MetodoEntregaPedidoTienda {
-    RECOGIDA_TIENDA("Recogida en tienda"),
+    RECOGIDA_TIENDA("Recogida legacy"),
     ENVIO_DOMICILIO("Envio a domicilio");
 
     private final String label;

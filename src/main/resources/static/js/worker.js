@@ -28,11 +28,11 @@ function initWorkerTables() {
 
             input.addEventListener("input", () => {
                 state.visibleCount = WORKER_PAGE_SIZE;
-                renderWorkerTable(table, controls, state);
+                renderWorkerTable(table, controls, state, isPaginated);
             });
             input.addEventListener("change", () => {
                 state.visibleCount = WORKER_PAGE_SIZE;
-                renderWorkerTable(table, controls, state);
+                renderWorkerTable(table, controls, state, isPaginated);
             });
         });
 
