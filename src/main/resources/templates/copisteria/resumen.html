@@ -19,7 +19,7 @@
 
                 <aside class="summary-highlight" data-reveal="left">
                     <span class="card-chip">Referencia del pedido</span>
-                    <strong th:text="${order.pickupCode}">MC-7Q4P9R</strong>
+                    <strong th:text="${order.id != null ? 'C-' + order.id : 'Pedido online'}">C-1</strong>
                     <p>Guarda esta referencia para consultar el estado del pedido y cualquier gestión de soporte.</p>
                     <div class="summary-highlight-price">
                         <span>Precio estimado</span>
@@ -84,8 +84,8 @@
                     </div>
 
                     <p class="summary-note">
-                        En tienda podrás identificar este encargo con el código
-                        <strong th:text="${order.pickupCode}">MC-7Q4P9R</strong>.
+                        Podrás identificar este encargo con la referencia
+                        <strong th:text="${order.id != null ? 'C-' + order.id : 'Pedido online'}">C-1</strong>.
                     </p>
                 </article>
 

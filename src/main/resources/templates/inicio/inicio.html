@@ -1,19 +1,144 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Copistería y tienda de papelería', null)}"></head>
-<body>
+<body class="page-home">
 <div class="page-shell">
+    <div class="container home-promo-strip-wrap">
+        <div class="home-promo-strip" data-reveal="up">
+            <span class="home-promo-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3.5 7.5h10V16h-10z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                    <path d="M13.5 10h3l2 2.5V16h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                    <circle cx="8" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="17" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+            </span>
+            <strong>ENVIO A DOMICILIO EN 24/48H</strong>
+            <span class="home-promo-divider" aria-hidden="true"></span>
+            <span class="home-promo-text">Rapido, seguro y a toda Espana <span class="home-promo-underline">peninsular.</span></span>
+        </div>
+    </div>
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main>
-        <section class="welcome-hero" id="inicio">
+    <main class="page-home">
+        <section class="welcome-hero section-gradient" id="inicio">
+            <div class="container home-promo-strip-wrap">
+                <div class="home-promo-strip" data-reveal="up">
+                    <strong>Copistería online y papelería</strong>
+                    <span>Imprime, compra material y recibe tu pedido en casa con una experiencia más simple.</span>
+                    <a th:href="@{/copisteria}" class="button home-promo-button">Quiero empezar</a>
+                </div>
+            </div>
             <div class="container hero-layout">
                 <div class="hero-copy" data-reveal="up">
                     <span class="eyebrow">Copistería y papelería online</span>
+                    <div class="hero-rich-title" aria-hidden="true">
+                        <span class="hero-rich-line">La copisteria y</span>
+                        <span class="hero-rich-line">papeleria online</span>
+                        <span class="hero-rich-line hero-rich-line-accent">
+                            <span>para</span>
+                            <span class="hero-marker hero-marker-blue">imprimir,</span>
+                            <span class="hero-marker hero-marker-yellow">comprar</span>
+                        </span>
+                        <span class="hero-rich-line">
+                            <span>y recibir en</span>
+                            <span class="hero-word-accent">casa</span>
+                        </span>
+                        <span class="hero-doodle hero-doodle-left"></span>
+                        <span class="hero-doodle hero-doodle-spark"></span>
+                        <span class="hero-doodle hero-doodle-underline"></span>
+                    </div>
                     <h1>
-                        Copistería y papelería online para imprimir documentos, fotocopias y más
-                        <span class="hero-accent">con envío a domicilio</span>
+                        <span class="hero-title-line">La copistería y</span>
+                        <span class="hero-title-line">papelería online</span>
+                        <span class="hero-title-line hero-title-line-inline">
+                            <span>para</span>
+                            <span class="hero-accent hero-accent-dual">
+                                <span>imprimir,</span>
+                                <span>comprar</span>
+                            </span>
+                        </span>
+                        <span class="hero-title-line">y recibir en casa</span>
                     </h1>
+                    <div class="hero-intro-block">
+                        <p class="hero-intro-copy">
+                            Imprime tus documentos, compra papeleria y material de oficina
+                            y recibelo en casa. Calidad profesional, precios competitivos
+                            y <strong>envio rapido.</strong>
+                        </p>
+                        <div class="hero-intro-actions">
+                            <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary btn-copy">
+                                <span class="hero-cta-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24">
+                                        <rect x="4.5" y="4.5" width="15" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                        <path d="M12 15V8.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+                                        <path d="m8.9 11.1 3.1-3.1 3.1 3.1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                    </svg>
+                                </span>
+                                <span>Sube ahora tus documentos</span>
+                            </a>
+                            <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary btn-copy">
+                                <span class="hero-cta-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24">
+                                        <rect x="4.5" y="4.5" width="15" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                        <path d="M12 15V8.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+                                        <path d="m8.9 11.1 3.1-3.1 3.1 3.1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                    </svg>
+                                </span>
+                                <span>Sube ahora tus documentos</span>
+                            </a>
+                            <a th:href="@{/tienda}" class="button button-secondary btn-shop">
+                                <span class="hero-cta-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M3 5h2l1.2 7.2a2 2 0 0 0 2 1.7h7.9a2 2 0 0 0 2-1.6L19.7 7H7.1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                        <circle cx="9.2" cy="19" r="1.35" fill="currentColor"/>
+                                        <circle cx="17.2" cy="19" r="1.35" fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                <span>Ver papeleria online</span>
+                            </a>
+                        </div>
+                        <div class="hero-intro-highlights" aria-label="Beneficios principales">
+                            <article class="hero-intro-highlight">
+                                <span class="hero-intro-highlight-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M3.5 7.5h10V16h-10z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                        <path d="M13.5 10h3l2 2.5V16h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                        <circle cx="8" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                        <circle cx="17" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                    </svg>
+                                </span>
+                                <span class="hero-intro-highlight-copy">
+                                    <strong>Envio rapido</strong>
+                                    <span>24/48h</span>
+                                </span>
+                            </article>
+                            <article class="hero-intro-highlight">
+                                <span class="hero-intro-highlight-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 3.8 18.3 6v5.1c0 3.5-2.3 6.7-6.3 8.8-4-2.1-6.3-5.3-6.3-8.8V6z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                        <path d="m9.7 11.8 1.7 1.7 3.3-3.7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                    </svg>
+                                </span>
+                                <span class="hero-intro-highlight-copy">
+                                    <strong>Calidad profesional</strong>
+                                    <span>en cada impresion</span>
+                                </span>
+                            </article>
+                            <article class="hero-intro-highlight">
+                                <span class="hero-intro-highlight-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24">
+                                        <rect x="6.5" y="10.5" width="11" height="8.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                        <path d="M9 10.5V8.2a3 3 0 0 1 6 0v2.3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+                                    </svg>
+                                </span>
+                                <span class="hero-intro-highlight-copy">
+                                    <strong>Pago 100% seguro</strong>
+                                    <span>y protegido</span>
+                                </span>
+                            </article>
+                        </div>
+                    </div>
                     <p class="hero-lead">
                         En Maxcopias puedes pedir impresión online de documentos, apuntes y trabajos,
                         encargar fotocopias, encuadernaciones y material de oficina desde casa con entrega a domicilio.
@@ -21,63 +146,34 @@
                     <p class="hero-lead hero-lead-micro">Envíos a Madrid y toda España con pedidos online sencillos y seguros.</p>
 
                     <div class="hero-actions">
-                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary">Encargar impresión</a>
-                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Encargar impresión</a>
-                        <a href="#servicios" class="button button-secondary">Ver servicios</a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary btn-copy">Imprimir documentos</a>
+                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary btn-copy">Imprimir documentos</a>
+                        <a th:href="@{/tienda}" class="button button-secondary btn-shop">Ver tienda online</a>
                     </div>
 
-                    <ul class="hero-highlights" aria-label="Puntos clave">
-                        <li class="hero-highlight-item hero-highlight-upload">
-                            <span class="hero-highlight-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M12 15V5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
-                                    <path d="m8.5 8.5 3.5-3.5 3.5 3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
-                                    <path d="M6 16.5a3.5 3.5 0 0 1 .4-7 5.5 5.5 0 0 1 10.7 1.3A3.8 3.8 0 1 1 18 18.5H7.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
-                                </svg>
-                            </span>
-                            <span>Subida de archivos online</span>
-                        </li>
-                        <li class="hero-highlight-item hero-highlight-store">
-                            <span class="hero-highlight-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M4.5 9.5h15" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
-                                    <path d="M6.5 9.5V18h11V9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
-                                    <path d="M5 9.5 6.3 5h11.4L19 9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
-                                    <path d="M10 18v-4.5h4V18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
-                                </svg>
-                            </span>
-                            <span>Recogida rápida en tienda</span>
-                        </li>
-                        <li class="hero-highlight-item hero-highlight-delivery">
-                            <span class="hero-highlight-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M3.5 7.5h10V16h-10z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
-                                    <path d="M13.5 10h3l2 2.5V16h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
-                                    <circle cx="8" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
-                                    <circle cx="17" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
-                                </svg>
-                            </span>
-                            <span>Entrega a domicilio</span>
-                        </li>
-                        <li class="hero-highlight-item hero-highlight-stationery">
-                            <span class="hero-highlight-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M7 4.5h7l3 3V19.5H7z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
-                                    <path d="M14 4.5v3h3" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
-                                    <path d="M9.2 12h5.6M9.2 15h5.6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
-                                </svg>
-                            </span>
-                            <span>Papelería y oficina en un solo lugar</span>
-                        </li>
-                    </ul>
+                    <div class="hero-benefit-chips" aria-label="Beneficios destacados">
+                        <span class="badge-soft">Envíos a domicilio</span>
+                        <span class="badge-soft">Impresión online fácil</span>
+                        <span class="badge-soft">Papelería y copistería</span>
+                        <span class="badge-soft">Pedido seguro</span>
+                    </div>
+
+                    <div class="hero-proof-line" aria-label="Mensajes de confianza">
+                        <span>Envíos a Madrid y toda España</span>
+                        <span>Pedidos personalizados</span>
+                        <span>Servicio cómodo y rápido</span>
+                    </div>
+
                 </div>
 
-                <div class="hero-visual" data-reveal="left">
+                <div class="hero-visual">
                     <div class="hero-visual-dots" aria-hidden="true"></div>
                     <div class="hero-visual-arc hero-visual-arc-gold" aria-hidden="true"></div>
                     <div class="hero-visual-arc hero-visual-arc-blue" aria-hidden="true"></div>
+                    <div class="hero-visual-halo hero-visual-halo-primary" aria-hidden="true"></div>
+                    <div class="hero-visual-halo hero-visual-halo-secondary" aria-hidden="true"></div>
                     <div class="hero-visual-stage">
-                        <img th:src="@{/images/maxcopias-welcome-hero-premium.png(v='20260506b')}" alt="Hero visual de Maxcopias con materiales de copistería, papelería y branding de la marca">
+                        <img th:src="@{/images/image-removebg-preview.png(v='20260610b')}" alt="Hero visual de Maxcopias con materiales de copistería, papelería y branding de la marca">
                     </div>
 
                     <div class="hero-badge hero-badge-top">
@@ -89,7 +185,74 @@
                         <strong>Tienda</strong>
                         <span>Papelería, material escolar y suministros de oficina.</span>
                     </div>
+
+                    <div class="hero-sticker" aria-hidden="true">
+                        <span>Online</span>
+                        <strong>rápido y claro</strong>
+                    </div>
                 </div>
+            </div>
+
+            <div class="container hero-support-stack">
+                <div class="home-floating-grid" aria-label="Beneficios principales">
+                    <article class="floating-card hero-card">
+                        <strong>Sube tus archivos</strong>
+                        <span>Documentos, apuntes y PDFs listos para imprimir online.</span>
+                    </article>
+                    <article class="floating-card hero-card">
+                        <strong>Compra papelería online</strong>
+                        <span>Cuadernos, carpetas y material de oficina en un mismo pedido.</span>
+                    </article>
+                    <article class="floating-card hero-card">
+                        <strong>Recibe tu pedido en casa</strong>
+                        <span>Enviamos a Madrid y a toda España dentro del flujo actual.</span>
+                    </article>
+                </div>
+
+                <ul class="hero-highlights" aria-label="Puntos clave">
+                    <li class="hero-highlight-item hero-highlight-upload">
+                        <span class="hero-highlight-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 15V5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="m8.5 8.5 3.5-3.5 3.5 3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="M6 16.5a3.5 3.5 0 0 1 .4-7 5.5 5.5 0 0 1 10.7 1.3A3.8 3.8 0 1 1 18 18.5H7.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                            </svg>
+                        </span>
+                        <span>Subida de archivos online</span>
+                    </li>
+                    <li class="hero-highlight-item hero-highlight-store">
+                        <span class="hero-highlight-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4.5 9.5h15" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+                                <path d="M6.5 9.5V18h11V9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="M5 9.5 6.3 5h11.4L19 9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="M10 18v-4.5h4V18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                            </svg>
+                        </span>
+                        <span>Compra y gestión 100% online</span>
+                    </li>
+                    <li class="hero-highlight-item hero-highlight-delivery">
+                        <span class="hero-highlight-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3.5 7.5h10V16h-10z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="M13.5 10h3l2 2.5V16h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                <circle cx="8" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                <circle cx="17" cy="18" r="1.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            </svg>
+                        </span>
+                        <span>Entrega a domicilio</span>
+                    </li>
+                    <li class="hero-highlight-item hero-highlight-stationery">
+                        <span class="hero-highlight-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M7 4.5h7l3 3V19.5H7z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="M14 4.5v3h3" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="M9.2 12h5.6M9.2 15h5.6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+                            </svg>
+                        </span>
+                        <span>Papelería y oficina en un solo lugar</span>
+                    </li>
+                </ul>
             </div>
 
             <div class="container hero-footer-strip">
@@ -112,7 +275,7 @@
             </div>
         </section>
 
-        <section class="services-section" id="servicios">
+        <section class="services-section section-soft" id="servicios">
             <div class="container">
                 <div class="section-heading" data-reveal="up">
                     <span class="section-kicker">Servicios</span>
@@ -251,7 +414,7 @@
             </div>
         </section>
 
-        <section class="process-section" id="como-funciona">
+        <section class="process-section section-soft" id="como-funciona">
             <div class="container">
                 <div class="section-heading" data-reveal="up">
                     <span class="section-kicker">Cómo funciona</span>
@@ -266,28 +429,28 @@
                     <article class="step-card" data-reveal="up">
                         <span class="step-number">01</span>
                         <span class="step-icon" aria-hidden="true">1</span>
-                        <h3>Envía tus archivos</h3>
-                        <p>Sube documentos, apuntes o trabajos y dinos cómo quieres imprimirlos o encuadernarlos.</p>
+                        <h3>Elige productos o sube tus archivos</h3>
+                        <p>Combina impresión online y papelería en un mismo proceso desde cualquier dispositivo.</p>
                     </article>
 
                     <article class="step-card" data-reveal="up">
                         <span class="step-number">02</span>
                         <span class="step-icon" aria-hidden="true">2</span>
-                        <h3>Preparamos tu pedido</h3>
-                        <p>Nos encargamos de la impresión de documentos, las fotocopias y los acabados para que todo quede listo.</p>
+                        <h3>Completa tu pedido online</h3>
+                        <p>Configura cantidades, acabados, dirección de envío y deja el encargo listo en pocos pasos.</p>
                     </article>
 
                     <article class="step-card" data-reveal="up">
                         <span class="step-number">03</span>
                         <span class="step-icon" aria-hidden="true">3</span>
                         <h3>Recíbelo en casa</h3>
-                        <p>Te enviamos tu encargo a domicilio para que completes todo el proceso online.</p>
+                        <p>Preparamos la expedición y podrás seguir el estado del pedido desde tu cuenta.</p>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section class="trust-section" id="confianza">
+        <section class="trust-section section-soft" id="confianza">
             <div class="container">
                 <div class="section-heading trust-heading" data-reveal="up">
                     <span class="section-kicker">Por qué elegir Maxcopias</span>
@@ -319,7 +482,7 @@
             </div>
         </section>
 
-        <section class="location-section" id="ubicacion">
+        <section class="location-section section-gradient" id="ubicacion">
             <div class="container location-box" data-reveal="up">
                 <div class="location-copy">
                     <span class="section-kicker">Envíos</span>
@@ -333,7 +496,7 @@
             </div>
         </section>
 
-        <section class="cta-section" id="cta-final">
+        <section class="cta-section section-gradient" id="cta-final">
             <div class="container cta-box" data-reveal="up">
                 <div>
                     <span class="section-kicker">Haz tu pedido hoy</span>

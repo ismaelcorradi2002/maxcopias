@@ -1867,3 +1867,20 @@
         left: 0;
     }
 }
+
+/* 2026 refinement - admin */
+.admin-summary-card,
+.admin-finance-card,
+.table-section,
+.admin-page .dashboard-card.admin-card {
+    backdrop-filter: blur(10px);
+}
+
+.admin-table tbody tr:hover {
+    transform: translateY(-1px);
+}
+
+.admin-status-pill,
+.admin-role-badge {
+    box-shadow: 0 10px 24px rgba(28, 63, 108, 0.08);
+}

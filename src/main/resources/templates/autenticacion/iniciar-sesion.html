@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos/encabezado :: head('Maxcopias | Iniciar sesión', '/css/cuenta.css')}"></head>
-<body class="account-page">
+<body class="account-page page-auth page-auth-login">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
@@ -10,16 +10,16 @@
             <div class="container auth-layout auth-layout-login">
                 <div class="auth-copy" data-reveal="up">
                     <span class="eyebrow">Acceso seguro</span>
-                    <h1>Accede a tu cuenta para continuar con tus pedidos y tu área personal.</h1>
+                    <h1>Accede para gestionar tus pedidos online y seguir cada envío desde tu cuenta.</h1>
                     <p>
-                        Inicia sesión con tu email y tu contraseña para consultar tus pedidos,
-                        gestionar tu cuenta y seguir preparando tus encargos.
+                        Inicia sesión con tu email y tu contraseña para consultar pedidos de copistería y tienda,
+                        revisar estados y completar compras online con más rapidez.
                     </p>
 
                     <div class="auth-copy-card">
                         <strong>Desde tu cuenta podrás</strong>
                         <ul>
-                            <li>Consultar tus datos y tus pedidos</li>
+                            <li>Consultar tus pedidos online y sus estados</li>
                             <li>Acceder más rápido a copistería y tienda</li>
                             <li>Seguir tu actividad con acceso seguro</li>
                         </ul>

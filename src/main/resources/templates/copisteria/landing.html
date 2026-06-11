@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragmentos/encabezado :: head('Copistería online | Imprime documentos y recíbelos en casa', '/css/copisteria.css')}"></head>
-<body class="copisteria-page">
+<body class="copisteria-page page-copy">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main class="services-main">
-        <section class="services-hero">
+    <main class="services-main page-copy">
+        <section class="services-hero section-gradient">
             <div class="container services-hero-grid">
                 <div class="services-hero-copy" data-reveal="up">
                     <span class="eyebrow">Copistería online</span>
@@ -17,8 +17,8 @@
                     </p>
 
                     <div class="services-hero-actions">
-                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary">Hacer pedido de impresión</a>
-                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary">Subir archivo</a>
+                        <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary btn-copy">Hacer pedido de impresión</a>
+                        <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary btn-copy">Subir archivo</a>
                         <a th:href="@{/contacto}" class="button button-secondary">Contactar</a>
                     </div>
 
@@ -58,7 +58,7 @@
             </div>
         </section>
 
-        <section class="services-categories-section">
+        <section class="services-categories-section section-soft">
             <div class="container">
                 <div class="section-heading" data-reveal="up">
                     <span class="section-kicker">Servicios de copistería</span>
@@ -145,7 +145,7 @@
             </div>
         </section>
 
-        <section class="pickup-highlight-section">
+        <section class="pickup-highlight-section section-soft">
             <div class="container">
                 <article class="pickup-highlight" data-reveal="up">
                     <div>
@@ -165,7 +165,7 @@
             </div>
         </section>
 
-        <section class="services-final-cta-section">
+        <section class="services-final-cta-section section-gradient">
             <div class="container">
                 <article class="services-final-cta" data-reveal="up">
                     <div>

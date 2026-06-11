@@ -12,7 +12,16 @@
         <nav class="nav-panel" id="primary-navigation" aria-label="Principal">
             <div class="nav-panel-inner">
                 <div class="nav-primary-links">
-                    <a th:href="@{/#inicio}" data-nav-link data-nav-match="/">Inicio</a>
+                    <a th:href="@{/copisteria}" data-nav-link data-nav-match="/copisteria">
+                        <span class="nav-link-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M7 8V4.8h10V8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                                <rect x="6" y="13" width="12" height="6.2" rx="1.2" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="M5.3 10.2h13.4a1.8 1.8 0 0 1 1.8 1.8v3.1H18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                            </svg>
+                        </span>
+                        <span>Imprimir</span>
+                    </a>
                     <a th:href="@{/ofertas}"
                        class="nav-offers-link"
                        th:classappend="${navOfertaPrincipal == null} ? ' is-idle' : ' is-live'"
@@ -22,15 +31,27 @@
                         <span class="nav-offers-icon" aria-hidden="true">%</span>
                         <span class="nav-offers-link-text">Ofertas</span>
                     </a>
-                    <a th:href="@{/copisteria}" data-nav-link data-nav-match="/copisteria">Copistería</a>
-                    <a th:href="@{/tienda}" data-nav-link data-nav-match="/tienda,/detalles-producto">Tienda</a>
-                    <a th:href="@{/contacto}" data-nav-link data-nav-match="/contacto">Contacto</a>
+                    <a th:href="@{/tienda}" data-nav-link data-nav-match="/tienda,/detalles-producto">
+                        <span class="nav-link-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="m7 16.8 9.8-9.8 2.8 2.8-9.8 9.8-4.2 1.4z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="m14.9 8.9 2.8 2.8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/>
+                            </svg>
+                        </span>
+                        <span>Papeler&iacute;a</span>
+                    </a>
+                    <a th:href="@{/contacto}" data-nav-link data-nav-match="/contacto">
+                        <span class="nav-link-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4.5 7.5h15v9.5a1.5 1.5 0 0 1-1.5 1.5H6a1.5 1.5 0 0 1-1.5-1.5z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/>
+                                <path d="m5 8 7 5 7-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+                            </svg>
+                        </span>
+                        <span>Contacto</span>
+                    </a>
                 </div>
 
                 <div class="nav-mobile-actions">
-                    <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary nav-cta nav-cta-mobile">Encargar impresión</a>
-                    <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary nav-cta nav-cta-mobile">Encargar impresión</a>
-
                     <th:block sec:authorize="isAnonymous()">
                         <a th:href="@{/login}" class="nav-user-menu-link" data-nav-link data-nav-match="/login">Iniciar sesión</a>
                         <a th:href="@{/register}" class="button button-outline-dark button-nav">Registrarse</a>
@@ -65,9 +86,6 @@
         </nav>
 
         <div class="nav-utility-bar">
-            <a sec:authorize="isAuthenticated()" th:href="@{/copisteria/pedido}" class="button button-primary nav-cta">Encargar impresión</a>
-            <a sec:authorize="isAnonymous()" th:href="@{/login(copisteriaRequired=true)}" class="button button-primary nav-cta">Encargar impresión</a>
-
             <a th:href="@{/carrito}"
                class="nav-icon-link nav-cart-link"
                aria-label="Ver carrito"

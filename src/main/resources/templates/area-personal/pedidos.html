@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos/encabezado :: head(${pageTitle}, '/css/cuenta.css')}"></head>
-<body class="account-page dashboard-page">
+<body class="account-page dashboard-page page-account-orders">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
@@ -65,7 +65,9 @@
                             </div>
                             <div class="order-history-badges">
                                 <span class="pickup-code-pill" th:text="${order.metodoEntregaLabel()}">Envío a domicilio</span>
-                                <span class="status-pill" th:text="${order.estadoLabel()}">Pendiente</span>
+                                <span class="status-pill"
+                                      th:classappend="${order.estadoLabel() == 'Pendiente'} ? ' is-pending' : (${order.estadoLabel() == 'En preparación'} ? ' is-preparing' : (${order.estadoLabel() == 'Preparado para envio'} ? ' is-ready' : (${order.estadoLabel() == 'Enviado'} ? ' is-shipped' : (${order.estadoLabel() == 'Entregado'} ? ' is-delivered' : (${order.estadoLabel() == 'Cancelado'} ? ' is-cancelled' : '')))))"
+                                      th:text="${order.estadoLabel()}">Pendiente</span>
                             </div>
                         </div>
 
@@ -106,8 +108,10 @@
                                 <p th:text="${order.formattedCreatedAt}">09/04/2026 18:10</p>
                             </div>
                             <div class="order-history-badges">
-                                <span class="pickup-code-pill" th:text="${order.pickupCode}">MC-7Q4P9R</span>
-                                <span class="status-pill" th:text="${order.status.label}">Recibido</span>
+                                <span class="pickup-code-pill" th:text="${'Referencia C-' + order.id}">Referencia C-1</span>
+                                <span class="status-pill"
+                                      th:classappend="${order.status.label == 'Pendiente'} ? ' is-pending' : (${order.status.label == 'En preparación'} ? ' is-preparing' : (${order.status.label == 'Preparado para envio'} ? ' is-ready' : (${order.status.label == 'Enviado'} ? ' is-shipped' : (${order.status.label == 'Entregado'} ? ' is-delivered' : (${order.status.label == 'Cancelado'} ? ' is-cancelled' : '')))))"
+                                      th:text="${order.status.label}">Recibido</span>
                             </div>
                         </div>
 

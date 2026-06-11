@@ -1,12 +1,43 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos/encabezado :: head('Papelería online | Material de oficina y productos escolares a domicilio', '/css/tienda.css?v=20260511b')}"></head>
-<body class="tienda-page">
+<body class="tienda-page page-shop">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main class="tienda-main">
-        <section id="productos">
+    <main class="tienda-main page-shop">
+        <section class="shop-hero section-gradient">
+            <div class="container shop-hero-grid">
+                <div class="shop-hero-copy" data-reveal="up">
+                    <span class="eyebrow">Papelería online</span>
+                    <h1>Compra material para estudiar, trabajar y organizarte con envío a domicilio.</h1>
+                    <p>
+                        Descubre una tienda online de papelería con productos prácticos, ofertas visibles y una experiencia de compra más clara.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#productos" class="button button-primary btn-shop">Ver productos</a>
+                        <a th:href="@{/carrito}" class="button button-secondary">Ir al carrito</a>
+                    </div>
+                    <div class="shop-highlight-row">
+                        <span class="badge-soft">Material escolar</span>
+                        <span class="badge-soft">Oficina</span>
+                        <span class="badge-soft">Organización</span>
+                        <span class="badge-soft">Entrega a domicilio</span>
+                    </div>
+                </div>
+                <aside class="shop-hero-card hero-card card-soft" data-reveal="left">
+                    <strong>Compra online sencilla</strong>
+                    <p>Selecciona categorías, compara precios y añade productos al carrito con una vista más visual.</p>
+                    <ul class="shop-hero-list">
+                        <li>Productos con imagen y precio destacado</li>
+                        <li>Badges de oferta y categorías visibles</li>
+                        <li>Resumen de compra claro hasta checkout</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section id="productos" class="section-soft">
             <div class="container">
                 <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">Producto añadido al carrito.</div>
                 <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No se ha podido añadir el producto.</div>
@@ -32,7 +63,7 @@
                 <div class="productos-grid" id="productos-container">
                     <article
                         th:each="producto : ${productosTienda}"
-                        class="mini-service-card tienda-producto-card"
+                        class="mini-service-card tienda-producto-card card-soft"
                         th:attr="data-categories=${producto.categoriasSlug()},data-product-name=${producto.nombre()},data-product-price=${producto.precioFormateado()}">
                         <a class="tienda-producto-link" th:href="@{/detalles-producto/{id}(id=${producto.id()})}">
                             <div class="tienda-producto-media">
@@ -65,7 +96,7 @@
             </div>
         </section>
 
-        <section class="contact-section">
+        <section class="contact-section section-gradient">
             <div class="container">
                 <p><strong>Consulta disponibilidad y precios online.</strong> Si necesitas ayuda con un pedido o facturación, atendemos también desde nuestra sede legal en Madrid.</p>
             </div>

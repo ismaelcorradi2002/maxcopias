@@ -2782,3 +2782,22 @@
         min-width: 46px;
     }
 }
+
+/* 2026 refinement - worker */
+.worker-summary-card,
+.worker-module-card,
+.worker-section,
+.worker-card {
+    backdrop-filter: blur(10px);
+}
+
+.worker-order-flag,
+.worker-payment-badge,
+.worker-state-badge,
+.worker-status-chip {
+    box-shadow: 0 8px 18px rgba(31, 85, 120, 0.08);
+}
+
+.worker-table tbody tr:hover {
+    transform: translateY(-1px);
+}

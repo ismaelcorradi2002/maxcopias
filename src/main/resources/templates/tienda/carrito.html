@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos/encabezado :: head(${pageTitle}, '/css/tienda.css')}"></head>
-<body class="tienda-page">
+<body class="tienda-page page-checkout">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main class="tienda-main carrito-main">
-        <section class="carrito-section">
+    <main class="tienda-main carrito-main page-checkout">
+        <section class="carrito-section section-gradient">
             <div class="container">
+                <div class="checkout-flow-bar" aria-label="Pasos del pedido">
+                    <span class="status-chip is-current">1. Carrito</span>
+                    <span class="status-chip">2. Datos de envío</span>
+                    <span class="status-chip">3. Confirmación</span>
+                </div>
                 <div class="carrito-header">
                     <div>
                         <span class="section-kicker">Tu cesta</span>
@@ -28,7 +33,7 @@
 
                 <div class="carrito-layout" th:if="${!carrito.vacio}">
                     <section class="carrito-items">
-                        <article class="carrito-item-card" th:each="item : ${carrito.items}">
+                        <article class="carrito-item-card card-soft" th:each="item : ${carrito.items}">
                             <img th:src="${item.imagenUrl()}" th:alt="${item.nombre()}">
                             <div class="carrito-item-copy">
                                 <h2 th:text="${item.nombre()}">Producto</h2>
@@ -56,7 +61,7 @@
                         </article>
                     </section>
 
-                    <aside class="carrito-summary-card">
+                    <aside class="carrito-summary-card card-soft">
                         <span class="section-kicker">Resumen</span>
                         <h2>Antes de confirmar</h2>
 

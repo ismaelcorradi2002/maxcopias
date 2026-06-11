@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos/encabezado :: head(${pageTitle}, '/css/tienda.css')}"></head>
-<body class="tienda-page">
+<body class="tienda-page page-checkout">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main class="tienda-main checkout-main">
-        <section class="checkout-section">
+    <main class="tienda-main checkout-main page-checkout">
+        <section class="checkout-section section-gradient">
             <div class="container">
+                <div class="checkout-flow-bar" aria-label="Pasos del pedido">
+                    <span class="status-chip">1. Carrito</span>
+                    <span class="status-chip is-current">2. Datos de envío</span>
+                    <span class="status-chip">3. Confirmación</span>
+                </div>
                 <div class="carrito-header">
                     <div>
                         <span class="section-kicker">Checkout</span>
@@ -21,7 +26,7 @@
                     <form th:action="@{/checkout}" th:object="${checkoutForm}" method="post" class="checkout-form-card">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-                        <section class="checkout-step-card">
+                        <section class="checkout-step-card card-soft">
                             <span class="checkout-step-index">Paso 1</span>
                             <h2>Datos del cliente</h2>
                             <div class="checkout-field-grid">
@@ -43,7 +48,7 @@
                             </div>
                         </section>
 
-                        <section class="checkout-step-card">
+                        <section class="checkout-step-card card-soft">
                             <span class="checkout-step-index">Paso 2</span>
                             <h2>Método de entrega</h2>
                             <div class="checkout-delivery-options">
@@ -79,7 +84,7 @@
                             </div>
                         </section>
 
-                        <section class="checkout-step-card">
+                        <section class="checkout-step-card card-soft">
                             <span class="checkout-step-index">Paso 3</span>
                             <h2>Resumen del pedido</h2>
                             <div class="checkout-review-list">
@@ -111,7 +116,7 @@
                         <button type="submit" class="button button-primary checkout-submit-button">Confirmar pedido</button>
                     </form>
 
-                    <aside class="carrito-summary-card checkout-sidebar-card">
+                    <aside class="carrito-summary-card checkout-sidebar-card card-soft">
                         <span class="section-kicker">Importante</span>
                         <h2>Cómo se registra el pago</h2>
                         <p>

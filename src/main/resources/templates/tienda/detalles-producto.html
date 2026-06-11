@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragmentos/encabezado :: head(${productoTienda.nombre() + ' - Maxcopias | Detalles'}, '/css/tienda.css')}"></head>
-<body class="tienda-page">
+<body class="tienda-page page-shop">
 <div class="page-shell">
     <div th:replace="~{fragmentos/navegacion :: navbar}"></div>
 
-    <main class="tienda-main">
-        <section class="producto-detail-hero">
+    <main class="tienda-main page-shop">
+        <section class="producto-detail-hero section-gradient">
             <div class="container producto-detail-grid">
                 <div class="producto-detail-media">
                     <div class="producto-detail-media-frame">
@@ -22,7 +22,7 @@
                     <div class="tienda-feedback tienda-feedback-success" th:if="${cartFeedback}" th:text="${cartFeedback}">El producto se ha añadido al carrito.</div>
                     <div class="tienda-feedback tienda-feedback-error" th:if="${cartError}" th:text="${cartError}">No hemos podido añadir el producto al carrito.</div>
 
-                    <div class="producto-buy-card">
+                    <div class="producto-buy-card card-soft">
                         <div class="producto-price-row">
                             <span class="producto-price" th:text="${productoTienda.precioFormateado()}">0,00 EUR</span>
                             <span class="producto-stock" th:text="${productoTienda.stock() > 0 ? 'Stock disponible: ' + productoTienda.stock() : 'Ahora mismo no hay stock disponible'}">Stock disponible</span>
@@ -47,12 +47,27 @@
                             <a class="button button-secondary-dark" th:href="@{/carrito}">Ver carrito</a>
                             <a class="button button-outline-dark" th:href="@{/tienda}">Volver a la tienda</a>
                         </div>
+
+                        <div class="producto-benefit-grid">
+                            <article class="badge-soft">
+                                <strong>Envío a domicilio</strong>
+                                <span>Recibe el pedido en la dirección indicada.</span>
+                            </article>
+                            <article class="badge-soft">
+                                <strong>Compra online sencilla</strong>
+                                <span>Añade al carrito y revisa el pedido en pocos pasos.</span>
+                            </article>
+                            <article class="badge-soft">
+                                <strong>Atención para dudas</strong>
+                                <span>Te ayudamos antes o después de comprar.</span>
+                            </article>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="producto-detail-info">
+        <section class="producto-detail-info section-soft">
             <div class="container producto-info-card">
                 <div>
                     <span class="section-kicker">Detalles del producto</span>

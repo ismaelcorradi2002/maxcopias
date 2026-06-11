@@ -281,6 +281,7 @@ public class ControllerPedidos {
             .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
         model.addAttribute("pedidoId", pedido.getId());
         model.addAttribute("pickupCode", pedido.getPickupCode());
+        model.addAttribute("orderReference", pedido.getId() != null ? "C-" + pedido.getId() : "Pedido online");
         model.addAttribute("formattedEstimatedPrice", pedido.getFormattedEstimatedPrice());
         model.addAttribute("formattedCreatedAt", pedido.getFormattedCreatedAt());
         model.addAttribute("fileCount", pedido.getFileCount());
